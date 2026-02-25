@@ -1,14 +1,23 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useSport } from "@/contexts/SportContext";
-import { NBA_PLAYERS, NBA_TEAMS } from "@/data/nba/mockData";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { NBA_PLAYERS, NBA_TEAMS, computeGIR, computeUAP } from "@/data/nba/mockData";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ArrowUpDown } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
-type SortKey = "name" | "ppg" | "rpg" | "apg";
+type SortKey = "name" | "ppg" | "rpg" | "apg" | "gir";
+
+function getHeatColor(val: number, min: number, max: number): string {
+  const ratio = Math.max(0, Math.min(1, (val - min) / (max - min || 1)));
+  if (ratio > 0.75) return "bg-chart-positive/15 text-chart-positive";
+  if (ratio > 0.5) return "bg-chart-teal/10 text-foreground";
+  if (ratio > 0.25) return "bg-chart-gold/10 text-foreground";
+  return "text-muted-foreground";
+}
 
 export default function NBAPlayers() {
   const { sport } = useSport();
@@ -23,14 +32,18 @@ export default function NBAPlayers() {
     else { setSortKey(key); setSortDir("desc"); }
   };
 
+  const ppgRange = { min: Math.min(...NBA_PLAYERS.map(p => p.stats.ppg)), max: Math.max(...NBA_PLAYERS.map(p => p.stats.ppg)) };
+
   const filtered = useMemo(() => {
-    let result = [...NBA_PLAYERS];
+    let result = NBA_PLAYERS.map(p => ({ ...p, gir: computeGIR(p), uap: computeUAP(p) }));
     if (search) result = result.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
     if (posFilter !== "all") result = result.filter(p => p.position === posFilter);
     if (teamFilter !== "all") result = result.filter(p => p.teamId === teamFilter);
     result.sort((a, b) => {
-      const av = sortKey === "name" ? a.name : a.stats[sortKey];
-      const bv = sortKey === "name" ? b.name : b.stats[sortKey];
+      let av: number | string, bv: number | string;
+      if (sortKey === "name") { av = a.name; bv = b.name; }
+      else if (sortKey === "gir") { av = a.gir; bv = b.gir; }
+      else { av = a.stats[sortKey]; bv = b.stats[sortKey]; }
       if (typeof av === "string") return sortDir === "asc" ? av.localeCompare(bv as string) : (bv as string).localeCompare(av);
       return sortDir === "asc" ? (av as number) - (bv as number) : (bv as number) - (av as number);
     });
@@ -39,11 +52,11 @@ export default function NBAPlayers() {
 
   const positions = [...new Set(NBA_PLAYERS.map(p => p.position))];
 
-  const SortHeader = ({ label, k }: { label: string; k: SortKey }) => (
-    <TableHead className="cursor-pointer select-none" onClick={() => toggleSort(k)}>
+  const renderSortHead = (label: string, k: SortKey) => (
+    <TableHead className="cursor-pointer select-none hover:text-foreground transition-colors" onClick={() => toggleSort(k)}>
       <div className="flex items-center gap-1">
         {label}
-        <ArrowUpDown className="h-3 w-3 text-muted-foreground" />
+        <ArrowUpDown className={`h-3 w-3 ${sortKey === k ? "text-primary" : "text-muted-foreground"}`} />
       </div>
     </TableHead>
   );
@@ -56,19 +69,19 @@ export default function NBAPlayers() {
       </div>
 
       <div className="flex flex-wrap gap-3">
-        <Input placeholder="Search players..." value={search} onChange={e => setSearch(e.target.value)} className="max-w-xs bg-secondary border-none" />
+        <Input placeholder="Search players..." value={search} onChange={e => setSearch(e.target.value)} className="max-w-xs bg-muted border-none" />
         <Select value={posFilter} onValueChange={setPosFilter}>
-          <SelectTrigger className="w-32 bg-secondary border-none"><SelectValue placeholder="Position" /></SelectTrigger>
+          <SelectTrigger className="w-36 bg-muted border-none"><SelectValue placeholder="Position" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Positions</SelectItem>
             {positions.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select value={teamFilter} onValueChange={setTeamFilter}>
-          <SelectTrigger className="w-40 bg-secondary border-none"><SelectValue placeholder="Team" /></SelectTrigger>
+          <SelectTrigger className="w-44 bg-muted border-none"><SelectValue placeholder="Team" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Teams</SelectItem>
-            {NBA_TEAMS.map(t => <SelectItem key={t.id} value={t.id}>{t.abbreviation}</SelectItem>)}
+            {NBA_TEAMS.map(t => <SelectItem key={t.id} value={t.id}>{t.abbreviation} – {t.name}</SelectItem>)}
           </SelectContent>
         </Select>
       </div>
@@ -77,30 +90,32 @@ export default function NBAPlayers() {
         <CardContent className="p-0">
           <Table>
             <TableHeader>
-              <TableRow>
-                <SortHeader label="Player" k="name" />
+              <TableRow className="hover:bg-transparent">
+                {renderSortHead("Player", "name")}
                 <TableHead>POS</TableHead>
                 <TableHead>TEAM</TableHead>
-                <SortHeader label="PPG" k="ppg" />
-                <SortHeader label="RPG" k="rpg" />
-                <SortHeader label="APG" k="apg" />
+                {renderSortHead("PPG", "ppg")}
+                {renderSortHead("RPG", "rpg")}
+                {renderSortHead("APG", "apg")}
                 <TableHead>FG%</TableHead>
                 <TableHead>3P%</TableHead>
+                {renderSortHead("GIR", "gir")}
               </TableRow>
             </TableHeader>
             <TableBody>
               {filtered.map(p => (
-                <TableRow key={p.id} className="hover:bg-secondary/50">
+                <TableRow key={p.id} className="hover:bg-muted/50">
                   <TableCell>
                     <Link to={`/${sport}/players/${p.id}`} className="font-medium text-primary hover:underline">{p.name}</Link>
                   </TableCell>
-                  <TableCell className="font-mono text-xs">{p.position}</TableCell>
+                  <TableCell><Badge variant="secondary" className="text-xs font-mono">{p.position}</Badge></TableCell>
                   <TableCell className="font-mono text-xs">{p.teamName}</TableCell>
-                  <TableCell className="font-mono">{p.stats.ppg}</TableCell>
+                  <TableCell className={`font-mono ${getHeatColor(p.stats.ppg, ppgRange.min, ppgRange.max)} rounded-sm px-2`}>{p.stats.ppg}</TableCell>
                   <TableCell className="font-mono">{p.stats.rpg}</TableCell>
                   <TableCell className="font-mono">{p.stats.apg}</TableCell>
-                  <TableCell className="font-mono">{p.stats.fgPct}%</TableCell>
-                  <TableCell className="font-mono">{p.stats.threePct}%</TableCell>
+                  <TableCell className="font-mono text-xs">{p.stats.fgPct}%</TableCell>
+                  <TableCell className="font-mono text-xs">{p.stats.threePct}%</TableCell>
+                  <TableCell className="font-mono font-semibold text-primary">{p.gir}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
