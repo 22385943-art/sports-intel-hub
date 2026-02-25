@@ -11,6 +11,7 @@ import NBAPlayerProfile from "@/pages/nba/PlayerProfile";
 import NBATeams from "@/pages/nba/Teams";
 import NBATeamProfile from "@/pages/nba/TeamProfile";
 import NBAAnalytics from "@/pages/nba/Analytics";
+import NBACompare from "@/pages/nba/Compare";
 
 // Placeholder for other sports
 import ComingSoon from "@/pages/shared/ComingSoon";
@@ -22,7 +23,6 @@ function SportRoutes() {
     return <ComingSoon />;
   }
 
-  // Route to sport-specific pages
   switch (sport) {
     case "nba":
       return (
@@ -33,7 +33,7 @@ function SportRoutes() {
           <Route path="teams" element={<NBATeams />} />
           <Route path="teams/:id" element={<NBATeamProfile />} />
           <Route path="analytics" element={<NBAAnalytics />} />
-          <Route path="compare" element={<ComingSoon />} />
+          <Route path="compare" element={<NBACompare />} />
           <Route path="*" element={<Navigate to={`/${sport}`} replace />} />
         </Routes>
       );
@@ -46,11 +46,11 @@ export default function SportLayout() {
   return (
     <SportProvider>
       <SidebarProvider>
-        <div className="min-h-screen flex w-full">
+        <div className="min-h-screen flex w-full bg-background">
           <AppSidebar />
           <div className="flex-1 flex flex-col min-w-0">
             <Header />
-            <main className="flex-1 p-6">
+            <main className="flex-1 p-6 lg:p-8">
               <SportRoutes />
             </main>
           </div>

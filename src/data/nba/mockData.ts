@@ -32,15 +32,35 @@ export interface NBATeam {
   pace: number;
 }
 
+export interface AdvancedPlayerMetrics {
+  gir: number;  // Global Impact Rating
+  pva: number;  // Playmaking Value Added
+  ddi: number;  // Defensive Disruption Index
+  cps: number;  // Clutch Performance Score
+  eoe: number;  // Efficiency Over Expectation
+  sqi: number;  // Shot Quality Impact
+  lsr: number;  // Lineup Synergy Rating
+  uap: number;  // Usage-Adjusted Production
+}
+
+export interface TeamAdvancedMetrics {
+  offensiveEfficiency: number;
+  defensiveEfficiency: number;
+  netRating: number;
+  paceAdjustedScoring: number;
+  winProbContribution: number;
+  lineupSynergy: number;
+}
+
 const generateGameLog = (avgPts: number, avgReb: number, avgAst: number) => {
   const games = [];
   for (let i = 0; i < 20; i++) {
     const d = new Date(2026, 0, 1 + i * 2);
     games.push({
       date: d.toISOString().split("T")[0],
-      pts: Math.round(avgPts + (Math.random() - 0.5) * 16),
-      reb: Math.round(avgReb + (Math.random() - 0.5) * 6),
-      ast: Math.round(avgAst + (Math.random() - 0.5) * 6),
+      pts: Math.max(0, Math.round(avgPts + (Math.random() - 0.5) * 16)),
+      reb: Math.max(0, Math.round(avgReb + (Math.random() - 0.5) * 6)),
+      ast: Math.max(0, Math.round(avgAst + (Math.random() - 0.5) * 6)),
       min: Math.round(32 + (Math.random() - 0.5) * 10),
     });
   }
@@ -72,13 +92,77 @@ export const NBA_TEAMS: NBATeam[] = [
   { id: "t9", name: "San Antonio Spurs", abbreviation: "SAS", conference: "Western", division: "Southwest", wins: 30, losses: 26, ppg: 110.5, oppg: 112.0, pace: 99.0 },
 ];
 
-// Dummy advanced metrics
-export function computeImpactRating(player: NBAPlayer): number {
-  const { ppg, rpg, apg, spg, bpg, fgPct } = player.stats;
+// ─── Advanced Player Metrics (synthetic formulas) ───
+
+export function computeGIR(p: NBAPlayer): number {
+  const { ppg, rpg, apg, spg, bpg, fgPct } = p.stats;
   return Math.round(((ppg * 1.0 + rpg * 1.2 + apg * 1.5 + spg * 2.0 + bpg * 2.0) * (fgPct / 50)) * 10) / 10;
 }
 
-export function computeEfficiencyScore(player: NBAPlayer): number {
-  const { ppg, rpg, apg, spg, bpg, fgPct, ftPct } = player.stats;
-  return Math.round(((ppg + rpg + apg + spg + bpg) / player.stats.mpg * 36) * (fgPct + ftPct) / 100 * 10) / 10;
+export function computePVA(p: NBAPlayer): number {
+  const { apg, ppg, fgPct } = p.stats;
+  return Math.round((apg * 2.5 + ppg * 0.3) * (fgPct / 45) * 10) / 10;
 }
+
+export function computeDDI(p: NBAPlayer): number {
+  const { spg, bpg, rpg } = p.stats;
+  return Math.round((spg * 3.0 + bpg * 2.5 + rpg * 0.5) * 10) / 10;
+}
+
+export function computeCPS(p: NBAPlayer): number {
+  const { ppg, ftPct, threePct } = p.stats;
+  return Math.round((ppg * 0.4 + ftPct * 0.3 + threePct * 0.3) * 10) / 10;
+}
+
+export function computeEOE(p: NBAPlayer): number {
+  const { ppg, fgPct, ftPct } = p.stats;
+  const expected = ppg * (fgPct / 100);
+  return Math.round((ppg - expected) * (ftPct / 80) * 10) / 10;
+}
+
+export function computeSQI(p: NBAPlayer): number {
+  const { fgPct, threePct, ppg } = p.stats;
+  return Math.round(((fgPct * 0.6 + threePct * 0.4) * ppg / 25) * 10) / 10;
+}
+
+export function computeLSR(p: NBAPlayer): number {
+  const { apg, rpg, spg } = p.stats;
+  return Math.round((apg * 1.8 + rpg * 0.6 + spg * 1.2) * 10) / 10;
+}
+
+export function computeUAP(p: NBAPlayer): number {
+  const { ppg, rpg, apg, mpg, fgPct } = p.stats;
+  return Math.round(((ppg + rpg + apg) / mpg * 36) * (fgPct / 48) * 10) / 10;
+}
+
+export function computeAllAdvanced(p: NBAPlayer): AdvancedPlayerMetrics {
+  return {
+    gir: computeGIR(p),
+    pva: computePVA(p),
+    ddi: computeDDI(p),
+    cps: computeCPS(p),
+    eoe: computeEOE(p),
+    sqi: computeSQI(p),
+    lsr: computeLSR(p),
+    uap: computeUAP(p),
+  };
+}
+
+// ─── Team Advanced Metrics ───
+
+export function computeTeamMetrics(t: NBATeam): TeamAdvancedMetrics {
+  const offEff = Math.round(t.ppg / t.pace * 100 * 10) / 10;
+  const defEff = Math.round(t.oppg / t.pace * 100 * 10) / 10;
+  return {
+    offensiveEfficiency: offEff,
+    defensiveEfficiency: defEff,
+    netRating: Math.round((t.ppg - t.oppg) * 10) / 10,
+    paceAdjustedScoring: Math.round(t.ppg * (100 / t.pace) * 10) / 10,
+    winProbContribution: Math.round((t.wins / (t.wins + t.losses)) * 100 * 10) / 10,
+    lineupSynergy: Math.round((offEff - defEff + 5) * 8.2 * 10) / 10,
+  };
+}
+
+// Legacy aliases
+export const computeImpactRating = computeGIR;
+export const computeEfficiencyScore = computeUAP;

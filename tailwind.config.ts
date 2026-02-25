@@ -62,9 +62,11 @@ export default {
           ring: "hsl(var(--sidebar-ring))",
         },
         chart: {
+          teal: "hsl(var(--chart-teal))",
+          blue: "hsl(var(--chart-blue))",
+          gold: "hsl(var(--chart-gold))",
           positive: "hsl(var(--chart-positive))",
           negative: "hsl(var(--chart-negative))",
-          accent: "hsl(var(--chart-accent))",
           muted: "hsl(var(--chart-muted))",
         },
       },
