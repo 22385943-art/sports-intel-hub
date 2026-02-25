@@ -1,0 +1,2 @@
+// Euroleague module placeholder
+export {};
