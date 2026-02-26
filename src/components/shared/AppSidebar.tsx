@@ -30,19 +30,20 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
 
-const NAV_ITEMS = [
-  { title: "Dashboard", path: "", icon: LayoutDashboard },
-  { title: "Players", path: "/players", icon: Users },
-  { title: "Teams", path: "/teams", icon: Shield },
-  { title: "Analytics", path: "/analytics", icon: BarChart3 },
-  { title: "Compare", path: "/compare", icon: GitCompare },
-];
-
 export function AppSidebar() {
   const { sport, sportConfig, allSports } = useSport();
   const location = useLocation();
   const navigate = useNavigate();
   const basePath = `/${sport}`;
+
+  // Build nav items dynamically per sport
+  const navItems = [
+    { title: "Dashboard", path: "", icon: LayoutDashboard },
+    { title: sportConfig.playerLabel, path: "/players", icon: Users },
+    ...(sport !== "ufc" ? [{ title: "Teams", path: "/teams", icon: Shield }] : []),
+    { title: "Analytics", path: "/analytics", icon: BarChart3 },
+    { title: "Compare", path: "/compare", icon: GitCompare },
+  ];
 
   return (
     <Sidebar>
@@ -88,7 +89,7 @@ export function AppSidebar() {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {NAV_ITEMS.map((item) => {
+              {navItems.map((item) => {
                 const fullPath = `${basePath}${item.path}`;
                 const isActive = item.path === ""
                   ? location.pathname === basePath || location.pathname === `${basePath}/`
@@ -118,7 +119,7 @@ export function AppSidebar() {
       <SidebarFooter className="p-4">
         <div className="rounded-md bg-sidebar-accent p-3">
           <p className="text-xs font-mono text-muted-foreground">
-            Platform v0.1.0
+            Platform v0.2.0
           </p>
         </div>
       </SidebarFooter>
