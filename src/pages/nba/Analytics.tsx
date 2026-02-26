@@ -1,88 +1,129 @@
+import { useState, useMemo } from "react";
 import { NBA_PLAYERS, computeAllAdvanced } from "@/data/nba/mockData";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend, LineChart, Line } from "recharts";
 import { Link } from "react-router-dom";
 import { useSport } from "@/contexts/SportContext";
+import { AnalyticsSelector, type ChartType } from "@/components/shared/AnalyticsSelector";
+import type { MetricCategory } from "@/data/metrics";
+import { MetricTooltip } from "@/components/shared/MetricTooltip";
+
+const CHART_COLORS = ["hsl(var(--chart-teal))", "hsl(var(--chart-blue))", "hsl(var(--chart-gold))", "hsl(var(--chart-negative))"];
 
 export default function NBAAnalytics() {
   const { sport } = useSport();
+  const [selectedMetrics, setSelectedMetrics] = useState<string[]>(["gir", "uap", "ddi"]);
+  const [chartType, setChartType] = useState<ChartType>("bar");
+  const [selectedCategory, setSelectedCategory] = useState<MetricCategory | "all">("all");
 
-  const metricsData = NBA_PLAYERS.map(p => ({
+  const metricsData = useMemo(() => NBA_PLAYERS.map(p => ({
     ...p,
     adv: computeAllAdvanced(p),
-  })).sort((a, b) => b.adv.gir - a.adv.gir);
+    name_short: p.name.split(" ").pop()!,
+  })).sort((a, b) => b.adv.gir - a.adv.gir), []);
 
-  const barData = metricsData.map(p => ({
-    name: p.name.split(" ").pop(),
-    GIR: p.adv.gir,
-    UAP: p.adv.uap,
-    DDI: p.adv.ddi,
-  }));
+  // Map metric keys to player data values
+  const chartData = useMemo(() => metricsData.map(p => ({
+    name: p.name_short,
+    gir: p.adv.gir,
+    pva: p.adv.pva,
+    ddi: p.adv.ddi,
+    cps: p.adv.cps,
+    eoe: p.adv.eoe,
+    sqi: p.adv.sqi,
+    lsr: p.adv.lsr,
+    uap: p.adv.uap,
+    // Extended metrics (synthetic)
+    onCourtImpact: Math.round((p.adv.gir * 0.8 + p.adv.uap * 0.2) * 10) / 10,
+    offBallGravity: Math.round((p.stats.threePct * 0.6 + p.stats.ppg * 0.2) * 10) / 10,
+    shotCreation: Math.round((p.adv.sqi * 0.5 + p.adv.pva * 0.5) * 10) / 10,
+    rimProtection: Math.round((p.stats.bpg * 8 + p.adv.ddi * 0.3) * 10) / 10,
+    transitionValue: Math.round((p.stats.ppg * 0.15 + p.stats.apg * 0.3 + p.stats.spg * 2) * 10) / 10,
+  })), [metricsData]);
 
-  const top3Radar = metricsData.slice(0, 3).map(p => ({
-    name: p.name.split(" ").pop()!,
-    data: [
-      { metric: "GIR", value: p.adv.gir },
-      { metric: "PVA", value: p.adv.pva },
-      { metric: "DDI", value: p.adv.ddi },
-      { metric: "CPS", value: p.adv.cps },
-      { metric: "SQI", value: p.adv.sqi },
-      { metric: "LSR", value: p.adv.lsr },
-    ],
-  }));
+  const renderChart = () => {
+    if (selectedMetrics.length === 0) {
+      return (
+        <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
+          Select metrics above to visualize
+        </div>
+      );
+    }
 
-  // Merge radar data
-  const radarMerged = top3Radar[0].data.map((d, i) => ({
-    metric: d.metric,
-    [top3Radar[0].name]: d.value,
-    [top3Radar[1].name]: top3Radar[1].data[i].value,
-    [top3Radar[2].name]: top3Radar[2].data[i].value,
-  }));
+    if (chartType === "radar") {
+      const radarData = selectedMetrics.map(m => {
+        const entry: Record<string, any> = { metric: m.toUpperCase() };
+        chartData.slice(0, 5).forEach(d => { entry[d.name] = (d as any)[m] || 0; });
+        return entry;
+      });
+      return (
+        <RadarChart data={radarData}>
+          <PolarGrid stroke="hsl(var(--border))" />
+          <PolarAngleAxis dataKey="metric" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
+          <PolarRadiusAxis tick={false} axisLine={false} />
+          {chartData.slice(0, 5).map((d, i) => (
+            <Radar key={d.name} name={d.name} dataKey={d.name} stroke={CHART_COLORS[i % CHART_COLORS.length]} fill={CHART_COLORS[i % CHART_COLORS.length]} fillOpacity={0.1} />
+          ))}
+          <Legend />
+        </RadarChart>
+      );
+    }
+
+    if (chartType === "line") {
+      return (
+        <LineChart data={chartData}>
+          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+          <XAxis dataKey="name" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+          <YAxis stroke="hsl(var(--muted-foreground))" />
+          <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
+          <Legend />
+          {selectedMetrics.map((m, i) => (
+            <Line key={m} type="monotone" dataKey={m} stroke={CHART_COLORS[i % CHART_COLORS.length]} strokeWidth={2} dot={{ r: 3 }} />
+          ))}
+        </LineChart>
+      );
+    }
+
+    return (
+      <BarChart data={chartData}>
+        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+        <XAxis dataKey="name" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+        <YAxis stroke="hsl(var(--muted-foreground))" />
+        <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
+        <Legend />
+        {selectedMetrics.map((m, i) => (
+          <Bar key={m} dataKey={m} fill={CHART_COLORS[i % CHART_COLORS.length]} radius={[4, 4, 0, 0]} />
+        ))}
+      </BarChart>
+    );
+  };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold">Analytics</h1>
         <p className="text-muted-foreground text-sm mt-1">Advanced metrics and performance analysis</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="bg-card border-border">
-          <CardHeader className="pb-2"><CardTitle className="text-sm font-medium">GIR vs UAP vs DDI</CardTitle></CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={barData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="name" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
-                <YAxis stroke="hsl(var(--muted-foreground))" />
-                <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
-                <Legend />
-                <Bar dataKey="GIR" fill="hsl(var(--chart-teal))" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="UAP" fill="hsl(var(--chart-blue))" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="DDI" fill="hsl(var(--chart-gold))" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+      <AnalyticsSelector
+        sport="nba"
+        selectedMetrics={selectedMetrics}
+        onMetricsChange={setSelectedMetrics}
+        chartType={chartType}
+        onChartTypeChange={setChartType}
+        selectedCategory={selectedCategory}
+        onCategoryChange={setSelectedCategory}
+      />
 
-        <Card className="bg-card border-border">
-          <CardHeader className="pb-2"><CardTitle className="text-sm font-medium">Top 3 – Metric Profile</CardTitle></CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <RadarChart data={radarMerged}>
-                <PolarGrid stroke="hsl(var(--border))" />
-                <PolarAngleAxis dataKey="metric" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
-                <PolarRadiusAxis tick={false} axisLine={false} />
-                <Radar name={top3Radar[0].name} dataKey={top3Radar[0].name} stroke="hsl(var(--chart-teal))" fill="hsl(var(--chart-teal))" fillOpacity={0.1} />
-                <Radar name={top3Radar[1].name} dataKey={top3Radar[1].name} stroke="hsl(var(--chart-blue))" fill="hsl(var(--chart-blue))" fillOpacity={0.1} />
-                <Radar name={top3Radar[2].name} dataKey={top3Radar[2].name} stroke="hsl(var(--chart-gold))" fill="hsl(var(--chart-gold))" fillOpacity={0.1} />
-                <Legend />
-              </RadarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
+      <Card className="bg-card border-border">
+        <CardHeader className="pb-2"><CardTitle className="text-sm font-medium">Metric Visualization</CardTitle></CardHeader>
+        <CardContent>
+          <ResponsiveContainer width="100%" height={350}>
+            {renderChart()}
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
 
       <Card className="bg-card border-border">
         <CardHeader className="pb-2"><CardTitle className="text-sm font-medium">Full Metrics Table</CardTitle></CardHeader>
@@ -93,14 +134,30 @@ export default function NBAAnalytics() {
                 <TableHead>#</TableHead>
                 <TableHead>Player</TableHead>
                 <TableHead>Team</TableHead>
-                <TableHead>GIR</TableHead>
-                <TableHead>PVA</TableHead>
-                <TableHead>DDI</TableHead>
-                <TableHead>CPS</TableHead>
-                <TableHead>EOE</TableHead>
-                <TableHead>SQI</TableHead>
-                <TableHead>LSR</TableHead>
-                <TableHead>UAP</TableHead>
+                <TableHead>
+                  <MetricTooltip sport="nba" metricKey="gir">GIR</MetricTooltip>
+                </TableHead>
+                <TableHead>
+                  <MetricTooltip sport="nba" metricKey="pva">PVA</MetricTooltip>
+                </TableHead>
+                <TableHead>
+                  <MetricTooltip sport="nba" metricKey="ddi">DDI</MetricTooltip>
+                </TableHead>
+                <TableHead>
+                  <MetricTooltip sport="nba" metricKey="cps">CPS</MetricTooltip>
+                </TableHead>
+                <TableHead>
+                  <MetricTooltip sport="nba" metricKey="eoe">EOE</MetricTooltip>
+                </TableHead>
+                <TableHead>
+                  <MetricTooltip sport="nba" metricKey="sqi">SQI</MetricTooltip>
+                </TableHead>
+                <TableHead>
+                  <MetricTooltip sport="nba" metricKey="lsr">LSR</MetricTooltip>
+                </TableHead>
+                <TableHead>
+                  <MetricTooltip sport="nba" metricKey="uap">UAP</MetricTooltip>
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

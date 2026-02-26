@@ -8,13 +8,14 @@ export interface SportConfig {
   name: string;
   icon: string;
   enabled: boolean;
+  playerLabel: string;
 }
 
 export const SPORTS: SportConfig[] = [
-  { slug: "nba", name: "NBA", icon: "🏀", enabled: true },
-  { slug: "euroleague", name: "Euroleague", icon: "🏀", enabled: false },
-  { slug: "football", name: "Football", icon: "⚽", enabled: false },
-  { slug: "ufc", name: "UFC", icon: "🥊", enabled: false },
+  { slug: "nba", name: "NBA", icon: "🏀", enabled: true, playerLabel: "Players" },
+  { slug: "football", name: "Football", icon: "⚽", enabled: true, playerLabel: "Players" },
+  { slug: "ufc", name: "UFC", icon: "🥊", enabled: true, playerLabel: "Fighters" },
+  { slug: "euroleague", name: "Euroleague", icon: "🏀", enabled: false, playerLabel: "Players" },
 ];
 
 interface SportContextValue {
