@@ -1,6 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { useSport } from "@/contexts/SportContext";
-import { FOOTBALL_TEAMS, FOOTBALL_PLAYERS } from "@/data/football/mockData";
+import { footballService } from "@/services/sportServiceFactory";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ArrowLeft } from "lucide-react";
@@ -9,8 +9,8 @@ import { Badge } from "@/components/ui/badge";
 export default function FootballTeamProfile() {
   const { id } = useParams();
   const { sport } = useSport();
-  const team = FOOTBALL_TEAMS.find(t => t.id === id);
-  const roster = FOOTBALL_PLAYERS.filter(p => p.teamId === id);
+  const team = footballService.getTeamById(id!);
+  const roster = footballService.getPlayersByTeam(id!);
 
   if (!team) {
     return (

@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FOOTBALL_PLAYERS, FOOTBALL_TEAMS, computeFootballAdvanced } from "@/data/football/mockData";
+import { footballService } from "@/services/sportServiceFactory";
 import { TrendingUp, Users, Shield, Target, Activity, BarChart3 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useSport } from "@/contexts/SportContext";
@@ -7,18 +7,20 @@ import { SparkLine } from "@/components/shared/SparkLine";
 
 export default function FootballDashboard() {
   const { sport } = useSport();
-  const topScorers = [...FOOTBALL_PLAYERS].sort((a, b) => b.stats.goals - a.stats.goals).slice(0, 5);
-  const topTeams = [...FOOTBALL_TEAMS].sort((a, b) => (b.wins * 3 + b.draws) - (a.wins * 3 + a.draws)).slice(0, 5);
+  const allPlayers = footballService.getAllPlayers();
+  const allTeams = footballService.getAllTeams();
+  const topScorers = [...allPlayers].sort((a, b) => b.stats.goals - a.stats.goals).slice(0, 5);
+  const topTeams = [...allTeams].sort((a, b) => (b.wins * 3 + b.draws) - (a.wins * 3 + a.draws)).slice(0, 5);
 
-  const avgGoals = (FOOTBALL_PLAYERS.reduce((s, p) => s + p.stats.goals, 0) / FOOTBALL_PLAYERS.length).toFixed(1);
-  const topXG = [...FOOTBALL_PLAYERS].sort((a, b) => computeFootballAdvanced(b).xgContribution - computeFootballAdvanced(a).xgContribution)[0];
+  const avgGoals = (allPlayers.reduce((s, p) => s + p.stats.goals, 0) / allPlayers.length).toFixed(1);
+  const topXG = [...allPlayers].sort((a, b) => footballService.computeAdvanced(b).xgContribution - footballService.computeAdvanced(a).xgContribution)[0];
 
   const metricTiles = [
-    { title: "Players Tracked", value: FOOTBALL_PLAYERS.length, icon: Users, sparkData: [5, 6, 6, 7, 8, 8], color: "hsl(var(--chart-teal))" },
-    { title: "Teams", value: FOOTBALL_TEAMS.length, icon: Shield, sparkData: [5, 5, 5, 5, 5, 5], color: "hsl(var(--chart-blue))" },
+    { title: "Players Tracked", value: allPlayers.length, icon: Users, sparkData: [5, 6, 6, 7, 8, 8], color: "hsl(var(--chart-teal))" },
+    { title: "Teams", value: allTeams.length, icon: Shield, sparkData: [5, 5, 5, 5, 5, 5], color: "hsl(var(--chart-blue))" },
     { title: "Avg Goals", value: avgGoals, icon: TrendingUp, sparkData: [8, 10, 12, 14, 15, 16], color: "hsl(var(--chart-gold))" },
-    { title: "Top xG", value: computeFootballAdvanced(topXG).xgContribution, icon: Activity, sparkData: [12, 14, 15, 17, 18, 20], color: "hsl(var(--chart-teal))" },
-    { title: "Best GD", value: `+${Math.max(...FOOTBALL_TEAMS.map(t => t.goalsFor - t.goalsAgainst))}`, icon: Target, sparkData: [20, 25, 30, 32, 36, 40], color: "hsl(var(--chart-positive))" },
+    { title: "Top xG", value: footballService.computeAdvanced(topXG).xgContribution, icon: Activity, sparkData: [12, 14, 15, 17, 18, 20], color: "hsl(var(--chart-teal))" },
+    { title: "Best GD", value: `+${Math.max(...allTeams.map(t => t.goalsFor - t.goalsAgainst))}`, icon: Target, sparkData: [20, 25, 30, 32, 36, 40], color: "hsl(var(--chart-positive))" },
     { title: "Metrics Active", value: 10, icon: BarChart3, sparkData: [3, 5, 6, 7, 9, 10], color: "hsl(var(--chart-blue))" },
   ];
 

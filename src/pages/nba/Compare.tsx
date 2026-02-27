@@ -1,17 +1,18 @@
 import { useState } from "react";
-import { NBA_PLAYERS, computeAllAdvanced } from "@/data/nba/mockData";
+import { nbaService } from "@/services/sportServiceFactory";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Legend } from "recharts";
 
 export default function NBACompare() {
-  const [p1Id, setP1Id] = useState(NBA_PLAYERS[0].id);
-  const [p2Id, setP2Id] = useState(NBA_PLAYERS[1].id);
+  const allPlayers = nbaService.getAllPlayers();
+  const [p1Id, setP1Id] = useState(allPlayers[0].id);
+  const [p2Id, setP2Id] = useState(allPlayers[1].id);
 
-  const p1 = NBA_PLAYERS.find(p => p.id === p1Id)!;
-  const p2 = NBA_PLAYERS.find(p => p.id === p2Id)!;
-  const adv1 = computeAllAdvanced(p1);
-  const adv2 = computeAllAdvanced(p2);
+  const p1 = nbaService.getPlayerById(p1Id)!;
+  const p2 = nbaService.getPlayerById(p2Id)!;
+  const adv1 = nbaService.computeAllAdvanced(p1);
+  const adv2 = nbaService.computeAllAdvanced(p2);
 
   const radarData = [
     { metric: "GIR", [p1.name.split(" ").pop()!]: adv1.gir, [p2.name.split(" ").pop()!]: adv2.gir },
@@ -36,14 +37,14 @@ export default function NBACompare() {
         <Select value={p1Id} onValueChange={setP1Id}>
           <SelectTrigger className="w-56 bg-muted border-none"><SelectValue /></SelectTrigger>
           <SelectContent>
-            {NBA_PLAYERS.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
+            {allPlayers.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
           </SelectContent>
         </Select>
         <span className="self-center text-muted-foreground font-mono text-sm">vs</span>
         <Select value={p2Id} onValueChange={setP2Id}>
           <SelectTrigger className="w-56 bg-muted border-none"><SelectValue /></SelectTrigger>
           <SelectContent>
-            {NBA_PLAYERS.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
+            {allPlayers.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
           </SelectContent>
         </Select>
       </div>

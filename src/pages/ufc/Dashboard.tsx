@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { UFC_FIGHTERS, computeUFCAdvanced } from "@/data/ufc/mockData";
+import { ufcService } from "@/services/sportServiceFactory";
 import { TrendingUp, Users, Activity, Target, BarChart3, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useSport } from "@/contexts/SportContext";
@@ -7,15 +7,16 @@ import { SparkLine } from "@/components/shared/SparkLine";
 
 export default function UFCDashboard() {
   const { sport } = useSport();
-  const topFighters = [...UFC_FIGHTERS].sort((a, b) => b.record.wins - a.record.wins).slice(0, 5);
-  const topDom = [...UFC_FIGHTERS].sort((a, b) => computeUFCAdvanced(b).dominanceScore - computeUFCAdvanced(a).dominanceScore)[0];
+  const allFighters = ufcService.getAllPlayers();
+  const topFighters = [...allFighters].sort((a, b) => b.record.wins - a.record.wins).slice(0, 5);
+  const topDom = [...allFighters].sort((a, b) => ufcService.computeAdvanced(b).dominanceScore - ufcService.computeAdvanced(a).dominanceScore)[0];
 
   const metricTiles = [
-    { title: "Fighters Tracked", value: UFC_FIGHTERS.length, icon: Users, sparkData: [3, 4, 5, 5, 6, 6], color: "hsl(var(--chart-teal))" },
-    { title: "Weight Classes", value: [...new Set(UFC_FIGHTERS.map(f => f.weightClass))].length, icon: Shield, sparkData: [3, 3, 4, 4, 5, 5], color: "hsl(var(--chart-blue))" },
-    { title: "Avg Accuracy", value: `${(UFC_FIGHTERS.reduce((s, f) => s + f.stats.strikingAccuracy, 0) / UFC_FIGHTERS.length).toFixed(0)}%`, icon: Target, sparkData: [52, 54, 55, 56, 57, 58], color: "hsl(var(--chart-gold))" },
-    { title: "Top DOM", value: computeUFCAdvanced(topDom).dominanceScore, icon: Activity, sparkData: [30, 35, 38, 40, 42, 45], color: "hsl(var(--chart-teal))" },
-    { title: "Avg Str/Min", value: (UFC_FIGHTERS.reduce((s, f) => s + f.stats.sigStrikesPerMin, 0) / UFC_FIGHTERS.length).toFixed(1), icon: TrendingUp, sparkData: [4.5, 4.8, 5.0, 5.2, 5.3, 5.5], color: "hsl(var(--chart-positive))" },
+    { title: "Fighters Tracked", value: allFighters.length, icon: Users, sparkData: [3, 4, 5, 5, 6, 6], color: "hsl(var(--chart-teal))" },
+    { title: "Weight Classes", value: [...new Set(allFighters.map(f => f.weightClass))].length, icon: Shield, sparkData: [3, 3, 4, 4, 5, 5], color: "hsl(var(--chart-blue))" },
+    { title: "Avg Accuracy", value: `${(allFighters.reduce((s, f) => s + f.stats.strikingAccuracy, 0) / allFighters.length).toFixed(0)}%`, icon: Target, sparkData: [52, 54, 55, 56, 57, 58], color: "hsl(var(--chart-gold))" },
+    { title: "Top DOM", value: ufcService.computeAdvanced(topDom).dominanceScore, icon: Activity, sparkData: [30, 35, 38, 40, 42, 45], color: "hsl(var(--chart-teal))" },
+    { title: "Avg Str/Min", value: (allFighters.reduce((s, f) => s + f.stats.sigStrikesPerMin, 0) / allFighters.length).toFixed(1), icon: TrendingUp, sparkData: [4.5, 4.8, 5.0, 5.2, 5.3, 5.5], color: "hsl(var(--chart-positive))" },
     { title: "Metrics Active", value: 10, icon: BarChart3, sparkData: [3, 5, 6, 7, 9, 10], color: "hsl(var(--chart-blue))" },
   ];
 

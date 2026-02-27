@@ -1,6 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { useSport } from "@/contexts/SportContext";
-import { NBA_TEAMS, NBA_PLAYERS, computeTeamMetrics } from "@/data/nba/mockData";
+import { nbaService } from "@/services/sportServiceFactory";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ArrowLeft } from "lucide-react";
@@ -9,8 +9,8 @@ import { Badge } from "@/components/ui/badge";
 export default function NBATeamProfile() {
   const { id } = useParams();
   const { sport } = useSport();
-  const team = NBA_TEAMS.find(t => t.id === id);
-  const roster = NBA_PLAYERS.filter(p => p.teamId === id);
+  const team = nbaService.getTeamById(id!);
+  const roster = nbaService.getPlayersByTeam(id!);
 
   if (!team) {
     return (
@@ -21,7 +21,7 @@ export default function NBATeamProfile() {
     );
   }
 
-  const tm = computeTeamMetrics(team);
+  const tm = nbaService.computeTeamMetrics(team);
 
   const metricCards = [
     { label: "Record", value: `${team.wins}-${team.losses}` },

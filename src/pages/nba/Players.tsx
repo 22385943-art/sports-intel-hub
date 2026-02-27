@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useSport } from "@/contexts/SportContext";
-import { NBA_PLAYERS, NBA_TEAMS, computeGIR, computeUAP } from "@/data/nba/mockData";
+import { nbaService } from "@/services/sportServiceFactory";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -32,10 +32,12 @@ export default function NBAPlayers() {
     else { setSortKey(key); setSortDir("desc"); }
   };
 
-  const ppgRange = { min: Math.min(...NBA_PLAYERS.map(p => p.stats.ppg)), max: Math.max(...NBA_PLAYERS.map(p => p.stats.ppg)) };
+  const allPlayers = nbaService.getAllPlayers();
+  const allTeams = nbaService.getAllTeams();
+  const ppgRange = { min: Math.min(...allPlayers.map(p => p.stats.ppg)), max: Math.max(...allPlayers.map(p => p.stats.ppg)) };
 
   const filtered = useMemo(() => {
-    let result = NBA_PLAYERS.map(p => ({ ...p, gir: computeGIR(p), uap: computeUAP(p) }));
+    let result = allPlayers.map(p => ({ ...p, gir: nbaService.computeGIR(p), uap: nbaService.computeUAP(p) }));
     if (search) result = result.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
     if (posFilter !== "all") result = result.filter(p => p.position === posFilter);
     if (teamFilter !== "all") result = result.filter(p => p.teamId === teamFilter);
@@ -48,9 +50,9 @@ export default function NBAPlayers() {
       return sortDir === "asc" ? (av as number) - (bv as number) : (bv as number) - (av as number);
     });
     return result;
-  }, [search, posFilter, teamFilter, sortKey, sortDir]);
+  }, [search, posFilter, teamFilter, sortKey, sortDir, allPlayers]);
 
-  const positions = [...new Set(NBA_PLAYERS.map(p => p.position))];
+  const positions = [...new Set(allPlayers.map(p => p.position))];
 
   const renderSortHead = (label: string, k: SortKey) => (
     <TableHead className="cursor-pointer select-none hover:text-foreground transition-colors" onClick={() => toggleSort(k)}>
@@ -81,7 +83,7 @@ export default function NBAPlayers() {
           <SelectTrigger className="w-44 bg-muted border-none"><SelectValue placeholder="Team" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Teams</SelectItem>
-            {NBA_TEAMS.map(t => <SelectItem key={t.id} value={t.id}>{t.abbreviation} – {t.name}</SelectItem>)}
+            {allTeams.map(t => <SelectItem key={t.id} value={t.id}>{t.abbreviation} – {t.name}</SelectItem>)}
           </SelectContent>
         </Select>
       </div>

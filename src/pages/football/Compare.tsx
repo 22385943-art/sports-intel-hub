@@ -1,17 +1,18 @@
 import { useState } from "react";
-import { FOOTBALL_PLAYERS, computeFootballAdvanced } from "@/data/football/mockData";
+import { footballService } from "@/services/sportServiceFactory";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Legend } from "recharts";
 
 export default function FootballCompare() {
-  const [p1Id, setP1Id] = useState(FOOTBALL_PLAYERS[0].id);
-  const [p2Id, setP2Id] = useState(FOOTBALL_PLAYERS[1].id);
+  const allPlayers = footballService.getAllPlayers();
+  const [p1Id, setP1Id] = useState(allPlayers[0].id);
+  const [p2Id, setP2Id] = useState(allPlayers[1].id);
 
-  const p1 = FOOTBALL_PLAYERS.find(p => p.id === p1Id)!;
-  const p2 = FOOTBALL_PLAYERS.find(p => p.id === p2Id)!;
-  const adv1 = computeFootballAdvanced(p1);
-  const adv2 = computeFootballAdvanced(p2);
+  const p1 = footballService.getPlayerById(p1Id)!;
+  const p2 = footballService.getPlayerById(p2Id)!;
+  const adv1 = footballService.computeAdvanced(p1);
+  const adv2 = footballService.computeAdvanced(p2);
 
   const n1 = p1.name.split(" ").pop()!;
   const n2 = p2.name.split(" ").pop()!;
@@ -34,12 +35,12 @@ export default function FootballCompare() {
       <div className="flex flex-wrap gap-4">
         <Select value={p1Id} onValueChange={setP1Id}>
           <SelectTrigger className="w-56 bg-muted border-none"><SelectValue /></SelectTrigger>
-          <SelectContent>{FOOTBALL_PLAYERS.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}</SelectContent>
+          <SelectContent>{allPlayers.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}</SelectContent>
         </Select>
         <span className="self-center text-muted-foreground font-mono text-sm">vs</span>
         <Select value={p2Id} onValueChange={setP2Id}>
           <SelectTrigger className="w-56 bg-muted border-none"><SelectValue /></SelectTrigger>
-          <SelectContent>{FOOTBALL_PLAYERS.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}</SelectContent>
+          <SelectContent>{allPlayers.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}</SelectContent>
         </Select>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

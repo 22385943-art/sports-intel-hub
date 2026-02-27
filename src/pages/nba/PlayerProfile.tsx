@@ -1,6 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { useSport } from "@/contexts/SportContext";
-import { NBA_PLAYERS, computeAllAdvanced } from "@/data/nba/mockData";
+import { nbaService } from "@/services/sportServiceFactory";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -22,7 +22,7 @@ const METRIC_INFO: Record<string, { label: string; desc: string }> = {
 export default function NBAPlayerProfile() {
   const { id } = useParams();
   const { sport } = useSport();
-  const player = NBA_PLAYERS.find(p => p.id === id);
+  const player = nbaService.getPlayerById(id!);
 
   if (!player) {
     return (
@@ -33,7 +33,7 @@ export default function NBAPlayerProfile() {
     );
   }
 
-  const adv = computeAllAdvanced(player);
+  const adv = nbaService.computeAllAdvanced(player);
 
   const radarData = [
     { stat: "PTS", value: player.stats.ppg, max: 35 },
