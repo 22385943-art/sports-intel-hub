@@ -1,6 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { useSport } from "@/contexts/SportContext";
-import { UFC_FIGHTERS, computeUFCAdvanced } from "@/data/ufc/mockData";
+import { ufcService } from "@/services/sportServiceFactory";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -12,7 +12,7 @@ import { PercentileBar } from "@/components/shared/PercentileBar";
 export default function UFCFighterProfile() {
   const { id } = useParams();
   const { sport } = useSport();
-  const fighter = UFC_FIGHTERS.find(f => f.id === id);
+  const fighter = ufcService.getPlayerById(id!);
 
   if (!fighter) {
     return (
@@ -23,7 +23,7 @@ export default function UFCFighterProfile() {
     );
   }
 
-  const adv = computeUFCAdvanced(fighter);
+  const adv = ufcService.computeAdvanced(fighter);
   const radarData = [
     { stat: "Striking", value: fighter.stats.sigStrikesPerMin * 10 },
     { stat: "Accuracy", value: fighter.stats.strikingAccuracy },

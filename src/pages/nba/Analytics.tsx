@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { NBA_PLAYERS, computeAllAdvanced } from "@/data/nba/mockData";
+import { nbaService } from "@/services/sportServiceFactory";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Legend, LineChart, Line } from "recharts";
@@ -17,9 +17,9 @@ export default function NBAAnalytics() {
   const [chartType, setChartType] = useState<ChartType>("bar");
   const [selectedCategory, setSelectedCategory] = useState<MetricCategory | "all">("all");
 
-  const metricsData = useMemo(() => NBA_PLAYERS.map(p => ({
+  const metricsData = useMemo(() => nbaService.getAllPlayers().map(p => ({
     ...p,
-    adv: computeAllAdvanced(p),
+    adv: nbaService.computeAllAdvanced(p),
     name_short: p.name.split(" ").pop()!,
   })).sort((a, b) => b.adv.gir - a.adv.gir), []);
 

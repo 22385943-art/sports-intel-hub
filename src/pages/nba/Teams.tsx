@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useSport } from "@/contexts/SportContext";
-import { NBA_TEAMS, computeTeamMetrics } from "@/data/nba/mockData";
+import { nbaService } from "@/services/sportServiceFactory";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
@@ -12,7 +12,7 @@ function getRatingColor(val: number): string {
 
 export default function NBATeams() {
   const { sport } = useSport();
-  const sorted = [...NBA_TEAMS].sort((a, b) => b.wins - a.wins);
+  const sorted = [...nbaService.getAllTeams()].sort((a, b) => b.wins - a.wins);
 
   return (
     <div className="space-y-6">
@@ -41,7 +41,7 @@ export default function NBATeams() {
             </TableHeader>
             <TableBody>
               {sorted.map((t, i) => {
-                const tm = computeTeamMetrics(t);
+                const tm = nbaService.computeTeamMetrics(t);
                 return (
                   <TableRow key={t.id} className="hover:bg-muted/50">
                     <TableCell className="font-mono text-xs text-muted-foreground">{i + 1}</TableCell>

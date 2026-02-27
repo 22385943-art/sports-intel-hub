@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useSport } from "@/contexts/SportContext";
-import { FOOTBALL_PLAYERS, computeFootballAdvanced } from "@/data/football/mockData";
+import { footballService } from "@/services/sportServiceFactory";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -12,10 +12,11 @@ export default function FootballPlayers() {
   const { sport } = useSport();
   const [search, setSearch] = useState("");
   const [posFilter, setPosFilter] = useState("all");
-  const positions = [...new Set(FOOTBALL_PLAYERS.map(p => p.position))];
+  const allPlayers = footballService.getAllPlayers();
+  const positions = [...new Set(allPlayers.map(p => p.position))];
 
   const filtered = useMemo(() => {
-    let result = FOOTBALL_PLAYERS.map(p => ({ ...p, adv: computeFootballAdvanced(p) }));
+    let result = allPlayers.map(p => ({ ...p, adv: footballService.computeAdvanced(p) }));
     if (search) result = result.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
     if (posFilter !== "all") result = result.filter(p => p.position === posFilter);
     return result.sort((a, b) => b.stats.goals - a.stats.goals);

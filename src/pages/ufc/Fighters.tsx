@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useSport } from "@/contexts/SportContext";
-import { UFC_FIGHTERS, computeUFCAdvanced } from "@/data/ufc/mockData";
+import { ufcService } from "@/services/sportServiceFactory";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -12,10 +12,11 @@ export default function UFCFighters() {
   const { sport } = useSport();
   const [search, setSearch] = useState("");
   const [wcFilter, setWcFilter] = useState("all");
-  const weightClasses = [...new Set(UFC_FIGHTERS.map(f => f.weightClass))];
+  const allFighters = ufcService.getAllPlayers();
+  const weightClasses = [...new Set(allFighters.map(f => f.weightClass))];
 
   const filtered = useMemo(() => {
-    let result = UFC_FIGHTERS.map(f => ({ ...f, adv: computeUFCAdvanced(f) }));
+    let result = allFighters.map(f => ({ ...f, adv: ufcService.computeAdvanced(f) }));
     if (search) result = result.filter(f => f.name.toLowerCase().includes(search.toLowerCase()));
     if (wcFilter !== "all") result = result.filter(f => f.weightClass === wcFilter);
     return result.sort((a, b) => b.adv.dominanceScore - a.adv.dominanceScore);

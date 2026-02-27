@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
 import { useSport } from "@/contexts/SportContext";
-import { FOOTBALL_TEAMS } from "@/data/football/mockData";
+import { footballService } from "@/services/sportServiceFactory";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 export default function FootballTeams() {
   const { sport } = useSport();
-  const sorted = [...FOOTBALL_TEAMS].sort((a, b) => (b.wins * 3 + b.draws) - (a.wins * 3 + a.draws));
+  const sorted = [...footballService.getAllTeams()].sort((a, b) => (b.wins * 3 + b.draws) - (a.wins * 3 + a.draws));
 
   return (
     <div className="space-y-6">

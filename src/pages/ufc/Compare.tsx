@@ -1,17 +1,18 @@
 import { useState } from "react";
-import { UFC_FIGHTERS, computeUFCAdvanced } from "@/data/ufc/mockData";
+import { ufcService } from "@/services/sportServiceFactory";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Legend } from "recharts";
 
 export default function UFCCompare() {
-  const [f1Id, setF1Id] = useState(UFC_FIGHTERS[0].id);
-  const [f2Id, setF2Id] = useState(UFC_FIGHTERS[1].id);
+  const allFighters = ufcService.getAllPlayers();
+  const [f1Id, setF1Id] = useState(allFighters[0].id);
+  const [f2Id, setF2Id] = useState(allFighters[1].id);
 
-  const f1 = UFC_FIGHTERS.find(f => f.id === f1Id)!;
-  const f2 = UFC_FIGHTERS.find(f => f.id === f2Id)!;
-  const adv1 = computeUFCAdvanced(f1);
-  const adv2 = computeUFCAdvanced(f2);
+  const f1 = ufcService.getPlayerById(f1Id)!;
+  const f2 = ufcService.getPlayerById(f2Id)!;
+  const adv1 = ufcService.computeAdvanced(f1);
+  const adv2 = ufcService.computeAdvanced(f2);
 
   const n1 = f1.name.split(" ").pop()!;
   const n2 = f2.name.split(" ").pop()!;
@@ -34,12 +35,12 @@ export default function UFCCompare() {
       <div className="flex flex-wrap gap-4">
         <Select value={f1Id} onValueChange={setF1Id}>
           <SelectTrigger className="w-56 bg-muted border-none"><SelectValue /></SelectTrigger>
-          <SelectContent>{UFC_FIGHTERS.map(f => <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>)}</SelectContent>
+          <SelectContent>{allFighters.map(f => <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>)}</SelectContent>
         </Select>
         <span className="self-center text-muted-foreground font-mono text-sm">vs</span>
         <Select value={f2Id} onValueChange={setF2Id}>
           <SelectTrigger className="w-56 bg-muted border-none"><SelectValue /></SelectTrigger>
-          <SelectContent>{UFC_FIGHTERS.map(f => <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>)}</SelectContent>
+          <SelectContent>{allFighters.map(f => <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>)}</SelectContent>
         </Select>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

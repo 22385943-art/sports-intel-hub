@@ -1,6 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { useSport } from "@/contexts/SportContext";
-import { FOOTBALL_PLAYERS, computeFootballAdvanced } from "@/data/football/mockData";
+import { footballService } from "@/services/sportServiceFactory";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -13,7 +13,7 @@ import { MetricTooltip } from "@/components/shared/MetricTooltip";
 export default function FootballPlayerProfile() {
   const { id } = useParams();
   const { sport } = useSport();
-  const player = FOOTBALL_PLAYERS.find(p => p.id === id);
+  const player = footballService.getPlayerById(id!);
 
   if (!player) {
     return (
@@ -24,7 +24,7 @@ export default function FootballPlayerProfile() {
     );
   }
 
-  const adv = computeFootballAdvanced(player);
+  const adv = footballService.computeAdvanced(player);
   const radarData = [
     { stat: "Goals", value: player.stats.goals, max: 25 },
     { stat: "Assists", value: player.stats.assists, max: 15 },

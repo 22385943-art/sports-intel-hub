@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { UFC_FIGHTERS, computeUFCAdvanced } from "@/data/ufc/mockData";
+import { ufcService } from "@/services/sportServiceFactory";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AnalyticsSelector, type ChartType } from "@/components/shared/AnalyticsSelector";
 import type { MetricCategory } from "@/data/metrics";
@@ -12,8 +12,8 @@ export default function UFCAnalytics() {
   const [chartType, setChartType] = useState<ChartType>("bar");
   const [selectedCategory, setSelectedCategory] = useState<MetricCategory | "all">("all");
 
-  const data = useMemo(() => UFC_FIGHTERS.map(f => {
-    const adv = computeUFCAdvanced(f);
+  const data = useMemo(() => ufcService.getAllPlayers().map(f => {
+    const adv = ufcService.computeAdvanced(f);
     return { name: f.name.split(" ").pop()!, ...adv };
   }), []);
 

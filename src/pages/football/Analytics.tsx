@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { FOOTBALL_PLAYERS, computeFootballAdvanced } from "@/data/football/mockData";
+import { footballService } from "@/services/sportServiceFactory";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AnalyticsSelector, type ChartType } from "@/components/shared/AnalyticsSelector";
 import type { MetricCategory } from "@/data/metrics";
@@ -12,8 +12,8 @@ export default function FootballAnalytics() {
   const [chartType, setChartType] = useState<ChartType>("bar");
   const [selectedCategory, setSelectedCategory] = useState<MetricCategory | "all">("all");
 
-  const data = useMemo(() => FOOTBALL_PLAYERS.map(p => {
-    const adv = computeFootballAdvanced(p);
+  const data = useMemo(() => footballService.getAllPlayers().map(p => {
+    const adv = footballService.computeAdvanced(p);
     return { name: p.name.split(" ").pop()!, ...adv };
   }), []);
 
