@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useSport } from "@/contexts/SportContext";
 import { nbaService } from "@/services/sportServiceFactory";
@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ArrowUpDown, Search, Info, TrendingUp, Filter, User, Swords } from "lucide-react";
+import { ArrowUpDown, Search, Info, TrendingUp, Filter, User, Swords, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -21,6 +21,9 @@ export default function NBAPlayers() {
   const [sortKey, setSortKey] = useState<SortKey>("ppg");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
 
+  const [livePlayers, setLivePlayers] = useState<any[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+
   const [visibleColumns, setVisibleColumns] = useState<string[]>([
     "ppg",
     "rpg",
@@ -30,6 +33,22 @@ export default function NBAPlayers() {
 
   const allPlayers = nbaService.getAllPlayers();
   const allTeams = nbaService.getAllTeams();
+
+  // BÚSQUEDA DINÁMICA CON LA API ARREGLADA
+  useEffect(() => {
+    if (search.length >= 3) {
+      setIsSearching(true);
+      const timer = setTimeout(async () => {
+        const results = await nbaService.searchRealPlayersWithStats(search);
+        setLivePlayers(results);
+        setIsSearching(false);
+      }, 500);
+      return () => clearTimeout(timer);
+    } else {
+      setLivePlayers([]);
+      setIsSearching(false);
+    }
+  }, [search]);
 
   const statsDistributions = useMemo(() => {
     const keys = ['ppg', 'rpg', 'apg'] as const;
@@ -42,8 +61,9 @@ export default function NBAPlayers() {
 
   const getPercentile = (value: number, key: 'ppg' | 'rpg' | 'apg') => {
     const values = statsDistributions[key];
-    if (!values) return 0;
+    if (!values || !value) return 0;
     const index = values.findIndex(v => v === value);
+    if (index === -1) return 50; 
     return Math.round((index / values.length) * 100);
   };
 
@@ -54,12 +74,19 @@ export default function NBAPlayers() {
   };
 
   const filtered = useMemo(() => {
-    let result = allPlayers.map(p => ({
+    // Selección dinámica de base de datos
+    const currentData = search.length >= 3 ? livePlayers : allPlayers;
+
+    let result = currentData.map(p => ({
       ...p,
       gir: nbaService.computeGIR(p),
     }));
 
-    if (search) result = result.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
+    // Solo filtra por texto si la palabra es corta (la API se encarga si es >3)
+    if (search && search.length < 3) {
+      result = result.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
+    }
+    
     if (posFilter !== "all") result = result.filter(p => p.position === posFilter);
     if (teamFilter !== "all") result = result.filter(p => p.teamId === teamFilter);
 
@@ -74,7 +101,7 @@ export default function NBAPlayers() {
     });
 
     return result;
-  }, [search, posFilter, teamFilter, sortKey, sortDir, allPlayers]);
+  }, [search, posFilter, teamFilter, sortKey, sortDir, allPlayers, livePlayers]);
 
   const toggleSort = (key: SortKey) => {
     setSortDir(sortKey === key && sortDir === "desc" ? "asc" : "desc");
@@ -84,7 +111,6 @@ export default function NBAPlayers() {
   return (
     <div className="space-y-6 pb-20 animate-in fade-in duration-700 relative">
       
-      {/* 🚀 BOTÓN FLOTANTE: Recuperado y mejorado */}
       <Link 
         to={`/${sport}/compare`} 
         className="fixed bottom-8 right-8 z-50 bg-slate-900 text-white px-6 py-4 rounded-full shadow-2xl hover:bg-blue-600 hover:scale-110 transition-all flex items-center gap-2 font-black uppercase tracking-tighter"
@@ -92,7 +118,6 @@ export default function NBAPlayers() {
         <Swords className="w-5 h-5" /> Versus Mode
       </Link>
 
-      {/* HEADER: Con tu estilo original 'italic' y 'black' */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div className="space-y-1">
           <h1 className="text-3xl font-black tracking-tighter text-slate-900 uppercase italic">Scouting Hub</h1>
@@ -103,16 +128,16 @@ export default function NBAPlayers() {
         </Badge>
       </div>
 
-      {/* FILTROS */}
       <div className="flex flex-col lg:flex-row gap-4 bg-white p-3 rounded-2xl border border-slate-100 shadow-sm">
         <div className="relative flex-1 group">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
           <Input
-            placeholder="Buscar por nombre..."
+            placeholder="Buscar en vivo por nombre (ej: LeBron, Curry)..."
             value={search}
             onChange={e => setSearch(e.target.value)}
             className="pl-10 border-none bg-slate-50 rounded-xl focus-visible:ring-blue-500 transition-all"
           />
+          {isSearching && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-blue-500" />}
         </div>
         <div className="flex gap-2">
           <Select value={posFilter} onValueChange={setPosFilter}>
@@ -121,7 +146,7 @@ export default function NBAPlayers() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">TODAS</SelectItem>
-              {[...new Set(allPlayers.map(p => p.position))].map(p => (
+              {["PG", "SG", "SF", "PF", "C"].map(p => (
                 <SelectItem key={p} value={p}>{p}</SelectItem>
               ))}
             </SelectContent>
@@ -133,14 +158,13 @@ export default function NBAPlayers() {
             <SelectContent>
               <SelectItem value="all">EQUIPOS</SelectItem>
               {allTeams.map(t => (
-                <SelectItem key={t.id} value={t.id}>{t.abbreviation} – {t.name}</SelectItem>
+                <SelectItem key={t.id} value={t.id}>{t.abbreviation} - {t.name}</SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
       </div>
 
-      {/* TABLA: Recuperada con el diseño que te gusta */}
       <Card className="border-none shadow-2xl shadow-blue-900/5 rounded-3xl overflow-hidden">
         <CardContent className="p-0">
           <div className="overflow-x-auto scrollbar-thin">
@@ -164,14 +188,16 @@ export default function NBAPlayers() {
               </TableHeader>
               <TableBody>
                 {filtered.map(p => {
-                  const ppgPercentile = getPercentile(p.stats.ppg, 'ppg');
+                  const ppgPercentile = getPercentile(p.stats?.ppg, 'ppg');
+                  const logoUrl = nbaService.getTeamLogoUrl(p.teamId);
+                  
                   return (
                     <TableRow key={p.id} className="group hover:bg-blue-50/30 transition-all duration-300 border-slate-50">
                       <TableCell className="py-4 px-8">
                         <Link to={`/${sport}/players/${p.id}`} className="flex items-center gap-4">
                           <Avatar className="h-12 w-12 border-2 border-white shadow-md group-hover:scale-110 transition-transform duration-500">
                             <AvatarImage 
-                              src={`https://cdn.nba.com headshots/nba/latest/1040x760/${p.id}.png`} 
+                              src={p.imageUrl || nbaService.getImageUrl(p.id)} 
                               className="object-cover bg-slate-100"
                             />
                             <AvatarFallback className="bg-slate-200 text-slate-500 font-bold text-xs">{p.name.substring(0,2)}</AvatarFallback>
@@ -183,21 +209,28 @@ export default function NBAPlayers() {
                         </Link>
                       </TableCell>
 
-                      <TableCell className="text-center font-bold text-slate-500 text-xs tracking-tighter uppercase">
-                        {p.teamName?.split(' ').pop()}
+                      <TableCell className="text-center">
+                        <div className="flex items-center justify-center gap-2">
+                          {logoUrl && (
+                            <img src={logoUrl} alt={p.teamId} className="w-6 h-6 object-contain opacity-90 group-hover:opacity-100 transition-opacity" />
+                          )}
+                          <span className="font-bold text-slate-500 text-xs tracking-tighter uppercase">
+                            {p.teamId}
+                          </span>
+                        </div>
                       </TableCell>
 
                       {visibleColumns.includes("ppg") && (
                         <TableCell className="w-[140px]">
                           <div className="flex flex-col gap-1.5 items-center">
                             <div className="flex justify-between w-full px-1">
-                              <span className="text-xs font-black font-mono text-slate-700">{p.stats.ppg.toFixed(1)}</span>
-                              <span className="text-[9px] font-bold text-slate-400">P{ppgPercentile}</span>
+                              <span className="text-xs font-black font-mono text-slate-700">{p.stats?.ppg > 0 ? p.stats.ppg.toFixed(1) : "-"}</span>
+                              <span className="text-[9px] font-bold text-slate-400">{p.stats?.ppg > 0 ? `P${ppgPercentile}` : ""}</span>
                             </div>
                             <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
                               <div 
                                 className={`h-full transition-all duration-1000 ease-out ${getBarColor(ppgPercentile)}`}
-                                style={{ width: `${ppgPercentile}%` }}
+                                style={{ width: p.stats?.ppg > 0 ? `${ppgPercentile}%` : '0%' }}
                               />
                             </div>
                           </div>
@@ -207,7 +240,7 @@ export default function NBAPlayers() {
                       {visibleColumns.includes("gir") && (
                         <TableCell className="text-center">
                           <Badge className="bg-blue-600 text-white border-none font-black text-[10px] px-3 py-1 shadow-lg shadow-blue-500/20">
-                            {p.gir}
+                            {p.gir > 0 ? p.gir.toFixed(1) : "-"}
                           </Badge>
                         </TableCell>
                       )}
