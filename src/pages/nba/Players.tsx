@@ -6,9 +6,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ArrowUpDown, Search, Info, TrendingUp, Filter, User, Swords, Loader2 } from "lucide-react";
+import { ArrowUpDown, Search, Info, TrendingUp, Swords, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 type SortKey = "name" | "ppg" | "rpg" | "apg" | "gir";
@@ -21,34 +20,23 @@ export default function NBAPlayers() {
   const [sortKey, setSortKey] = useState<SortKey>("ppg");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
 
-  const [livePlayers, setLivePlayers] = useState<any[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
+  // 🚀 EL CAMBIO MAESTRO: Guardamos TODOS los jugadores oficiales aquí
+  const [allPlayers, setAllPlayers] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const [visibleColumns, setVisibleColumns] = useState<string[]>([
-    "ppg",
-    "rpg",
-    "apg",
-    "gir",
-  ]);
-
-  const allPlayers = nbaService.getAllPlayers();
+  const [visibleColumns] = useState<string[]>(["ppg", "rpg", "apg", "gir"]);
   const allTeams = nbaService.getAllTeams();
 
-  // BÚSQUEDA DINÁMICA CON LA API ARREGLADA
+  // AL CARGAR LA PÁGINA: Traemos los 542 jugadores reales de golpe y apagamos el loader
   useEffect(() => {
-    if (search.length >= 3) {
-      setIsSearching(true);
-      const timer = setTimeout(async () => {
-        const results = await nbaService.searchRealPlayersWithStats(search);
-        setLivePlayers(results);
-        setIsSearching(false);
-      }, 500);
-      return () => clearTimeout(timer);
-    } else {
-      setLivePlayers([]);
-      setIsSearching(false);
-    }
-  }, [search]);
+    setIsLoading(true);
+    nbaService.fetchAllOfficialPlayers().then((realData) => {
+      // Ordenamos por puntos (PPG) por defecto para que los mejores salgan arriba
+      const sortedData = realData.sort((a, b) => (b.stats?.ppg || 0) - (a.stats?.ppg || 0));
+      setAllPlayers(sortedData);
+      setIsLoading(false);
+    });
+  }, []);
 
   const statsDistributions = useMemo(() => {
     const keys = ['ppg', 'rpg', 'apg'] as const;
@@ -73,17 +61,14 @@ export default function NBAPlayers() {
     return "bg-slate-200";
   };
 
+  // BUSCADOR EN RAM (Instantáneo, nunca falla, no importa cuántas letras pongas)
   const filtered = useMemo(() => {
-    // Selección dinámica de base de datos
-    const currentData = search.length >= 3 ? livePlayers : allPlayers;
-
-    let result = currentData.map(p => ({
+    let result = allPlayers.map(p => ({
       ...p,
       gir: nbaService.computeGIR(p),
     }));
 
-    // Solo filtra por texto si la palabra es corta (la API se encarga si es >3)
-    if (search && search.length < 3) {
+    if (search) {
       result = result.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
     }
     
@@ -100,8 +85,9 @@ export default function NBAPlayers() {
         : multiplier * ((av as number) - (bv as number));
     });
 
-    return result;
-  }, [search, posFilter, teamFilter, sortKey, sortDir, allPlayers, livePlayers]);
+    // Mostramos solo los primeros 100 para que la tabla no se colapse visualmente
+    return result.slice(0, 100);
+  }, [search, posFilter, teamFilter, sortKey, sortDir, allPlayers]);
 
   const toggleSort = (key: SortKey) => {
     setSortDir(sortKey === key && sortDir === "desc" ? "asc" : "desc");
@@ -121,10 +107,10 @@ export default function NBAPlayers() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div className="space-y-1">
           <h1 className="text-3xl font-black tracking-tighter text-slate-900 uppercase italic">Scouting Hub</h1>
-          <p className="text-slate-500 text-sm font-medium tracking-tight">Base de datos de rendimiento avanzado de la NBA</p>
+          <p className="text-slate-500 text-sm font-medium tracking-tight">Datos oficiales NBA Temporada 2025-26 en vivo</p>
         </div>
         <Badge variant="outline" className="font-black text-blue-600 border-blue-100 bg-blue-50/50 px-4 py-1 rounded-full">
-          {filtered.length} ATLETAS ENCONTRADOS
+          {isLoading ? "CONECTANDO..." : `${allPlayers.length} ATLETAS EN BASE DE DATOS`}
         </Badge>
       </div>
 
@@ -132,33 +118,23 @@ export default function NBAPlayers() {
         <div className="relative flex-1 group">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
           <Input
-            placeholder="Buscar en vivo por nombre (ej: LeBron, Curry)..."
+            placeholder="Buscar a cualquier jugador de la liga..."
             value={search}
             onChange={e => setSearch(e.target.value)}
+            disabled={isLoading}
             className="pl-10 border-none bg-slate-50 rounded-xl focus-visible:ring-blue-500 transition-all"
           />
-          {isSearching && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-blue-500" />}
+          {isLoading && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-blue-500" />}
         </div>
         <div className="flex gap-2">
-          <Select value={posFilter} onValueChange={setPosFilter}>
-            <SelectTrigger className="w-[130px] border-none bg-slate-50 rounded-xl font-bold text-[10px] uppercase tracking-widest px-4">
-              <SelectValue placeholder="POSICIÓN" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">TODAS</SelectItem>
-              {["PG", "SG", "SF", "PF", "C"].map(p => (
-                <SelectItem key={p} value={p}>{p}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select value={teamFilter} onValueChange={setTeamFilter}>
+          <Select value={teamFilter} onValueChange={setTeamFilter} disabled={isLoading}>
             <SelectTrigger className="w-[160px] border-none bg-slate-50 rounded-xl font-bold text-[10px] uppercase tracking-widest px-4">
               <SelectValue placeholder="EQUIPO" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">EQUIPOS</SelectItem>
+              <SelectItem value="all">TODOS LOS EQUIPOS</SelectItem>
               {allTeams.map(t => (
-                <SelectItem key={t.id} value={t.id}>{t.abbreviation} - {t.name}</SelectItem>
+                <SelectItem key={t.id} value={t.abbreviation}>{t.abbreviation} - {t.name}</SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -167,94 +143,108 @@ export default function NBAPlayers() {
 
       <Card className="border-none shadow-2xl shadow-blue-900/5 rounded-3xl overflow-hidden">
         <CardContent className="p-0">
-          <div className="overflow-x-auto scrollbar-thin">
-            <Table>
-              <TableHeader className="bg-slate-50/50">
-                <TableRow className="hover:bg-transparent border-slate-100">
-                  <TableHead className="w-[300px] py-6 px-8 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">Atleta</TableHead>
-                  <TableHead className="font-black text-[10px] uppercase tracking-[0.2em] text-center text-slate-400">Team</TableHead>
-                  {visibleColumns.includes("ppg") && (
-                    <TableHead onClick={() => toggleSort("ppg")} className="cursor-pointer font-black text-[10px] uppercase tracking-[0.2em] group text-center">
-                      <div className="flex items-center justify-center gap-1">PPG <ArrowUpDown className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" /></div>
-                    </TableHead>
-                  )}
-                  {visibleColumns.includes("gir") && (
-                    <TableHead onClick={() => toggleSort("gir")} className="cursor-pointer font-black text-[10px] uppercase tracking-[0.2em] text-blue-600 group text-center">
-                      <div className="flex items-center justify-center gap-1">GIR <Info className="h-3 w-3" /></div>
-                    </TableHead>
-                  )}
-                  <TableHead className="text-right px-8 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">Perfil</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filtered.map(p => {
-                  const ppgPercentile = getPercentile(p.stats?.ppg, 'ppg');
-                  const logoUrl = nbaService.getTeamLogoUrl(p.teamId);
-                  
-                  return (
-                    <TableRow key={p.id} className="group hover:bg-blue-50/30 transition-all duration-300 border-slate-50">
-                      <TableCell className="py-4 px-8">
-                        <Link to={`/${sport}/players/${p.id}`} className="flex items-center gap-4">
-                          <Avatar className="h-12 w-12 border-2 border-white shadow-md group-hover:scale-110 transition-transform duration-500">
-                            <AvatarImage 
-                              src={p.imageUrl || nbaService.getImageUrl(p.id)} 
-                              className="object-cover bg-slate-100"
-                            />
-                            <AvatarFallback className="bg-slate-200 text-slate-500 font-bold text-xs">{p.name.substring(0,2)}</AvatarFallback>
-                          </Avatar>
-                          <div className="flex flex-col">
-                            <span className="font-bold text-slate-900 group-hover:text-blue-600 transition-colors duration-300">{p.name}</span>
-                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{p.position}</span>
-                          </div>
-                        </Link>
-                      </TableCell>
+          <div className="overflow-x-auto scrollbar-thin min-h-[400px]">
+            {isLoading ? (
+              <div className="w-full h-full flex flex-col items-center justify-center py-32 gap-4">
+                <Loader2 className="h-10 w-10 animate-spin text-blue-600" />
+                <p className="font-black text-slate-400 tracking-widest text-xs uppercase animate-pulse">Descargando datos oficiales de stats.nba.com...</p>
+              </div>
+            ) : (
+              <Table>
+                <TableHeader className="bg-slate-50/50">
+                  <TableRow className="hover:bg-transparent border-slate-100">
+                    <TableHead className="w-[300px] py-6 px-8 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">Atleta</TableHead>
+                    <TableHead className="font-black text-[10px] uppercase tracking-[0.2em] text-center text-slate-400">Team</TableHead>
+                    {visibleColumns.includes("ppg") && (
+                      <TableHead onClick={() => toggleSort("ppg")} className="cursor-pointer font-black text-[10px] uppercase tracking-[0.2em] group text-center">
+                        <div className="flex items-center justify-center gap-1">PPG <ArrowUpDown className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" /></div>
+                      </TableHead>
+                    )}
+                    {visibleColumns.includes("gir") && (
+                      <TableHead onClick={() => toggleSort("gir")} className="cursor-pointer font-black text-[10px] uppercase tracking-[0.2em] text-blue-600 group text-center">
+                        <div className="flex items-center justify-center gap-1">GIR <Info className="h-3 w-3" /></div>
+                      </TableHead>
+                    )}
+                    <TableHead className="text-right px-8 font-black text-[10px] uppercase tracking-[0.2em] text-slate-400">Perfil</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filtered.length > 0 ? filtered.map(p => {
+                    const ppgPercentile = getPercentile(p.stats?.ppg, 'ppg');
+                    const logoUrl = nbaService.getTeamLogoUrl(p.teamId);
 
-                      <TableCell className="text-center">
-                        <div className="flex items-center justify-center gap-2">
-                          {logoUrl && (
-                            <img src={logoUrl} alt={p.teamId} className="w-6 h-6 object-contain opacity-90 group-hover:opacity-100 transition-opacity" />
-                          )}
-                          <span className="font-bold text-slate-500 text-xs tracking-tighter uppercase">
-                            {p.teamId}
-                          </span>
-                        </div>
-                      </TableCell>
-
-                      {visibleColumns.includes("ppg") && (
-                        <TableCell className="w-[140px]">
-                          <div className="flex flex-col gap-1.5 items-center">
-                            <div className="flex justify-between w-full px-1">
-                              <span className="text-xs font-black font-mono text-slate-700">{p.stats?.ppg > 0 ? p.stats.ppg.toFixed(1) : "-"}</span>
-                              <span className="text-[9px] font-bold text-slate-400">{p.stats?.ppg > 0 ? `P${ppgPercentile}` : ""}</span>
-                            </div>
-                            <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                              <div 
-                                className={`h-full transition-all duration-1000 ease-out ${getBarColor(ppgPercentile)}`}
-                                style={{ width: p.stats?.ppg > 0 ? `${ppgPercentile}%` : '0%' }}
+                    return (
+                      <TableRow key={p.id} className="group hover:bg-blue-50/30 transition-all duration-300 border-slate-50">
+                        <TableCell className="py-4 px-8">
+                          <Link to={`/${sport}/players/${p.id}`} className="flex items-center gap-4">
+                            <Avatar className="h-12 w-12 border-2 border-slate-100 shadow-sm group-hover:scale-110 transition-transform duration-500 bg-white">
+                              <AvatarImage 
+                                src={p.imageUrl} 
+                                className="object-cover bg-white"
+                                loading="lazy"
                               />
+                              <AvatarFallback className="bg-slate-100 text-slate-400 font-bold text-xs">{p.name.substring(0,2)}</AvatarFallback>
+                            </Avatar>
+                            <div className="flex flex-col">
+                              <span className="font-bold text-slate-900 group-hover:text-blue-600 transition-colors duration-300">{p.name}</span>
+                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">PRO</span>
                             </div>
+                          </Link>
+                        </TableCell>
+
+                        <TableCell className="text-center">
+                          <div className="flex flex-col items-center justify-center gap-1">
+                            {logoUrl && (
+                              <img src={logoUrl} alt={p.teamId} className="w-6 h-6 object-contain opacity-90 group-hover:opacity-100 transition-opacity" />
+                            )}
+                            <span className="font-bold text-slate-500 text-[10px] tracking-tighter uppercase">
+                              {p.teamId}
+                            </span>
                           </div>
                         </TableCell>
-                      )}
 
-                      {visibleColumns.includes("gir") && (
-                        <TableCell className="text-center">
-                          <Badge className="bg-blue-600 text-white border-none font-black text-[10px] px-3 py-1 shadow-lg shadow-blue-500/20">
-                            {p.gir > 0 ? p.gir.toFixed(1) : "-"}
-                          </Badge>
+                        {visibleColumns.includes("ppg") && (
+                          <TableCell className="w-[140px]">
+                            <div className="flex flex-col gap-1.5 items-center">
+                              <div className="flex justify-between w-full px-1">
+                                <span className="text-xs font-black font-mono text-slate-700">{p.stats?.ppg > 0 ? p.stats.ppg.toFixed(1) : "-"}</span>
+                                <span className="text-[9px] font-bold text-slate-400">{p.stats?.ppg > 0 ? `P${ppgPercentile}` : ""}</span>
+                              </div>
+                              <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                <div 
+                                  className={`h-full transition-all duration-1000 ease-out ${getBarColor(ppgPercentile)}`}
+                                  style={{ width: p.stats?.ppg > 0 ? `${ppgPercentile}%` : '0%' }}
+                                />
+                              </div>
+                            </div>
+                          </TableCell>
+                        )}
+
+                        {visibleColumns.includes("gir") && (
+                          <TableCell className="text-center">
+                            <Badge className="bg-blue-600 text-white border-none font-black text-[10px] px-3 py-1 shadow-lg shadow-blue-500/20">
+                              {p.gir > 0 ? p.gir.toFixed(1) : "-"}
+                            </Badge>
+                          </TableCell>
+                        )}
+
+                        <TableCell className="text-right px-8">
+                          <Link to={`/${sport}/players/${p.id}`} className="inline-flex p-2.5 bg-slate-50 text-slate-400 rounded-xl group-hover:bg-blue-600 group-hover:text-white group-hover:rotate-12 transition-all duration-300">
+                            <TrendingUp size={18} />
+                          </Link>
                         </TableCell>
-                      )}
-
-                      <TableCell className="text-right px-8">
-                        <Link to={`/${sport}/players/${p.id}`} className="inline-flex p-2.5 bg-slate-50 text-slate-400 rounded-xl group-hover:bg-blue-600 group-hover:text-white group-hover:rotate-12 transition-all duration-300">
-                          <TrendingUp size={18} />
-                        </Link>
+                      </TableRow>
+                    );
+                  }) : (
+                    <TableRow>
+                      <TableCell colSpan={5} className="h-32 text-center text-slate-400 font-medium italic">
+                        No se han encontrado jugadores con ese nombre.
                       </TableCell>
                     </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
+                  )}
+                </TableBody>
+              </Table>
+            )}
           </div>
         </CardContent>
       </Card>
