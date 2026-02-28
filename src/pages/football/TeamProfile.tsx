@@ -25,13 +25,13 @@ export default function FootballTeamProfile() {
 
   return (
     <div className="space-y-6">
-      <Link to={`/${sport}/teams`} className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+      <Link to={`/${sport}/teams`} className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
         <ArrowLeft className="h-4 w-4" /> Back to Teams
       </Link>
       <div>
-        <h1 className="text-3xl font-bold">{team.name}</h1>
+        <h1 className="text-3xl font-bold text-foreground">{team.name}</h1>
         <div className="flex items-center gap-2 mt-1">
-          <Badge variant="secondary" className="font-mono">{team.abbreviation}</Badge>
+          <Badge variant="secondary" className="font-mono bg-white/5 border-white/10">{team.abbreviation}</Badge>
           <span className="text-muted-foreground text-sm">{team.league}</span>
         </div>
       </div>
@@ -44,36 +44,36 @@ export default function FootballTeamProfile() {
           { label: "Possession", value: `${team.possession}%` },
           { label: "Record", value: `${team.wins}W ${team.draws}D ${team.losses}L` },
         ].map(s => (
-          <Card key={s.label} className="bg-card border-border">
+          <Card key={s.label} className="bg-white/[0.03] border-white/5 backdrop-blur-xl">
             <CardContent className="p-4">
               <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{s.label}</p>
-              <p className="text-lg font-bold font-mono mt-0.5">{s.value}</p>
+              <p className="text-lg font-bold font-mono mt-0.5 text-foreground">{s.value}</p>
             </CardContent>
           </Card>
         ))}
       </div>
-      <Card className="bg-card border-border">
-        <CardHeader className="pb-3"><CardTitle className="text-sm font-medium">Squad</CardTitle></CardHeader>
+      <Card className="bg-white/[0.02] border-white/5 backdrop-blur-xl">
+        <CardHeader className="pb-3 border-b border-white/5"><CardTitle className="text-sm font-medium text-foreground">Squad</CardTitle></CardHeader>
         <CardContent className="p-0">
           {roster.length > 0 ? (
             <Table>
               <TableHeader>
-                <TableRow className="hover:bg-transparent">
-                  <TableHead>Player</TableHead>
-                  <TableHead>POS</TableHead>
-                  <TableHead>G</TableHead>
-                  <TableHead>A</TableHead>
-                  <TableHead>Apps</TableHead>
+                <TableRow className="hover:bg-transparent border-white/5">
+                  <TableHead className="text-muted-foreground">Player</TableHead>
+                  <TableHead className="text-muted-foreground">POS</TableHead>
+                  <TableHead className="text-muted-foreground">G</TableHead>
+                  <TableHead className="text-muted-foreground">A</TableHead>
+                  <TableHead className="text-muted-foreground">Apps</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {roster.map(p => (
-                  <TableRow key={p.id}>
+                  <TableRow key={p.id} className="border-white/5 hover:bg-white/5 transition-colors">
                     <TableCell><Link to={`/${sport}/players/${p.id}`} className="text-primary hover:underline font-medium">{p.name}</Link></TableCell>
-                    <TableCell><Badge variant="secondary" className="text-xs font-mono">{p.position}</Badge></TableCell>
-                    <TableCell className="font-mono">{p.stats.goals}</TableCell>
-                    <TableCell className="font-mono">{p.stats.assists}</TableCell>
-                    <TableCell className="font-mono text-xs">{p.stats.appearances}</TableCell>
+                    <TableCell><Badge variant="secondary" className="text-xs font-mono bg-white/5 border-white/10">{p.position}</Badge></TableCell>
+                    <TableCell className="font-mono text-foreground">{p.stats.goals}</TableCell>
+                    <TableCell className="font-mono text-foreground/70">{p.stats.assists}</TableCell>
+                    <TableCell className="font-mono text-xs text-muted-foreground">{p.stats.appearances}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

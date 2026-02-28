@@ -25,44 +25,44 @@ export default function FootballPlayers() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">Players</h1>
+        <h1 className="text-2xl font-semibold text-foreground">Players</h1>
         <p className="text-muted-foreground text-sm mt-1">Browse football player stats</p>
       </div>
       <div className="flex flex-wrap gap-3">
-        <Input placeholder="Search players..." value={search} onChange={e => setSearch(e.target.value)} className="max-w-xs bg-muted border-none" />
+        <Input placeholder="Search players..." value={search} onChange={e => setSearch(e.target.value)} className="max-w-xs bg-white/5 border-white/5" />
         <Select value={posFilter} onValueChange={setPosFilter}>
-          <SelectTrigger className="w-36 bg-muted border-none"><SelectValue placeholder="Position" /></SelectTrigger>
+          <SelectTrigger className="w-36 bg-white/5 border-white/5"><SelectValue placeholder="Position" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Positions</SelectItem>
             {positions.map(p => <SelectItem key={p} value={p}>{p}</SelectItem>)}
           </SelectContent>
         </Select>
       </div>
-      <Card className="bg-card border-border">
+      <Card className="bg-white/[0.02] border-white/5 backdrop-blur-xl">
         <CardContent className="p-0">
           <Table>
             <TableHeader>
-              <TableRow className="hover:bg-transparent">
-                <TableHead>Player</TableHead>
-                <TableHead>POS</TableHead>
-                <TableHead>TEAM</TableHead>
-                <TableHead>G</TableHead>
-                <TableHead>A</TableHead>
-                <TableHead>APP</TableHead>
-                <TableHead>Pass%</TableHead>
-                <TableHead>xGC</TableHead>
+              <TableRow className="hover:bg-transparent border-white/5">
+                <TableHead className="text-muted-foreground">Player</TableHead>
+                <TableHead className="text-muted-foreground">POS</TableHead>
+                <TableHead className="text-muted-foreground">TEAM</TableHead>
+                <TableHead className="text-muted-foreground">G</TableHead>
+                <TableHead className="text-muted-foreground">A</TableHead>
+                <TableHead className="text-muted-foreground">APP</TableHead>
+                <TableHead className="text-muted-foreground">Pass%</TableHead>
+                <TableHead className="text-muted-foreground">xGC</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filtered.map(p => (
-                <TableRow key={p.id} className="hover:bg-muted/50">
+                <TableRow key={p.id} className="hover:bg-white/5 transition-all duration-300 border-white/5">
                   <TableCell><Link to={`/${sport}/players/${p.id}`} className="font-medium text-primary hover:underline">{p.name}</Link></TableCell>
-                  <TableCell><Badge variant="secondary" className="text-xs font-mono">{p.position}</Badge></TableCell>
-                  <TableCell className="font-mono text-xs">{p.teamName}</TableCell>
-                  <TableCell className="font-mono font-semibold">{p.stats.goals}</TableCell>
-                  <TableCell className="font-mono">{p.stats.assists}</TableCell>
-                  <TableCell className="font-mono text-xs">{p.stats.appearances}</TableCell>
-                  <TableCell className="font-mono text-xs">{p.stats.passAccuracy}%</TableCell>
+                  <TableCell><Badge variant="secondary" className="text-xs font-mono bg-white/5 border-white/10">{p.position}</Badge></TableCell>
+                  <TableCell className="font-mono text-xs text-muted-foreground">{p.teamName}</TableCell>
+                  <TableCell className="font-mono font-semibold text-foreground">{p.stats.goals}</TableCell>
+                  <TableCell className="font-mono text-foreground/70">{p.stats.assists}</TableCell>
+                  <TableCell className="font-mono text-xs text-muted-foreground">{p.stats.appearances}</TableCell>
+                  <TableCell className="font-mono text-xs text-muted-foreground">{p.stats.passAccuracy}%</TableCell>
                   <TableCell className="font-mono font-semibold text-primary">{p.adv.xgContribution}</TableCell>
                 </TableRow>
               ))}

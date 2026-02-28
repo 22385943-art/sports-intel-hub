@@ -29,28 +29,28 @@ export default function FootballCompare() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">Compare</h1>
+        <h1 className="text-2xl font-semibold text-foreground">Compare</h1>
         <p className="text-muted-foreground text-sm mt-1">Head-to-head player comparison</p>
       </div>
       <div className="flex flex-wrap gap-4">
         <Select value={p1Id} onValueChange={setP1Id}>
-          <SelectTrigger className="w-56 bg-muted border-none"><SelectValue /></SelectTrigger>
+          <SelectTrigger className="w-56 bg-white/5 border-white/5"><SelectValue /></SelectTrigger>
           <SelectContent>{allPlayers.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}</SelectContent>
         </Select>
         <span className="self-center text-muted-foreground font-mono text-sm">vs</span>
         <Select value={p2Id} onValueChange={setP2Id}>
-          <SelectTrigger className="w-56 bg-muted border-none"><SelectValue /></SelectTrigger>
+          <SelectTrigger className="w-56 bg-white/5 border-white/5"><SelectValue /></SelectTrigger>
           <SelectContent>{allPlayers.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}</SelectContent>
         </Select>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="bg-card border-border">
-          <CardHeader className="pb-2"><CardTitle className="text-sm font-medium">Metric Comparison</CardTitle></CardHeader>
+        <Card className="bg-white/[0.02] border-white/5 backdrop-blur-xl">
+          <CardHeader className="pb-2 border-b border-white/5"><CardTitle className="text-sm font-medium text-foreground">Metric Comparison</CardTitle></CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={350}>
               <RadarChart data={radarData}>
-                <PolarGrid stroke="hsl(var(--border))" />
-                <PolarAngleAxis dataKey="metric" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                <PolarGrid stroke="rgba(255,255,255,0.08)" />
+                <PolarAngleAxis dataKey="metric" tick={{ fontSize: 11, fill: 'hsl(215 20% 55%)' }} />
                 <PolarRadiusAxis tick={false} axisLine={false} />
                 <Radar name={n1} dataKey={n1} stroke="hsl(var(--chart-teal))" fill="hsl(var(--chart-teal))" fillOpacity={0.15} />
                 <Radar name={n2} dataKey={n2} stroke="hsl(var(--chart-blue))" fill="hsl(var(--chart-blue))" fillOpacity={0.15} />
@@ -59,8 +59,8 @@ export default function FootballCompare() {
             </ResponsiveContainer>
           </CardContent>
         </Card>
-        <Card className="bg-card border-border">
-          <CardHeader className="pb-2"><CardTitle className="text-sm font-medium">Stat Comparison</CardTitle></CardHeader>
+        <Card className="bg-white/[0.02] border-white/5 backdrop-blur-xl">
+          <CardHeader className="pb-2 border-b border-white/5"><CardTitle className="text-sm font-medium text-foreground">Stat Comparison</CardTitle></CardHeader>
           <CardContent>
             <div className="space-y-3">
               {[

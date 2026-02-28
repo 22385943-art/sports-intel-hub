@@ -23,39 +23,39 @@ export default function UFCDashboard() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-semibold">UFC Dashboard</h1>
+        <h1 className="text-2xl font-semibold text-foreground">UFC Dashboard</h1>
         <p className="text-muted-foreground text-sm mt-1">Fighter analytics overview</p>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {metricTiles.map((s) => (
-          <Card key={s.title} className="bg-card border-border overflow-hidden">
+          <Card key={s.title} className="bg-white/[0.03] border-white/5 overflow-hidden backdrop-blur-xl hover:bg-white/[0.05] transition-all duration-300 hover:scale-[1.02]">
             <CardContent className="p-5">
               <div className="flex items-start justify-between mb-3">
                 <div>
-                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{s.title}</p>
-                  <p className="text-2xl font-bold font-mono mt-1">{s.value}</p>
+                  <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">{s.title}</p>
+                  <p className="text-2xl font-bold font-mono mt-1 text-foreground">{s.value}</p>
                 </div>
-                <div className="p-2 rounded-lg bg-muted"><s.icon className="h-4 w-4 text-muted-foreground" /></div>
+                <div className="p-2 rounded-lg bg-white/5"><s.icon className="h-4 w-4 text-muted-foreground" /></div>
               </div>
               <div className="h-8"><SparkLine data={s.sparkData} color={s.color} /></div>
             </CardContent>
           </Card>
         ))}
       </div>
-      <Card className="bg-card border-border">
-        <CardHeader className="pb-3"><CardTitle className="text-base font-medium">Top Fighters</CardTitle></CardHeader>
+      <Card className="bg-white/[0.02] border-white/5 backdrop-blur-xl">
+        <CardHeader className="pb-3 border-b border-white/5"><CardTitle className="text-base font-medium text-foreground">Top Fighters</CardTitle></CardHeader>
         <CardContent className="space-y-1">
           {topFighters.map((f, i) => (
-            <Link key={f.id} to={`/${sport}/players/${f.id}`} className="flex items-center justify-between p-3 rounded-lg hover:bg-muted transition-colors">
+            <Link key={f.id} to={`/${sport}/players/${f.id}`} className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-all duration-300">
               <div className="flex items-center gap-3">
                 <span className="text-xs font-mono text-muted-foreground w-5 text-right">{i + 1}</span>
                 <div>
-                  <p className="text-sm font-medium">{f.name}</p>
+                  <p className="text-sm font-medium text-foreground">{f.name}</p>
                   <p className="text-xs text-muted-foreground">{f.weightClass}{f.nickname !== "N/A" ? ` · "${f.nickname}"` : ""}</p>
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-sm font-mono font-semibold">{f.record.wins}-{f.record.losses}</p>
+                <p className="text-sm font-mono font-semibold text-foreground">{f.record.wins}-{f.record.losses}</p>
                 <p className="text-xs text-muted-foreground">Record</p>
               </div>
             </Link>

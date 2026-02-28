@@ -5,9 +5,12 @@ export interface NBAPlayer {
   teamId: string;
   teamName: string;
   age: number;
+  imageUrl?: string;
   stats: {
     ppg: number; rpg: number; apg: number; spg: number; bpg: number;
     fgPct: number; threePct: number; ftPct: number; mpg: number;
+    ts?: number; efg?: number; usg?: number; defRating?: number;
+    fga?: number; fgm?: number; fg3m?: number; fta?: number; topg?: number;
   };
   gameLog: { date: string; pts: number; reb: number; ast: number; min: number }[];
 }

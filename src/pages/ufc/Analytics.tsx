@@ -26,8 +26,8 @@ export default function UFCAnalytics() {
       });
       return (
         <RadarChart data={radarData}>
-          <PolarGrid stroke="hsl(var(--border))" />
-          <PolarAngleAxis dataKey="metric" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
+          <PolarGrid stroke="rgba(255,255,255,0.08)" />
+          <PolarAngleAxis dataKey="metric" tick={{ fontSize: 10, fill: 'hsl(215 20% 55%)' }} />
           <PolarRadiusAxis tick={false} axisLine={false} />
           {data.slice(0, 4).map((d, i) => (
             <Radar key={d.name} name={d.name} dataKey={d.name} stroke={CHART_COLORS[i]} fill={CHART_COLORS[i]} fillOpacity={0.1} />
@@ -39,10 +39,10 @@ export default function UFCAnalytics() {
     if (chartType === "line") {
       return (
         <LineChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-          <XAxis dataKey="name" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
-          <YAxis stroke="hsl(var(--muted-foreground))" />
-          <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
+          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+          <XAxis dataKey="name" tick={{ fontSize: 11, fill: 'hsl(215 20% 55%)' }} />
+          <YAxis stroke="rgba(255,255,255,0.1)" tick={{ fill: 'hsl(215 20% 55%)' }} />
+          <Tooltip contentStyle={{ background: "hsl(229 84% 4%)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, fontSize: 12, color: "#fff" }} />
           <Legend />
           {selectedMetrics.map((m, i) => (
             <Line key={m} type="monotone" dataKey={m} stroke={CHART_COLORS[i % CHART_COLORS.length]} strokeWidth={2} dot={{ r: 3 }} />
@@ -52,10 +52,10 @@ export default function UFCAnalytics() {
     }
     return (
       <BarChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-        <XAxis dataKey="name" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
-        <YAxis stroke="hsl(var(--muted-foreground))" />
-        <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
+        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+        <XAxis dataKey="name" tick={{ fontSize: 11, fill: 'hsl(215 20% 55%)' }} />
+        <YAxis stroke="rgba(255,255,255,0.1)" tick={{ fill: 'hsl(215 20% 55%)' }} />
+        <Tooltip contentStyle={{ background: "hsl(229 84% 4%)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, fontSize: 12, color: "#fff" }} />
         <Legend />
         {selectedMetrics.map((m, i) => (
           <Bar key={m} dataKey={m} fill={CHART_COLORS[i % CHART_COLORS.length]} radius={[4, 4, 0, 0]} />
@@ -67,20 +67,12 @@ export default function UFCAnalytics() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">Analytics</h1>
+        <h1 className="text-2xl font-semibold text-foreground">Analytics</h1>
         <p className="text-muted-foreground text-sm mt-1">Advanced UFC metrics and analysis</p>
       </div>
-      <AnalyticsSelector
-        sport="ufc"
-        selectedMetrics={selectedMetrics}
-        onMetricsChange={setSelectedMetrics}
-        chartType={chartType}
-        onChartTypeChange={setChartType}
-        selectedCategory={selectedCategory}
-        onCategoryChange={setSelectedCategory}
-      />
-      <Card className="bg-card border-border">
-        <CardHeader className="pb-2"><CardTitle className="text-sm font-medium">Metric Visualization</CardTitle></CardHeader>
+      <AnalyticsSelector sport="ufc" selectedMetrics={selectedMetrics} onMetricsChange={setSelectedMetrics} chartType={chartType} onChartTypeChange={setChartType} selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} />
+      <Card className="bg-white/[0.02] border-white/5 backdrop-blur-xl">
+        <CardHeader className="pb-2 border-b border-white/5"><CardTitle className="text-sm font-medium text-foreground">Metric Visualization</CardTitle></CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={350}>
             {renderChart()}
