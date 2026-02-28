@@ -36,7 +36,6 @@ export function AppSidebar() {
   const navigate = useNavigate();
   const basePath = `/${sport}`;
 
-  // Build nav items dynamically per sport
   const navItems = [
     { title: "Dashboard", path: "", icon: LayoutDashboard },
     { title: sportConfig.playerLabel, path: "/players", icon: Users },
@@ -49,7 +48,7 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarHeader className="p-4">
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center gap-2 w-full rounded-md px-2 py-2 hover:bg-sidebar-accent transition-colors text-left">
+          <DropdownMenuTrigger className="flex items-center gap-2 w-full rounded-md px-2 py-2 hover:bg-white/5 transition-colors text-left">
             <span className="text-xl">{sportConfig.icon}</span>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-sidebar-foreground truncate">
@@ -80,7 +79,7 @@ export function AppSidebar() {
         </DropdownMenu>
       </SidebarHeader>
 
-      <SidebarSeparator />
+      <SidebarSeparator className="bg-white/5" />
 
       <SidebarContent>
         <SidebarGroup>
@@ -102,7 +101,7 @@ export function AppSidebar() {
                         to={fullPath}
                         end={item.path === ""}
                         className="gap-3"
-                        activeClassName="bg-sidebar-accent text-sidebar-accent-foreground"
+                        activeClassName="bg-white/5 text-primary border-l-2 border-primary"
                       >
                         <item.icon className="h-4 w-4" />
                         <span>{item.title}</span>
@@ -117,7 +116,7 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="p-4">
-        <div className="rounded-md bg-sidebar-accent p-3">
+        <div className="rounded-md bg-white/5 p-3">
           <p className="text-xs font-mono text-muted-foreground">
             Platform v0.2.0
           </p>

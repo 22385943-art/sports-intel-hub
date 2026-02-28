@@ -27,20 +27,20 @@ export default function FootballDashboard() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-semibold">Football Dashboard</h1>
+        <h1 className="text-2xl font-semibold text-foreground">Football Dashboard</h1>
         <p className="text-muted-foreground text-sm mt-1">Season overview and key metrics</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {metricTiles.map((s) => (
-          <Card key={s.title} className="bg-card border-border overflow-hidden">
+          <Card key={s.title} className="bg-white/[0.03] border-white/5 overflow-hidden backdrop-blur-xl hover:bg-white/[0.05] transition-all duration-300 hover:scale-[1.02]">
             <CardContent className="p-5">
               <div className="flex items-start justify-between mb-3">
                 <div>
-                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{s.title}</p>
-                  <p className="text-2xl font-bold font-mono mt-1">{s.value}</p>
+                  <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">{s.title}</p>
+                  <p className="text-2xl font-bold font-mono mt-1 text-foreground">{s.value}</p>
                 </div>
-                <div className="p-2 rounded-lg bg-muted">
+                <div className="p-2 rounded-lg bg-white/5">
                   <s.icon className="h-4 w-4 text-muted-foreground" />
                 </div>
               </div>
@@ -53,20 +53,20 @@ export default function FootballDashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="bg-card border-border">
-          <CardHeader className="pb-3"><CardTitle className="text-base font-medium">Top Scorers</CardTitle></CardHeader>
+        <Card className="bg-white/[0.02] border-white/5 backdrop-blur-xl">
+          <CardHeader className="pb-3 border-b border-white/5"><CardTitle className="text-base font-medium text-foreground">Top Scorers</CardTitle></CardHeader>
           <CardContent className="space-y-1">
             {topScorers.map((p, i) => (
-              <Link key={p.id} to={`/${sport}/players/${p.id}`} className="flex items-center justify-between p-3 rounded-lg hover:bg-muted transition-colors">
+              <Link key={p.id} to={`/${sport}/players/${p.id}`} className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-all duration-300">
                 <div className="flex items-center gap-3">
                   <span className="text-xs font-mono text-muted-foreground w-5 text-right">{i + 1}</span>
                   <div>
-                    <p className="text-sm font-medium">{p.name}</p>
+                    <p className="text-sm font-medium text-foreground">{p.name}</p>
                     <p className="text-xs text-muted-foreground">{p.teamName} · {p.position}</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-mono font-semibold">{p.stats.goals}</p>
+                  <p className="text-sm font-mono font-semibold text-primary">{p.stats.goals}</p>
                   <p className="text-xs text-muted-foreground">Goals</p>
                 </div>
               </Link>
@@ -74,20 +74,20 @@ export default function FootballDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="bg-card border-border">
-          <CardHeader className="pb-3"><CardTitle className="text-base font-medium">Standings</CardTitle></CardHeader>
+        <Card className="bg-white/[0.02] border-white/5 backdrop-blur-xl">
+          <CardHeader className="pb-3 border-b border-white/5"><CardTitle className="text-base font-medium text-foreground">Standings</CardTitle></CardHeader>
           <CardContent className="space-y-1">
             {topTeams.map((t, i) => (
-              <Link key={t.id} to={`/${sport}/teams/${t.id}`} className="flex items-center justify-between p-3 rounded-lg hover:bg-muted transition-colors">
+              <Link key={t.id} to={`/${sport}/teams/${t.id}`} className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-all duration-300">
                 <div className="flex items-center gap-3">
                   <span className="text-xs font-mono text-muted-foreground w-5 text-right">{i + 1}</span>
                   <div>
-                    <p className="text-sm font-medium">{t.name}</p>
+                    <p className="text-sm font-medium text-foreground">{t.name}</p>
                     <p className="text-xs text-muted-foreground">{t.league} · GD {t.goalsFor - t.goalsAgainst > 0 ? "+" : ""}{t.goalsFor - t.goalsAgainst}</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-mono font-semibold">{t.wins * 3 + t.draws}</p>
+                  <p className="text-sm font-mono font-semibold text-primary">{t.wins * 3 + t.draws}</p>
                   <p className="text-xs text-muted-foreground">Pts</p>
                 </div>
               </Link>

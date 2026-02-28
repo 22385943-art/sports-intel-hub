@@ -32,39 +32,38 @@ export default function UFCFighterProfile() {
     { stat: "TD Def", value: fighter.stats.takedownDefense },
     { stat: "Control", value: fighter.stats.controlTimePct },
   ];
-
   const advEntries = Object.entries(adv) as [string, number][];
 
   return (
     <div className="space-y-6">
-      <Link to={`/${sport}/players`} className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+      <Link to={`/${sport}/players`} className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
         <ArrowLeft className="h-4 w-4" /> Back to Fighters
       </Link>
       <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">{fighter.name}</h1>
+          <h1 className="text-3xl font-bold text-foreground">{fighter.name}</h1>
           <div className="flex items-center gap-2 mt-1">
-            <Badge variant="secondary" className="font-mono">{fighter.weightClass}</Badge>
+            <Badge variant="secondary" className="font-mono bg-white/5 border-white/10">{fighter.weightClass}</Badge>
             <span className="text-muted-foreground text-sm">{fighter.record.wins}-{fighter.record.losses}-{fighter.record.draws} · Age {fighter.age}</span>
           </div>
         </div>
         <div className="flex gap-3">
-          <Card className="bg-card border-border px-4 py-2.5 text-center">
+          <Card className="bg-white/[0.03] border-white/5 px-4 py-2.5 text-center backdrop-blur-xl">
             <p className="text-[10px] uppercase tracking-wider text-muted-foreground">DOM</p>
             <p className="text-xl font-bold font-mono text-primary">{adv.dominanceScore}</p>
           </Card>
-          <Card className="bg-card border-border px-4 py-2.5 text-center">
+          <Card className="bg-white/[0.03] border-white/5 px-4 py-2.5 text-center backdrop-blur-xl">
             <p className="text-[10px] uppercase tracking-wider text-muted-foreground">FCI</p>
-            <p className="text-xl font-bold font-mono" style={{ color: "hsl(var(--chart-gold))" }}>{adv.fightControl}</p>
+            <p className="text-xl font-bold font-mono text-chart-gold">{adv.fightControl}</p>
           </Card>
         </div>
       </div>
 
       <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList className="bg-muted">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="fightlog">Fight Log</TabsTrigger>
-          <TabsTrigger value="advanced">Advanced</TabsTrigger>
+        <TabsList className="bg-white/5 border border-white/5">
+          <TabsTrigger value="overview" className="data-[state=active]:bg-white/10 data-[state=active]:text-primary">Overview</TabsTrigger>
+          <TabsTrigger value="fightlog" className="data-[state=active]:bg-white/10 data-[state=active]:text-primary">Fight Log</TabsTrigger>
+          <TabsTrigger value="advanced" className="data-[state=active]:bg-white/10 data-[state=active]:text-primary">Advanced</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
@@ -79,21 +78,21 @@ export default function UFCFighterProfile() {
               { label: "Sub/15", value: fighter.stats.submissionAvgPer15 },
               { label: "Control", value: `${fighter.stats.controlTimePct}%` },
             ].map(s => (
-              <Card key={s.label} className="bg-card border-border">
+              <Card key={s.label} className="bg-white/[0.03] border-white/5 backdrop-blur-xl">
                 <CardContent className="p-4">
                   <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{s.label}</p>
-                  <p className="text-lg font-bold font-mono mt-0.5">{s.value}</p>
+                  <p className="text-lg font-bold font-mono mt-0.5 text-foreground">{s.value}</p>
                 </CardContent>
               </Card>
             ))}
           </div>
-          <Card className="bg-card border-border">
-            <CardHeader className="pb-2"><CardTitle className="text-sm font-medium">Fight Profile</CardTitle></CardHeader>
+          <Card className="bg-white/[0.02] border-white/5 backdrop-blur-xl">
+            <CardHeader className="pb-2 border-b border-white/5"><CardTitle className="text-sm font-medium text-foreground">Fight Profile</CardTitle></CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={280}>
                 <RadarChart data={radarData}>
-                  <PolarGrid stroke="hsl(var(--border))" />
-                  <PolarAngleAxis dataKey="stat" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                  <PolarGrid stroke="rgba(255,255,255,0.08)" />
+                  <PolarAngleAxis dataKey="stat" tick={{ fontSize: 11, fill: 'hsl(215 20% 55%)' }} />
                   <PolarRadiusAxis tick={false} axisLine={false} />
                   <Radar name="Stats" dataKey="value" stroke="hsl(var(--chart-teal))" fill="hsl(var(--chart-teal))" fillOpacity={0.15} />
                 </RadarChart>
@@ -103,28 +102,28 @@ export default function UFCFighterProfile() {
         </TabsContent>
 
         <TabsContent value="fightlog">
-          <Card className="bg-card border-border">
+          <Card className="bg-white/[0.02] border-white/5 backdrop-blur-xl">
             <CardContent className="p-0">
               <Table>
                 <TableHeader>
-                  <TableRow className="hover:bg-transparent">
-                    <TableHead>Date</TableHead>
-                    <TableHead>Opponent</TableHead>
-                    <TableHead>Result</TableHead>
-                    <TableHead>Method</TableHead>
-                    <TableHead>Rd</TableHead>
-                    <TableHead>Sig Str</TableHead>
+                  <TableRow className="hover:bg-transparent border-white/5">
+                    <TableHead className="text-muted-foreground">Date</TableHead>
+                    <TableHead className="text-muted-foreground">Opponent</TableHead>
+                    <TableHead className="text-muted-foreground">Result</TableHead>
+                    <TableHead className="text-muted-foreground">Method</TableHead>
+                    <TableHead className="text-muted-foreground">Rd</TableHead>
+                    <TableHead className="text-muted-foreground">Sig Str</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {fighter.fightLog.map((f, i) => (
-                    <TableRow key={i}>
-                      <TableCell className="font-mono text-xs">{f.date}</TableCell>
-                      <TableCell className="text-sm">{f.opponent}</TableCell>
+                    <TableRow key={i} className="border-white/5 hover:bg-white/5 transition-colors">
+                      <TableCell className="font-mono text-xs text-muted-foreground">{f.date}</TableCell>
+                      <TableCell className="text-sm text-foreground">{f.opponent}</TableCell>
                       <TableCell><Badge variant={f.result === "W" ? "default" : "destructive"} className="text-xs">{f.result}</Badge></TableCell>
-                      <TableCell className="text-xs">{f.method}</TableCell>
-                      <TableCell className="font-mono">{f.round}</TableCell>
-                      <TableCell className="font-mono">{f.sigStrikes}</TableCell>
+                      <TableCell className="text-xs text-muted-foreground">{f.method}</TableCell>
+                      <TableCell className="font-mono text-foreground/70">{f.round}</TableCell>
+                      <TableCell className="font-mono text-foreground/70">{f.sigStrikes}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
