@@ -4,7 +4,7 @@ import { nbaService } from "@/services/sportServiceFactory";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, ArrowLeft, Trophy, Crown, Medal, ShieldAlert, Star, Award, Zap, Target, Brain, Activity, Crosshair, MapPin, CalendarDays, Hash, ArrowRight } from "lucide-react";
+import { Loader2, ArrowLeft, Trophy, Crown, Medal, ShieldAlert, Star, Award, Zap, Target, Brain, Activity, Crosshair, MapPin, CalendarDays, Hash, ArrowRight, Sigma } from "lucide-react";
 import { 
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Tooltip as RechartsTooltip,
   LineChart, Line, XAxis, YAxis, CartesianGrid
@@ -357,7 +357,7 @@ export default function PlayerProfile() {
                     <RadarChart data={radarData} outerRadius="70%">
                       <PolarGrid stroke="rgba(255,255,255,0.05)" />
                       <PolarRadiusAxis angle={90} domain={[0, 100]} tick={false} axisLine={false} />
-                      <PolarAngleAxis dataKey="metric" tick={{ fill: 'rgba(255,255,255,0.7)', fontSize: 10, fontWeight: 900, tracking: '0.05em' }} />
+                      <PolarAngleAxis dataKey="metric" tick={{ fill: 'rgba(255,255,255,0.7)', fontSize: 10, fontWeight: 900 }} />
                       <RechartsTooltip contentStyle={{ backgroundColor: '#0a0f18', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', color: '#fff', fontWeight: 'bold' }} />
                       <Radar name={player.name} dataKey="value" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.2} strokeWidth={3} dot={{ r: 3, fill: '#0a0f18', stroke: '#3b82f6', strokeWidth: 2 }} />
                     </RadarChart>

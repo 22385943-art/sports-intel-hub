@@ -427,7 +427,7 @@ export default function NBAAnalytics() {
           <RadarChart data={profileData} outerRadius="70%">
             <PolarGrid stroke="rgba(255,255,255,0.06)" />
             <PolarRadiusAxis angle={90} domain={[0, 100]} tick={false} axisLine={false} />
-            <PolarAngleAxis dataKey="metric" tick={{ fill: 'rgba(255,255,255,0.6)', fontSize: 11, fontWeight: 900, tracking: '0.1em' }} />
+            <PolarAngleAxis dataKey="metric" tick={{ fill: 'rgba(255,255,255,0.6)', fontSize: 11, fontWeight: 900 }} />
             <RechartsTooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(255,255,255,0.1)', strokeWidth: 1 }} />
             <Legend wrapperStyle={{ paddingTop: '30px', fontSize: '12px', fontWeight: 'bold', color: 'rgba(255,255,255,0.7)' }} />
             {chartData.map((d, i) => (
