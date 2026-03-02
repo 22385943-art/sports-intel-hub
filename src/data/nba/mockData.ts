@@ -13,6 +13,11 @@ export interface NBAPlayer {
     fga?: number; fgm?: number; fg3m?: number; fta?: number; topg?: number;
     pie?: number; netRtg?: number; astPct?: number;
   };
+  adv?: {
+    per: number; bpm: number; vorp: number; pie: number; net: number;
+    usg: number; ts: number; ast: number; efg: number;
+    [key: string]: number;
+  };
   gameLog: { date: string; pts: number; reb: number; ast: number; min: number }[];
 }
 

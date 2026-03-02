@@ -2,12 +2,22 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useSport } from "@/contexts/SportContext";
 import { nbaService } from "@/services/sportServiceFactory";
-import { Card, CardContent } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Loader2, Shield, Flame } from "lucide-react";
+import { Search, Loader2, Shield, Flame, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { motion } from "framer-motion";
+
+const TEAM_COLORS: Record<string, string> = {
+  "ATL": "#E03A3E", "BOS": "#007A33", "BKN": "#FFFFFF", "CHA": "#00788C",
+  "CHI": "#CE1141", "CLE": "#860038", "DAL": "#00A3E0",
+  "DEN": "#FEC524", "DET": "#C8102E", "GSW": "#1D428A", "HOU": "#CE1141",
+  "IND": "#FDBB30", "LAC": "#C8102E", "LAL": "#FDB927", "MEM": "#7399C6",
+  "MIA": "#98002E", "MIL": "#00471B", "MIN": "#78BE20",
+  "NOP": "#85714D", "NYK": "#F58426", "OKC": "#007AC1", "ORL": "#0077C0",
+  "PHI": "#006BB6", "PHX": "#E56020", "POR": "#E03A3E", "SAC": "#5A2D81",
+  "SAS": "#C4CED4", "TOR": "#CE1141", "UTA": "#F9A01B", "WAS": "#E31837"
+};
 
 const getDivision = (abbr: string) => {
   const divisions: Record<string, string[]> = {
@@ -63,109 +73,138 @@ export default function NBATeams() {
 
   const availableDivisions = getDivisionsForConference(confFilter);
 
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[70vh] animate-in fade-in space-y-4">
+        <Loader2 className="h-12 w-12 animate-spin text-cyan-500" />
+        <p className="text-slate-500 font-bold text-xs uppercase tracking-widest">Syncing NBA Standings...</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-6 pb-20 animate-in fade-in duration-700">
-      <div className="space-y-1">
-        <h1 className="text-3xl font-black tracking-tighter text-foreground uppercase italic">Teams</h1>
-        <p className="text-muted-foreground text-sm font-medium tracking-tight">Official standings and real-time metrics</p>
+    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="space-y-6 pb-20">
+      <div>
+        <h1 className="text-4xl font-black tracking-tight text-white uppercase leading-none">Teams</h1>
+        <p className="text-[#888] text-sm font-medium mt-2">Official standings and real-time metrics</p>
       </div>
 
+      {/* Filters */}
       <div className="flex flex-col lg:flex-row gap-4 max-w-4xl">
-        <div className="relative group flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-          <Input placeholder="Search team..." value={search} onChange={e => setSearch(e.target.value)} disabled={isLoading} className="pl-10 border-none bg-white/5 rounded-xl shadow-sm focus-visible:ring-primary font-medium" />
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#555]" />
+          <input
+            placeholder="Search team..." value={search} onChange={e => setSearch(e.target.value)}
+            className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl py-3 pl-10 pr-4 text-white text-sm font-bold placeholder:text-[#555] focus:outline-none focus:border-cyan-500/50 transition-colors"
+          />
         </div>
-        <div className="flex gap-4 w-full lg:w-auto">
-          <Select value={confFilter} onValueChange={setConfFilter} disabled={isLoading}>
-            <SelectTrigger className="flex-1 lg:w-[180px] border-none bg-white/5 rounded-xl font-bold text-xs uppercase tracking-widest shadow-sm">
+        <div className="flex gap-3">
+          <Select value={confFilter} onValueChange={setConfFilter}>
+            <SelectTrigger className="w-[180px] border-[#2a2a2a] bg-[#1a1a1a] rounded-xl font-bold text-xs uppercase tracking-widest text-white">
               <SelectValue placeholder="CONFERENCE" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all" className="font-black text-primary">All Conferences</SelectItem>
+            <SelectContent className="bg-[#1a1a1a] border-[#2a2a2a]">
+              <SelectItem value="all">All Conferences</SelectItem>
               <SelectItem value="Eastern">Eastern Conf</SelectItem>
               <SelectItem value="Western">Western Conf</SelectItem>
             </SelectContent>
           </Select>
-          <Select value={divFilter} onValueChange={setDivFilter} disabled={isLoading}>
-            <SelectTrigger className="flex-1 lg:w-[180px] border-none bg-white/5 rounded-xl font-bold text-xs uppercase tracking-widest shadow-sm">
+          <Select value={divFilter} onValueChange={setDivFilter}>
+            <SelectTrigger className="w-[180px] border-[#2a2a2a] bg-[#1a1a1a] rounded-xl font-bold text-xs uppercase tracking-widest text-white">
               <SelectValue placeholder="DIVISION" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all" className="font-black text-primary">All Divisions</SelectItem>
+            <SelectContent className="bg-[#1a1a1a] border-[#2a2a2a]">
+              <SelectItem value="all">All Divisions</SelectItem>
               {availableDivisions.map(div => (
-                <SelectItem key={div} value={div}>{div} Division</SelectItem>
+                <SelectItem key={div} value={div}>{div}</SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
       </div>
 
-      <Card className="border-white/5 bg-white/[0.02] backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden">
-        <CardContent className="p-0">
-          <div className="overflow-x-auto min-h-[400px]">
-            {isLoading ? (
-              <div className="w-full h-full flex flex-col items-center justify-center py-32 gap-4">
-                <Loader2 className="h-10 w-10 animate-spin text-primary" />
-                <p className="font-black text-muted-foreground tracking-widest text-xs uppercase animate-pulse">Syncing NBA Standings...</p>
-              </div>
-            ) : (
-              <Table>
-                <TableHeader className="bg-white/[0.02]">
-                  <TableRow className="border-white/5">
-                    <TableHead className="py-6 px-8 font-black text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Team</TableHead>
-                    <TableHead className="font-black text-[10px] uppercase tracking-[0.2em] text-center text-muted-foreground">Record</TableHead>
-                    <TableHead className="font-black text-[10px] uppercase tracking-[0.2em] text-center text-muted-foreground">Win %</TableHead>
-                    <TableHead className="font-black text-[10px] uppercase tracking-[0.2em] text-center text-orange-500">Off Rtg <Flame className="inline w-3 h-3 mb-0.5"/></TableHead>
-                    <TableHead className="font-black text-[10px] uppercase tracking-[0.2em] text-center text-emerald-500">Def Rtg <Shield className="inline w-3 h-3 mb-0.5"/></TableHead>
-                    <TableHead className="font-black text-[10px] uppercase tracking-[0.2em] text-center text-muted-foreground">Net Rtg</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredTeams.map((t) => {
-                    const winPct = ((t.wins / (t.wins + t.losses)) * 100).toFixed(1);
-                    const offRtg = t.offRtg ?? 0;
-                    const defRtg = t.defRtg ?? 0;
-                    const netRtg = t.netRtg ?? 0;
+      {/* ═══ TEAM CARD GRID ═══ */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {filteredTeams.map((t, i) => {
+          const winPct = ((t.wins / (t.wins + t.losses)) * 100).toFixed(1);
+          const offRtg = t.offRtg ?? 0;
+          const defRtg = t.defRtg ?? 0;
+          const netRtg = t.netRtg ?? 0;
+          const teamColor = TEAM_COLORS[t.abbreviation] || "#4279f5";
 
-                    return (
-                      <TableRow key={t.id} className="group hover:bg-white/5 transition-all duration-300 border-white/5">
-                        <TableCell className="py-4 px-8">
-                          <Link to={`/${sport}/teams/${t.id}`} className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-full bg-white/5 shadow-sm flex items-center justify-center p-2 border border-white/10 group-hover:scale-110 transition-transform">
-                              <img src={nbaService.getTeamLogoUrl(t.abbreviation)} alt={t.abbreviation} className="w-full h-full object-contain" />
-                            </div>
-                            <div className="flex flex-col">
-                              <span className="font-bold text-foreground text-sm group-hover:text-primary transition-colors">{t.name}</span>
-                              <div className="flex items-center gap-1.5 mt-0.5">
-                                <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">{t.conference}</span>
-                                <span className="text-white/20">•</span>
-                                <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">{t.division}</span>
-                              </div>
-                            </div>
-                          </Link>
-                        </TableCell>
-                        <TableCell className="text-center font-black font-mono text-foreground text-lg">{t.wins} - {t.losses}</TableCell>
-                        <TableCell className="text-center">
-                          <Badge variant="outline" className={`font-black font-mono text-xs border-none px-3 py-1 ${t.wins > t.losses ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'}`}>
-                            {winPct}%
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-center font-bold font-mono text-foreground/70">{offRtg.toFixed(1)}</TableCell>
-                        <TableCell className="text-center font-bold font-mono text-foreground/70">{defRtg.toFixed(1)}</TableCell>
-                        <TableCell className="text-center">
-                          <Badge className={`border-none font-black text-[10px] tracking-widest ${netRtg > 0 ? 'bg-primary text-primary-foreground' : 'bg-white/10 text-muted-foreground'}`}>
-                            {netRtg > 0 ? `+${netRtg.toFixed(1)}` : netRtg.toFixed(1)}
-                          </Badge>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            )}
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+          return (
+            <motion.div
+              key={t.id}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: Math.min(i * 0.03, 0.4) }}
+            >
+              <Link to={`/${sport}/teams/${t.id}`}>
+                <div className="relative bg-[#1a1a1a] border border-[#2a2a2a] rounded-2xl overflow-hidden hover:border-[#555] hover:scale-[1.02] transition-all duration-300 group shadow-lg">
+                  {/* Team logo watermark */}
+                  <div className="absolute right-[-10%] bottom-[-10%] w-40 h-40 opacity-[0.07] pointer-events-none">
+                    <img src={nbaService.getTeamLogoUrl(t.abbreviation)} alt="" className="w-full h-full object-contain" />
+                  </div>
+
+                  {/* Top accent */}
+                  <div className="h-1 w-full" style={{ background: `linear-gradient(90deg, ${teamColor}, transparent)` }} />
+
+                  <div className="p-5 relative z-10">
+                    <div className="flex items-center gap-4 mb-4">
+                      <div className="w-14 h-14 rounded-xl bg-[#111] border border-[#333] flex items-center justify-center p-2 group-hover:scale-110 transition-transform shadow-lg">
+                        <img src={nbaService.getTeamLogoUrl(t.abbreviation)} alt={t.abbreviation} className="w-full h-full object-contain" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-sm font-bold text-white truncate group-hover:text-cyan-400 transition-colors">{t.name}</h3>
+                        <div className="flex items-center gap-1.5 mt-0.5">
+                          <span className="text-[9px] font-black text-[#555] uppercase tracking-widest">{t.conference}</span>
+                          <span className="text-[#333]">•</span>
+                          <span className="text-[9px] font-black text-[#555] uppercase tracking-widest">{t.division}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Record */}
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="font-mono font-black text-2xl text-white">{t.wins} - {t.losses}</div>
+                      <Badge className={`font-mono font-black text-xs border-none px-3 py-1 ${t.wins > t.losses ? 'bg-emerald-500/15 text-emerald-400' : 'bg-rose-500/15 text-rose-400'}`}>
+                        {winPct}%
+                      </Badge>
+                    </div>
+
+                    {/* Ratings row */}
+                    <div className="grid grid-cols-3 gap-2 pt-3 border-t border-[#2a2a2a]">
+                      <div className="text-center">
+                        <div className="flex items-center justify-center gap-1 mb-1">
+                          <Flame className="w-2.5 h-2.5 text-orange-500" />
+                          <span className="text-[8px] font-black text-[#555] uppercase tracking-widest">OFF</span>
+                        </div>
+                        <span className="font-mono font-bold text-sm text-white">{offRtg.toFixed(1)}</span>
+                      </div>
+                      <div className="text-center">
+                        <div className="flex items-center justify-center gap-1 mb-1">
+                          <Shield className="w-2.5 h-2.5 text-emerald-500" />
+                          <span className="text-[8px] font-black text-[#555] uppercase tracking-widest">DEF</span>
+                        </div>
+                        <span className="font-mono font-bold text-sm text-white">{defRtg.toFixed(1)}</span>
+                      </div>
+                      <div className="text-center">
+                        <div className="flex items-center justify-center gap-1 mb-1">
+                          <TrendingUp className="w-2.5 h-2.5 text-cyan-500" />
+                          <span className="text-[8px] font-black text-[#555] uppercase tracking-widest">NET</span>
+                        </div>
+                        <span className={`font-mono font-black text-sm ${netRtg > 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                          {netRtg > 0 ? '+' : ''}{netRtg.toFixed(1)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
+          );
+        })}
+      </div>
+    </motion.div>
   );
 }
