@@ -4,28 +4,45 @@ import { useSport } from "@/contexts/SportContext";
 import { nbaService } from "@/services/sportServiceFactory";
 import { 
   ArrowLeft, Trophy, Shield, Activity, Loader2, Zap, Target, BarChart3, Gauge, 
-  Building2, UserCircle, Briefcase, MapPin, History, Crown, AlertCircle, Users, UserCheck
+  Building2, Briefcase, Crown, History, AlertCircle, Users, UserCheck
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import type { NBAPlayer } from "@/data/nba/mockData";
 
-// 🏛️ NUESTRO "CMS" LOCAL (Para Front Office y Fotos Perfectas)
-// La API no da biografías ni buenas fotos de directivos. ¡Se configuran aquí!
+// 🏛️ NUESTRO "CMS" LOCAL (Añade aquí entrenadores para forzar su foto y que salgan los primeros)
 const ENRICHED_DATA: Record<string, any> = {
-  "Sam Presti": { img: "https://upload.wikimedia.org/wikipedia/commons/6/69/Sam_Presti.jpg", title: "Executive Vice President & General Manager", desc: "Sam Presti is currently in his 18th season with the Thunder franchise. Known for drafting Kevin Durant, Russell Westbrook, and James Harden in consecutive years, and orchestrating the historic Paul George trade that brought SGA to OKC." },
-  "Mark Daigneault": { img: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Mark_Daigneault_2022.jpg/800px-Mark_Daigneault_2022.jpg", title: "Head Coach", desc: "Named NBA Coach of the Year in 2024 after leading the youngest roster in NBA history to the #1 seed in the Western Conference. Known for his innovative offensive spacing." },
-  "Clay Bennett": { img: "https://upload.wikimedia.org/wikipedia/commons/e/ec/Clay_Bennett.jpg", title: "Chairman, Professional Basketball Club LLC", desc: "Led the ownership group that purchased the franchise in 2006 and successfully relocated it to Oklahoma City in 2008. Net worth: $400M+." }
+  "Sam Presti": { img: "https://upload.wikimedia.org/wikipedia/commons/6/69/Sam_Presti.jpg" },
+  "Clay Bennett": { img: "https://upload.wikimedia.org/wikipedia/commons/e/ec/Clay_Bennett.jpg" },
+  "Mark Daigneault": { img: "/mark_daigneault.jpg" }, // Foto en la carpeta public/
 };
 
 const getAvatarUrl = (name: string) => `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0f172a&color=fff&size=256&font-weight=bold`;
+
+// 🧮 FUNCIONES DE CONVERSIÓN MÉTRICA
+const convertHeightToCm = (heightStr?: string) => {
+  if (!heightStr || !heightStr.includes('-')) return "-";
+  const [feet, inches] = heightStr.split('-');
+  const totalInches = (parseInt(feet) * 12) + parseInt(inches);
+  const cm = Math.round(totalInches * 2.54);
+  return `${cm} cm`;
+};
+
+const convertWeightToKg = (weightStr?: string | number) => {
+  if (!weightStr) return "-";
+  const kg = Math.round(Number(weightStr) * 0.453592);
+  return `${kg} kg`;
+};
 
 export default function NBATeamProfile() {
   const { id } = useParams();
   const { sport } = useSport();
   const [team, setTeam] = useState<any>(null);
   const [allTeams, setAllTeams] = useState<any[]>([]);
+  
+  // 🚀 ESTADO NUEVO: Guardamos TODA la liga para encontrar jugadores traspasados en los Lineups
+  const [allLeaguePlayers, setAllLeaguePlayers] = useState<NBAPlayer[]>([]);
   
   const [isBaseLoading, setIsBaseLoading] = useState(true);
   const [isDeepDataLoading, setIsDeepDataLoading] = useState(true);
@@ -35,9 +52,9 @@ export default function NBATeamProfile() {
   const [bioRoster, setBioRoster] = useState<any[]>([]);
   const [coaches, setCoaches] = useState<any[]>([]);
   
-  const [activeTab, setActiveTab] = useState<"roster" | "executive" | "analytics" | "legacy">("roster");
+  const [activeTab, setActiveTab] = useState<"roster" | "coaches" | "analytics" | "legacy">("roster");
 
-  // 🚀 FIX: Prevenir Auto-Scroll al cargar
+  // 🚀 FIX: Prevenir Auto-Scroll molesto
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [id]);
@@ -46,13 +63,18 @@ export default function NBATeamProfile() {
     if (!id) return;
     setIsBaseLoading(true);
     
-    nbaService.fetchAllOfficialTeams().then((teams) => {
+    Promise.all([
+      nbaService.fetchAllOfficialTeams(),
+      nbaService.fetchAllOfficialPlayers()
+    ]).then(([teams, players]) => {
       setAllTeams(teams);
+      setAllLeaguePlayers(players); // Guardamos a toda la liga para el escáner de Lineups
+      
       const foundTeam = teams.find(t => t.id === id || t.abbreviation === id);
       setTeam(foundTeam || null);
       
       if (foundTeam) {
-        setIsBaseLoading(false); // Renderiza Banner al instante
+        setIsBaseLoading(false); 
         
         setIsDeepDataLoading(true);
         Promise.all([
@@ -71,6 +93,23 @@ export default function NBATeamProfile() {
       }
     });
   }, [id]);
+
+  // 🚀 ALGORITMO DE ORDENACIÓN DE ENTRENADORES (Fuerza a los de ENRICHED_DATA al principio)
+  const sortedCoaches = useMemo(() => {
+    const getRank = (c: any) => {
+      if (c.COACH_TYPE === "Head Coach") return 0;
+      const isEnriched = !!ENRICHED_DATA[c.COACH_NAME];
+      if (isEnriched) return 1; // Asistentes con foto manual van primero
+      return 2; // Resto de asistentes (con siluetas grises de la NBA)
+    };
+
+    return [...coaches].sort((a, b) => {
+      const rankA = getRank(a);
+      const rankB = getRank(b);
+      if (rankA !== rankB) return rankA - rankB;
+      return (a.COACH_NAME || "").localeCompare(b.COACH_NAME || "");
+    });
+  }, [coaches]);
 
   const radarData = useMemo(() => {
     if (!team || allTeams.length === 0) return [];
@@ -93,14 +132,21 @@ export default function NBATeamProfile() {
     ];
   }, [team, allTeams]);
 
+  // 🚀 FIX: ESCÁNER DE LINEUPS GLOBAL (Encuentra a jugadores traspasados)
   const parseLineupPlayers = (groupName: string) => {
     if (!groupName) return [];
     const names = groupName.split(" - ");
     return names.map(n => {
-      const cleanName = n.trim();
-      const lastName = cleanName.split(" ").pop() || "";
-      const match = bioRoster.find(r => r.PLAYER.includes(lastName));
-      return match ? { id: match.PLAYER_ID, name: match.PLAYER, imageUrl: nbaService.getImageUrl(match.PLAYER_ID) } 
+      const cleanName = n.trim(); 
+      const parts = cleanName.split(" ");
+      const lastName = parts.length > 1 ? parts.slice(1).join(" ") : cleanName;
+      const firstInitial = parts[0][0];
+
+      const match = allLeaguePlayers.find(p => 
+        p.name.includes(lastName) && p.name.startsWith(firstInitial)
+      );
+
+      return match ? { id: match.id, name: match.name, imageUrl: nbaService.getImageUrl(match.id) } 
                    : { id: "0", name: cleanName, imageUrl: getAvatarUrl(cleanName) };
     });
   };
@@ -206,7 +252,7 @@ export default function NBATeamProfile() {
         <button onClick={() => setActiveTab("roster")} className={`px-5 md:px-6 py-2.5 md:py-3 rounded-2xl text-[9px] md:text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === "roster" ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'text-slate-500 hover:text-white'}`}>
           <Users className="h-4 w-4" /> Roster
         </button>
-        <button onClick={() => setActiveTab("executive")} className={`px-5 md:px-6 py-2.5 md:py-3 rounded-2xl text-[9px] md:text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === "executive" ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : 'text-slate-500 hover:text-white'}`}>
+        <button onClick={() => setActiveTab("coaches")} className={`px-5 md:px-6 py-2.5 md:py-3 rounded-2xl text-[9px] md:text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === "coaches" ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : 'text-slate-500 hover:text-white'}`}>
           <UserCheck className="h-4 w-4" /> Coaching Staff
         </button>
         <button onClick={() => setActiveTab("analytics")} className={`px-5 md:px-6 py-2.5 md:py-3 rounded-2xl text-[9px] md:text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === "analytics" ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30' : 'text-slate-500 hover:text-white'}`}>
@@ -217,9 +263,9 @@ export default function NBATeamProfile() {
         </button>
       </div>
 
-      <div className="animate-in slide-in-from-bottom-4 duration-500">
+      <div className="animate-in fade-in duration-500">
         
-        {/* ═══════════════════ TAB 1: ROSTER (ALINEADO Y PERFECTO) ═══════════════════ */}
+        {/* ═══════════════════ TAB 1: ROSTER (CON MÉTRICAS KG Y CM) ═══════════════════ */}
         {activeTab === "roster" && (
           <div className="bg-[#0a0f18] border border-white/[0.06] rounded-[2rem] overflow-hidden shadow-2xl relative min-h-[400px]">
             {isDeepDataLoading ? (
@@ -229,52 +275,61 @@ export default function NBATeamProfile() {
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <div className="min-w-[1100px]">
-                  {/* Headers: 12 Columnas Grid */}
+                <div className="min-w-[1000px]">
+                  {/* Headers */}
                   <div className="grid grid-cols-12 gap-4 px-6 py-4 bg-white/[0.02] border-b border-white/[0.06] text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] items-center">
-                    <div className="col-span-3">Player</div>
+                    <div className="col-span-4">Player</div>
                     <div className="col-span-1 text-center">No.</div>
                     <div className="col-span-1 text-center">Pos</div>
-                    <div className="col-span-1 text-center">Age/DOB</div>
-                    <div className="col-span-2 text-center">Birthplace</div>
-                    <div className="col-span-1 text-center">Ht / Wt</div>
+                    <div className="col-span-2 text-center">Age / DOB</div>
+                    <div className="col-span-1 text-center">HT</div>
+                    <div className="col-span-1 text-center">WT</div>
                     <div className="col-span-1 text-center">Exp</div>
-                    <div className="col-span-2 text-right">Origin / College</div>
+                    <div className="col-span-1 text-right">Origin</div>
                   </div>
                   
                   {/* Rows */}
                   <div className="divide-y divide-white/[0.03]">
                     {bioRoster.map((p, i) => (
                       <Link key={i} to={`/${sport}/players/${p.PLAYER_ID}`} className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-white/[0.03] transition-colors group items-center">
-                        <div className="col-span-3 flex items-center gap-4">
+                        {/* Player */}
+                        <div className="col-span-4 flex items-center gap-4">
                           <Avatar className="h-12 w-12 border border-white/[0.08] shadow-lg group-hover:border-emerald-400 transition-colors bg-white">
                             <AvatarImage src={nbaService.getImageUrl(p.PLAYER_ID)} className="object-cover" />
                             <AvatarFallback className="bg-slate-800 text-[10px] font-bold text-slate-500">{p.PLAYER.substring(0, 2)}</AvatarFallback>
                           </Avatar>
                           <span className="font-bold text-white text-sm group-hover:text-emerald-400 transition-colors truncate">{p.PLAYER}</span>
                         </div>
+                        {/* No. */}
                         <div className="col-span-1 text-center font-mono font-black text-slate-300 text-lg">#{p.NUM}</div>
+                        {/* Pos */}
                         <div className="col-span-1 text-center">
                           <Badge className="bg-white/[0.06] text-slate-400 border-none font-black text-[9px] tracking-wider">{p.POSITION}</Badge>
                         </div>
-                        <div className="col-span-1 flex flex-col items-center justify-center">
+                        {/* Age / DOB */}
+                        <div className="col-span-2 flex flex-col items-center justify-center">
                           <span className="font-mono font-bold text-white text-sm">{p.AGE}</span>
                           <span className="text-[9px] font-bold text-slate-500 mt-0.5">{p.BIRTH_DATE}</span>
                         </div>
-                        <div className="col-span-2 flex flex-col items-center justify-center text-center">
-                           {/* La API a veces no devuelve el país, ponemos placeholder elegante */}
-                           <span className="font-bold text-slate-300 text-xs truncate max-w-[150px]">{p.HOW_ACQUIRED ? "USA" : "Intl"}</span>
-                           <span className="text-[9px] font-bold text-slate-500 mt-0.5">-</span>
-                        </div>
+                        {/* HT (US / Metric) */}
                         <div className="col-span-1 flex flex-col items-center justify-center">
-                          <span className="font-mono font-bold text-slate-300 text-xs">{p.HEIGHT}</span>
-                          <span className="text-[9px] font-bold text-slate-500 mt-0.5">{p.WEIGHT} lbs</span>
+                          <span className="font-mono font-bold text-slate-300 text-xs">{p.HEIGHT || "-"}</span>
+                          <span className="text-[9px] font-bold text-slate-500 mt-0.5">{convertHeightToCm(p.HEIGHT)}</span>
                         </div>
+                        {/* WT (US / Metric) */}
+                        <div className="col-span-1 flex flex-col items-center justify-center">
+                          <span className="font-mono font-bold text-slate-300 text-xs">
+                            {p.WEIGHT || "-"} <span className="text-[9px] text-slate-500 font-sans">lbs</span>
+                          </span>
+                          <span className="text-[9px] font-bold text-slate-500 mt-0.5">{convertWeightToKg(p.WEIGHT)}</span>
+                        </div>
+                        {/* Exp */}
                         <div className="col-span-1 text-center font-mono font-bold text-emerald-400/80 text-sm">
-                          {p.EXP === "R" ? "Rookie" : `${p.EXP} Y`}
+                          {p.EXP === "R" ? "Rookie" : `${p.EXP} Yrs`}
                         </div>
-                        <div className="col-span-2 text-right font-bold text-slate-400 text-xs truncate">
-                          {p.SCHOOL || "N/A"}
+                        {/* Origin */}
+                        <div className="col-span-1 text-right font-bold text-slate-400 text-xs truncate">
+                          {p.SCHOOL || "-"}
                         </div>
                       </Link>
                     ))}
@@ -285,78 +340,49 @@ export default function NBATeamProfile() {
           </div>
         )}
 
-        {/* ═══════════════════ TAB 2: COACHING STAFF & FRONT OFFICE ═══════════════════ */}
-        {activeTab === "executive" && (
-          <div className="space-y-8 relative min-h-[400px]">
+        {/* ═══════════════════ TAB 2: COACHING STAFF ═══════════════════ */}
+        {activeTab === "coaches" && (
+          <div className="bg-[#0a0f18] border border-white/[0.06] rounded-[2rem] p-8 md:p-10 shadow-2xl relative min-h-[400px]">
             {isDeepDataLoading ? (
               <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
                 <Loader2 className="h-8 w-8 animate-spin text-amber-500 mb-4" />
               </div>
             ) : (
-              <>
-                <div className="text-center py-4">
-                  <h1 className="text-3xl font-black text-white uppercase tracking-widest text-amber-500">Basketball Operations</h1>
+              <div>
+                <div className="flex items-center gap-3 mb-8 border-b border-white/10 pb-6">
+                  <UserCheck className="h-6 w-6 text-amber-400" />
+                  <h2 className="text-2xl font-black uppercase tracking-[0.2em] text-white italic">Coaching Staff</h2>
                 </div>
 
-                {/* President / GM Section (El CMS Local entra en acción) */}
-                <div className="flex flex-col items-center pb-8 border-b border-white/10">
-                  {ENRICHED_DATA[teamDetails?.frontOffice?.gm] ? (
-                    <div className="flex flex-col items-center text-center max-w-2xl">
-                      <div className="h-48 w-48 rounded-full border-4 border-amber-500/20 shadow-2xl mb-6 overflow-hidden">
-                        <img src={ENRICHED_DATA[teamDetails.frontOffice.gm].img} className="w-full h-full object-cover object-top" />
-                      </div>
-                      <h2 className="text-3xl font-black text-white mb-2">{teamDetails.frontOffice.gm}</h2>
-                      <p className="text-xs font-black text-slate-500 uppercase tracking-widest mb-6">{ENRICHED_DATA[teamDetails.frontOffice.gm].title}</p>
-                      <p className="text-sm text-slate-300 font-medium leading-relaxed">
-                        {ENRICHED_DATA[teamDetails.frontOffice.gm].desc}
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center text-center">
-                      <div className="h-48 w-48 rounded-full border-4 border-white/10 shadow-2xl mb-6 overflow-hidden bg-slate-900">
-                        <img src={getAvatarUrl(teamDetails?.frontOffice?.gm || "GM")} className="w-full h-full object-cover" />
-                      </div>
-                      <h2 className="text-3xl font-black text-white mb-2">{teamDetails?.frontOffice?.gm || "General Manager"}</h2>
-                      <p className="text-xs font-black text-slate-500 uppercase tracking-widest">General Manager</p>
-                      <p className="text-xs text-slate-600 mt-4 italic">Update ENRICHED_DATA to add bio and photo.</p>
-                    </div>
-                  )}
-                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-8">
+                  {sortedCoaches.map((c, i) => {
+                    const customImg = ENRICHED_DATA[c.COACH_NAME]?.img;
+                    const fallbackUrl = getAvatarUrl(c.COACH_NAME);
+                    const imgSrc = customImg ? customImg : `https://cdn.nba.com/headshots/nba/latest/260x190/${c.COACH_ID}.png`;
 
-                {/* Coaching Staff Grid (Evitando siluetas grises de la NBA) */}
-                <div>
-                  <h3 className="text-sm font-black text-white uppercase tracking-widest mb-8 text-center">Coaching Staff</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-8">
-                    {coaches.map((c, i) => {
-                      // Si es el Head Coach, usamos la foto oficial si existe en ENRICHED_DATA
-                      const enrichedCoach = ENRICHED_DATA[c.COACH_NAME];
-                      return (
-                        <div key={i} className="flex flex-col items-center text-center group">
-                          <div className="h-32 w-32 rounded-full border-2 border-white/10 shadow-lg mb-4 overflow-hidden bg-slate-900 group-hover:border-amber-500/50 transition-colors">
-                            {enrichedCoach ? (
-                              <img src={enrichedCoach.img} className="w-full h-full object-cover" />
-                            ) : (
-                              // Intentamos foto CDN, si falla o da silueta fea, ponemos Iniciales (Avatar)
-                              <img 
-                                src={`https://cdn.nba.com/headshots/nba/latest/260x190/${c.COACH_ID}.png`} 
-                                onError={(e) => { e.currentTarget.src = getAvatarUrl(c.COACH_NAME); }}
-                                className="w-full h-full object-cover" 
-                              />
-                            )}
-                          </div>
-                          <h4 className="text-sm font-bold text-white mb-1 group-hover:text-amber-400 transition-colors">{c.COACH_NAME}</h4>
-                          <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">{c.COACH_TYPE}</p>
+                    return (
+                      <div key={c.COACH_ID || i} className="flex flex-col items-center text-center group">
+                        <div className="h-32 w-32 rounded-full border-2 border-white/10 shadow-lg mb-4 overflow-hidden bg-[#0a0f18] group-hover:border-amber-500/50 transition-colors flex items-center justify-center">
+                          <img 
+                            src={imgSrc} 
+                            className="w-full h-full object-cover object-top"
+                            onError={(e) => {
+                              e.currentTarget.src = fallbackUrl;
+                            }}
+                          />
                         </div>
-                      )
-                    })}
-                  </div>
+                        <h4 className="text-sm font-bold text-white mb-1 group-hover:text-amber-400 transition-colors">{c.COACH_NAME}</h4>
+                        <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">{c.COACH_TYPE}</p>
+                      </div>
+                    )
+                  })}
                 </div>
-              </>
+              </div>
             )}
           </div>
         )}
 
-        {/* ═══════════════════ TAB 3: LIVE ANALYTICS (Quintetos) ═══════════════════ */}
+        {/* ═══════════════════ TAB 3: LIVE ANALYTICS (Quintetos Globales) ═══════════════════ */}
         {activeTab === "analytics" && (
           <div className="space-y-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -469,7 +495,7 @@ export default function NBATeamProfile() {
         {activeTab === "legacy" && (
           <div className="relative min-h-[400px]">
             {isDeepDataLoading ? (
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
                 <Loader2 className="h-8 w-8 animate-spin text-purple-500 mb-4" />
               </div>
             ) : (
