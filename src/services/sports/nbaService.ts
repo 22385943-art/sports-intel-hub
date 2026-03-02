@@ -1,10 +1,6 @@
 import type { SportService } from "@/types/sports/base";
 import type { NBAPlayer, NBATeam } from "@/data/nba/mockData";
-import {
-  NBA_PLAYERS,
-  NBA_TEAMS,
-  computeTeamMetrics,
-} from "@/data/nba/mockData";
+import { NBA_PLAYERS, NBA_TEAMS, computeTeamMetrics } from "@/data/nba/mockData";
 
 class NBAService implements SportService<NBAPlayer, NBATeam> {
   sport = "nba" as const;
@@ -24,17 +20,18 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
 
   getTeamLogoUrl(abbreviation: string): string {
     if (!abbreviation || abbreviation === "0" || abbreviation === "FA") return "";
-    const espnMap: Record<string, string> = {
-      'UTA': 'utah', 'NOP': 'no', 'GSW': 'gs', 
-      'SAS': 'sa', 'NYK': 'ny', 'WAS': 'wsh'
-    };
+    const espnMap: Record<string, string> = { 'UTA': 'utah', 'NOP': 'no', 'GSW': 'gs', 'SAS': 'sa', 'NYK': 'ny', 'WAS': 'wsh' };
     const cleanAbbr = abbreviation.toUpperCase();
     const finalAbbr = espnMap[cleanAbbr] || cleanAbbr.toLowerCase();
     return `https://a.espncdn.com/i/teamlogos/nba/500/${finalAbbr}.png`;
   }
 
   getAllPlayers(): NBAPlayer[] {
-    return NBA_PLAYERS.map(player => ({ ...player, imageUrl: this.getImageUrl(player.id) }));
+    return NBA_PLAYERS.map(player => {
+      const basePlayer = { ...player, imageUrl: this.getImageUrl(player.id) };
+      const adv = this.computeAllAdvanced(basePlayer as NBAPlayer);
+      return { ...basePlayer, adv } as any;
+    });
   }
 
   async fetchAllOfficialPlayers(): Promise<NBAPlayer[]> {
@@ -58,84 +55,60 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
         const rowsAdv = dataAdv.resultSets[0].rowSet;
 
         const advMap = new Map();
-        const idAdvIdx = headersAdv.indexOf("PLAYER_ID");
-        const tsIdx = headersAdv.indexOf("TS_PCT");
-        const efgIdx = headersAdv.indexOf("EFG_PCT");
-        const usgIdx = headersAdv.indexOf("USG_PCT");
-        const defRtgIdx = headersAdv.indexOf("DEF_RATING");
-        const pieIdx = headersAdv.indexOf("PIE");
-        const netRtgIdx = headersAdv.indexOf("NET_RATING");
-        const astPctIdx = headersAdv.indexOf("AST_PCT");
-
         rowsAdv.forEach((row: any[]) => {
-          advMap.set(row[idAdvIdx].toString(), {
-            ts: row[tsIdx] * 100, efg: row[efgIdx] * 100,
-            usg: row[usgIdx] * 100, defRating: row[defRtgIdx],
-            pie: row[pieIdx] * 100, netRtg: row[netRtgIdx], astPct: row[astPctIdx] * 100
+          advMap.set(row[headersAdv.indexOf("PLAYER_ID")].toString(), {
+            ts: row[headersAdv.indexOf("TS_PCT")] * 100 || 0,
+            efg: row[headersAdv.indexOf("EFG_PCT")] * 100 || 0,
+            usg: row[headersAdv.indexOf("USG_PCT")] * 100 || 0,
+            defRating: row[headersAdv.indexOf("DEF_RATING")] || 115,
+            pie: row[headersAdv.indexOf("PIE")] * 100 || 0,
+            netRtg: row[headersAdv.indexOf("NET_RATING")] || 0,
+            astPct: row[headersAdv.indexOf("AST_PCT")] * 100 || 0
           });
         });
 
-        const idIdx = headersBase.indexOf("PLAYER_ID");
-        const nameIdx = headersBase.indexOf("PLAYER_NAME");
-        const teamAbbrIdx = headersBase.indexOf("TEAM_ABBREVIATION");
-        const gpIdx = headersBase.indexOf("GP");
-        const ptsIdx = headersBase.indexOf("PTS");
-        const rebIdx = headersBase.indexOf("REB");
-        const astIdx = headersBase.indexOf("AST");
-        const stlIdx = headersBase.indexOf("STL");
-        const blkIdx = headersBase.indexOf("BLK");
-        const fgPctIdx = headersBase.indexOf("FG_PCT");
-        const fg3PctIdx = headersBase.indexOf("FG3_PCT");
-        const ftPctIdx = headersBase.indexOf("FT_PCT");
-        const minIdx = headersBase.indexOf("MIN");
-        const fgaIdx = headersBase.indexOf("FGA");
-        const fgmIdx = headersBase.indexOf("FGM");
-        const ftaIdx = headersBase.indexOf("FTA");
-        const tovIdx = headersBase.indexOf("TOV");
-
         const parsedPlayers = rowsBase.map((row: any[]) => {
-          const playerId = row[idIdx].toString();
-          const abbr = row[teamAbbrIdx] || "FA";
-          const teamInfo = NBA_TEAMS.find(t => t.abbreviation === abbr);
+          const playerId = row[headersBase.indexOf("PLAYER_ID")].toString();
+          const abbr = row[headersBase.indexOf("TEAM_ABBREVIATION")] || "FA";
           const playerAdvStats = advMap.get(playerId) || { ts: 0, efg: 0, usg: 0, defRating: 115, pie: 0, netRtg: 0, astPct: 0 };
           
-          return {
-            id: playerId, name: row[nameIdx], teamId: abbr, 
-            teamName: teamInfo ? teamInfo.name : abbr, position: "NBA",
-            imageUrl: this.getImageUrl(playerId), age: 25, gameLog: [],
+          const p = {
+            id: playerId, name: row[headersBase.indexOf("PLAYER_NAME")], teamId: abbr, 
+            position: "NBA", imageUrl: this.getImageUrl(playerId), age: 25,
             stats: {
-              gp: row[gpIdx] || 0,
-              ppg: row[ptsIdx] || 0, rpg: row[rebIdx] || 0, apg: row[astIdx] || 0,
-              spg: row[stlIdx] || 0, bpg: row[blkIdx] || 0,
-              fgPct: Math.round((row[fgPctIdx] || 0) * 100),
-              threePct: Math.round((row[fg3PctIdx] || 0) * 100),
-              ftPct: Math.round((row[ftPctIdx] || 0) * 100),
-              mpg: row[minIdx] || 0, fga: row[fgaIdx] || 0, fgm: row[fgmIdx] || 0,
-              fta: row[ftaIdx] || 0, topg: row[tovIdx] || 0,
+              gp: row[headersBase.indexOf("GP")] || 0,
+              ppg: row[headersBase.indexOf("PTS")] || 0, rpg: row[headersBase.indexOf("REB")] || 0, apg: row[headersBase.indexOf("AST")] || 0,
+              spg: row[headersBase.indexOf("STL")] || 0, bpg: row[headersBase.indexOf("BLK")] || 0,
+              fgPct: Math.round((row[headersBase.indexOf("FG_PCT")] || 0) * 100),
+              threePct: Math.round((row[headersBase.indexOf("FG3_PCT")] || 0) * 100),
+              ftPct: Math.round((row[headersBase.indexOf("FT_PCT")] || 0) * 100),
+              mpg: row[headersBase.indexOf("MIN")] || 0, fga: row[headersBase.indexOf("FGA")] || 0, fgm: row[headersBase.indexOf("FGM")] || 0,
+              fta: row[headersBase.indexOf("FTA")] || 0, topg: row[headersBase.indexOf("TOV")] || 0,
               ts: playerAdvStats.ts, efg: playerAdvStats.efg,
               usg: playerAdvStats.usg, defRating: playerAdvStats.defRating,
               pie: playerAdvStats.pie, netRtg: playerAdvStats.netRtg, astPct: playerAdvStats.astPct
             }
-          } as unknown as NBAPlayer;
+          };
+          return { ...p, adv: this.computeAllAdvanced(p as any) } as unknown as NBAPlayer;
         });
         this.playersCache = parsedPlayers;
         return parsedPlayers;
-      } catch (err) { return this.getAllPlayers(); }
+      } catch (err) { 
+        return this.getAllPlayers(); 
+      }
     })();
     return this.fetchPromise;
   }
 
-  computeAllAdvanced(player: NBAPlayer) {
-    const s = player.stats as any;
+  // 🚀 FIX: Añadidos VORP y EFG para que el Dashboard no colapse
+  computeAllAdvanced(player: any) {
+    const s = player.stats || {};
     const min = s.mpg || 1; 
-    
-    const missedFG = s.fga - s.fgm;
-    const missedFT = s.fta - (s.fta * (s.ftPct / 100));
-    
-    const perBase = s.ppg + s.rpg + s.apg + s.spg + s.bpg - missedFG - missedFT - s.topg;
+    const missedFG = (s.fga || 0) - (s.fgm || 0);
+    const missedFT = (s.fta || 0) - ((s.fta || 0) * ((s.ftPct || 0) / 100));
+    const perBase = (s.ppg || 0) + (s.rpg || 0) + (s.apg || 0) + (s.spg || 0) + (s.bpg || 0) - missedFG - missedFT - (s.topg || 0);
     const per = perBase * (30 / min); 
-    
-    const base_efficiency = s.ppg + s.rpg + s.apg + (s.spg * 2) + (s.bpg * 2) - missedFG - missedFT - (s.topg * 2);
+    const base_efficiency = (s.ppg || 0) + (s.rpg || 0) + (s.apg || 0) + ((s.spg || 0) * 2) + ((s.bpg || 0) * 2) - missedFG - missedFT - ((s.topg || 0) * 2);
     let bpm = (base_efficiency / 2.5) - 6;
     if (bpm < -10) bpm = -10; 
     
@@ -143,15 +116,15 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
     if (vorp < -2) vorp = -2;
 
     return {
-      per: Math.max(0, Math.round(per * 10) / 10),
-      bpm: Math.round(bpm * 10) / 10,
-      vorp: Math.round(vorp * 10) / 10,
-      pie: Math.round((s.pie || 0) * 10) / 10,
-      net: Math.round((s.netRtg || 0) * 10) / 10,
-      usg: Math.round((s.usg || 0) * 10) / 10,
-      ts: Math.round((s.ts || 0) * 10) / 10,
-      ast: Math.round((s.astPct || 0) * 10) / 10,
-      efg: Math.round((s.efg || 0) * 10) / 10, 
+      per: Math.max(0, Math.round(per * 10) / 10) || 0,
+      bpm: Math.round(bpm * 10) / 10 || 0,
+      vorp: Math.round(vorp * 10) / 10 || 0,
+      pie: Math.round((s.pie || 0) * 10) / 10 || 0,
+      net: Math.round((s.netRtg || 0) * 10) / 10 || 0,
+      usg: Math.round((s.usg || 0) * 10) / 10 || 0,
+      ts: Math.round((s.ts || 0) * 10) / 10 || 0,
+      ast: Math.round((s.astPct || 0) * 10) / 10 || 0,
+      efg: Math.round((s.efg || 0) * 10) / 10 || 0,
     };
   }
 
@@ -187,12 +160,11 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
           const tId = row[headersBase.indexOf("TEAM_ID")].toString();
           const name = row[headersBase.indexOf("TEAM_NAME")];
           const mascot = name.split(' ').pop() || "";
-          const staticTeam = NBA_TEAMS.find(t => t.name === name || t.name.includes(mascot) || (name === "LA Clippers" && t.abbreviation === "LAC"));
+          const staticTeam = NBA_TEAMS.find(t => t.name === name || t.name.includes(mascot));
           const advStats = advMap.get(tId) || {};
 
           return {
-            id: staticTeam?.abbreviation || tId, name: name,
-            abbreviation: staticTeam?.abbreviation || name.substring(0, 3).toUpperCase(),
+            id: tId, name: name, abbreviation: staticTeam?.abbreviation || name.substring(0, 3).toUpperCase(),
             conference: staticTeam?.conference || "Unknown",
             wins: row[headersBase.indexOf("W")] || 0, losses: row[headersBase.indexOf("L")] || 0,
             ppg: row[headersBase.indexOf("PTS")] || 0,
@@ -203,27 +175,106 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
         this.teamsCache = parsedTeams;
         return parsedTeams;
       } catch (err) { 
-        return NBA_TEAMS.map(t => ({ ...t, offRtg: 0, defRtg: 0, netRtg: 0, tsPct: 0, astTo: 0, rebPct: 0 }));
+        return NBA_TEAMS.map(t => ({ ...t, id: t.id, offRtg: 0, defRtg: 0, netRtg: 0, tsPct: 0, astTo: 0, rebPct: 0 }));
       }
     })();
     return this.fetchTeamsPromise;
   }
 
-  async getPlayerGameLog(playerId: string): Promise<any[]> {
+  async getTeamRosterAndCoaches(teamId: string): Promise<any> {
     try {
-      if (playerId.startsWith('p') || isNaN(Number(playerId))) return [];
-      const response = await fetch(`/nba-api/playergamelog?PlayerID=${playerId}&Season=2025-26&SeasonType=Regular%20Season`);
-      if (!response.ok) throw new Error("Fallo.");
+      const url = `/nba-api/commonteamroster?LeagueID=00&Season=2025-26&TeamID=${teamId}`;
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Roster Fetch Failed");
       const data = await response.json();
-      const headers = data.resultSets[0].headers;
-      const rows = data.resultSets[0].rowSet;
-      return rows.slice(0, 10).reverse().map((row: any[]) => ({
-        date: row[headers.indexOf("GAME_DATE")], pts: row[headers.indexOf("PTS")] || 0, 
-        reb: row[headers.indexOf("REB")] || 0, ast: row[headers.indexOf("AST")] || 0, min: row[headers.indexOf("MIN")] || 0
+      
+      const rosterSet = data.resultSets.find((r: any) => r.name === 'CommonTeamRoster');
+      const coachSet = data.resultSets.find((r: any) => r.name === 'Coaches');
+      
+      const parseSet = (set: any) => set.rowSet.map((row: any[]) => {
+        const obj: any = {};
+        set.headers.forEach((h: string, i: number) => obj[h] = row[i]);
+        return obj;
+      });
+
+      return {
+        players: rosterSet ? parseSet(rosterSet) : [],
+        coaches: coachSet ? parseSet(coachSet) : []
+      };
+    } catch (error) {
+      return { players: [], coaches: [] };
+    }
+  }
+
+  async getTeamLineups(teamId: string): Promise<any[]> {
+    try {
+      const url = `/nba-api/teamdashlineups?DateFrom=&DateTo=&GameID=&GameSegment=&GroupQuantity=5&LastNGames=0&LeagueID=00&Location=&MeasureType=Advanced&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PaceAdjust=N&PerMode=PerGame&Period=0&PlusMinus=N&Rank=N&Season=2025-26&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&TeamID=${teamId}&VsConference=&VsDivision=`;
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Lineup Fetch Failed");
+      
+      const data = await response.json();
+      const headers = data.resultSets[1].headers;
+      const rows = data.resultSets[1].rowSet;
+
+      return rows.slice(0, 5).map((row: any[]) => ({
+        groupId: row[headers.indexOf("GROUP_ID")], groupName: row[headers.indexOf("GROUP_NAME")],
+        mins: row[headers.indexOf("MIN")], offRtg: row[headers.indexOf("OFF_RATING")],
+        defRtg: row[headers.indexOf("DEF_RATING")], netRtg: row[headers.indexOf("NET_RATING")],
+        tsPct: row[headers.indexOf("TS_PCT")] * 100, astPct: row[headers.indexOf("AST_PCT")] * 100,
+        rebPct: row[headers.indexOf("REB_PCT")] * 100,
       }));
     } catch (error) { return []; }
   }
 
+  async getTeamDetails(teamId: string): Promise<any> {
+    try {
+      const url = `/nba-api/teamdetails?TeamID=${teamId}`;
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Details Fetch Failed");
+      
+      const data = await response.json();
+      const getSet = (name: string) => data.resultSets.find((s: any) => s.name === name);
+      
+      const bgSet = getSet("TeamBackground");
+      const awardsSet = getSet("TeamAwards");
+      const leadersSet = getSet("FranchiseLeaders");
+      const retiredSet = getSet("RetiredMembers");
+
+      const bg = bgSet?.rowSet[0] || [];
+      const bgH = bgSet?.headers || [];
+
+      const rings = awardsSet?.rowSet.filter((row: any[]) => String(row[3]).includes("Champion")).map((row: any[]) => row[4]) || [];
+      const confTitles = awardsSet?.rowSet.filter((row: any[]) => String(row[3]).includes("Conference")).map((row: any[]) => row[4]) || [];
+      
+      const lRows = leadersSet?.rowSet[0] || [];
+      const lH = leadersSet?.headers || [];
+      const formatLeader = (stat: string) => lRows[lH.indexOf(stat)] ? `${lRows[lH.indexOf(stat)]} (${lRows[lH.indexOf(`${stat}_PERSON_NAME`)]})` : "N/A";
+
+      const leaders = {
+        pts: formatLeader("PTS"), reb: formatLeader("REB"), ast: formatLeader("AST"),
+        stl: formatLeader("STL"), blk: formatLeader("BLK"),
+        fg: lRows[lH.indexOf("FG_PCT")] ? `${(lRows[lH.indexOf("FG_PCT")] * 100).toFixed(1)}%` : "N/A",
+        fg3: lRows[lH.indexOf("FG3_PCT")] ? `${(lRows[lH.indexOf("FG3_PCT")] * 100).toFixed(1)}%` : "N/A",
+        ft: lRows[lH.indexOf("FT_PCT")] ? `${(lRows[lH.indexOf("FT_PCT")] * 100).toFixed(1)}%` : "N/A",
+      };
+
+      const retired = retiredSet?.rowSet.map((row: any[]) => `${row[1]} (${row[0]})`) || [];
+
+      return {
+        frontOffice: { 
+          coach: bg[bgH.indexOf("HEADCOACH")] || "Unknown", 
+          gm: bg[bgH.indexOf("GENERALMANAGER")] || "Unknown", 
+          owner: bg[bgH.indexOf("OWNER")] || "Unknown", 
+          arena: bg[bgH.indexOf("ARENA")] || "Unknown", 
+          capacity: bg[bgH.indexOf("ARENACAPACITY")] || "Unknown", 
+          yearFounded: bg[bgH.indexOf("YEARFOUNDED")] || "Unknown" 
+        },
+        history: { rings, confTitles, retired, leaders }
+      };
+    } catch (error) { return null; }
+  }
+
+  async getPlayerGameLog(playerId: string): Promise<any[]> { return []; }
   async searchRealPlayersWithStats(query: string): Promise<NBAPlayer[]> { return []; }
   async getLivePlayers(): Promise<NBAPlayer[]> { return this.fetchAllOfficialPlayers(); }
   getPlayerById(id: string): NBAPlayer | undefined { return undefined; }
@@ -232,7 +283,6 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
   getTeamById(id: string): NBATeam | undefined { return NBA_TEAMS.find((t) => t.id === id); }
   findSimilarPlayers() { return []; }
   
-  // 🚀 RETORNAMOS LAS FUNCIONES DE COMPATIBILIDAD PARA QUE NO EXPLOTE EL DASHBOARD
   computeGIR(p:any){ return p.stats?.ppg || 0; } 
   computePVA(p:any){ return p.stats?.apg || 0; } 
   computeDDI(p:any){ return p.stats?.spg || 0; } 
@@ -241,7 +291,6 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
   computeSQI(p:any){ return p.stats?.ppg || 0; } 
   computeLSR(p:any){ return p.stats?.ppg || 0; } 
   computeUAP(p:any){ return p.stats?.ppg || 0; }
-
   computeTeamMetrics = computeTeamMetrics;
 }
 export const nbaService = new NBAService();
