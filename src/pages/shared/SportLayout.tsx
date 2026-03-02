@@ -87,7 +87,7 @@ export default function SportLayout() {
   return (
     <SportProvider>
       <SidebarProvider>
-        <div className="min-h-screen flex w-full bg-background">
+        <div className="min-h-screen flex w-full bg-[#0a0f18]">
           <AppSidebar />
           <div className="flex-1 flex flex-col min-w-0">
             <Header />
