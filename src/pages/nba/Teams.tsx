@@ -1,210 +1,275 @@
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { useSport } from "@/contexts/SportContext";
+import { useState, useEffect, useMemo } from "react";
 import { nbaService } from "@/services/sportServiceFactory";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Loader2, Shield, Flame, TrendingUp } from "lucide-react";
+import { Loader2, Activity, Shield, Zap, Target, Brain, Database, LayoutGrid, ArrowDownUp } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
-import { motion } from "framer-motion";
-
-const TEAM_COLORS: Record<string, string> = {
-  "ATL": "#E03A3E", "BOS": "#007A33", "BKN": "#FFFFFF", "CHA": "#00788C",
-  "CHI": "#CE1141", "CLE": "#860038", "DAL": "#00A3E0",
-  "DEN": "#FEC524", "DET": "#C8102E", "GSW": "#1D428A", "HOU": "#CE1141",
-  "IND": "#FDBB30", "LAC": "#C8102E", "LAL": "#FDB927", "MEM": "#7399C6",
-  "MIA": "#98002E", "MIL": "#00471B", "MIN": "#78BE20",
-  "NOP": "#85714D", "NYK": "#F58426", "OKC": "#007AC1", "ORL": "#0077C0",
-  "PHI": "#006BB6", "PHX": "#E56020", "POR": "#E03A3E", "SAC": "#5A2D81",
-  "SAS": "#C4CED4", "TOR": "#CE1141", "UTA": "#F9A01B", "WAS": "#E31837"
-};
-
-const getDivision = (abbr: string) => {
-  const divisions: Record<string, string[]> = {
-    "Atlantic": ["BOS", "BKN", "NYK", "PHI", "TOR"],
-    "Central": ["CHI", "CLE", "DET", "IND", "MIL"],
-    "Southeast": ["ATL", "CHA", "MIA", "ORL", "WAS"],
-    "Northwest": ["DEN", "MIN", "OKC", "POR", "UTA"],
-    "Pacific": ["GSW", "LAC", "LAL", "PHX", "SAC"],
-    "Southwest": ["DAL", "HOU", "MEM", "NOP", "SAS"]
-  };
-  for (const [div, teams] of Object.entries(divisions)) {
-    if (teams.includes(abbr.toUpperCase())) return div;
-  }
-  return "Unknown";
-};
-
-const getDivisionsForConference = (conf: string) => {
-  if (conf === "Eastern") return ["Atlantic", "Central", "Southeast"];
-  if (conf === "Western") return ["Northwest", "Pacific", "Southwest"];
-  return ["Atlantic", "Central", "Southeast", "Northwest", "Pacific", "Southwest"];
-};
 
 export default function NBATeams() {
-  const { sport } = useSport();
-  const [search, setSearch] = useState("");
-  const [confFilter, setConfFilter] = useState("all");
-  const [divFilter, setDivFilter] = useState("all");
   const [teams, setTeams] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
+  const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' }>({ key: 'netRtg', direction: 'desc' });
 
   useEffect(() => {
-    nbaService.fetchAllOfficialTeams().then((realTeams) => {
-      setTeams(realTeams);
+    nbaService.fetchAllOfficialTeams().then((data) => {
+      setTeams(data);
       setIsLoading(false);
     });
   }, []);
 
-  useEffect(() => {
-    if (confFilter !== "all") {
-      const validDivisions = getDivisionsForConference(confFilter);
-      if (divFilter !== "all" && !validDivisions.includes(divFilter)) {
-        setDivFilter("all");
+  const percentiles = useMemo(() => {
+    if (teams.length === 0) return {};
+    const calc = (val: number, arr: number[], inv = false) => {
+      const sorted = [...arr].sort((a, b) => a - b);
+      const count = sorted.filter(v => v <= val).length;
+      let pct = Math.round((count / sorted.length) * 100);
+      return inv ? 100 - pct : pct; 
+    };
+
+    const dists = {
+      offRtg: teams.map(t => t.offRtg).filter(v => v > 0),
+      defRtg: teams.map(t => t.defRtg).filter(v => v > 0),
+      tsPct: teams.map(t => t.tsPct).filter(v => v > 0),
+      rebPct: teams.map(t => t.rebPct).filter(v => v > 0),
+      astTo: teams.map(t => t.astTo).filter(v => v > 0),
+      pace: teams.map(t => t.pace).filter(v => v > 0),
+    };
+
+    const result: Record<string, any> = {};
+    teams.forEach(t => {
+      result[t.id] = {
+        off: calc(t.offRtg, dists.offRtg),
+        def: calc(t.defRtg, dists.defRtg, true), 
+        ts: calc(t.tsPct, dists.tsPct),
+        reb: calc(t.rebPct, dists.rebPct),
+        astTo: calc(t.astTo, dists.astTo),
+        pace: calc(t.pace, dists.pace),
+      };
+    });
+    return result;
+  }, [teams]);
+
+// 🚀 EL NUEVO CEREBRO DE IDENTIDAD (100% blindado para cruzar Pace + Tags)
+  const getArchetype = (teamId: string) => {
+    const p = percentiles[teamId];
+    if (!p) return { label: "Unknown", classes: "text-slate-400 bg-slate-500/10 border-slate-500/20" };
+    
+    let core = "";
+    let colorClass = "text-slate-300 bg-white/5 border-white/10";
+    let tags: string[] = [];
+
+    // 1. Detectar Líderes Absolutos (#1 en la NBA)
+    if (p.off === 100) { core = "Elite Offense (#1)"; colorClass = "text-orange-400 bg-orange-500/10 border-orange-500/30"; }
+    else if (p.def === 100) { core = "Elite Defense (#1)"; colorClass = "text-cyan-400 bg-cyan-500/10 border-cyan-500/30"; }
+    else if (p.reb === 100) { core = "Best Rebounding Team"; colorClass = "text-blue-400 bg-blue-500/10 border-blue-500/30"; }
+    
+    // 2. Si no son el #1 absoluto, asignar Core Base
+    if (!core) {
+      if (p.off >= 85 && p.def >= 85) { core = "Two-Way Elite"; colorClass = "text-emerald-400 bg-emerald-500/10 border-emerald-500/30"; }
+      else if (p.off <= 20 && p.def <= 20) { core = "Lottery Bound"; colorClass = "text-rose-400 bg-rose-500/10 border-rose-500/30"; }
+      else if (p.off >= 85) { core = "Offensive Engine"; colorClass = "text-orange-400 bg-orange-500/10 border-orange-500/30"; }
+      else if (p.def >= 85) { core = "Defensive Anchor"; colorClass = "text-cyan-400 bg-cyan-500/10 border-cyan-500/30"; }
+    }
+
+    // 3. Ver otros atributos destacados (Para hacer combinaciones)
+    if (p.reb >= 85 && core !== "Best Rebounding Team") tags.push("Elite Rebounds");
+    if (p.ts >= 85) tags.push("Efficient Scorers"); 
+    if (p.astTo >= 85) tags.push("Great Passers");
+
+    // 4. Modificador de ritmo (Pace)
+    let pacePrefix = "";
+    if (p.pace <= 15) pacePrefix = "Methodical ";
+    if (p.pace >= 85) pacePrefix = "Fast-Paced ";
+
+    // 5. Motor de Combinación Lógica (CORREGIDO)
+    let finalLabel = core;
+
+    if (core === "Elite Offense (#1)") {
+      if (pacePrefix === "Methodical ") finalLabel = "Slow but Elite Offense"; 
+      else if (pacePrefix === "Fast-Paced ") finalLabel = "Fast & Elite Offense";
+      else if (tags.length > 0) finalLabel = `Elite Offense & ${tags[0]}`;
+    } 
+    else if (core) {
+      // 🚀 FIX: AHORA SÍ O SÍ APLICA EL RITMO PRIMERO
+      let baseName = pacePrefix ? `${pacePrefix}${core}` : core;
+      
+      if (tags.length > 0) finalLabel = `${baseName} & ${tags[0]}`;
+      else finalLabel = baseName;
+    } 
+    else {
+      // Si no destacan en ataque/defensa general, pero sí en una estadística específica
+      if (tags.length > 0) {
+        finalLabel = pacePrefix ? `${pacePrefix}${tags[0]}` : tags[0];
+        colorClass = "text-teal-400 bg-teal-500/10 border-teal-500/30";
+      } else if (pacePrefix === "Fast-Paced ") {
+        finalLabel = "Run & Gun System";
+        colorClass = "text-purple-400 bg-purple-500/10 border-purple-500/30";
+      } else if (pacePrefix === "Methodical ") {
+        finalLabel = "Grind-it-Out System";
+        colorClass = "text-slate-400 bg-slate-500/10 border-slate-500/30";
+      } else {
+        finalLabel = "Balanced System";
       }
     }
-  }, [confFilter, divFilter]);
 
-  const filteredTeams = teams
-    .map(t => ({ ...t, division: getDivision(t.abbreviation) }))
-    .filter(t => t.name.toLowerCase().includes(search.toLowerCase()))
-    .filter(t => confFilter === "all" || t.conference === confFilter)
-    .filter(t => divFilter === "all" || t.division === divFilter)
-    .sort((a, b) => b.wins - a.wins);
+    return { label: finalLabel, classes: colorClass };
+  };
 
-  const availableDivisions = getDivisionsForConference(confFilter);
+  const sortedTeams = [...teams].sort((a, b) => {
+    if (a[sortConfig.key] < b[sortConfig.key]) return sortConfig.direction === 'asc' ? -1 : 1;
+    if (a[sortConfig.key] > b[sortConfig.key]) return sortConfig.direction === 'asc' ? 1 : -1;
+    return 0;
+  });
 
-  if (isLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[70vh] animate-in fade-in space-y-4">
-        <Loader2 className="h-12 w-12 animate-spin text-cyan-500" />
-        <p className="text-slate-500 font-bold text-xs uppercase tracking-widest">Syncing NBA Standings...</p>
+  const requestSort = (key: string) => {
+    let direction: 'asc' | 'desc' = 'desc';
+    if (sortConfig.key === key && sortConfig.direction === 'desc') direction = 'asc';
+    if ((key === 'defRtg' || key === 'losses') && sortConfig.key !== key) direction = 'asc';
+    setSortConfig({ key, direction });
+  };
+
+  if (isLoading) return (
+    <div className="flex flex-col items-center justify-center min-h-[70vh] space-y-4">
+      <Loader2 className="h-12 w-12 animate-spin text-cyan-500" />
+      <p className="text-[#888] font-bold text-xs uppercase tracking-widest">Compiling Team DNA...</p>
+    </div>
+  );
+
+  const SortHeader = ({ label, sortKey, align = "right" }: any) => (
+    <th onClick={() => requestSort(sortKey)} className={`p-4 cursor-pointer hover:bg-[#222] transition-colors whitespace-nowrap text-${align} group`}>
+      <div className={`flex items-center gap-1 inline-flex ${align === 'right' ? 'justify-end' : 'justify-center'} w-full`}>
+        {label}
+        <ArrowDownUp className={`h-3 w-3 ${sortConfig.key === sortKey ? 'text-cyan-400 opacity-100' : 'text-[#444] opacity-0 group-hover:opacity-100'} transition-all`} />
       </div>
-    );
-  }
+    </th>
+  );
 
   return (
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="space-y-6 pb-20">
-      <div>
-        <h1 className="text-4xl font-black tracking-tight text-white uppercase leading-none">Teams</h1>
-        <p className="text-[#888] text-sm font-medium mt-2">Official standings and real-time metrics</p>
-      </div>
-
-      {/* Filters */}
-      <div className="flex flex-col lg:flex-row gap-4 max-w-4xl">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#555]" />
-          <input
-            placeholder="Search team..." value={search} onChange={e => setSearch(e.target.value)}
-            className="w-full bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl py-3 pl-10 pr-4 text-white text-sm font-bold placeholder:text-[#555] focus:outline-none focus:border-cyan-500/50 transition-colors"
-          />
+    <div className="space-y-6 pb-16 animate-in fade-in duration-500 max-w-[1600px] mx-auto px-4">
+      
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-4">
+        <div>
+          <h1 className="text-3xl font-black uppercase tracking-tight text-white mb-1 flex items-center gap-3">
+            <Activity className="h-8 w-8 text-cyan-400" /> Franchise Hub
+          </h1>
+          <p className="text-[#888] text-sm">Team Identity Profiling & Statistical Databases</p>
         </div>
-        <div className="flex gap-3">
-          <Select value={confFilter} onValueChange={setConfFilter}>
-            <SelectTrigger className="w-[180px] border-[#2a2a2a] bg-[#1a1a1a] rounded-xl font-bold text-xs uppercase tracking-widest text-white">
-              <SelectValue placeholder="CONFERENCE" />
-            </SelectTrigger>
-            <SelectContent className="bg-[#1a1a1a] border-[#2a2a2a]">
-              <SelectItem value="all">All Conferences</SelectItem>
-              <SelectItem value="Eastern">Eastern Conf</SelectItem>
-              <SelectItem value="Western">Western Conf</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={divFilter} onValueChange={setDivFilter}>
-            <SelectTrigger className="w-[180px] border-[#2a2a2a] bg-[#1a1a1a] rounded-xl font-bold text-xs uppercase tracking-widest text-white">
-              <SelectValue placeholder="DIVISION" />
-            </SelectTrigger>
-            <SelectContent className="bg-[#1a1a1a] border-[#2a2a2a]">
-              <SelectItem value="all">All Divisions</SelectItem>
-              {availableDivisions.map(div => (
-                <SelectItem key={div} value={div}>{div}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        
+        <div className="flex bg-[#111] p-1.5 rounded-xl border border-[#222] shadow-lg w-fit">
+          <button onClick={() => setViewMode("grid")} className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2 ${viewMode === "grid" ? 'bg-[#222] text-white' : 'text-[#666] hover:text-white'}`}>
+            <LayoutGrid className="w-4 h-4" /> DNA Grid
+          </button>
+          <button onClick={() => setViewMode("table")} className={`px-4 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2 ${viewMode === "table" ? 'bg-[#222] text-cyan-400' : 'text-[#666] hover:text-white'}`}>
+            <Database className="w-4 h-4" /> Raw Data
+          </button>
         </div>
       </div>
 
-      {/* ═══ TEAM CARD GRID ═══ */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {filteredTeams.map((t, i) => {
-          const winPct = ((t.wins / (t.wins + t.losses)) * 100).toFixed(1);
-          const offRtg = t.offRtg ?? 0;
-          const defRtg = t.defRtg ?? 0;
-          const netRtg = t.netRtg ?? 0;
-          const teamColor = TEAM_COLORS[t.abbreviation] || "#4279f5";
-
-          return (
-            <motion.div
-              key={t.id}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: Math.min(i * 0.03, 0.4) }}
-            >
-              <Link to={`/${sport}/teams/${t.id}`}>
-                <div className="relative bg-[#1a1a1a] border border-[#2a2a2a] rounded-2xl overflow-hidden hover:border-[#555] hover:scale-[1.02] transition-all duration-300 group shadow-lg">
-                  {/* Team logo watermark */}
-                  <div className="absolute right-[-10%] bottom-[-10%] w-40 h-40 opacity-[0.07] pointer-events-none">
-                    <img src={nbaService.getTeamLogoUrl(t.abbreviation)} alt="" className="w-full h-full object-contain" />
+      {viewMode === "grid" && (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {sortedTeams.map((t, index) => {
+            const p = percentiles[t.id];
+            const archetype = getArchetype(t.id);
+            
+            return (
+              <Link key={t.id} to={`/nba/teams/${t.abbreviation}`} className="bg-[#111] border border-[#222] rounded-[2rem] p-6 hover:border-[#444] transition-all group shadow-xl relative overflow-hidden flex flex-col">
+                <div className="flex justify-between items-start mb-6 border-b border-[#222] pb-6">
+                  <div className="flex items-center gap-4">
+                    <img src={nbaService.getTeamLogoUrl(t.abbreviation)} alt={t.name} className="w-14 h-14 object-contain drop-shadow-xl group-hover:scale-110 transition-transform" />
+                    <div>
+                      <h2 className="text-lg font-black text-white leading-tight group-hover:text-cyan-400 transition-colors">{t.name}</h2>
+                      <p className="text-xs font-bold text-[#888] uppercase tracking-widest">{t.wins}W - {t.losses}L</p>
+                    </div>
                   </div>
-
-                  {/* Top accent */}
-                  <div className="h-1 w-full" style={{ background: `linear-gradient(90deg, ${teamColor}, transparent)` }} />
-
-                  <div className="p-5 relative z-10">
-                    <div className="flex items-center gap-4 mb-4">
-                      <div className="w-14 h-14 rounded-xl bg-[#111] border border-[#333] flex items-center justify-center p-2 group-hover:scale-110 transition-transform shadow-lg">
-                        <img src={nbaService.getTeamLogoUrl(t.abbreviation)} alt={t.abbreviation} className="w-full h-full object-contain" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="text-sm font-bold text-white truncate group-hover:text-cyan-400 transition-colors">{t.name}</h3>
-                        <div className="flex items-center gap-1.5 mt-0.5">
-                          <span className="text-[9px] font-black text-[#555] uppercase tracking-widest">{t.conference}</span>
-                          <span className="text-[#333]">•</span>
-                          <span className="text-[9px] font-black text-[#555] uppercase tracking-widest">{t.division}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Record */}
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="font-mono font-black text-2xl text-white">{t.wins} - {t.losses}</div>
-                      <Badge className={`font-mono font-black text-xs border-none px-3 py-1 ${t.wins > t.losses ? 'bg-emerald-500/15 text-emerald-400' : 'bg-rose-500/15 text-rose-400'}`}>
-                        {winPct}%
-                      </Badge>
-                    </div>
-
-                    {/* Ratings row */}
-                    <div className="grid grid-cols-3 gap-2 pt-3 border-t border-[#2a2a2a]">
-                      <div className="text-center">
-                        <div className="flex items-center justify-center gap-1 mb-1">
-                          <Flame className="w-2.5 h-2.5 text-orange-500" />
-                          <span className="text-[8px] font-black text-[#555] uppercase tracking-widest">OFF</span>
-                        </div>
-                        <span className="font-mono font-bold text-sm text-white">{offRtg.toFixed(1)}</span>
-                      </div>
-                      <div className="text-center">
-                        <div className="flex items-center justify-center gap-1 mb-1">
-                          <Shield className="w-2.5 h-2.5 text-emerald-500" />
-                          <span className="text-[8px] font-black text-[#555] uppercase tracking-widest">DEF</span>
-                        </div>
-                        <span className="font-mono font-bold text-sm text-white">{defRtg.toFixed(1)}</span>
-                      </div>
-                      <div className="text-center">
-                        <div className="flex items-center justify-center gap-1 mb-1">
-                          <TrendingUp className="w-2.5 h-2.5 text-cyan-500" />
-                          <span className="text-[8px] font-black text-[#555] uppercase tracking-widest">NET</span>
-                        </div>
-                        <span className={`font-mono font-black text-sm ${netRtg > 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
-                          {netRtg > 0 ? '+' : ''}{netRtg.toFixed(1)}
-                        </span>
-                      </div>
-                    </div>
+                  <div className="text-right">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-[#555] block">NET RTG</span>
+                    <span className={`text-xl font-mono font-black ${t.netRtg > 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                      {t.netRtg > 0 ? '+' : ''}{t.netRtg.toFixed(1)}
+                    </span>
                   </div>
                 </div>
+
+                <div className="mb-6">
+                  <Badge className={`px-3 py-1 font-black uppercase tracking-widest text-[9px] border ${archetype.classes}`}>
+                    Identity: {archetype.label}
+                  </Badge>
+                </div>
+
+                <div className="space-y-3 mt-auto">
+                  {[
+                    { label: "Offense (ORTG)", pct: p?.off || 50, color: "bg-orange-500", raw: t.offRtg.toFixed(1) },
+                    { label: "Defense (DRTG)", pct: p?.def || 50, color: "bg-emerald-500", raw: t.defRtg.toFixed(1) },
+                    { label: "Pace", pct: p?.pace || 50, color: "bg-purple-500", raw: t.pace.toFixed(1) },
+                    { label: "True Shooting", pct: p?.ts || 50, color: "bg-teal-500", raw: `${t.tsPct.toFixed(1)}%` },
+                    { label: "Rebounding", pct: p?.reb || 50, color: "bg-blue-500", raw: `${t.rebPct.toFixed(1)}%` },
+                    { label: "AST/TO Ratio", pct: p?.astTo || 50, color: "bg-amber-500", raw: t.astTo.toFixed(2) },
+                  ].map((stat, i) => (
+                    <div key={i} className="relative">
+                      <div className="flex justify-between items-end mb-1">
+                        <span className="text-[9px] font-black uppercase tracking-widest text-[#666]">{stat.label}</span>
+                        <span className="text-[10px] font-mono font-bold text-[#aaa]">{stat.raw}</span>
+                      </div>
+                      <div className="h-1.5 w-full bg-[#222] rounded-full overflow-hidden">
+                        <div className={`h-full rounded-full ${stat.color} opacity-80 group-hover:opacity-100 transition-opacity`} style={{ width: `${stat.pct}%` }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </Link>
-            </motion.div>
-          );
-        })}
-      </div>
-    </motion.div>
+            );
+          })}
+        </div>
+      )}
+
+      {viewMode === "table" && (
+        <div className="bg-[#111] rounded-2xl border border-[#222] shadow-2xl overflow-hidden relative animate-in zoom-in-95 duration-300">
+          <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            <div className="min-w-[1200px]">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-[#151515] text-[9px] font-black text-[#888] uppercase tracking-widest border-b border-[#222]">
+                    <th className="p-4 w-12 text-center sticky left-0 bg-[#151515] z-20 border-r border-[#222]">Rnk</th>
+                    <th className="p-4 w-64 sticky left-12 bg-[#151515] z-20 border-r border-[#222]">Team</th>
+                    <SortHeader label="W" sortKey="wins" align="center" />
+                    <SortHeader label="L" sortKey="losses" align="center" />
+                    <SortHeader label="OFF RTG" sortKey="offRtg" />
+                    <SortHeader label="DEF RTG" sortKey="defRtg" />
+                    <SortHeader label="NET RTG" sortKey="netRtg" />
+                    <SortHeader label="TS%" sortKey="tsPct" />
+                    <SortHeader label="REB%" sortKey="rebPct" />
+                    <SortHeader label="AST/TO" sortKey="astTo" />
+                    <SortHeader label="PACE" sortKey="pace" />
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#222]">
+                  {sortedTeams.map((t, i) => (
+                    <tr key={t.id} className="hover:bg-[#1a1a1a] transition-colors text-xs font-mono font-bold text-white group">
+                      <td className="p-4 text-center text-[#555] sticky left-0 bg-[#111] group-hover:bg-[#1a1a1a] z-10 border-r border-[#222]">{i + 1}</td>
+                      <td className="p-4 sticky left-12 bg-[#111] group-hover:bg-[#1a1a1a] z-10 border-r border-[#222]">
+                        <Link to={`/nba/teams/${t.abbreviation}`} className="flex items-center gap-3 w-max">
+                          <img src={nbaService.getTeamLogoUrl(t.abbreviation)} className="w-6 h-6 object-contain" />
+                          <span className="font-sans font-bold text-sm text-white group-hover:text-cyan-400 transition-colors">{t.name}</span>
+                        </Link>
+                      </td>
+                      <td className="p-4 text-center text-emerald-400">{t.wins}</td>
+                      <td className="p-4 text-center text-rose-400">{t.losses}</td>
+                      <td className={`p-4 text-right ${sortConfig.key === 'offRtg' ? 'text-cyan-400' : 'text-white'}`}>{t.offRtg.toFixed(1)}</td>
+                      <td className={`p-4 text-right ${sortConfig.key === 'defRtg' ? 'text-cyan-400' : 'text-white'}`}>{t.defRtg.toFixed(1)}</td>
+                      <td className={`p-4 text-right ${sortConfig.key === 'netRtg' ? 'text-cyan-400' : (t.netRtg > 0 ? 'text-emerald-400' : 'text-rose-400')}`}>
+                        <span className="bg-[#222] px-2 py-1 rounded-md">{t.netRtg > 0 ? '+' : ''}{t.netRtg.toFixed(1)}</span>
+                      </td>
+                      <td className={`p-4 text-right ${sortConfig.key === 'tsPct' ? 'text-cyan-400' : 'text-slate-300'}`}>{t.tsPct.toFixed(1)}%</td>
+                      <td className={`p-4 text-right ${sortConfig.key === 'rebPct' ? 'text-cyan-400' : 'text-slate-300'}`}>{t.rebPct.toFixed(1)}%</td>
+                      <td className={`p-4 text-right ${sortConfig.key === 'astTo' ? 'text-cyan-400' : 'text-slate-300'}`}>{t.astTo.toFixed(2)}</td>
+                      <td className={`p-4 text-right ${sortConfig.key === 'pace' ? 'text-cyan-400' : 'text-slate-300'}`}>{t.pace.toFixed(1)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

@@ -7,28 +7,37 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer,
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
-  LineChart, Line
+  LineChart, Line, ScatterChart, Scatter, Cell, ZAxis, ReferenceLine
 } from "recharts";
-import { Activity, BarChart3, LineChart as LineChartIcon, Hexagon, Plus, X, Search, Loader2, Settings, BookOpen, Brain, Calculator, Trophy, Sigma, Medal, ArrowUpRight, History, AlertCircle, ArrowDown } from "lucide-react";
+import { Activity, BarChart3, LineChart as LineChartIcon, Hexagon, Plus, X, Search, Loader2, Settings, Brain, Calculator, Trophy, Sigma, Medal, ArrowUpRight, History, AlertCircle, ArrowDown, Network } from "lucide-react";
 import type { NBAPlayer } from "@/data/nba/mockData";
 
 const METRIC_COLORS: Record<string, string> = {
-  per: "#3b82f6", bpm: "#10b981", vorp: "#f59e0b", pie: "#8b5cf6",
+  si: "#0ea5e9", per: "#3b82f6", bpm: "#10b981", vorp: "#f59e0b", pie: "#8b5cf6",
   net: "#ec4899", usg: "#06b6d4", ts: "#14b8a6", ast: "#f43f5e", efg: "#eab308",
 };
 
 const PLAYER_COLORS = ["#3b82f6", "#f43f5e", "#10b981", "#f59e0b", "#a855f7", "#06b6d4", "#ec4899", "#eab308"];
-const ALL_METRICS = ["per", "bpm", "vorp", "pie", "net", "usg", "ts", "ast", "efg"];
+const ALL_METRICS = ["si", "per", "bpm", "vorp", "pie", "net", "usg", "ts", "ast", "efg"];
 
 const formatMetricLabel = (m: string) => {
   if (m === "ts") return "TS%";
   if (m === "ast") return "AST%";
   if (m === "usg") return "USG%";
   if (m === "efg") return "eFG%";
+  if (m === "si") return "SI+ (Sports Intel)";
   return m.toUpperCase();
 };
 
 const DICTIONARY = [
+  { 
+    id: "si", abbr: "SI+", name: "Sports Intel Plus", creator: "Sports Intel Hub", 
+    desc: "An all-in-one normalized metric where 100 is explicitly league average. It synthesizes Box Plus/Minus (impact), PER (volume), and True Shooting (efficiency). A score of 150+ indicates MVP-level dominance.", 
+    careerLabel: "All-Time SI+ Peaks",
+    qualifierWarning: "70% Games Played and 20.0 Minutes Per Game",
+    histCareer: [{n: "Michael Jordan", v: 182}, {n: "Nikola Jokić", v: 178}, {n: "LeBron James", v: 175}, {n: "Wilt Chamberlain", v: 169}, {n: "Shaquille O'Neal", v: 166}, {n: "Giannis Antetokounmpo", v: 162}, {n: "Stephen Curry", v: 159}, {n: "Kevin Durant", v: 155}, {n: "Magic Johnson", v: 154}, {n: "Larry Bird", v: 151}],
+    histPeak: [{n: "Nikola Jokić", s: "23-24", v: 198}, {n: "Michael Jordan", s: "87-88", v: 195}, {n: "LeBron James", s: "08-09", v: 192}, {n: "Wilt Chamberlain", s: "61-62", v: 188}, {n: "Stephen Curry", s: "15-16", v: 185}, {n: "Giannis Antetokounmpo", s: "19-20", v: 184}, {n: "Joel Embiid", s: "22-23", v: 179}, {n: "Russell Westbrook", s: "16-17", v: 175}, {n: "James Harden", s: "18-19", v: 173}, {n: "Luka Dončić", s: "23-24", v: 171}]
+  },
   { 
     id: "per", abbr: "PER", name: "Player Efficiency Rating", creator: "John Hollinger", 
     desc: "A per-minute rating of a player's overall positive and negative contributions. The league average is dynamically standardized to strictly 15.0 every season.", 
@@ -105,6 +114,7 @@ const DICTIONARY = [
 
 const FormulaRenderer = ({ metric }: { metric: string }) => {
   switch(metric) {
+    case 'si': return (<div className="flex items-center gap-3 font-mono font-bold text-base md:text-lg flex-wrap"><span className="text-cyan-400">SI+ =</span><span className="text-emerald-400">100 + (BPM × 4.5) + (PER - 15)×1.5 + (TS% - 57)×0.5</span><span className="text-slate-400 ml-4 text-xs font-sans">Base 100 System</span></div>);
     case 'per': return (<div className="flex items-center gap-3 font-mono font-bold text-base md:text-lg flex-wrap"><span className="text-white">PER =</span><span className="text-blue-400">[ (PTS + REB + AST + STL + BLK) - (Missed FG + Missed FT + TOV) ]</span><span className="text-white">/</span><span className="text-emerald-400">MINUTES</span></div>);
     case 'bpm': return (<div className="flex items-center gap-3 font-mono font-bold text-base md:text-lg flex-wrap"><span className="text-white">BPM ≈</span><span className="text-blue-400">Team Base Impact</span><span className="text-white">+</span><span className="text-emerald-400">(Player Efficiency × Usage Adjustments)</span></div>);
     case 'vorp': return (<div className="flex items-center gap-3 font-mono font-bold text-base md:text-lg flex-wrap"><span className="text-white">VORP =</span><span className="text-blue-400">[ BPM - (-2.0) ]</span><span className="text-white">×</span><div className="flex flex-col items-center"><span className="text-emerald-400 border-b border-white/20 px-2 pb-0.5">Player Mins</span><span className="text-slate-400 px-2 pt-0.5">Team Mins</span></div><span className="text-white">×</span><span className="text-amber-400">Team Games</span></div>);
@@ -141,7 +151,6 @@ const PlayerSearchCombo = ({ players, onSelect, excludeIds }: { players: NBAPlay
       <button onClick={() => setOpen(!open)} className="flex items-center gap-2.5 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/30 text-blue-300 text-sm font-black uppercase tracking-widest px-8 py-4 rounded-xl transition-all duration-300 whitespace-nowrap shadow-lg shadow-blue-900/20">
         <Plus className="h-5 w-5" /> Add Athlete
       </button>
-
       {open && (
         <div className="absolute top-full left-0 mt-3 w-[350px] bg-[#0a0f18] border border-white/10 rounded-2xl shadow-[0_30px_90px_-15px_rgba(0,0,0,0.9)] overflow-hidden animate-in fade-in slide-in-from-top-2 z-[100] backdrop-blur-3xl">
           <div className="p-4 border-b border-white/10 flex items-center gap-3 bg-white/5">
@@ -160,6 +169,32 @@ const PlayerSearchCombo = ({ players, onSelect, excludeIds }: { players: NBAPlay
       )}
     </div>
   );
+};
+
+const renderCustomDot = (props: any) => {
+  const { cx, cy, payload } = props;
+  return (
+    <g transform={`translate(${cx},${cy})`}>
+      <circle r={7} fill={payload.color} stroke="#0a0f18" strokeWidth={2} className="hover:scale-125 transition-transform cursor-pointer shadow-2xl" />
+      <text x={12} y={4} fill="#fff" fontSize={11} fontWeight="900" fontFamily="sans-serif" className="drop-shadow-md">
+        {payload.name}
+      </text>
+    </g>
+  );
+};
+
+const ScatterTooltip = ({ active, payload }: any) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload;
+    return (
+      <div className="bg-[#0a0f18]/95 border border-white/10 rounded-2xl p-4 shadow-2xl backdrop-blur-xl">
+        <p className="text-white font-black text-sm mb-2 pb-2 border-b border-white/10">{data.full_name}</p>
+        <p className="text-xs text-slate-400 mb-1">X Axis: <span className="text-white font-bold">{data.x_raw}</span></p>
+        <p className="text-xs text-slate-400">Y Axis: <span className="text-white font-bold">{data.y_raw}</span></p>
+      </div>
+    );
+  }
+  return null;
 };
 
 const CustomTooltip = ({ active, payload, label }: any) => {
@@ -196,16 +231,18 @@ export default function NBAAnalytics() {
   const [allPlayers, setAllPlayers] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const [selectedMetrics, setSelectedMetrics] = useState<string[]>(["ts", "efg", "usg"]);
-  const [chartType, setChartType] = useState<"bar" | "radar" | "line">("line"); 
+  const [selectedMetrics, setSelectedMetrics] = useState<string[]>(["si", "ts", "usg"]); 
+  const [chartType, setChartType] = useState<"scatter" | "bar" | "radar">("scatter"); 
   const [selectedPlayerIds, setSelectedPlayerIds] = useState<string[]>([]);
   
+  const [scatterX, setScatterX] = useState<string>("usg");
+  const [scatterY, setScatterY] = useState<string>("ts");
+
   const [selectedMetricModal, setSelectedMetricModal] = useState<any | null>(null);
   const [modalConfFilter, setModalConfFilter] = useState<string>("all");
   const [modalTeamFilter, setModalTeamFilter] = useState<string>("all");
   const [strictQualifiers, setStrictQualifiers] = useState<boolean>(true);
 
-  // Referencia para hacer scroll al visualizador
   const visualizerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -216,9 +253,16 @@ export default function NBAAnalytics() {
       const sortedAlpha = playersWithAdv.sort((a, b) => a.name.localeCompare(b.name));
       setAllPlayers(sortedAlpha);
       const qualifiedStars = [...playersWithAdv].filter(p => (p.stats.mpg || 0) >= 15);
-      const top3Ids = qualifiedStars.sort((a, b) => b.adv.per - a.adv.per).slice(0, 3).map(p => p.id);
+      const top3Ids = qualifiedStars.sort((a, b) => b.adv.si - a.adv.si).slice(0, 3).map(p => p.id); 
       setSelectedPlayerIds(top3Ids);
       setIsLoading(false);
+      
+      const hash = window.location.hash;
+      if (hash && hash.startsWith('#dict-')) {
+        const metricId = hash.replace('#dict-', '');
+        const metricDict = DICTIONARY.find(d => d.id === metricId);
+        if (metricDict) setTimeout(() => setSelectedMetricModal(metricDict), 500); 
+      }
     });
   }, []);
 
@@ -244,16 +288,26 @@ export default function NBAAnalytics() {
       return Math.round((countLower / arr.length) * 100);
     };
 
-    return selectedPlayerIds.map(id => allPlayers.find(p => p.id === id)).filter(Boolean).map(p => {
-        const dataPoint: any = { name: p.name_short, full_name: p.name };
+    return selectedPlayerIds.map((id, index) => {
+        const p = allPlayers.find(pl => pl.id === id);
+        if(!p) return null;
+        const dataPoint: any = { name: p.name_short, full_name: p.name, color: PLAYER_COLORS[index % PLAYER_COLORS.length] };
+        
         ALL_METRICS.forEach(m => {
            const rawVal = p.adv[m];
            dataPoint[m] = calcPercentile(rawVal, distributions[m]); 
            dataPoint[`${m}_raw`] = rawVal; 
         });
+
+        dataPoint.x_raw = p.adv[scatterX];
+        dataPoint.y_raw = p.adv[scatterY];
+
         return dataPoint;
-    });
-  }, [selectedPlayerIds, allPlayers]);
+    }).filter(Boolean);
+  }, [selectedPlayerIds, allPlayers, scatterX, scatterY]);
+
+  const avgX = chartData.length ? chartData.reduce((acc, curr) => acc + curr.x_raw, 0) / chartData.length : 0;
+  const avgY = chartData.length ? chartData.reduce((acc, curr) => acc + curr.y_raw, 0) / chartData.length : 0;
 
   const maxLeagueGames = useMemo(() => {
     if (allPlayers.length === 0) return 1;
@@ -309,12 +363,44 @@ export default function NBAAnalytics() {
   }
 
   const renderChart = () => {
-    if (chartData.length === 0) return <div className="h-full w-full flex items-center justify-center text-slate-500 font-black text-sm uppercase tracking-widest border-2 border-dashed border-white/5 rounded-3xl p-10 text-center bg-white/[0.01]">Add athletes using the panel above to visualize Quantum Analytics</div>;
+    if (chartData.length === 0) return <div className="h-full w-full flex items-center justify-center text-slate-500 font-black text-sm uppercase tracking-widest border-2 border-dashed border-white/5 rounded-3xl p-10 text-center bg-white/[0.01]">Add athletes to visualize Quantum Analytics</div>;
+
+    if (chartType === "scatter") {
+      return (
+        <div className="w-full h-full flex flex-col relative">
+          <div className="flex justify-center gap-6 mb-8 z-20">
+            <div className="flex flex-col">
+              <span className="text-[9px] font-black uppercase tracking-widest text-slate-500 mb-1">X-Axis Metric</span>
+              <select value={scatterX} onChange={e => setScatterX(e.target.value)} className="bg-[#111] border border-[#333] text-white text-xs font-bold px-3 py-1.5 rounded-lg outline-none cursor-pointer">
+                {ALL_METRICS.map(m => <option key={m} value={m}>{formatMetricLabel(m)}</option>)}
+              </select>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[9px] font-black uppercase tracking-widest text-slate-500 mb-1">Y-Axis Metric</span>
+              <select value={scatterY} onChange={e => setScatterY(e.target.value)} className="bg-[#111] border border-[#333] text-white text-xs font-bold px-3 py-1.5 rounded-lg outline-none cursor-pointer">
+                {ALL_METRICS.map(m => <option key={m} value={m}>{formatMetricLabel(m)}</option>)}
+              </select>
+            </div>
+          </div>
+          <ResponsiveContainer width="100%" height="85%">
+            <ScatterChart margin={{ top: 20, right: 40, left: 10, bottom: 20 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+              <XAxis type="number" dataKey="x_raw" name={formatMetricLabel(scatterX)} tick={{fill: '#888', fontSize: 12, fontWeight:'bold'}} domain={[(dataMin:any) => Math.floor(dataMin - (dataMin*0.05)), (dataMax:any) => Math.ceil(dataMax + (dataMax*0.05))]} />
+              <YAxis type="number" dataKey="y_raw" name={formatMetricLabel(scatterY)} tick={{fill: '#888', fontSize: 12, fontWeight:'bold'}} domain={[(dataMin:any) => Math.floor(dataMin - (dataMin*0.05)), (dataMax:any) => Math.ceil(dataMax + (dataMax*0.05))]} />
+              <ReferenceLine x={avgX} stroke="rgba(255,255,255,0.15)" strokeDasharray="4 4" />
+              <ReferenceLine y={avgY} stroke="rgba(255,255,255,0.15)" strokeDasharray="4 4" />
+              <RechartsTooltip cursor={{strokeDasharray: '3 3'}} content={<ScatterTooltip />} />
+              <Scatter data={chartData} shape={renderCustomDot} />
+            </ScatterChart>
+          </ResponsiveContainer>
+        </div>
+      );
+    }
 
     const profileData = selectedMetrics.map(m => {
       const label = formatMetricLabel(m);
       const entry: any = { metric: label }; 
-      chartData.forEach(d => { entry[d.name] = d[m]; entry[`${d.name}_raw`] = d[`${m}_raw`]; });
+      chartData.forEach((d: any) => { entry[d.name] = d[m]; entry[`${d.name}_raw`] = d[`${m}_raw`]; });
       return entry;
     });
 
@@ -327,8 +413,8 @@ export default function NBAAnalytics() {
             <PolarAngleAxis dataKey="metric" tick={{ fill: 'rgba(255,255,255,0.6)', fontSize: 11, fontWeight: 900 }} />
             <RechartsTooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(255,255,255,0.1)', strokeWidth: 1 }} />
             <Legend wrapperStyle={{ paddingTop: '30px', fontSize: '12px', fontWeight: 'bold', color: 'rgba(255,255,255,0.7)' }} />
-            {chartData.map((d, i) => (
-              <Radar key={d.name} name={d.full_name} dataKey={d.name} stroke={PLAYER_COLORS[i % PLAYER_COLORS.length]} fill={PLAYER_COLORS[i % PLAYER_COLORS.length]} fillOpacity={0.15} strokeWidth={3} dot={{ r: 4, strokeWidth: 2, fill: '#0a0f18' }} />
+            {chartData.map((d: any) => (
+              <Radar key={d.name} name={d.full_name} dataKey={d.name} stroke={d.color} fill={d.color} fillOpacity={0.15} strokeWidth={3} dot={{ r: 4, strokeWidth: 2, fill: '#0a0f18' }} />
             ))}
           </RadarChart>
         </ResponsiveContainer>
@@ -344,8 +430,8 @@ export default function NBAAnalytics() {
             <YAxis domain={[0, 100]} axisLine={false} tickLine={false} tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 11, fontWeight: 'bold' }} />
             <RechartsTooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(255,255,255,0.05)', strokeWidth: 40 }} />
             <Legend wrapperStyle={{ paddingTop: '30px', fontSize: '12px', fontWeight: 'bold' }} />
-            {chartData.map((d, i) => (
-              <Line key={d.name} type="monotone" name={d.full_name} dataKey={d.name} stroke={PLAYER_COLORS[i % PLAYER_COLORS.length]} strokeWidth={4} dot={{ r: 6, strokeWidth: 3, stroke: '#0a0f18', fill: PLAYER_COLORS[i % PLAYER_COLORS.length] }} activeDot={{ r: 8, stroke: '#fff', strokeWidth: 2 }} />
+            {chartData.map((d: any) => (
+              <Line key={d.name} type="monotone" name={d.full_name} dataKey={d.name} stroke={d.color} strokeWidth={4} dot={{ r: 6, strokeWidth: 3, stroke: '#0a0f18', fill: d.color }} activeDot={{ r: 8, stroke: '#fff', strokeWidth: 2 }} />
             ))}
           </LineChart>
         </ResponsiveContainer>
@@ -360,8 +446,8 @@ export default function NBAAnalytics() {
           <YAxis domain={[0, 100]} axisLine={false} tickLine={false} tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 11, fontWeight: 'bold' }} />
           <RechartsTooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
           <Legend wrapperStyle={{ paddingTop: '30px', fontSize: '12px', fontWeight: 'bold' }} />
-          {selectedMetrics.map((m, i) => (
-            <Bar key={m} name={formatMetricLabel(m)} dataKey={m} fill={METRIC_COLORS[m]} radius={[8, 8, 0, 0]} maxBarSize={60} />
+          {selectedMetrics.map((m) => (
+            <Bar key={m} name={formatMetricLabel(m)} dataKey={m} fill={METRIC_COLORS[m] || '#3b82f6'} radius={[8, 8, 0, 0]} maxBarSize={60} />
           ))}
         </BarChart>
       </ResponsiveContainer>
@@ -371,7 +457,51 @@ export default function NBAAnalytics() {
   return (
     <div className="space-y-12 pb-20 animate-in fade-in duration-700">
       
-      {/* MODAL DEL DICCIONARIO */}
+      <div className="flex items-center justify-between gap-4 pt-2">
+        <div className="flex items-center gap-3 px-2">
+          <History className="h-8 w-8 text-cyan-500" />
+          <div>
+            <h1 className="text-3xl font-black tracking-tighter text-white uppercase italic leading-none">Data Science Repository</h1>
+            <p className="text-slate-400 text-sm font-medium tracking-tight mt-1.5">Official 2025-26 NBA advanced metrics, formulas and historical context</p>
+          </div>
+        </div>
+        <button 
+          onClick={() => visualizerRef.current?.scrollIntoView({ behavior: 'smooth' })}
+          className="hidden md:flex items-center gap-2 bg-white/5 hover:bg-white/10 text-white font-bold text-xs uppercase tracking-widest px-5 py-3 rounded-xl transition-all border border-white/10 shadow-lg"
+        >
+          Go to Visualizer <ArrowDown className="h-4 w-4 text-cyan-400 animate-bounce" />
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {DICTIONARY.map((dict, i) => (
+          <Card 
+            key={i} 
+            id={`dict-${dict.id}`} 
+            onClick={() => { setModalTeamFilter("all"); setModalConfFilter("all"); setStrictQualifiers(true); setSelectedMetricModal(dict); }}
+            className={`bg-white/[0.02] border border-white/5 backdrop-blur-xl hover:bg-white/5 hover:border-white/20 transition-all duration-300 group rounded-3xl cursor-pointer hover:-translate-y-1 hover:shadow-2xl ${dict.id === 'si' ? 'ring-2 ring-cyan-500/50 shadow-[0_0_30px_rgba(6,182,212,0.15)]' : ''}`}
+          >
+            <CardContent className="p-8 space-y-4">
+              <div className="flex items-center justify-between">
+                <Badge className={`font-black text-sm px-4 py-1.5 border transition-all ${dict.id === 'si' ? 'bg-cyan-500/20 text-cyan-400 border-cyan-500/50 shadow-[0_0_15px_rgba(6,182,212,0.4)]' : 'bg-blue-600/20 text-blue-400 border-blue-500/30'}`}>
+                  {dict.abbr}
+                </Badge>
+                {dict.id === 'si' ? <Activity className="h-5 w-5 text-cyan-400 animate-pulse" /> : <Brain className="h-5 w-5 text-slate-600 group-hover:text-blue-400 transition-colors" />}
+              </div>
+              <div>
+                <h3 className={`text-lg font-black mb-1 transition-colors ${dict.id === 'si' ? 'text-cyan-400' : 'text-white group-hover:text-blue-300'}`}>{dict.name}</h3>
+              </div>
+              <p className="text-sm text-slate-400 font-medium leading-relaxed border-t border-white/5 pt-4">
+                {dict.desc}
+              </p>
+              <div className={`pt-4 flex items-center gap-2 font-black text-[10px] uppercase tracking-widest transition-all duration-300 ${dict.id === 'si' ? 'text-cyan-400' : 'text-blue-500/0 group-hover:text-blue-400'}`}>
+                Explore Rankings & Formula <ArrowUpRight className="h-3 w-3" />
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
       {selectedMetricModal && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6">
           <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm transition-opacity" onClick={() => setSelectedMetricModal(null)}></div>
@@ -417,43 +547,21 @@ export default function NBAAnalytics() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-10">
-                
-                {/* COLUMNA LÍDERES EN VIVO */}
                 <div className="space-y-4">
                   <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-3">
                     <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2 whitespace-nowrap"><Activity className="h-4 w-4 text-blue-400"/> Live 25-26</h3>
-                    
                     <div className="flex items-center gap-2">
-                      <select 
-                        value={modalConfFilter} 
-                        onChange={(e) => { setModalConfFilter(e.target.value); setModalTeamFilter("all"); }}
-                        className="bg-[#0f172a] text-white border border-white/10 text-[10px] font-bold rounded-lg px-2 py-1.5 outline-none hover:border-white/30 transition-colors cursor-pointer"
-                      >
+                      <select value={modalConfFilter} onChange={(e) => { setModalConfFilter(e.target.value); setModalTeamFilter("all"); }} className="bg-[#0f172a] text-white border border-white/10 text-[10px] font-bold rounded-lg px-2 py-1.5 outline-none hover:border-white/30 transition-colors cursor-pointer">
                         <option value="all" className="bg-[#0f172a]">ALL CONFS</option>
                         <option value="East" className="bg-[#0f172a]">EAST</option>
                         <option value="West" className="bg-[#0f172a]">WEST</option>
                       </select>
-                      
-                      <select 
-                        value={modalTeamFilter} 
-                        onChange={(e) => setModalTeamFilter(e.target.value)}
-                        className="bg-[#0f172a] text-white border border-white/10 text-[10px] font-bold rounded-lg px-2 py-1.5 outline-none hover:border-white/30 transition-colors cursor-pointer w-[100px]"
-                      >
+                      <select value={modalTeamFilter} onChange={(e) => setModalTeamFilter(e.target.value)} className="bg-[#0f172a] text-white border border-white/10 text-[10px] font-bold rounded-lg px-2 py-1.5 outline-none hover:border-white/30 transition-colors cursor-pointer w-[100px]">
                         <option value="all" className="bg-[#0f172a]">ALL TEAMS</option>
-                        {Array.from(new Set(allPlayers.map(p => p.teamId)))
-                          .filter(t => {
-                             if (modalConfFilter === "all") return true;
-                             const teamInfo = nbaService.getAllTeams().find(team => team.abbreviation === t);
-                             return teamInfo?.conference?.toLowerCase().includes(modalConfFilter.toLowerCase());
-                          })
-                          .sort()
-                          .map(t => (
-                          <option key={t} value={t} className="bg-[#0f172a]">{t}</option>
-                        ))}
+                        {Array.from(new Set(allPlayers.map(p => p.teamId))).filter(t => { if (modalConfFilter === "all") return true; const teamInfo = nbaService.getAllTeams().find(team => team.abbreviation === t); return teamInfo?.conference?.toLowerCase().includes(modalConfFilter.toLowerCase()); }).sort().map(t => ( <option key={t} value={t} className="bg-[#0f172a]">{t}</option> ))}
                       </select>
                     </div>
                   </div>
-                  
                   <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-2">
                     {getLiveLeaders(selectedMetricModal.id, modalTeamFilter, modalConfFilter).map((p, i) => (
                       <div key={p.id} className={`flex items-center justify-between p-2.5 rounded-xl transition-colors group hover:bg-white/5`}>
@@ -467,13 +575,15 @@ export default function NBAAnalytics() {
                             <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">{p.teamId}</span>
                           </div>
                         </div>
-                        <span className={`font-mono font-black text-base ${!p.qualifies ? 'text-slate-400' : 'text-blue-400'}`}>{p.adv[selectedMetricModal.id].toFixed(1)}</span>
+                        <span className={`font-mono font-black text-base ${!p.qualifies ? 'text-slate-400' : 'text-blue-400'}`}>
+                          {/* 🚀 FIX DE SEGURIDAD APLICADO AQUÍ */}
+                          {p.adv && typeof p.adv[selectedMetricModal.id] === 'number' ? p.adv[selectedMetricModal.id].toFixed(1) : "0.0"}
+                        </span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                {/* COLUMNA PICO HISTÓRICO */}
                 <div className="space-y-4">
                   <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2"><Medal className="h-4 w-4 text-emerald-400"/> Single-Season Peak</h3>
                   <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-2xl p-2 relative overflow-hidden mt-[38px]">
@@ -484,25 +594,22 @@ export default function NBAAnalytics() {
                           <span className={`${h.isLive ? 'text-emerald-400' : 'text-emerald-600/50'} font-mono font-black text-xs w-4`}>{i + 1}</span>
                           <div className="flex flex-col">
                             <span className={`text-sm font-bold flex items-center gap-1 ${h.isLive ? 'text-white' : 'text-slate-300'}`}>
-                              {h.n} 
-                              {h.isLive && <Badge className="bg-emerald-500 text-slate-900 px-1 py-0 text-[8px] font-black uppercase tracking-widest border-none">LIVE</Badge>}
-                              {h.isLive && !h.qualifies && <span className="text-amber-500 font-black text-lg leading-none mt-1">*</span>}
+                              {h.n} {h.isLive && <Badge className="bg-emerald-500 text-slate-900 px-1 py-0 text-[8px] font-black uppercase tracking-widest border-none">LIVE</Badge>} {h.isLive && !h.qualifies && <span className="text-amber-500 font-black text-lg leading-none mt-1">*</span>}
                             </span>
                             <span className={`text-[9px] font-black uppercase tracking-widest ${h.isLive ? 'text-emerald-300' : 'text-slate-500'}`}>SEASON {h.s}</span>
                           </div>
                         </div>
-                        <span className={`font-mono font-black text-sm ${h.isLive ? 'text-white' : 'text-emerald-500'}`}>{h.v.toFixed(1)}</span>
+                        <span className={`font-mono font-black text-sm ${h.isLive ? 'text-white' : 'text-emerald-500'}`}>
+                          {/* 🚀 FIX DE SEGURIDAD APLICADO AQUÍ */}
+                          {h.v !== undefined ? Number(h.v).toFixed(1) : "0.0"}
+                        </span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                {/* COLUMNA CARRERA */}
                 <div className="space-y-4">
-                  <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
-                    <Trophy className="h-4 w-4 text-amber-400"/> 
-                    {selectedMetricModal.careerLabel}
-                  </h3>
+                  <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2"><Trophy className="h-4 w-4 text-amber-400"/> {selectedMetricModal.careerLabel}</h3>
                   <div className="bg-amber-500/5 border border-amber-500/20 rounded-2xl p-2 relative overflow-hidden mt-[38px]">
                     <div className="absolute -right-10 -top-10 w-32 h-32 bg-amber-500/10 blur-3xl rounded-full"></div>
                     {selectedMetricModal.histCareer.map((h: any, i: number) => (
@@ -511,12 +618,14 @@ export default function NBAAnalytics() {
                           <span className="text-amber-600/50 font-mono font-black text-xs w-4">{i + 1}</span>
                           <span className="text-sm font-bold text-slate-300">{h.n}</span>
                         </div>
-                        <span className="font-mono font-black text-amber-500 text-sm">{h.v.toFixed(1)}</span>
+                        <span className="font-mono font-black text-amber-500 text-sm">
+                          {/* 🚀 FIX DE SEGURIDAD APLICADO AQUÍ */}
+                          {h.v !== undefined ? Number(h.v).toFixed(1) : "0.0"}
+                        </span>
                       </div>
                     ))}
                   </div>
                 </div>
-
               </div>
 
               {!strictQualifiers && (
@@ -527,58 +636,12 @@ export default function NBAAnalytics() {
                   </p>
                 </div>
               )}
-
             </div>
           </div>
         </div>
       )}
 
-      {/* 🚀 BLOQUE 1: DATA SCIENCE REPOSITORY (AHORA ARRIBA) */}
-      <div className="flex items-center justify-between gap-4 pt-2">
-        <div className="flex items-center gap-3 px-2">
-          <History className="h-8 w-8 text-blue-500" />
-          <div>
-            <h1 className="text-3xl font-black tracking-tighter text-white uppercase italic leading-none">Data Science Repository</h1>
-            <p className="text-slate-400 text-sm font-medium tracking-tight mt-1.5">Official 2025-26 NBA advanced metrics, formulas and historical context</p>
-          </div>
-        </div>
-        <button 
-          onClick={() => visualizerRef.current?.scrollIntoView({ behavior: 'smooth' })}
-          className="hidden md:flex items-center gap-2 bg-white/5 hover:bg-white/10 text-white font-bold text-xs uppercase tracking-widest px-5 py-3 rounded-xl transition-all border border-white/10 shadow-lg"
-        >
-          Go to Player Comparator <ArrowDown className="h-4 w-4 text-cyan-400 animate-bounce" />
-        </button>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {DICTIONARY.map((dict, i) => (
-          <Card 
-            key={i} 
-            onClick={() => { setModalTeamFilter("all"); setModalConfFilter("all"); setStrictQualifiers(true); setSelectedMetricModal(dict); }}
-            className="bg-white/[0.02] border border-white/5 backdrop-blur-xl hover:bg-white/5 hover:border-white/20 transition-all duration-300 group rounded-3xl cursor-pointer hover:-translate-y-1 hover:shadow-2xl hover:shadow-blue-900/10"
-          >
-            <CardContent className="p-8 space-y-4">
-              <div className="flex items-center justify-between">
-                <Badge className="bg-blue-600/20 text-blue-400 font-black text-sm px-4 py-1.5 border border-blue-500/30 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-all">
-                  {dict.abbr}
-                </Badge>
-                <Brain className="h-5 w-5 text-slate-600 group-hover:text-blue-400 transition-colors" />
-              </div>
-              <div>
-                <h3 className="text-lg font-black text-white mb-1 group-hover:text-blue-300 transition-colors">{dict.name}</h3>
-              </div>
-              <p className="text-sm text-slate-400 font-medium leading-relaxed border-t border-white/5 pt-4">
-                {dict.desc}
-              </p>
-              <div className="pt-4 flex items-center gap-2 text-blue-500/0 group-hover:text-blue-400 transition-all duration-300 font-black text-[10px] uppercase tracking-widest">
-                Explore Rankings & Formula <ArrowUpRight className="h-3 w-3" />
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {/* 🚀 BLOQUE 2: QUANTUM VISUALIZATION ENGINE (AHORA ABAJO) */}
+      {/* BLOQUE 2: QUANTUM VISUALIZATION ENGINE */}
       <div ref={visualizerRef} className="pt-12 border-t border-white/10 mt-12">
         <div className="flex items-center justify-between gap-4 mb-8 px-2">
           <div>
@@ -597,35 +660,38 @@ export default function NBAAnalytics() {
               <CardContent className="p-6 space-y-8">
                 <div className="space-y-4">
                   <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Visualization Engine</p>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-2 gap-2">
                     {[
-                      { type: 'bar', icon: BarChart3, label: 'Bar' },
+                      { type: 'scatter', icon: Network, label: 'Scatter Plot' },
                       { type: 'radar', icon: Hexagon, label: 'Radar' },
+                      { type: 'bar', icon: BarChart3, label: 'Bar' },
                       { type: 'line', icon: LineChartIcon, label: 'Line' }
                     ].map(item => (
-                      <button key={item.type} onClick={() => setChartType(item.type as any)} className={`flex flex-col items-center gap-2.5 p-4 rounded-2xl transition-all font-bold text-xs ${chartType === item.type ? 'bg-blue-600/20 text-blue-300 border border-blue-500/40 shadow-[0_0_15px_rgba(59,130,246,0.2)]' : 'bg-white/5 text-slate-400 border border-transparent hover:bg-white/10'}`}>
+                      <button key={item.type} onClick={() => setChartType(item.type as any)} className={`flex flex-col items-center gap-2.5 p-4 rounded-2xl transition-all font-bold text-xs ${chartType === item.type ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-[0_0_15px_rgba(6,182,212,0.2)]' : 'bg-white/5 text-slate-400 border border-transparent hover:bg-white/10'}`}>
                         <item.icon className="h-5 w-5" /> {item.label}
                       </button>
                     ))}
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Active Metrics</p>
-                    <span className="font-mono text-xs font-bold text-slate-600">{selectedMetrics.length}/6</span>
+                {chartType !== 'scatter' && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Active Metrics</p>
+                      <span className="font-mono text-xs font-bold text-slate-600">{selectedMetrics.length}/6</span>
+                    </div>
+                    <div className="flex flex-wrap gap-2.5">
+                      {ALL_METRICS.map(m => {
+                        const isSelected = selectedMetrics.includes(m);
+                        return (
+                          <Badge key={m} onClick={() => toggleMetric(m)} style={{ borderColor: isSelected ? METRIC_COLORS[m] : 'rgba(255,255,255,0.1)', color: isSelected ? '#fff' : 'rgba(255,255,255,0.4)', backgroundColor: isSelected ? `${METRIC_COLORS[m]}20` : 'transparent' }} className={`cursor-pointer px-3 py-1.5 font-black text-[10px] transition-all duration-300 border hover:scale-105 ${isSelected ? 'shadow-[0_0_10px_-2px_var(--tw-shadow-color)]' : 'hover:border-white/30'}`}>
+                            {formatMetricLabel(m)}
+                          </Badge>
+                        );
+                      })}
+                    </div>
                   </div>
-                  <div className="flex flex-wrap gap-2.5">
-                    {ALL_METRICS.map(m => {
-                      const isSelected = selectedMetrics.includes(m);
-                      return (
-                        <Badge key={m} onClick={() => toggleMetric(m)} style={{ borderColor: isSelected ? METRIC_COLORS[m] : 'rgba(255,255,255,0.1)', color: isSelected ? '#fff' : 'rgba(255,255,255,0.4)', backgroundColor: isSelected ? `${METRIC_COLORS[m]}20` : 'transparent' }} className={`cursor-pointer px-3 py-1.5 font-black text-[10px] transition-all duration-300 border hover:scale-105 ${isSelected ? 'shadow-[0_0_10px_-2px_var(--tw-shadow-color)]' : 'hover:border-white/30'}`}>
-                          {formatMetricLabel(m)}
-                        </Badge>
-                      );
-                    })}
-                  </div>
-                </div>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -658,8 +724,8 @@ export default function NBAAnalytics() {
 
             <Card className="bg-[#0a0f18] border border-white/5 backdrop-blur-xl shadow-2xl rounded-[3rem] overflow-hidden relative z-10">
               <div className="absolute top-7 left-8 flex items-center gap-2.5 z-10 bg-[#0a0f18]/80 px-4 py-2 rounded-full border border-white/5 backdrop-blur-sm">
-                 <Activity className="h-4 w-4 text-blue-500" />
-                 <span className="text-[11px] font-black uppercase tracking-[0.2em] text-white">Quantum Visualization Engine</span>
+                 <Activity className="h-4 w-4 text-cyan-500" />
+                 <span className="text-[11px] font-black uppercase tracking-[0.2em] text-white">Interactive Graph Area</span>
               </div>
               <div className="h-[580px] w-full p-8 pt-24 relative z-0">
                 {renderChart()}

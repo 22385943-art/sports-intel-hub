@@ -3,7 +3,7 @@ import { nbaService } from "@/services/sportServiceFactory";
 import { Activity, Crown, Target, TrendingUp, ShieldAlert, Trophy, Loader2, ChevronRight, ChevronLeft, Zap, Brain, Crosshair } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { useSettings } from "@/hooks/useSettings"; // 🚀 AÑADIDO HOOK
+import { useSettings } from "@/hooks/useSettings"; 
 
 export default function NBADashboard() {
   const [players, setPlayers] = useState<any[]>([]);
@@ -11,10 +11,11 @@ export default function NBADashboard() {
   const [liveGames, setLiveGames] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const carouselRef = useRef<HTMLDivElement>(null);
-  const [isHovered, setIsHovered] = useState(false);
+  const playerCarouselRef = useRef<HTMLDivElement>(null);
+  const teamCarouselRef = useRef<HTMLDivElement>(null);
+  const [isHoveredPlayer, setIsHoveredPlayer] = useState(false);
+  const [isHoveredTeam, setIsHoveredTeam] = useState(false);
 
-  // 🚀 AÑADIDO: Leemos los settings globales
   const { settings } = useSettings();
 
   useEffect(() => {
@@ -42,31 +43,35 @@ export default function NBADashboard() {
     });
   }, []);
 
-  // Motor de Scroll Automático Suave
   useEffect(() => {
     let animationFrameId: number;
-    const scrollContainer = carouselRef.current;
-
     const scrollStep = () => {
-      if (scrollContainer && !isHovered) {
-        scrollContainer.scrollLeft += 1; 
-        if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth / 2) {
-          scrollContainer.scrollLeft = 0;
+      if (playerCarouselRef.current && !isHoveredPlayer) {
+        playerCarouselRef.current.scrollLeft += 1; 
+        if (playerCarouselRef.current.scrollLeft >= playerCarouselRef.current.scrollWidth / 2) {
+          playerCarouselRef.current.scrollLeft = 0;
         }
       }
       animationFrameId = requestAnimationFrame(scrollStep);
     };
-
     animationFrameId = requestAnimationFrame(scrollStep);
     return () => cancelAnimationFrame(animationFrameId);
-  }, [isHovered]);
+  }, [isHoveredPlayer]);
 
-  const manualScroll = (direction: "left" | "right") => {
-    if (carouselRef.current) {
-      const scrollAmount = direction === "right" ? 350 : -350;
-      carouselRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
-    }
-  };
+  useEffect(() => {
+    let animationFrameId: number;
+    const scrollStep = () => {
+      if (teamCarouselRef.current && !isHoveredTeam) {
+        teamCarouselRef.current.scrollLeft += 1; 
+        if (teamCarouselRef.current.scrollLeft >= teamCarouselRef.current.scrollWidth / 2) {
+          teamCarouselRef.current.scrollLeft = 0;
+        }
+      }
+      animationFrameId = requestAnimationFrame(scrollStep);
+    };
+    animationFrameId = requestAnimationFrame(scrollStep);
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [isHoveredTeam]);
 
   if (isLoading) {
     return (
@@ -79,7 +84,7 @@ export default function NBADashboard() {
 
   const getTop10 = (metric: string) => players.filter(p => p.qualifiesGeneral).sort((a, b) => b.adv[metric] - a.adv[metric]).slice(0, 10);
 
-  const metricsData = [
+  const playerMetricsData = [
     { id: "bpm", title: "Box Plus/Minus (BPM)", icon: TrendingUp, accent: "text-emerald-400", data: getTop10("bpm") },
     { id: "per", title: "Efficiency (PER)", icon: Trophy, accent: "text-blue-400", data: getTop10("per") },
     { id: "vorp", title: "Value Over Rep. (VORP)", icon: Activity, accent: "text-amber-400", data: getTop10("vorp") },
@@ -90,21 +95,35 @@ export default function NBADashboard() {
     { id: "ast", title: "Assist Pct (AST%)", icon: Brain, accent: "text-indigo-400", data: getTop10("ast") },
     { id: "efg", title: "Effective FG (eFG%)", icon: Crosshair, accent: "text-orange-400", data: getTop10("efg") }
   ];
+  const playerCarouselData = [...playerMetricsData, ...playerMetricsData];
 
-  const carouselData = [...metricsData, ...metricsData];
-  const netRatingTeams = [...teams].sort((a, b) => b.netRtg - a.netRtg).slice(0, 5);
-  const offRatingTeams = [...teams].sort((a, b) => b.offRtg - a.offRtg).slice(0, 5);
-  const defRatingTeams = [...teams].sort((a, b) => a.defRtg - b.defRtg).slice(0, 5);
-  const topScorer = getTop10("bpm")[0];
+  const teamMetricsData = [
+    { id: "offRtg", title: "Offensive Rating", icon: Zap, accent: "text-orange-400", data: [...teams].sort((a,b) => b.offRtg - a.offRtg).slice(0, 10) },
+    { id: "defRtg", title: "Defensive Rating", icon: ShieldAlert, accent: "text-emerald-400", data: [...teams].sort((a,b) => a.defRtg - b.defRtg).slice(0, 10) }, 
+    { id: "netRtg", title: "Net Rating", icon: TrendingUp, accent: "text-cyan-400", data: [...teams].sort((a,b) => b.netRtg - a.netRtg).slice(0, 10) },
+    { id: "tsPct", title: "True Shooting %", icon: Target, accent: "text-teal-400", data: [...teams].sort((a,b) => b.tsPct - a.tsPct).slice(0, 10) },
+    { id: "rebPct", title: "Rebound Rate %", icon: Activity, accent: "text-blue-400", data: [...teams].sort((a,b) => b.rebPct - a.rebPct).slice(0, 10) },
+    { id: "astTo", title: "AST to TO Ratio", icon: Brain, accent: "text-purple-400", data: [...teams].sort((a,b) => b.astTo - a.astTo).slice(0, 10) },
+  ];
+  const teamCarouselData = [...teamMetricsData, ...teamMetricsData];
+
+  const topScorer = getTop10("si")[0] || getTop10("bpm")[0]; // 🚀 Mostramos al líder del SI+
 
   return (
     <div className="space-y-8 pb-16 animate-in fade-in duration-500 max-w-7xl mx-auto px-4 overflow-x-hidden">
+      {/* 🚀 CSS GLOBAL PARA OCULTAR LA BARRA DE SCROLL DEL NAVEGADOR FEA */}
+      <style>{`
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0f18; }
+        ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #374151; }
+      `}</style>
       
       {/* HERO BANNER */}
       <div className="bg-[#111] rounded-[2rem] border border-[#222] p-8 md:p-12 relative overflow-hidden shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-emerald-500/5 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-cyan-500/5 rounded-full blur-[120px] pointer-events-none" />
         <div className="relative z-10 space-y-4">
-          <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest">
+          <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest">
             <Activity className="h-3.5 w-3.5 animate-pulse" /> Live Season 2025-26
           </div>
           <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter">LEAGUE COMMAND CENTER</h1>
@@ -112,8 +131,8 @@ export default function NBADashboard() {
         </div>
 
         {topScorer && (
-          <Link to={`/nba/players/${topScorer.id}`} className="bg-[#1a1a1a]/80 backdrop-blur-md border border-[#333] rounded-3xl p-6 flex items-center gap-6 relative z-10 hover:border-emerald-500/50 transition-all group shadow-2xl shrink-0">
-            <div className="absolute -top-3 -right-3 bg-emerald-500 text-black p-2 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.4)]">
+          <Link to={`/nba/players/${topScorer.id}`} className="bg-[#1a1a1a]/80 backdrop-blur-md border border-[#333] rounded-3xl p-6 flex items-center gap-6 relative z-10 hover:border-cyan-500/50 transition-all group shadow-2xl shrink-0">
+            <div className="absolute -top-3 -right-3 bg-cyan-500 text-black p-2 rounded-full shadow-[0_0_15px_rgba(6,182,212,0.4)]">
               <Crown className="h-5 w-5" />
             </div>
             <Avatar className="h-20 w-20 border-2 border-[#333] bg-black group-hover:scale-105 transition-transform">
@@ -121,9 +140,9 @@ export default function NBADashboard() {
               <AvatarFallback>{topScorer.name[0]}</AvatarFallback>
             </Avatar>
             <div>
-              <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-1">MVP Algorithm Leader</p>
+              <p className="text-[10px] font-black text-cyan-400 uppercase tracking-widest mb-1">SI+ Metric Leader</p>
               <p className="text-2xl font-bold text-white leading-none mb-1">{topScorer.name}</p>
-              <p className="text-sm font-bold text-[#888]">{topScorer.teamId} · {topScorer.adv.bpm.toFixed(1)} BPM</p>
+              <p className="text-sm font-bold text-[#888]">{topScorer.teamId} · {topScorer.adv.si} SI+</p>
             </div>
           </Link>
         )}
@@ -152,7 +171,6 @@ export default function NBADashboard() {
                     <img src={`https://cdn.nba.com/logos/nba/${g.awayId}/global/L/logo.svg`} alt={g.away} className="w-6 h-6 object-contain drop-shadow-md" />
                     <span className="font-bold text-white text-sm">{g.away}</span>
                   </div>
-                  {/* 🚀 Ocultar resultado si settings.hideResults es true */}
                   <span className="font-mono font-bold text-[#ccc] text-lg">
                     {g.status !== "upcoming" ? (settings.hideResults ? "***" : g.awayScore) : "-"}
                   </span>
@@ -174,11 +192,11 @@ export default function NBADashboard() {
         </div>
       </div>
 
-      {/* CARRUSEL CONTINUO */}
+      {/* 🚀 CARRUSEL: PLAYER METRICS (CARRUSEL ARREGLADO) */}
       <div 
-        className="pt-4 border-t border-white/5 relative"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        className="pt-4 border-t border-white/5"
+        onMouseEnter={() => setIsHoveredPlayer(true)}
+        onMouseLeave={() => setIsHoveredPlayer(false)}
       >
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
           <Link to="/nba/analytics" className="group flex items-center gap-2 w-fit">
@@ -187,44 +205,70 @@ export default function NBADashboard() {
           </Link>
         </div>
 
-        <div className="relative overflow-hidden w-full group/carousel">
+        {/* 🚀 FIX DE LAS FLECHAS ROJAS: Ahora están fuera de la caja de overflow para que no se pisen */}
+        <div className="relative w-full group/carousel flex items-center">
           <button 
-            onClick={() => manualScroll("left")} 
-            className="absolute left-2 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-[#111]/80 border border-white/20 text-white backdrop-blur-xl opacity-0 group-hover/carousel:opacity-100 transition-all hover:bg-black hover:scale-110 shadow-[0_0_20px_rgba(0,0,0,0.8)]"
+            onClick={() => { if(playerCarouselRef.current) playerCarouselRef.current.scrollBy({ left: -350, behavior: "smooth" }) }} 
+            className="absolute -left-4 z-30 p-3 rounded-full bg-[#111]/90 border border-[#333] text-white backdrop-blur-xl opacity-0 group-hover/carousel:opacity-100 transition-all hover:bg-black hover:scale-110 shadow-[0_0_20px_rgba(0,0,0,0.8)]"
           >
             <ChevronLeft className="h-6 w-6" />
           </button>
-          <button 
-            onClick={() => manualScroll("right")} 
-            className="absolute right-2 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-[#111]/80 border border-white/20 text-white backdrop-blur-xl opacity-0 group-hover/carousel:opacity-100 transition-all hover:bg-black hover:scale-110 shadow-[0_0_20px_rgba(0,0,0,0.8)]"
-          >
-            <ChevronRight className="h-6 w-6" />
-          </button>
-          <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-[#0a0f18] to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-[#0a0f18] to-transparent z-10 pointer-events-none" />
-          
-          <div 
-            ref={carouselRef}
-            className="flex gap-6 overflow-x-auto pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-          >
-            {carouselData.map((m, idx) => (
+
+          <div ref={playerCarouselRef} className="flex gap-6 overflow-x-auto pb-4 w-full px-2 scrollbar-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            {playerCarouselData.map((m, idx) => (
               <div key={`${m.id}-${idx}`} className="w-[320px] md:w-[350px] shrink-0">
                 <LeaderCard title={m.title} icon={m.icon} accent={m.accent} data={m.data} metricId={m.id} type="player" isTop10={true} />
               </div>
             ))}
           </div>
+
+          <button 
+            onClick={() => { if(playerCarouselRef.current) playerCarouselRef.current.scrollBy({ left: 350, behavior: "smooth" }) }} 
+            className="absolute -right-4 z-30 p-3 rounded-full bg-[#111]/90 border border-[#333] text-white backdrop-blur-xl opacity-0 group-hover/carousel:opacity-100 transition-all hover:bg-black hover:scale-110 shadow-[0_0_20px_rgba(0,0,0,0.8)]"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </button>
         </div>
       </div>
 
-      {/* TEAM POWER RANKINGS */}
-      <div className="pt-4 border-t border-white/5">
-        <h2 className="text-xl font-black uppercase tracking-widest text-white mb-6">Team Power Rankings</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <LeaderCard title="Net Rating Leaders" icon={TrendingUp} accent="text-emerald-400" data={netRatingTeams} metricId="netRtg" type="team" />
-          <LeaderCard title="Offensive Juggernauts" icon={Target} accent="text-orange-400" data={offRatingTeams} metricId="offRtg" type="team" />
-          <LeaderCard title="Defensive Anchors" icon={ShieldAlert} accent="text-cyan-400" data={defRatingTeams} metricId="defRtg" type="team" />
+      {/* 🚀 CARRUSEL: TEAM METRICS */}
+      <div 
+        className="pt-4 border-t border-white/5"
+        onMouseEnter={() => setIsHoveredTeam(true)}
+        onMouseLeave={() => setIsHoveredTeam(false)}
+      >
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+          <Link to="/nba/teams" className="group flex items-center gap-2 w-fit">
+            <h2 className="text-xl md:text-2xl font-black uppercase tracking-widest text-white group-hover:text-cyan-400 transition-colors">Team Performance Analytics</h2>
+            <ChevronRight className="h-6 w-6 text-[#666] group-hover:text-cyan-400 group-hover:translate-x-1 transition-all" />
+          </Link>
+        </div>
+
+        <div className="relative w-full group/carousel flex items-center">
+          <button 
+            onClick={() => { if(teamCarouselRef.current) teamCarouselRef.current.scrollBy({ left: -350, behavior: "smooth" }) }} 
+            className="absolute -left-4 z-30 p-3 rounded-full bg-[#111]/90 border border-[#333] text-white backdrop-blur-xl opacity-0 group-hover/carousel:opacity-100 transition-all hover:bg-black hover:scale-110 shadow-[0_0_20px_rgba(0,0,0,0.8)]"
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </button>
+
+          <div ref={teamCarouselRef} className="flex gap-6 overflow-x-auto pb-4 w-full px-2 scrollbar-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            {teamCarouselData.map((m, idx) => (
+              <div key={`${m.id}-${idx}`} className="w-[320px] md:w-[350px] shrink-0">
+                <LeaderCard title={m.title} icon={m.icon} accent={m.accent} data={m.data} metricId={m.id} type="team" isTop10={true} />
+              </div>
+            ))}
+          </div>
+
+          <button 
+            onClick={() => { if(teamCarouselRef.current) teamCarouselRef.current.scrollBy({ left: 350, behavior: "smooth" }) }} 
+            className="absolute -right-4 z-30 p-3 rounded-full bg-[#111]/90 border border-[#333] text-white backdrop-blur-xl opacity-0 group-hover/carousel:opacity-100 transition-all hover:bg-black hover:scale-110 shadow-[0_0_20px_rgba(0,0,0,0.8)]"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </button>
         </div>
       </div>
+
     </div>
   );
 }
@@ -233,7 +277,7 @@ function LeaderCard({ title, icon: Icon, accent, data, metricId, type, isTop10 =
   return (
     <div className="bg-[#111] border border-[#222] rounded-[1.5rem] p-6 shadow-xl h-full">
       {type === "player" && isTop10 ? (
-        <Link to={`/nba/analytics#${metricId}`} className="flex items-center gap-3 mb-4 pb-4 border-b border-[#222] group/title transition-colors">
+        <Link to={`/nba/analytics#dict-${metricId}`} className="flex items-center gap-3 mb-4 pb-4 border-b border-[#222] group/title transition-colors">
           <Icon className={`h-5 w-5 ${accent}`} />
           <h3 className="text-xs font-black uppercase tracking-widest text-[#aaa] group-hover/title:text-white transition-colors">{title}</h3>
           <ChevronRight className="h-3 w-3 text-[#555] opacity-0 group-hover/title:opacity-100 group-hover/title:translate-x-1 transition-all ml-auto" />

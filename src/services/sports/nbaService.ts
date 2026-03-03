@@ -100,8 +100,7 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
     return this.fetchPromise;
   }
 
-  // 🚀 FIX: Añadidos VORP y EFG para que el Dashboard no colapse
-  computeAllAdvanced(player: any) {
+computeAllAdvanced(player: any) {
     const s = player.stats || {};
     const min = s.mpg || 1; 
     const missedFG = (s.fga || 0) - (s.fgm || 0);
@@ -115,6 +114,11 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
     let vorp = (bpm + 2.0) * (min / 48) * 0.8; 
     if (vorp < -2) vorp = -2;
 
+    // 🚀 NUESTRA SÚPER MÉTRICA PROPIETARIA: SI+ (Sports Intel Plus)
+    // 100 es la media de la liga. Un SI+ de 150+ es nivel MVP.
+    // Combina Impacto(BPM), Eficiencia (TS) y Volumen (PER)
+    const siPlus = 100 + (bpm * 4.5) + ((per - 15) * 1.5) + (((s.ts || 55) - 57) * 0.5);
+
     return {
       per: Math.max(0, Math.round(per * 10) / 10) || 0,
       bpm: Math.round(bpm * 10) / 10 || 0,
@@ -125,6 +129,7 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
       ts: Math.round((s.ts || 0) * 10) / 10 || 0,
       ast: Math.round((s.astPct || 0) * 10) / 10 || 0,
       efg: Math.round((s.efg || 0) * 10) / 10 || 0,
+      si: Math.round(siPlus) || 100, // 🚀 LA INYECTAMOS AQUÍ (Centrada en 100)
     };
   }
 
@@ -293,11 +298,7 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
   computeUAP(p:any){ return p.stats?.ppg || 0; }
   computeTeamMetrics = computeTeamMetrics;
 
-  // ... tu código existente ...
-
-// 🚀 PARTIDOS REALES CON HORARIOS, LOGOS Y SOPORTE PARA FECHAS
-// 🚀 PARTIDOS REALES CON SOPORTE DE ZONA HORARIA REAL (SETTINGS)
-async fetchLiveGames(dateStr?: string): Promise<any[]> {
+  async fetchLiveGames(dateStr?: string): Promise<any[]> {
     try {
       if (!dateStr) {
         const d = new Date();
@@ -307,7 +308,6 @@ async fetchLiveGames(dateStr?: string): Promise<any[]> {
       const response = await fetch(`/nba-api/scoreboardv3?GameDate=${dateStr}&LeagueID=00`);
       const data = await response.json();
       
-      // Leemos el setting del usuario para la Timezone
       const settings = JSON.parse(localStorage.getItem('sports-intel-settings') || '{"timeZone":"local"}');
 
       const games = data?.scoreboard?.games || [];
@@ -315,7 +315,6 @@ async fetchLiveGames(dateStr?: string): Promise<any[]> {
         const gameTime = new Date(g.gameTimeUTC);
         let timeStr = "";
 
-        // 🚀 CÁLCULO DE HORA REAL SEGÚN EL PAÍS ELEGIDO
         if (settings.timeZone && settings.timeZone !== 'local') {
           timeStr = gameTime.toLocaleTimeString('en-US', { 
             timeZone: settings.timeZone, 
@@ -341,7 +340,6 @@ async fetchLiveGames(dateStr?: string): Promise<any[]> {
     }
   }
 
-  // 🚀 NUEVO: CLASIFICACIONES AVANZADAS OFICIALES
   async fetchStandings(): Promise<any[]> {
     try {
       const response = await fetch(`/nba-api/leaguestandingsv3?LeagueID=00&Season=2025-26&SeasonType=Regular%20Season`);
@@ -372,7 +370,7 @@ async fetchLiveGames(dateStr?: string): Promise<any[]> {
       return [];
     }
   }
-  // 🚀 NUEVO: FETCH BOX SCORE OFICIAL (Para partidos terminados)
+
   async fetchBoxScore(gameId: string): Promise<any> {
     try {
       const response = await fetch(`/nba-api/boxscoretraditionalv3?GameID=${gameId}&LeagueID=00&playByPlay=false`);
@@ -383,5 +381,26 @@ async fetchLiveGames(dateStr?: string): Promise<any[]> {
       return null;
     }
   }
-} // <-- Esta es la llave de cierre de la clase NBAService
+
+  async getTeamSchedule(teamId: string): Promise<any[]> {
+    try {
+      const response = await fetch(`/nba-api/teamgamelog?DateFrom=&DateTo=&LeagueID=00&Season=2025-26&SeasonType=Regular%20Season&TeamID=${teamId}`);
+      const data = await response.json();
+      const headers = data.resultSets[0].headers;
+      const rows = data.resultSets[0].rowSet;
+
+      return rows.map((r: any[]) => ({
+        gameId: r[headers.indexOf("Game_ID")],
+        date: r[headers.indexOf("GAME_DATE")],
+        matchup: r[headers.indexOf("MATCHUP")],
+        wl: r[headers.indexOf("WL")],
+        pts: r[headers.indexOf("PTS")],
+      }));
+    } catch(e) {
+      console.error(e);
+      return [];
+    }
+  }
+}
+
 export const nbaService = new NBAService();

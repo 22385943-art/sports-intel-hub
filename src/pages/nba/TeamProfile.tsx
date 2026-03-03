@@ -4,24 +4,22 @@ import { useSport } from "@/contexts/SportContext";
 import { nbaService } from "@/services/sportServiceFactory";
 import { 
   ArrowLeft, Trophy, Shield, Activity, Loader2, Zap, Target, BarChart3, Gauge, 
-  Building2, Briefcase, Crown, History, AlertCircle, Users, UserCheck, Star // 🚀 AÑADIDA ESTRELLA
+  Building2, Briefcase, Crown, History, AlertCircle, Users, UserCheck, Star, Calendar // 🚀 AÑADIDO Calendar
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import type { NBAPlayer } from "@/data/nba/mockData";
-import { useFavorites } from "@/hooks/useFavorites"; // 🚀 AÑADIDO HOOK DE FAVORITOS
+import { useFavorites } from "@/hooks/useFavorites"; 
 
-// 🏛️ NUESTRO "CMS" LOCAL (Añade aquí entrenadores para forzar su foto y que salgan los primeros)
 const ENRICHED_DATA: Record<string, any> = {
   "Sam Presti": { img: "https://upload.wikimedia.org/wikipedia/commons/6/69/Sam_Presti.jpg" },
   "Clay Bennett": { img: "https://upload.wikimedia.org/wikipedia/commons/e/ec/Clay_Bennett.jpg" },
-  "Mark Daigneault": { img: "/mark_daigneault.jpg" }, // Foto en la carpeta public/
+  "Mark Daigneault": { img: "/mark_daigneault.jpg" },
 };
 
 const getAvatarUrl = (name: string) => `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0f172a&color=fff&size=256&font-weight=bold`;
 
-// 🧮 FUNCIONES DE CONVERSIÓN MÉTRICA
 const convertHeightToCm = (heightStr?: string) => {
   if (!heightStr || !heightStr.includes('-')) return "-";
   const [feet, inches] = heightStr.split('-');
@@ -36,7 +34,6 @@ const convertWeightToKg = (weightStr?: string | number) => {
   return `${kg} kg`;
 };
 
-// 🎨 PALETA DE COLORES
 const TEAM_COLORS: Record<string, string> = {
   "ATL": "#E03A3E", "BOS": "#007A33", "BKN": "#FFFFFF", "CHA": "#00788C", 
   "CHI": "#CE1141", "CLE": "#860038", "DAL": "#00A3E0", 
@@ -56,10 +53,7 @@ export default function NBATeamProfile() {
   const { sport } = useSport();
   const [team, setTeam] = useState<any>(null);
   const [allTeams, setAllTeams] = useState<any[]>([]);
-  
-  // 🚀 ESTADO NUEVO: Guardamos TODA la liga para encontrar jugadores traspasados en los Lineups
   const [allLeaguePlayers, setAllLeaguePlayers] = useState<NBAPlayer[]>([]);
-  
   const [isBaseLoading, setIsBaseLoading] = useState(true);
   const [isDeepDataLoading, setIsDeepDataLoading] = useState(true);
   
@@ -67,14 +61,14 @@ export default function NBATeamProfile() {
   const [teamDetails, setTeamDetails] = useState<any>(null); 
   const [bioRoster, setBioRoster] = useState<any[]>([]);
   const [coaches, setCoaches] = useState<any[]>([]);
+  const [schedule, setSchedule] = useState<any[]>([]); // 🚀 NUEVO ESTADO SCHEDULE
   
-  const [activeTab, setActiveTab] = useState<"roster" | "coaches" | "analytics" | "legacy">("roster");
+  // 🚀 AÑADIDA LA PESTAÑA SCHEDULE
+  const [activeTab, setActiveTab] = useState<"roster" | "coaches" | "schedule" | "analytics" | "legacy">("roster");
 
-  // 🚀 AÑADIDO: INICIALIZAR FAVORITOS
   const { toggleFavorite, isFavorite } = useFavorites();
   const isFav = team ? isFavorite(team.id, 'team') : false;
 
-  // 🚀 FIX: Prevenir Auto-Scroll molesto
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [id]);
@@ -88,7 +82,7 @@ export default function NBATeamProfile() {
       nbaService.fetchAllOfficialPlayers()
     ]).then(([teams, players]) => {
       setAllTeams(teams);
-      setAllLeaguePlayers(players); // Guardamos a toda la liga para el escáner de Lineups
+      setAllLeaguePlayers(players);
       
       const foundTeam = teams.find(t => t.id === id || t.abbreviation === id);
       setTeam(foundTeam || null);
@@ -100,12 +94,14 @@ export default function NBATeamProfile() {
         Promise.all([
           nbaService.getTeamLineups(foundTeam.id),
           nbaService.getTeamDetails(foundTeam.id),
-          nbaService.getTeamRosterAndCoaches(foundTeam.id)
-        ]).then(([lineups, details, bioData]) => {
+          nbaService.getTeamRosterAndCoaches(foundTeam.id),
+          nbaService.getTeamSchedule(foundTeam.id) // 🚀 LLAMADA A LA API DE SCHEDULE
+        ]).then(([lineups, details, bioData, sched]) => {
           setRealLineups(lineups || []);
           setTeamDetails(details || null);
           setBioRoster(bioData.players || []);
           setCoaches(bioData.coaches || []);
+          setSchedule(sched || []); // Guardamos el calendario
           setIsDeepDataLoading(false);
         }).catch(() => setIsDeepDataLoading(false));
       } else {
@@ -114,15 +110,13 @@ export default function NBATeamProfile() {
     });
   }, [id]);
 
-  // 🚀 ALGORITMO DE ORDENACIÓN DE ENTRENADORES (Fuerza a los de ENRICHED_DATA al principio)
   const sortedCoaches = useMemo(() => {
     const getRank = (c: any) => {
       if (c.COACH_TYPE === "Head Coach") return 0;
       const isEnriched = !!ENRICHED_DATA[c.COACH_NAME];
-      if (isEnriched) return 1; // Asistentes con foto manual van primero
-      return 2; // Resto de asistentes (con siluetas grises de la NBA)
+      if (isEnriched) return 1;
+      return 2;
     };
-
     return [...coaches].sort((a, b) => {
       const rankA = getRank(a);
       const rankB = getRank(b);
@@ -152,7 +146,6 @@ export default function NBATeamProfile() {
     ];
   }, [team, allTeams]);
 
-  // 🚀 FIX: ESCÁNER DE LINEUPS GLOBAL (Encuentra a jugadores traspasados)
   const parseLineupPlayers = (groupName: string) => {
     if (!groupName) return [];
     const names = groupName.split(" - ");
@@ -184,13 +177,6 @@ export default function NBATeamProfile() {
   const isWinning = team.wins >= team.losses;
   const themeColor = TEAM_COLORS[team.abbreviation] || "#4279f5"; 
 
-  const fourFactors = [
-    { label: "True Shooting", value: team.tsPct?.toFixed(1) || "0.0", suffix: "%", icon: <Target className="h-5 w-5 text-cyan-400" />, pct: Math.min(100, (team.tsPct || 0) * 1.5) },
-    { label: "Rebound Rate", value: team.rebPct?.toFixed(1) || "50.0", suffix: "%", icon: <BarChart3 className="h-5 w-5 text-orange-400" />, pct: team.rebPct || 50 },
-    { label: "AST / TO Ratio", value: team.astTo?.toFixed(2) || "0.00", suffix: "", icon: <Zap className="h-5 w-5 text-amber-400" />, pct: Math.min(100, (team.astTo || 0) * 30) },
-    { label: "Pace Factor", value: team.pace?.toFixed(1) || "0.0", suffix: "", icon: <Gauge className="h-5 w-5 text-violet-400" />, pct: Math.min(100, ((team.pace || 95) - 90) * 8) },
-  ];
-
   return (
     <div className="space-y-6 pb-16 animate-in fade-in duration-500 min-h-screen">
       
@@ -198,7 +184,6 @@ export default function NBATeamProfile() {
         <ArrowLeft className="h-3.5 w-3.5 group-hover:-translate-x-1 transition-transform" /> Back to Standings
       </Link>
 
-      {/* ═══════════════════ HERO BANNER ═══════════════════ */}
       <div className="relative overflow-hidden rounded-[2.5rem] border border-white/[0.06] bg-[#0a0f18] shadow-2xl">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full blur-[120px] opacity-[0.04]" style={{ backgroundColor: themeColor }} />
@@ -223,18 +208,13 @@ export default function NBATeamProfile() {
                 <Badge className="bg-white/[0.06] text-slate-300 font-black px-4 py-1.5 text-[10px] tracking-[0.15em] border border-white/[0.08]">{team.conference} Conf</Badge>
                 <span className="text-slate-500 font-mono font-bold text-sm bg-black/40 px-4 py-1.5 rounded-full border border-white/5">{team.abbreviation}</span>
                 
-                {/* 🚀 BOTÓN DE FAVORITOS (AÑADIDO EXACTAMENTE AQUÍ) */}
                 <button 
                   onClick={() => toggleFavorite({
                     id: team.id, type: 'team', name: team.name, 
                     subtitle: `${team.wins}W - ${team.losses}L`, imageUrl: nbaService.getTeamLogoUrl(team.abbreviation), url: `/nba/teams/${team.abbreviation}`
                   })}
                   className="px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest transition-all border shadow-lg flex items-center gap-2"
-                  style={{ 
-                    backgroundColor: isFav ? '#111' : themeColor,
-                    color: isFav ? themeColor : '#fff',
-                    borderColor: isFav ? themeColor : 'transparent'
-                  }}
+                  style={{ backgroundColor: isFav ? '#111' : themeColor, color: isFav ? themeColor : '#fff', borderColor: isFav ? themeColor : 'transparent' }}
                 >
                   <Star className={`w-3.5 h-3.5 ${isFav ? 'fill-current' : ''}`} />
                   {isFav ? 'Following' : 'Follow'}
@@ -293,6 +273,9 @@ export default function NBATeamProfile() {
         <button onClick={() => setActiveTab("coaches")} className={`px-5 md:px-6 py-2.5 md:py-3 rounded-2xl text-[9px] md:text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === "coaches" ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : 'text-slate-500 hover:text-white'}`}>
           <UserCheck className="h-4 w-4" /> Coaching Staff
         </button>
+        <button onClick={() => setActiveTab("schedule")} className={`px-5 md:px-6 py-2.5 md:py-3 rounded-2xl text-[9px] md:text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === "schedule" ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'text-slate-500 hover:text-white'}`}>
+          <Calendar className="h-4 w-4" /> Game Schedule
+        </button>
         <button onClick={() => setActiveTab("analytics")} className={`px-5 md:px-6 py-2.5 md:py-3 rounded-2xl text-[9px] md:text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === "analytics" ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30' : 'text-slate-500 hover:text-white'}`}>
           <Activity className="h-4 w-4" /> Live Analytics
         </button>
@@ -303,18 +286,15 @@ export default function NBATeamProfile() {
 
       <div className="animate-in fade-in duration-500">
         
-        {/* ═══════════════════ TAB 1: ROSTER (CON MÉTRICAS KG Y CM) ═══════════════════ */}
         {activeTab === "roster" && (
           <div className="bg-[#0a0f18] border border-white/[0.06] rounded-[2rem] overflow-hidden shadow-2xl relative min-h-[400px]">
             {isDeepDataLoading ? (
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#0a0f18]/80 backdrop-blur-sm z-10">
                 <Loader2 className="h-8 w-8 animate-spin text-emerald-500 mb-4" />
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-400">Loading Biometrics...</p>
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <div className="min-w-[1000px]">
-                  {/* Headers */}
                   <div className="grid grid-cols-12 gap-4 px-6 py-4 bg-white/[0.02] border-b border-white/[0.06] text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] items-center">
                     <div className="col-span-4">Player</div>
                     <div className="col-span-1 text-center">No.</div>
@@ -325,12 +305,9 @@ export default function NBATeamProfile() {
                     <div className="col-span-1 text-center">Exp</div>
                     <div className="col-span-1 text-right">Origin</div>
                   </div>
-                  
-                  {/* Rows */}
                   <div className="divide-y divide-white/[0.03]">
                     {bioRoster.map((p, i) => (
                       <Link key={i} to={`/${sport}/players/${p.PLAYER_ID}`} className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-white/[0.03] transition-colors group items-center">
-                        {/* Player */}
                         <div className="col-span-4 flex items-center gap-4">
                           <Avatar className="h-12 w-12 border border-white/[0.08] shadow-lg group-hover:border-emerald-400 transition-colors bg-white">
                             <AvatarImage src={nbaService.getImageUrl(p.PLAYER_ID)} className="object-cover" />
@@ -338,34 +315,27 @@ export default function NBATeamProfile() {
                           </Avatar>
                           <span className="font-bold text-white text-sm group-hover:text-emerald-400 transition-colors truncate">{p.PLAYER}</span>
                         </div>
-                        {/* No. */}
                         <div className="col-span-1 text-center font-mono font-black text-slate-300 text-lg">#{p.NUM}</div>
-                        {/* Pos */}
                         <div className="col-span-1 text-center">
                           <Badge className="bg-white/[0.06] text-slate-400 border-none font-black text-[9px] tracking-wider">{p.POSITION}</Badge>
                         </div>
-                        {/* Age / DOB */}
                         <div className="col-span-2 flex flex-col items-center justify-center">
                           <span className="font-mono font-bold text-white text-sm">{p.AGE}</span>
                           <span className="text-[9px] font-bold text-slate-500 mt-0.5">{p.BIRTH_DATE}</span>
                         </div>
-                        {/* HT (US / Metric) */}
                         <div className="col-span-1 flex flex-col items-center justify-center">
                           <span className="font-mono font-bold text-slate-300 text-xs">{p.HEIGHT || "-"}</span>
                           <span className="text-[9px] font-bold text-slate-500 mt-0.5">{convertHeightToCm(p.HEIGHT)}</span>
                         </div>
-                        {/* WT (US / Metric) */}
                         <div className="col-span-1 flex flex-col items-center justify-center">
                           <span className="font-mono font-bold text-slate-300 text-xs">
                             {p.WEIGHT || "-"} <span className="text-[9px] text-slate-500 font-sans">lbs</span>
                           </span>
                           <span className="text-[9px] font-bold text-slate-500 mt-0.5">{convertWeightToKg(p.WEIGHT)}</span>
                         </div>
-                        {/* Exp */}
                         <div className="col-span-1 text-center font-mono font-bold text-emerald-400/80 text-sm">
                           {p.EXP === "R" ? "Rookie" : `${p.EXP} Yrs`}
                         </div>
-                        {/* Origin */}
                         <div className="col-span-1 text-right font-bold text-slate-400 text-xs truncate">
                           {p.SCHOOL || "-"}
                         </div>
@@ -378,7 +348,6 @@ export default function NBATeamProfile() {
           </div>
         )}
 
-        {/* ═══════════════════ TAB 2: COACHING STAFF ═══════════════════ */}
         {activeTab === "coaches" && (
           <div className="bg-[#0a0f18] border border-white/[0.06] rounded-[2rem] p-8 md:p-10 shadow-2xl relative min-h-[400px]">
             {isDeepDataLoading ? (
@@ -391,23 +360,15 @@ export default function NBATeamProfile() {
                   <UserCheck className="h-6 w-6 text-amber-400" />
                   <h2 className="text-2xl font-black uppercase tracking-[0.2em] text-white italic">Coaching Staff</h2>
                 </div>
-
                 <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-8">
                   {sortedCoaches.map((c, i) => {
                     const customImg = ENRICHED_DATA[c.COACH_NAME]?.img;
                     const fallbackUrl = getAvatarUrl(c.COACH_NAME);
                     const imgSrc = customImg ? customImg : `https://cdn.nba.com/headshots/nba/latest/260x190/${c.COACH_ID}.png`;
-
                     return (
                       <div key={c.COACH_ID || i} className="flex flex-col items-center text-center group">
                         <div className="h-32 w-32 rounded-full border-2 border-white/10 shadow-lg mb-4 overflow-hidden bg-[#0a0f18] group-hover:border-amber-500/50 transition-colors flex items-center justify-center">
-                          <img 
-                            src={imgSrc} 
-                            className="w-full h-full object-cover object-top"
-                            onError={(e) => {
-                              e.currentTarget.src = fallbackUrl;
-                            }}
-                          />
+                          <img src={imgSrc} className="w-full h-full object-cover object-top" onError={(e) => { e.currentTarget.src = fallbackUrl; }} />
                         </div>
                         <h4 className="text-sm font-bold text-white mb-1 group-hover:text-amber-400 transition-colors">{c.COACH_NAME}</h4>
                         <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">{c.COACH_TYPE}</p>
@@ -420,7 +381,57 @@ export default function NBATeamProfile() {
           </div>
         )}
 
-        {/* ═══════════════════ TAB 3: LIVE ANALYTICS (Quintetos Globales) ═══════════════════ */}
+        {/* 🚀 NUEVA PESTAÑA: SCHEDULE DEL EQUIPO */}
+        {activeTab === "schedule" && (
+          <div className="bg-[#0a0f18] border border-white/[0.06] rounded-[2rem] p-8 shadow-2xl relative min-h-[400px]">
+            {isDeepDataLoading ? (
+              <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
+                <Loader2 className="h-8 w-8 animate-spin text-blue-500 mb-4" />
+              </div>
+            ) : (
+              <div>
+                <div className="flex items-center gap-3 mb-8 border-b border-white/10 pb-6">
+                  <Calendar className="h-6 w-6 text-blue-400" />
+                  <h2 className="text-2xl font-black uppercase tracking-[0.2em] text-white italic">2025-26 Game Log</h2>
+                </div>
+                
+                {schedule.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {schedule.map((g, i) => {
+                      const isWin = g.wl === 'W';
+                      const isHome = !g.matchup.includes('@');
+                      const opponent = g.matchup.split(' ')[2];
+                      
+                      return (
+                        <Link 
+                          key={i} 
+                          // 🚀 Hacemos trampas mágicas: Le pasamos los datos básicos a BoxScore usando el estado
+                          to={`/nba/games/${g.gameId}/boxscore`} 
+                          state={{ game: { gameId: g.gameId, away: isHome ? opponent : team.abbreviation, awayId: "0", home: isHome ? team.abbreviation : opponent, homeId: "0", awayScore: isHome ? 0 : g.pts, homeScore: isHome ? g.pts : 0 } }}
+                          className="bg-[#111] border border-white/5 rounded-xl p-4 flex items-center justify-between hover:bg-white/5 transition-colors group"
+                        >
+                          <div className="flex flex-col gap-1">
+                            <span className="text-[10px] font-black text-slate-500">{g.date}</span>
+                            <span className="text-sm font-bold text-white flex items-center gap-2">
+                              {isHome ? 'vs' : '@'} <img src={nbaService.getTeamLogoUrl(opponent)} className="w-5 h-5 object-contain" /> {opponent}
+                            </span>
+                          </div>
+                          <div className="flex flex-col items-end gap-1">
+                            <Badge className={`${isWin ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'} border-none font-black`}>{g.wl}</Badge>
+                            <span className="font-mono text-xs text-slate-400">{g.pts} PTS</span>
+                          </div>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="text-center py-10 text-slate-500 font-bold">Game log data unavailable for this team.</div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
         {activeTab === "analytics" && (
           <div className="space-y-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -436,7 +447,6 @@ export default function NBATeamProfile() {
                   </RadarChart>
                 </ResponsiveContainer>
               </div>
-
               <div className="grid grid-cols-2 gap-4 h-[360px]">
                 {[
                   { label: "True Shooting", v: team.tsPct, suf: "%", pct: (team.tsPct/70)*100 },
@@ -454,18 +464,15 @@ export default function NBATeamProfile() {
                 ))}
               </div>
             </div>
-
             <div className="space-y-4 pt-4">
               <div className="flex items-center gap-3 px-1">
                 <Activity className="h-6 w-6 text-cyan-400" />
                 <h2 className="text-xl font-black uppercase tracking-[0.2em] text-white">Lineup Laboratory (API Live)</h2>
               </div>
-
               <div className="bg-[#0a0f18] border border-white/[0.06] rounded-[2rem] backdrop-blur-xl overflow-x-auto shadow-2xl min-h-[300px] relative">
                 {isDeepDataLoading ? (
                   <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#0a0f18]/50 backdrop-blur-sm z-10">
                     <Loader2 className="h-8 w-8 animate-spin text-cyan-500 mb-4" />
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-400">Extracting Telemetry...</p>
                   </div>
                 ) : (
                   <div className="min-w-[1000px]">
@@ -478,7 +485,6 @@ export default function NBATeamProfile() {
                       <div className="col-span-1 text-center">TS%</div>
                       <div className="col-span-1 text-center">REB%</div>
                     </div>
-                    
                     {realLineups.length > 0 ? (
                       <div className="divide-y divide-white/[0.03]">
                         {realLineups.map((lu, i) => {
@@ -519,7 +525,6 @@ export default function NBATeamProfile() {
                       <div className="p-16 flex flex-col items-center justify-center text-center">
                         <AlertCircle className="h-10 w-10 text-amber-500 mb-4" />
                         <h3 className="text-white font-black uppercase tracking-widest text-sm mb-2">Data Pending</h3>
-                        <p className="text-slate-400 text-xs max-w-md leading-relaxed">Lineup data is currently unavailable from the NBA endpoints.</p>
                       </div>
                     )}
                   </div>
@@ -529,7 +534,6 @@ export default function NBATeamProfile() {
           </div>
         )}
 
-        {/* ═══════════════════ TAB 4: CULTURE & LEGACY ═══════════════════ */}
         {activeTab === "legacy" && (
           <div className="relative min-h-[400px]">
             {isDeepDataLoading ? (
@@ -538,7 +542,6 @@ export default function NBATeamProfile() {
               </div>
             ) : (
               <div className="space-y-8">
-                {/* Arena & Origins */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="bg-[#0a0f18] border border-white/[0.06] rounded-[2.5rem] p-8 shadow-2xl relative overflow-hidden flex flex-col justify-center">
                     <Building2 className="absolute -bottom-6 -right-6 h-40 w-40 text-white/5" />
@@ -549,7 +552,6 @@ export default function NBATeamProfile() {
                       <div><p className="text-[10px] font-black uppercase text-slate-500">Franchise Est.</p><p className="text-xl font-bold text-white font-mono">{teamDetails?.frontOffice?.yearFounded || "N/A"}</p></div>
                     </div>
                   </div>
-                  
                   <div className="bg-gradient-to-br from-amber-500/10 to-transparent border border-amber-500/20 rounded-[2.5rem] p-8 shadow-2xl">
                      <h3 className="text-xs font-black uppercase tracking-widest text-amber-400 mb-6">NBA Championships</h3>
                      {teamDetails?.history?.rings?.length > 0 ? (
@@ -564,8 +566,6 @@ export default function NBATeamProfile() {
                      ) : <span className="text-3xl font-black text-slate-500">Zero Titles</span>}
                   </div>
                 </div>
-
-                {/* All-Time Leaders Grid */}
                 <div className="bg-[#0a0f18] border border-white/[0.06] rounded-[2.5rem] p-8 shadow-2xl">
                    <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-6 flex items-center gap-2"><Crown className="h-4 w-4"/> All-Time Franchise Leaders (API)</h3>
                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">

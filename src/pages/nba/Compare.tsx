@@ -429,27 +429,7 @@ export default function ComparePlayers() {
             </div>
           </div>
 
-          {/* ═══ TRUE IMPACT CARDS (PIE) ═══ */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="rounded-[2rem] bg-gradient-to-br from-cyan-500/[0.05] to-transparent border border-cyan-500/10 p-8 relative group hover:scale-[1.02] transition-all duration-300 shadow-xl overflow-hidden">
-              <div className="absolute right-0 top-0 bottom-0 w-32 bg-cyan-500/5 blur-3xl" />
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-400 mb-3 relative z-10 flex items-center gap-2">
-                <Target className="h-3 w-3" /> Player Impact Est. (PIE)
-              </p>
-              <p className="text-5xl md:text-6xl font-black font-mono tracking-tighter text-white relative z-10">
-                {p1.adv.pie.toFixed(1)}<span className="text-2xl text-slate-500">%</span>
-              </p>
-            </div>
-            <div className="rounded-[2rem] bg-gradient-to-br from-rose-500/[0.05] to-transparent border border-rose-500/10 p-8 relative group hover:scale-[1.02] transition-all duration-300 shadow-xl overflow-hidden md:text-right">
-              <div className="absolute left-0 top-0 bottom-0 w-32 bg-rose-500/5 blur-3xl" />
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-rose-400 mb-3 relative z-10 flex items-center md:justify-end gap-2">
-                Player Impact Est. (PIE) <Target className="h-3 w-3" />
-              </p>
-              <p className="text-5xl md:text-6xl font-black font-mono tracking-tighter text-white relative z-10">
-                {p2.adv.pie.toFixed(1)}<span className="text-2xl text-slate-500">%</span>
-              </p>
-            </div>
-          </div>
+
         </div>
       )}
     </div>
