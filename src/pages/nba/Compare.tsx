@@ -7,7 +7,7 @@ import {
 } from "recharts";
 import {
   Search, ChevronDown, Loader2, Hexagon, Sparkles, Flame, Target, Shield,
-  Crosshair, Activity, Zap, Brain, Crown, ShieldAlert // <-- Importado ShieldAlert
+  Crosshair, Activity, Zap, Brain, Crown, ShieldAlert
 } from "lucide-react";
 import type { NBAPlayer } from "@/data/nba/mockData";
 
@@ -175,19 +175,19 @@ const TugBar = ({ label, icon, v1, v2, reverse = false }: { label: string; icon:
 export default function ComparePlayers() {
   const [allPlayers, setAllPlayers] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [p1Id, setP1Id] = useState("");
-  const [p2Id, setP2Id] = useState("");
+  
+  // 🚀 FIX: Jokic vs Luka por defecto (IDs Reales)
+  const [p1Id, setP1Id] = useState("203999"); // Jokic
+  const [p2Id, setP2Id] = useState("1629029"); // Luka
 
   useEffect(() => {
     nbaService.fetchAllOfficialPlayers().then(players => {
-      // INYECTAR DATA SCIENCE
       const playersWithAdv = players.map(p => {
         const adv = nbaService.computeAllAdvanced(p);
         const archetype = getArchetype({ ...p, adv });
         return { ...p, adv, archetype };
       });
 
-      // CALCULAR PERCENTILES
       const distributions: Record<string, number[]> = {
         ppg: playersWithAdv.map(p => p.stats.ppg).sort((a, b) => a - b),
         rpg: playersWithAdv.map(p => p.stats.rpg).sort((a, b) => a - b),
@@ -214,10 +214,16 @@ export default function ComparePlayers() {
       const sorted = finalPlayers.sort((a, b) => b.adv.per - a.adv.per);
       setAllPlayers(sorted);
       
-      if (sorted.length >= 2) { 
-        setP1Id(sorted[0].id); 
-        setP2Id(sorted[1].id); 
+      // Mantenemos a Jokic y Luka si existen en la base de datos, si no cogemos a los top 2
+      const hasJokic = sorted.find(p => p.id === "203999");
+      const hasLuka = sorted.find(p => p.id === "1629029");
+      if (!hasJokic || !hasLuka) {
+         if (sorted.length >= 2) { 
+           setP1Id(sorted[0].id); 
+           setP2Id(sorted[1].id); 
+         }
       }
+
       setIsLoading(false);
     });
   }, []);
@@ -226,7 +232,6 @@ export default function ComparePlayers() {
   const p2 = useMemo(() => allPlayers.find(p => p.id === p2Id), [p2Id, allPlayers]);
 
   const radarData = useMemo(() => {
-    // 🚀 FIX DE SEGURIDAD: Comprobamos que el jugador y sus percentiles existan
     if (!p1 || !p2 || !p1.pct || !p2.pct) return [];
     return [
       { stat: "Scoring", p1: p1.pct.Scoring, p2: p2.pct.Scoring },

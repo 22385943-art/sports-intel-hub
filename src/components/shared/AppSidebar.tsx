@@ -5,6 +5,9 @@ import {
   BarChart3,
   GitCompare,
   ChevronDown,
+  Trophy,
+  Calendar,
+  Star
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -36,10 +39,13 @@ export function AppSidebar() {
   const navigate = useNavigate();
   const basePath = `/${sport}`;
 
-  const navItems = [
+const navItems = [
     { title: "Dashboard", path: "", icon: LayoutDashboard },
+    { title: "Schedule", path: "/schedule", icon: Calendar },
     { title: sportConfig.playerLabel, path: "/players", icon: Users },
     ...(sport !== "ufc" ? [{ title: "Teams", path: "/teams", icon: Shield }] : []),
+    ...(sport !== "ufc" ? [{ title: "Standings", path: "/standings", icon: Trophy }] : []),
+    { title: "Favorites", path: "/favorites", icon: Star }, // 🚀 AÑADIDO
     { title: "Analytics", path: "/analytics", icon: BarChart3 },
     { title: "Compare", path: "/compare", icon: GitCompare },
   ];

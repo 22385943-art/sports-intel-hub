@@ -292,5 +292,96 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
   computeLSR(p:any){ return p.stats?.ppg || 0; } 
   computeUAP(p:any){ return p.stats?.ppg || 0; }
   computeTeamMetrics = computeTeamMetrics;
-}
+
+  // ... tu código existente ...
+
+// 🚀 PARTIDOS REALES CON HORARIOS, LOGOS Y SOPORTE PARA FECHAS
+// 🚀 PARTIDOS REALES CON SOPORTE DE ZONA HORARIA REAL (SETTINGS)
+async fetchLiveGames(dateStr?: string): Promise<any[]> {
+    try {
+      if (!dateStr) {
+        const d = new Date();
+        dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      }
+      
+      const response = await fetch(`/nba-api/scoreboardv3?GameDate=${dateStr}&LeagueID=00`);
+      const data = await response.json();
+      
+      // Leemos el setting del usuario para la Timezone
+      const settings = JSON.parse(localStorage.getItem('sports-intel-settings') || '{"timeZone":"local"}');
+
+      const games = data?.scoreboard?.games || [];
+      return games.map((g: any) => {
+        const gameTime = new Date(g.gameTimeUTC);
+        let timeStr = "";
+
+        // 🚀 CÁLCULO DE HORA REAL SEGÚN EL PAÍS ELEGIDO
+        if (settings.timeZone && settings.timeZone !== 'local') {
+          timeStr = gameTime.toLocaleTimeString('en-US', { 
+            timeZone: settings.timeZone, 
+            hour: '2-digit', minute: '2-digit' 
+          });
+        } else {
+          timeStr = gameTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        return {
+          gameId: g.gameId,
+          home: g.homeTeam.teamTricolor, homeId: g.homeTeam.teamId,
+          away: g.awayTeam.teamTricolor, awayId: g.awayTeam.teamId,
+          homeScore: g.homeTeam.score, awayScore: g.awayTeam.score,
+          quarter: g.gameStatus === 1 ? timeStr : (g.gameStatus === 3 ? "FINAL" : `Q${g.period} ${g.gameClock}`),
+          status: g.gameStatus === 1 ? "upcoming" : (g.gameStatus === 3 ? "final" : "live"),
+          arena: g.arena?.name || "TBD", city: g.arena?.city || ""
+        };
+      });
+    } catch (error) {
+      console.error("Error fetching live games:", error);
+      return [];
+    }
+  }
+
+  // 🚀 NUEVO: CLASIFICACIONES AVANZADAS OFICIALES
+  async fetchStandings(): Promise<any[]> {
+    try {
+      const response = await fetch(`/nba-api/leaguestandingsv3?LeagueID=00&Season=2025-26&SeasonType=Regular%20Season`);
+      const data = await response.json();
+      const headers = data.resultSets[0].headers;
+      const rows = data.resultSets[0].rowSet;
+      
+      return rows.map((r: any[]) => ({
+        teamId: r[headers.indexOf("TeamID")],
+        name: r[headers.indexOf("TeamCity")] + " " + r[headers.indexOf("TeamName")],
+        abbreviation: r[headers.indexOf("TeamSlug")],
+        conference: r[headers.indexOf("Conference")],
+        division: r[headers.indexOf("Division")],
+        wins: r[headers.indexOf("WINS")],
+        losses: r[headers.indexOf("LOSSES")],
+        pct: r[headers.indexOf("WinPCT")],
+        rank: r[headers.indexOf("PlayoffRank")],
+        gb: r[headers.indexOf("ConferenceGamesBack")],
+        home: r[headers.indexOf("HOME")] || "-",
+        away: r[headers.indexOf("ROAD")] || "-",
+        l10: r[headers.indexOf("L10")] || "-",
+        streak: r[headers.indexOf("strCurrentStreak")] || "-",
+        confRecord: r[headers.indexOf("ConferenceRecord")] || "-",
+        divRecord: r[headers.indexOf("DivisionRecord")] || "-",
+      }));
+    } catch(e) {
+      console.error("Error fetching standings", e);
+      return [];
+    }
+  }
+  // 🚀 NUEVO: FETCH BOX SCORE OFICIAL (Para partidos terminados)
+  async fetchBoxScore(gameId: string): Promise<any> {
+    try {
+      const response = await fetch(`/nba-api/boxscoretraditionalv3?GameID=${gameId}&LeagueID=00&playByPlay=false`);
+      const data = await response.json();
+      return data?.boxScoreTraditional || null;
+    } catch (error) {
+      console.error("Error fetching box score:", error);
+      return null;
+    }
+  }
+} // <-- Esta es la llave de cierre de la clase NBAService
 export const nbaService = new NBAService();

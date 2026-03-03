@@ -3,7 +3,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/shared/AppSidebar";
 import { Header } from "@/components/shared/Header";
 import { SportProvider, useSport } from "@/contexts/SportContext";
-import { lazy, Suspense } from "react";
+
 
 // NBA pages
 import NBADashboard from "@/pages/nba/Dashboard";
@@ -11,24 +11,13 @@ import NBAPlayers from "@/pages/nba/Players";
 import NBAPlayerProfile from "@/pages/nba/PlayerProfile";
 import NBATeams from "@/pages/nba/Teams";
 import NBATeamProfile from "@/pages/nba/TeamProfile";
+import NBAStandings from "@/pages/nba/Standings";
 import NBAAnalytics from "@/pages/nba/Analytics";
 import NBACompare from "@/pages/nba/Compare";
-
-// Football pages
-import FootballDashboard from "@/pages/football/Dashboard";
-import FootballPlayers from "@/pages/football/Players";
-import FootballPlayerProfile from "@/pages/football/PlayerProfile";
-import FootballTeams from "@/pages/football/Teams";
-import FootballTeamProfile from "@/pages/football/TeamProfile";
-import FootballAnalytics from "@/pages/football/Analytics";
-import FootballCompare from "@/pages/football/Compare";
-
-// UFC pages
-import UFCDashboard from "@/pages/ufc/Dashboard";
-import UFCFighters from "@/pages/ufc/Fighters";
-import UFCFighterProfile from "@/pages/ufc/FighterProfile";
-import UFCAnalytics from "@/pages/ufc/Analytics";
-import UFCCompare from "@/pages/ufc/Compare";
+import NBASchedule from "@/pages/nba/Schedule";
+import NBAGamePreview from "@/pages/nba/GamePreview";
+import NBABoxScore from "@/pages/nba/BoxScore";
+import Favorites from "@/pages/shared/Favorites";
 
 // Placeholder
 import ComingSoon from "@/pages/shared/ComingSoon";
@@ -36,9 +25,7 @@ import ComingSoon from "@/pages/shared/ComingSoon";
 function SportRoutes() {
   const { sport, sportConfig } = useSport();
 
-  if (!sportConfig.enabled) {
-    return <ComingSoon />;
-  }
+  if (!sportConfig.enabled) return <ComingSoon />;
 
   switch (sport) {
     case "nba":
@@ -49,32 +36,13 @@ function SportRoutes() {
           <Route path="players/:id" element={<NBAPlayerProfile />} />
           <Route path="teams" element={<NBATeams />} />
           <Route path="teams/:id" element={<NBATeamProfile />} />
+          <Route path="standings" element={<NBAStandings />} />
+          <Route path="schedule" element={<NBASchedule />} />
+          <Route path="games/:id" element={<NBAGamePreview />} />
+          <Route path="games/:id/boxscore" element={<NBABoxScore />} />
           <Route path="analytics" element={<NBAAnalytics />} />
           <Route path="compare" element={<NBACompare />} />
-          <Route path="*" element={<Navigate to={`/${sport}`} replace />} />
-        </Routes>
-      );
-    case "football":
-      return (
-        <Routes>
-          <Route index element={<FootballDashboard />} />
-          <Route path="players" element={<FootballPlayers />} />
-          <Route path="players/:id" element={<FootballPlayerProfile />} />
-          <Route path="teams" element={<FootballTeams />} />
-          <Route path="teams/:id" element={<FootballTeamProfile />} />
-          <Route path="analytics" element={<FootballAnalytics />} />
-          <Route path="compare" element={<FootballCompare />} />
-          <Route path="*" element={<Navigate to={`/${sport}`} replace />} />
-        </Routes>
-      );
-    case "ufc":
-      return (
-        <Routes>
-          <Route index element={<UFCDashboard />} />
-          <Route path="players" element={<UFCFighters />} />
-          <Route path="players/:id" element={<UFCFighterProfile />} />
-          <Route path="analytics" element={<UFCAnalytics />} />
-          <Route path="compare" element={<UFCCompare />} />
+          <Route path="favorites" element={<Favorites />} />
           <Route path="*" element={<Navigate to={`/${sport}`} replace />} />
         </Routes>
       );

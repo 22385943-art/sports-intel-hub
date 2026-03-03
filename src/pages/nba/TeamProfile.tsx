@@ -4,12 +4,13 @@ import { useSport } from "@/contexts/SportContext";
 import { nbaService } from "@/services/sportServiceFactory";
 import { 
   ArrowLeft, Trophy, Shield, Activity, Loader2, Zap, Target, BarChart3, Gauge, 
-  Building2, Briefcase, Crown, History, AlertCircle, Users, UserCheck
+  Building2, Briefcase, Crown, History, AlertCircle, Users, UserCheck, Star // 🚀 AÑADIDA ESTRELLA
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import type { NBAPlayer } from "@/data/nba/mockData";
+import { useFavorites } from "@/hooks/useFavorites"; // 🚀 AÑADIDO HOOK DE FAVORITOS
 
 // 🏛️ NUESTRO "CMS" LOCAL (Añade aquí entrenadores para forzar su foto y que salgan los primeros)
 const ENRICHED_DATA: Record<string, any> = {
@@ -35,6 +36,21 @@ const convertWeightToKg = (weightStr?: string | number) => {
   return `${kg} kg`;
 };
 
+// 🎨 PALETA DE COLORES
+const TEAM_COLORS: Record<string, string> = {
+  "ATL": "#E03A3E", "BOS": "#007A33", "BKN": "#FFFFFF", "CHA": "#00788C", 
+  "CHI": "#CE1141", "CLE": "#860038", "DAL": "#00A3E0", 
+  "DEN": "#FEC524", "DET": "#C8102E", "GSW": "#1D428A", "HOU": "#CE1141", 
+  "IND": "#FDBB30", "LAC": "#C8102E", "LAL": "#FDB927", "MEM": "#7399C6", 
+  "MIA": "#98002E", "MIL": "#00471B", "MIN": "#78BE20", 
+  "NOP": "#85714D", 
+  "NYK": "#F58426", "OKC": "#007AC1", "ORL": "#0077C0", "PHI": "#006BB6", 
+  "PHX": "#E56020", 
+  "POR": "#E03A3E", "SAC": "#5A2D81", "SAS": "#C4CED4", "TOR": "#CE1141",
+  "UTA": "#F9A01B", 
+  "WAS": "#E31837"  
+};
+
 export default function NBATeamProfile() {
   const { id } = useParams();
   const { sport } = useSport();
@@ -53,6 +69,10 @@ export default function NBATeamProfile() {
   const [coaches, setCoaches] = useState<any[]>([]);
   
   const [activeTab, setActiveTab] = useState<"roster" | "coaches" | "analytics" | "legacy">("roster");
+
+  // 🚀 AÑADIDO: INICIALIZAR FAVORITOS
+  const { toggleFavorite, isFavorite } = useFavorites();
+  const isFav = team ? isFavorite(team.id, 'team') : false;
 
   // 🚀 FIX: Prevenir Auto-Scroll molesto
   useEffect(() => {
@@ -162,6 +182,7 @@ export default function NBATeamProfile() {
 
   const winPct = ((team.wins / ((team.wins + team.losses) || 1)) * 100).toFixed(1);
   const isWinning = team.wins >= team.losses;
+  const themeColor = TEAM_COLORS[team.abbreviation] || "#4279f5"; 
 
   const fourFactors = [
     { label: "True Shooting", value: team.tsPct?.toFixed(1) || "0.0", suffix: "%", icon: <Target className="h-5 w-5 text-cyan-400" />, pct: Math.min(100, (team.tsPct || 0) * 1.5) },
@@ -180,7 +201,7 @@ export default function NBATeamProfile() {
       {/* ═══════════════════ HERO BANNER ═══════════════════ */}
       <div className="relative overflow-hidden rounded-[2.5rem] border border-white/[0.06] bg-[#0a0f18] shadow-2xl">
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-emerald-500/[0.04] rounded-full blur-[120px]" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full blur-[120px] opacity-[0.04]" style={{ backgroundColor: themeColor }} />
         </div>
 
         <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8 p-8 md:p-12">
@@ -191,7 +212,7 @@ export default function NBATeamProfile() {
             <div className="space-y-3 flex-1">
               <div className="flex flex-col md:flex-row md:items-center gap-4">
                 <div className="flex flex-col gap-1">
-                  <div className="flex items-center justify-center md:justify-start gap-2 text-emerald-400 font-black text-[10px] tracking-[0.25em] uppercase">
+                  <div className="flex items-center justify-center md:justify-start gap-2 font-black text-[10px] tracking-[0.25em] uppercase" style={{ color: themeColor }}>
                     <Trophy className="h-3.5 w-3.5" /> Season 2025-26
                   </div>
                   <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white leading-none">{team.name}</h1>
@@ -201,6 +222,23 @@ export default function NBATeamProfile() {
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 pt-2">
                 <Badge className="bg-white/[0.06] text-slate-300 font-black px-4 py-1.5 text-[10px] tracking-[0.15em] border border-white/[0.08]">{team.conference} Conf</Badge>
                 <span className="text-slate-500 font-mono font-bold text-sm bg-black/40 px-4 py-1.5 rounded-full border border-white/5">{team.abbreviation}</span>
+                
+                {/* 🚀 BOTÓN DE FAVORITOS (AÑADIDO EXACTAMENTE AQUÍ) */}
+                <button 
+                  onClick={() => toggleFavorite({
+                    id: team.id, type: 'team', name: team.name, 
+                    subtitle: `${team.wins}W - ${team.losses}L`, imageUrl: nbaService.getTeamLogoUrl(team.abbreviation), url: `/nba/teams/${team.abbreviation}`
+                  })}
+                  className="px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest transition-all border shadow-lg flex items-center gap-2"
+                  style={{ 
+                    backgroundColor: isFav ? '#111' : themeColor,
+                    color: isFav ? themeColor : '#fff',
+                    borderColor: isFav ? themeColor : 'transparent'
+                  }}
+                >
+                  <Star className={`w-3.5 h-3.5 ${isFav ? 'fill-current' : ''}`} />
+                  {isFav ? 'Following' : 'Follow'}
+                </button>
               </div>
 
               {!isDeepDataLoading && teamDetails && (
@@ -235,15 +273,15 @@ export default function NBATeamProfile() {
 
         <div className="grid grid-cols-3 border-t border-white/[0.06] bg-black/20 backdrop-blur-md">
            {[
-              { label: "OFFENSIVE RATING", val: team.offRtg?.toFixed(1) || "—", color: "text-orange-400" },
-              { label: "DEFENSIVE RATING", val: team.defRtg?.toFixed(1) || "—", color: "text-emerald-400" },
-              { label: "NET RATING", val: team.netRtg > 0 ? `+${team.netRtg?.toFixed(1)}` : team.netRtg?.toFixed(1) || "—", color: team.netRtg > 0 ? "text-cyan-400" : "text-rose-400" },
-            ].map((b, i) => (
-              <div key={i} className={`p-4 md:p-6 text-center border-r border-white/[0.06] last:border-r-0`}>
-                <p className={`font-mono font-black text-2xl md:text-4xl ${b.color} mb-1 drop-shadow-md`}>{b.val}</p>
-                <p className="text-[8px] md:text-[10px] font-black text-slate-500 uppercase tracking-widest">{b.label}</p>
-              </div>
-            ))}
+             { label: "OFFENSIVE RATING", val: team.offRtg?.toFixed(1) || "—", color: "text-orange-400" },
+             { label: "DEFENSIVE RATING", val: team.defRtg?.toFixed(1) || "—", color: "text-emerald-400" },
+             { label: "NET RATING", val: team.netRtg > 0 ? `+${team.netRtg?.toFixed(1)}` : team.netRtg?.toFixed(1) || "—", color: team.netRtg > 0 ? "text-cyan-400" : "text-rose-400" },
+           ].map((b, i) => (
+             <div key={i} className={`p-4 md:p-6 text-center border-r border-white/[0.06] last:border-r-0`}>
+               <p className={`font-mono font-black text-2xl md:text-4xl ${b.color} mb-1 drop-shadow-md`}>{b.val}</p>
+               <p className="text-[8px] md:text-[10px] font-black text-slate-500 uppercase tracking-widest">{b.label}</p>
+             </div>
+           ))}
         </div>
       </div>
 

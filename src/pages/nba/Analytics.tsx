@@ -9,7 +9,7 @@ import {
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
   LineChart, Line
 } from "recharts";
-import { Activity, BarChart3, LineChart as LineChartIcon, Hexagon, Plus, X, Search, Loader2, Settings, BookOpen, Brain, Calculator, Trophy, Sigma, Medal, ArrowUpRight, History, AlertCircle } from "lucide-react";
+import { Activity, BarChart3, LineChart as LineChartIcon, Hexagon, Plus, X, Search, Loader2, Settings, BookOpen, Brain, Calculator, Trophy, Sigma, Medal, ArrowUpRight, History, AlertCircle, ArrowDown } from "lucide-react";
 import type { NBAPlayer } from "@/data/nba/mockData";
 
 const METRIC_COLORS: Record<string, string> = {
@@ -105,105 +105,16 @@ const DICTIONARY = [
 
 const FormulaRenderer = ({ metric }: { metric: string }) => {
   switch(metric) {
-    case 'per':
-      return (
-        <div className="flex items-center gap-3 font-mono font-bold text-base md:text-lg flex-wrap">
-          <span className="text-white">PER =</span>
-          <span className="text-blue-400">[ (PTS + REB + AST + STL + BLK) - (Missed FG + Missed FT + TOV) ]</span>
-          <span className="text-white">/</span>
-          <span className="text-emerald-400">MINUTES</span>
-        </div>
-      );
-    case 'bpm':
-      return (
-        <div className="flex items-center gap-3 font-mono font-bold text-base md:text-lg flex-wrap">
-          <span className="text-white">BPM ≈</span>
-          <span className="text-blue-400">Team Base Impact</span>
-          <span className="text-white">+</span>
-          <span className="text-emerald-400">(Player Efficiency × Usage Adjustments)</span>
-        </div>
-      );
-    case 'vorp':
-      return (
-        <div className="flex items-center gap-3 font-mono font-bold text-base md:text-lg flex-wrap">
-          <span className="text-white">VORP =</span>
-          <span className="text-blue-400">[ BPM - (-2.0) ]</span>
-          <span className="text-white">×</span>
-          <div className="flex flex-col items-center">
-            <span className="text-emerald-400 border-b border-white/20 px-2 pb-0.5">Player Mins</span>
-            <span className="text-slate-400 px-2 pt-0.5">Team Mins</span>
-          </div>
-          <span className="text-white">×</span>
-          <span className="text-amber-400">Team Games</span>
-        </div>
-      );
-    case 'pie':
-      return (
-        <div className="flex items-center gap-3 font-mono font-bold text-base md:text-lg flex-wrap">
-          <span className="text-white">PIE =</span>
-          <div className="flex flex-col items-center">
-            <span className="text-blue-400 border-b border-white/20 px-2 pb-0.5">PTS + FGM + REB + AST + STL + BLK - Missed FG - Missed FT - TOV</span>
-            <span className="text-slate-400 px-2 pt-0.5">Total Match Stats (Both Teams)</span>
-          </div>
-        </div>
-      );
-    case 'net':
-      return (
-        <div className="flex items-center gap-3 font-mono font-bold text-base md:text-lg flex-wrap">
-          <span className="text-white">NET =</span>
-          <span className="text-blue-400">Offensive Rating</span>
-          <span className="text-white">-</span>
-          <span className="text-rose-400">Defensive Rating</span>
-        </div>
-      );
-    case 'usg':
-      return (
-        <div className="flex items-center gap-3 font-mono font-bold text-base md:text-lg flex-wrap">
-          <span className="text-white">USG% =</span>
-          <div className="flex flex-col items-center">
-            <span className="text-blue-400 border-b border-white/20 px-2 pb-0.5">FGA + (0.44 × FTA) + TOV</span>
-            <span className="text-slate-400 px-2 pt-0.5">Team FGA + (0.44 × Team FTA) + Team TOV</span>
-          </div>
-        </div>
-      );
-    case 'ts':
-      return (
-        <div className="flex items-center gap-3 font-mono font-bold text-base md:text-lg flex-wrap">
-          <span className="text-white">TS% =</span>
-          <div className="flex flex-col items-center">
-            <span className="text-emerald-400 border-b border-white/20 px-2 pb-0.5">PTS</span>
-            <span className="text-blue-400 px-2 pt-0.5">2 × (FGA + 0.44 × FTA)</span>
-          </div>
-          <span className="text-white">×</span>
-          <span className="text-amber-400">100</span>
-        </div>
-      );
-    case 'ast':
-      return (
-        <div className="flex items-center gap-3 font-mono font-bold text-base md:text-lg flex-wrap">
-          <span className="text-white">AST% =</span>
-          <div className="flex flex-col items-center">
-            <span className="text-emerald-400 border-b border-white/20 px-2 pb-0.5">AST</span>
-            <span className="text-blue-400 px-2 pt-0.5">Team FGM - Player FGM</span>
-          </div>
-          <span className="text-white">×</span>
-          <span className="text-amber-400">100</span>
-        </div>
-      );
-    case 'efg':
-      return (
-        <div className="flex items-center gap-3 font-mono font-bold text-base md:text-lg flex-wrap">
-          <span className="text-white">eFG% =</span>
-          <div className="flex flex-col items-center">
-            <span className="text-emerald-400 border-b border-white/20 px-2 pb-0.5">FGM + (0.5 × 3PM)</span>
-            <span className="text-blue-400 px-2 pt-0.5">FGA</span>
-          </div>
-          <span className="text-white">×</span>
-          <span className="text-amber-400">100</span>
-        </div>
-      );
-    default:
-      return <span className="text-slate-400 font-mono">Formula derived directly from Box Score metrics.</span>;
+    case 'per': return (<div className="flex items-center gap-3 font-mono font-bold text-base md:text-lg flex-wrap"><span className="text-white">PER =</span><span className="text-blue-400">[ (PTS + REB + AST + STL + BLK) - (Missed FG + Missed FT + TOV) ]</span><span className="text-white">/</span><span className="text-emerald-400">MINUTES</span></div>);
+    case 'bpm': return (<div className="flex items-center gap-3 font-mono font-bold text-base md:text-lg flex-wrap"><span className="text-white">BPM ≈</span><span className="text-blue-400">Team Base Impact</span><span className="text-white">+</span><span className="text-emerald-400">(Player Efficiency × Usage Adjustments)</span></div>);
+    case 'vorp': return (<div className="flex items-center gap-3 font-mono font-bold text-base md:text-lg flex-wrap"><span className="text-white">VORP =</span><span className="text-blue-400">[ BPM - (-2.0) ]</span><span className="text-white">×</span><div className="flex flex-col items-center"><span className="text-emerald-400 border-b border-white/20 px-2 pb-0.5">Player Mins</span><span className="text-slate-400 px-2 pt-0.5">Team Mins</span></div><span className="text-white">×</span><span className="text-amber-400">Team Games</span></div>);
+    case 'pie': return (<div className="flex items-center gap-3 font-mono font-bold text-base md:text-lg flex-wrap"><span className="text-white">PIE =</span><div className="flex flex-col items-center"><span className="text-blue-400 border-b border-white/20 px-2 pb-0.5">PTS + FGM + REB + AST + STL + BLK - Missed FG - Missed FT - TOV</span><span className="text-slate-400 px-2 pt-0.5">Total Match Stats (Both Teams)</span></div></div>);
+    case 'net': return (<div className="flex items-center gap-3 font-mono font-bold text-base md:text-lg flex-wrap"><span className="text-white">NET =</span><span className="text-blue-400">Offensive Rating</span><span className="text-white">-</span><span className="text-rose-400">Defensive Rating</span></div>);
+    case 'usg': return (<div className="flex items-center gap-3 font-mono font-bold text-base md:text-lg flex-wrap"><span className="text-white">USG% =</span><div className="flex flex-col items-center"><span className="text-blue-400 border-b border-white/20 px-2 pb-0.5">FGA + (0.44 × FTA) + TOV</span><span className="text-slate-400 px-2 pt-0.5">Team FGA + (0.44 × Team FTA) + Team TOV</span></div></div>);
+    case 'ts': return (<div className="flex items-center gap-3 font-mono font-bold text-base md:text-lg flex-wrap"><span className="text-white">TS% =</span><div className="flex flex-col items-center"><span className="text-emerald-400 border-b border-white/20 px-2 pb-0.5">PTS</span><span className="text-blue-400 px-2 pt-0.5">2 × (FGA + 0.44 × FTA)</span></div><span className="text-white">×</span><span className="text-amber-400">100</span></div>);
+    case 'ast': return (<div className="flex items-center gap-3 font-mono font-bold text-base md:text-lg flex-wrap"><span className="text-white">AST% =</span><div className="flex flex-col items-center"><span className="text-emerald-400 border-b border-white/20 px-2 pb-0.5">AST</span><span className="text-blue-400 px-2 pt-0.5">Team FGM - Player FGM</span></div><span className="text-white">×</span><span className="text-amber-400">100</span></div>);
+    case 'efg': return (<div className="flex items-center gap-3 font-mono font-bold text-base md:text-lg flex-wrap"><span className="text-white">eFG% =</span><div className="flex flex-col items-center"><span className="text-emerald-400 border-b border-white/20 px-2 pb-0.5">FGM + (0.5 × 3PM)</span><span className="text-blue-400 px-2 pt-0.5">FGA</span></div><span className="text-white">×</span><span className="text-amber-400">100</span></div>);
+    default: return <span className="text-slate-400 font-mono">Formula derived directly from Box Score metrics.</span>;
   }
 };
 
@@ -290,25 +201,22 @@ export default function NBAAnalytics() {
   const [selectedPlayerIds, setSelectedPlayerIds] = useState<string[]>([]);
   
   const [selectedMetricModal, setSelectedMetricModal] = useState<any | null>(null);
-  
   const [modalConfFilter, setModalConfFilter] = useState<string>("all");
   const [modalTeamFilter, setModalTeamFilter] = useState<string>("all");
-  
   const [strictQualifiers, setStrictQualifiers] = useState<boolean>(true);
+
+  // Referencia para hacer scroll al visualizador
+  const visualizerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     nbaService.fetchAllOfficialPlayers().then((players) => {
       const playersWithAdv = players.map(p => ({
-        ...p,
-        adv: nbaService.computeAllAdvanced(p),
-        name_short: p.name.split(" ").pop() || p.name
+        ...p, adv: nbaService.computeAllAdvanced(p), name_short: p.name.split(" ").pop() || p.name
       }));
       const sortedAlpha = playersWithAdv.sort((a, b) => a.name.localeCompare(b.name));
       setAllPlayers(sortedAlpha);
-
       const qualifiedStars = [...playersWithAdv].filter(p => (p.stats.mpg || 0) >= 15);
       const top3Ids = qualifiedStars.sort((a, b) => b.adv.per - a.adv.per).slice(0, 3).map(p => p.id);
-      
       setSelectedPlayerIds(top3Ids);
       setIsLoading(false);
     });
@@ -322,9 +230,7 @@ export default function NBAAnalytics() {
     }
   };
 
-  const handleAddPlayer = (id: string) => {
-    if (selectedPlayerIds.length < 8 && !selectedPlayerIds.includes(id)) setSelectedPlayerIds([...selectedPlayerIds, id]);
-  };
+  const handleAddPlayer = (id: string) => { if (selectedPlayerIds.length < 8 && !selectedPlayerIds.includes(id)) setSelectedPlayerIds([...selectedPlayerIds, id]); };
   const handleRemovePlayer = (id: string) => setSelectedPlayerIds(selectedPlayerIds.filter(pId => pId !== id));
 
   const chartData = useMemo(() => {
@@ -349,7 +255,6 @@ export default function NBAAnalytics() {
     });
   }, [selectedPlayerIds, allPlayers]);
 
-
   const maxLeagueGames = useMemo(() => {
     if (allPlayers.length === 0) return 1;
     return Math.max(...allPlayers.map(p => p.stats.gp || 0));
@@ -359,10 +264,8 @@ export default function NBAAnalytics() {
     const requiredGP = Math.floor(maxLeagueGames * 0.7); 
     const meetsGP = (p.stats.gp || 0) >= requiredGP;
     const meetsMins = (p.stats.mpg || 0) >= 20;
-    
     const isShootingMetric = metricId === 'ts' || metricId === 'efg';
     const meetsFGA = !isShootingMetric || (p.stats.fga || 0) >= 8;
-    
     return meetsGP && meetsMins && meetsFGA;
   };
 
@@ -371,7 +274,6 @@ export default function NBAAnalytics() {
       .filter(p => (p.stats.mpg || 0) >= 5) 
       .filter(p => teamFilter === "all" || p.teamId === teamFilter)
       .filter(p => {
-         // 🚀 FIX: Coincidencia de string segura para la conferencia (ej: "Eastern" incluye "East")
          if (confFilter === "all") return true;
          const teamInfo = nbaService.getAllTeams().find(t => t.abbreviation === p.teamId);
          return teamInfo?.conference?.toLowerCase().includes(confFilter.toLowerCase());
@@ -385,22 +287,17 @@ export default function NBAAnalytics() {
   const getDynamicHistoricalPeaks = (metricId: string, baseHistPeaks: any[]) => {
     const liveLeadersGlobal = getLiveLeaders(metricId, "all", "all");
     let combinedPeaks = [...baseHistPeaks];
-    
     const threshold = baseHistPeaks[baseHistPeaks.length - 1].v;
     
     liveLeadersGlobal.forEach(lp => {
       const val = lp.adv[metricId];
       if (val >= threshold) {
         const exists = combinedPeaks.find(p => p.n === lp.name && p.s === "25-26");
-        if(!exists) {
-          combinedPeaks.push({ n: lp.name, s: "25-26", v: val, isLive: true, qualifies: lp.qualifies });
-        }
+        if(!exists) combinedPeaks.push({ n: lp.name, s: "25-26", v: val, isLive: true, qualifies: lp.qualifies });
       }
     });
-
     return combinedPeaks.sort((a, b) => b.v - a.v).slice(0, 10);
   };
-
 
   if (isLoading) {
     return (
@@ -472,8 +369,9 @@ export default function NBAAnalytics() {
   };
 
   return (
-    <div className="space-y-8 pb-20 animate-in fade-in duration-700">
+    <div className="space-y-12 pb-20 animate-in fade-in duration-700">
       
+      {/* MODAL DEL DICCIONARIO */}
       {selectedMetricModal && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6">
           <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm transition-opacity" onClick={() => setSelectedMetricModal(null)}></div>
@@ -621,7 +519,6 @@ export default function NBAAnalytics() {
 
               </div>
 
-              {/* 🚀 AVISO DINÁMICO E INDIVIDUALIZADO DE RESTRICCIONES OFICIALES */}
               {!strictQualifiers && (
                 <div className="mt-4 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-3">
                   <AlertCircle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
@@ -636,128 +533,142 @@ export default function NBAAnalytics() {
         </div>
       )}
 
-      {/* RECHARTS, HEADER, Y GLOSARIO (Sin cambios) */}
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-black tracking-tighter text-white uppercase italic leading-none">Quantum Analytics</h1>
-          <p className="text-slate-400 text-sm font-medium tracking-tight mt-1.5">Official 2025-26 NBA advanced metrics and multi-athlete visualization</p>
+      {/* 🚀 BLOQUE 1: DATA SCIENCE REPOSITORY (AHORA ARRIBA) */}
+      <div className="flex items-center justify-between gap-4 pt-2">
+        <div className="flex items-center gap-3 px-2">
+          <History className="h-8 w-8 text-blue-500" />
+          <div>
+            <h1 className="text-3xl font-black tracking-tighter text-white uppercase italic leading-none">Data Science Repository</h1>
+            <p className="text-slate-400 text-sm font-medium tracking-tight mt-1.5">Official 2025-26 NBA advanced metrics, formulas and historical context</p>
+          </div>
         </div>
-        <Badge className="bg-blue-600/10 text-blue-400 border border-blue-500/20 font-black text-[10px] px-3 py-1 uppercase tracking-widest">{chartData.length} Athletes</Badge>
+        <button 
+          onClick={() => visualizerRef.current?.scrollIntoView({ behavior: 'smooth' })}
+          className="hidden md:flex items-center gap-2 bg-white/5 hover:bg-white/10 text-white font-bold text-xs uppercase tracking-widest px-5 py-3 rounded-xl transition-all border border-white/10 shadow-lg"
+        >
+          Go to Player Comparator <ArrowDown className="h-4 w-4 text-cyan-400 animate-bounce" />
+        </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 relative">
-        <div className="lg:col-span-1 space-y-6">
-          <Card className="bg-white/[0.02] border border-white/5 backdrop-blur-xl shadow-2xl rounded-3xl sticky top-8 z-20">
-            <CardHeader className="border-b border-white/5 pb-4">
-              <CardTitle className="text-xs font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2"><Settings className="h-4 w-4" /> Config Panel</CardTitle>
-            </CardHeader>
-            <CardContent className="p-6 space-y-8">
-              <div className="space-y-4">
-                <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Visualization Engine</p>
-                <div className="grid grid-cols-3 gap-2">
-                  {[
-                    { type: 'bar', icon: BarChart3, label: 'Bar' },
-                    { type: 'radar', icon: Hexagon, label: 'Radar' },
-                    { type: 'line', icon: LineChartIcon, label: 'Line' }
-                  ].map(item => (
-                    <button key={item.type} onClick={() => setChartType(item.type as any)} className={`flex flex-col items-center gap-2.5 p-4 rounded-2xl transition-all font-bold text-xs ${chartType === item.type ? 'bg-blue-600/20 text-blue-300 border border-blue-500/40 shadow-[0_0_15px_rgba(59,130,246,0.2)]' : 'bg-white/5 text-slate-400 border border-transparent hover:bg-white/10'}`}>
-                      <item.icon className="h-5 w-5" /> {item.label}
-                    </button>
-                  ))}
-                </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {DICTIONARY.map((dict, i) => (
+          <Card 
+            key={i} 
+            onClick={() => { setModalTeamFilter("all"); setModalConfFilter("all"); setStrictQualifiers(true); setSelectedMetricModal(dict); }}
+            className="bg-white/[0.02] border border-white/5 backdrop-blur-xl hover:bg-white/5 hover:border-white/20 transition-all duration-300 group rounded-3xl cursor-pointer hover:-translate-y-1 hover:shadow-2xl hover:shadow-blue-900/10"
+          >
+            <CardContent className="p-8 space-y-4">
+              <div className="flex items-center justify-between">
+                <Badge className="bg-blue-600/20 text-blue-400 font-black text-sm px-4 py-1.5 border border-blue-500/30 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-all">
+                  {dict.abbr}
+                </Badge>
+                <Brain className="h-5 w-5 text-slate-600 group-hover:text-blue-400 transition-colors" />
               </div>
+              <div>
+                <h3 className="text-lg font-black text-white mb-1 group-hover:text-blue-300 transition-colors">{dict.name}</h3>
+              </div>
+              <p className="text-sm text-slate-400 font-medium leading-relaxed border-t border-white/5 pt-4">
+                {dict.desc}
+              </p>
+              <div className="pt-4 flex items-center gap-2 text-blue-500/0 group-hover:text-blue-400 transition-all duration-300 font-black text-[10px] uppercase tracking-widest">
+                Explore Rankings & Formula <ArrowUpRight className="h-3 w-3" />
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
-              <div className="space-y-4">
-                <div className="flex items-center justify-between gap-2">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Active Metrics</p>
-                  <span className="font-mono text-xs font-bold text-slate-600">{selectedMetrics.length}/6</span>
+      {/* 🚀 BLOQUE 2: QUANTUM VISUALIZATION ENGINE (AHORA ABAJO) */}
+      <div ref={visualizerRef} className="pt-12 border-t border-white/10 mt-12">
+        <div className="flex items-center justify-between gap-4 mb-8 px-2">
+          <div>
+            <h2 className="text-3xl font-black tracking-tighter text-white uppercase italic leading-none">Quantum Visualization Engine</h2>
+            <p className="text-slate-400 text-sm font-medium tracking-tight mt-1.5">Multi-athlete advanced statistical comparison</p>
+          </div>
+          <Badge className="bg-blue-600/10 text-blue-400 border border-blue-500/20 font-black text-[10px] px-3 py-1 uppercase tracking-widest">{chartData.length} Athletes Active</Badge>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 relative">
+          <div className="lg:col-span-1 space-y-6">
+            <Card className="bg-white/[0.02] border border-white/5 backdrop-blur-xl shadow-2xl rounded-3xl sticky top-24 z-20">
+              <CardHeader className="border-b border-white/5 pb-4">
+                <CardTitle className="text-xs font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2"><Settings className="h-4 w-4" /> Config Panel</CardTitle>
+              </CardHeader>
+              <CardContent className="p-6 space-y-8">
+                <div className="space-y-4">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Visualization Engine</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { type: 'bar', icon: BarChart3, label: 'Bar' },
+                      { type: 'radar', icon: Hexagon, label: 'Radar' },
+                      { type: 'line', icon: LineChartIcon, label: 'Line' }
+                    ].map(item => (
+                      <button key={item.type} onClick={() => setChartType(item.type as any)} className={`flex flex-col items-center gap-2.5 p-4 rounded-2xl transition-all font-bold text-xs ${chartType === item.type ? 'bg-blue-600/20 text-blue-300 border border-blue-500/40 shadow-[0_0_15px_rgba(59,130,246,0.2)]' : 'bg-white/5 text-slate-400 border border-transparent hover:bg-white/10'}`}>
+                        <item.icon className="h-5 w-5" /> {item.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-                <div className="flex flex-wrap gap-2.5">
-                  {ALL_METRICS.map(m => {
-                    const isSelected = selectedMetrics.includes(m);
+
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Active Metrics</p>
+                    <span className="font-mono text-xs font-bold text-slate-600">{selectedMetrics.length}/6</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2.5">
+                    {ALL_METRICS.map(m => {
+                      const isSelected = selectedMetrics.includes(m);
+                      return (
+                        <Badge key={m} onClick={() => toggleMetric(m)} style={{ borderColor: isSelected ? METRIC_COLORS[m] : 'rgba(255,255,255,0.1)', color: isSelected ? '#fff' : 'rgba(255,255,255,0.4)', backgroundColor: isSelected ? `${METRIC_COLORS[m]}20` : 'transparent' }} className={`cursor-pointer px-3 py-1.5 font-black text-[10px] transition-all duration-300 border hover:scale-105 ${isSelected ? 'shadow-[0_0_10px_-2px_var(--tw-shadow-color)]' : 'hover:border-white/30'}`}>
+                          {formatMetricLabel(m)}
+                        </Badge>
+                      );
+                    })}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="lg:col-span-3 space-y-6">
+            <Card className="bg-white/[0.02] border border-white/5 backdrop-blur-xl shadow-2xl rounded-3xl p-5 relative z-30">
+              <div className="flex flex-col md:flex-row gap-5 items-start md:items-center">
+                <PlayerSearchCombo players={allPlayers} onSelect={handleAddPlayer} excludeIds={selectedPlayerIds} />
+                
+                <div className="flex flex-wrap gap-4 items-center flex-1">
+                  {selectedPlayerIds.map((id, index) => {
+                    const player = allPlayers.find(p => p.id === id);
+                    if (!player) return null;
+                    const playerColor = PLAYER_COLORS[index % PLAYER_COLORS.length];
+                    
                     return (
-                      <Badge key={m} onClick={() => toggleMetric(m)} style={{ borderColor: isSelected ? METRIC_COLORS[m] : 'rgba(255,255,255,0.1)', color: isSelected ? '#fff' : 'rgba(255,255,255,0.4)', backgroundColor: isSelected ? `${METRIC_COLORS[m]}20` : 'transparent' }} className={`cursor-pointer px-3 py-1.5 font-black text-[10px] transition-all duration-300 border hover:scale-105 ${isSelected ? 'shadow-[0_0_10px_-2px_var(--tw-shadow-color)]' : 'hover:border-white/30'}`}>
-                        {formatMetricLabel(m)}
-                      </Badge>
+                      <div key={id} style={{ borderColor: chartType !== 'bar' ? `${playerColor}50` : 'rgba(255,255,255,0.1)' }} className="flex items-center gap-4 bg-[#0a0f18] border rounded-full pl-2 pr-6 py-2 group transition-all hover:bg-white/5 shadow-xl shadow-black/30 animate-in fade-in zoom-in-50">
+                        <Avatar className="h-16 w-16 border-4 shadow-2xl bg-white" style={{ borderColor: chartType !== 'bar' ? playerColor : '#020617' }}>
+                          <AvatarImage src={player.imageUrl} className="object-cover" loading="eager" />
+                          <AvatarFallback className="bg-slate-800 text-xs font-bold text-slate-400">{player.name_short.substring(0, 2).toUpperCase()}</AvatarFallback>
+                        </Avatar>
+                        <div className="flex flex-col"><span className="text-base font-extrabold text-white leading-tight">{player.name_short}</span><span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{player.teamId} · #{player.id}</span></div>
+                        <button onClick={() => handleRemovePlayer(id)} className="ml-2 p-1.5 rounded-full bg-white/5 text-slate-600 hover:bg-red-500/20 hover:text-red-400 transition-all duration-300 group-hover:scale-110"><X className="h-4 w-4" /></button>
+                      </div>
                     );
                   })}
                 </div>
               </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="lg:col-span-3 space-y-6">
-          <Card className="bg-white/[0.02] border border-white/5 backdrop-blur-xl shadow-2xl rounded-3xl p-5 relative z-30">
-            <div className="flex flex-col md:flex-row gap-5 items-start md:items-center">
-              <PlayerSearchCombo players={allPlayers} onSelect={handleAddPlayer} excludeIds={selectedPlayerIds} />
-              
-              <div className="flex flex-wrap gap-4 items-center flex-1">
-                {selectedPlayerIds.map((id, index) => {
-                  const player = allPlayers.find(p => p.id === id);
-                  if (!player) return null;
-                  const playerColor = PLAYER_COLORS[index % PLAYER_COLORS.length];
-                  
-                  return (
-                    <div key={id} style={{ borderColor: chartType !== 'bar' ? `${playerColor}50` : 'rgba(255,255,255,0.1)' }} className="flex items-center gap-4 bg-[#0a0f18] border rounded-full pl-2 pr-6 py-2 group transition-all hover:bg-white/5 shadow-xl shadow-black/30 animate-in fade-in zoom-in-50">
-                      <Avatar className="h-16 w-16 border-4 shadow-2xl bg-white" style={{ borderColor: chartType !== 'bar' ? playerColor : '#020617' }}>
-                        <AvatarImage src={player.imageUrl} className="object-cover" loading="eager" />
-                        <AvatarFallback className="bg-slate-800 text-xs font-bold text-slate-400">{player.name_short.substring(0, 2).toUpperCase()}</AvatarFallback>
-                      </Avatar>
-                      <div className="flex flex-col"><span className="text-base font-extrabold text-white leading-tight">{player.name_short}</span><span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{player.teamId} · #{player.id}</span></div>
-                      <button onClick={() => handleRemovePlayer(id)} className="ml-2 p-1.5 rounded-full bg-white/5 text-slate-600 hover:bg-red-500/20 hover:text-red-400 transition-all duration-300 group-hover:scale-110"><X className="h-4 w-4" /></button>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </Card>
-
-          <Card className="bg-[#0a0f18] border border-white/5 backdrop-blur-xl shadow-2xl rounded-[3rem] overflow-hidden relative z-10">
-            <div className="absolute top-7 left-8 flex items-center gap-2.5 z-10 bg-[#0a0f18]/80 px-4 py-2 rounded-full border border-white/5 backdrop-blur-sm">
-               <Activity className="h-4 w-4 text-blue-500" />
-               <span className="text-[11px] font-black uppercase tracking-[0.2em] text-white">Quantum Visualization Engine</span>
-            </div>
-            <div className="h-[580px] w-full p-8 pt-24 relative z-0">
-              {renderChart()}
-            </div>
-          </Card>
-        </div>
-      </div>
-
-      <div className="pt-8">
-        <div className="flex items-center gap-3 mb-6 px-2">
-          <History className="h-6 w-6 text-blue-500" />
-          <h2 className="text-2xl font-black text-white italic tracking-tighter uppercase">Data Science Repository</h2>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {DICTIONARY.map((dict, i) => (
-            <Card 
-              key={i} 
-              onClick={() => { setModalTeamFilter("all"); setModalConfFilter("all"); setStrictQualifiers(true); setSelectedMetricModal(dict); }}
-              className="bg-white/[0.02] border border-white/5 backdrop-blur-xl hover:bg-white/5 hover:border-white/20 transition-all duration-300 group rounded-3xl cursor-pointer hover:-translate-y-1 hover:shadow-2xl hover:shadow-blue-900/10"
-            >
-              <CardContent className="p-8 space-y-4">
-                <div className="flex items-center justify-between">
-                  <Badge className="bg-blue-600/20 text-blue-400 font-black text-sm px-4 py-1.5 border border-blue-500/30 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-all">
-                    {dict.abbr}
-                  </Badge>
-                  <Brain className="h-5 w-5 text-slate-600 group-hover:text-blue-400 transition-colors" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-black text-white mb-1 group-hover:text-blue-300 transition-colors">{dict.name}</h3>
-                </div>
-                <p className="text-sm text-slate-400 font-medium leading-relaxed border-t border-white/5 pt-4">
-                  {dict.desc}
-                </p>
-                <div className="pt-4 flex items-center gap-2 text-blue-500/0 group-hover:text-blue-400 transition-all duration-300 font-black text-[10px] uppercase tracking-widest">
-                  Explore Rankings & Formula <ArrowUpRight className="h-3 w-3" />
-                </div>
-              </CardContent>
             </Card>
-          ))}
+
+            <Card className="bg-[#0a0f18] border border-white/5 backdrop-blur-xl shadow-2xl rounded-[3rem] overflow-hidden relative z-10">
+              <div className="absolute top-7 left-8 flex items-center gap-2.5 z-10 bg-[#0a0f18]/80 px-4 py-2 rounded-full border border-white/5 backdrop-blur-sm">
+                 <Activity className="h-4 w-4 text-blue-500" />
+                 <span className="text-[11px] font-black uppercase tracking-[0.2em] text-white">Quantum Visualization Engine</span>
+              </div>
+              <div className="h-[580px] w-full p-8 pt-24 relative z-0">
+                {renderChart()}
+              </div>
+            </Card>
+          </div>
         </div>
       </div>
+
     </div>
   );
 }

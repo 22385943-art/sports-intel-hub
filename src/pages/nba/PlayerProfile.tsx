@@ -5,6 +5,7 @@ import { nbaService } from "@/services/sportServiceFactory";
 import { ArrowLeft, Loader2, Activity, Target, Zap, Shield, Crown, BarChart3, TrendingUp, Star, Trophy, Award, Users } from "lucide-react";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import type { NBAPlayer } from "@/data/nba/mockData";
+import { useFavorites } from "@/hooks/useFavorites"; // 🚀 AÑADIDO: Hook de Favoritos
 
 // 🎨 PALETA DE COLORES
 const TEAM_COLORS: Record<string, string> = {
@@ -60,11 +61,13 @@ export default function NBAPlayerProfile() {
   const [onOffSwing, setOnOffSwing] = useState<number | null>(null); 
   const [accolades, setAccolades] = useState<any[]>([]); 
   
-  // 🚀 ESTADOS DE CARGA SEPARADOS PARA VELOCIDAD EXTREMA
   const [isBaseLoading, setIsBaseLoading] = useState(true);
   const [isDeepDataLoading, setIsDeepDataLoading] = useState(true);
-  
   const [activeTab, setActiveTab] = useState<"stats" | "analytics" | "accolades">("stats");
+
+  // 🚀 AÑADIDO: Inicializar Favoritos
+  const { toggleFavorite, isFavorite } = useFavorites();
+  const isFav = player ? isFavorite(player.id, 'player') : false;
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -84,21 +87,18 @@ export default function NBAPlayerProfile() {
       setPlayer(foundPlayer || null);
 
       if (foundPlayer) {
-        setIsBaseLoading(false); // ⚡ LIBERAMOS LA INTERFAZ AL INSTANTE
-        setIsDeepDataLoading(true); // Empezamos a cargar los datos pesados en la sombra
+        setIsBaseLoading(false); 
+        setIsDeepDataLoading(true); 
 
         const numericTeamId = teams.find(t => t.abbreviation === foundPlayer.teamId)?.id;
 
-        // 1. Petición Biografía
         const bioFetch = fetch(`/nba-api/commonplayerinfo?PlayerID=${id}`).then(res => res.json()).catch(() => null);
         
-        // 2. Petición On/Off Swing
         let onOffFetch = Promise.resolve(null);
         if (numericTeamId && numericTeamId !== "FA") {
           onOffFetch = fetch(`/nba-api/teamplayeronoffdetails?DateFrom=&DateTo=&GameSegment=&LastNGames=0&LeagueID=00&Location=&MeasureType=Advanced&Month=0&OpponentTeamID=0&Outcome=&PaceAdjust=N&PerMode=PerGame&Period=0&PlusMinus=N&Rank=N&Season=2025-26&SeasonSegment=&SeasonType=Regular%20Season&TeamID=${numericTeamId}&VsConference=&VsDivision=`).then(res => res.json()).catch(() => null);
         }
 
-        // 3. Petición Premios
         const awardsFetch = fetch(`/nba-api/playerawards?PlayerID=${id}`).then(res => res.json()).catch(() => null);
 
         Promise.all([bioFetch, onOffFetch, awardsFetch]).then(([bioData, onOffData, awardsData]) => {
@@ -149,7 +149,7 @@ export default function NBAPlayerProfile() {
             } catch (e) { console.error(e); }
           }
           
-          setIsDeepDataLoading(false); // ⚡ QUITAMOS SPINNERS
+          setIsDeepDataLoading(false);
         });
       } else {
         setIsBaseLoading(false);
@@ -298,12 +298,23 @@ export default function NBAPlayerProfile() {
               </div>
             </div>
 
+            {/* 🚀 AÑADIDO: Botón de Favorito Dinámico */}
             <button 
-              className="w-40 font-bold py-2.5 rounded-full transition-all shadow-[0_0_15px_rgba(0,0,0,0.5)] hover:brightness-110 hover:scale-105 text-white"
-              style={{ backgroundColor: themeColor }}
+              onClick={() => toggleFavorite({
+                id: player.id, type: 'player', name: player.name, 
+                subtitle: player.teamId, imageUrl: player.imageUrl, url: `/nba/players/${player.id}`
+              })}
+              className="w-40 font-bold py-2.5 rounded-full transition-all shadow-[0_0_15px_rgba(0,0,0,0.3)] hover:brightness-110 hover:scale-105 flex items-center justify-center gap-2"
+              style={{ 
+                backgroundColor: isFav ? '#111' : themeColor,
+                color: isFav ? themeColor : '#fff',
+                border: isFav ? `1px solid ${themeColor}` : 'none'
+              }}
             >
-              Follow
+              <Star className={`w-4 h-4 ${isFav ? 'fill-current' : ''}`} />
+              {isFav ? 'Following' : 'Follow'}
             </button>
+
           </div>
         </div>
 
