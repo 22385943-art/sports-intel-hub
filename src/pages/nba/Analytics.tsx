@@ -232,7 +232,7 @@ export default function NBAAnalytics() {
   const [isLoading, setIsLoading] = useState(true);
 
   const [selectedMetrics, setSelectedMetrics] = useState<string[]>(["si", "ts", "usg"]); 
-  const [chartType, setChartType] = useState<"scatter" | "bar" | "radar">("scatter"); 
+  const [chartType, setChartType] = useState<"scatter" | "bar" | "radar" | "line">("scatter"); 
   const [selectedPlayerIds, setSelectedPlayerIds] = useState<string[]>([]);
   
   const [scatterX, setScatterX] = useState<string>("usg");
