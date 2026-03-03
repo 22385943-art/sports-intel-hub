@@ -4,7 +4,6 @@ import { AppSidebar } from "@/components/shared/AppSidebar";
 import { Header } from "@/components/shared/Header";
 import { SportProvider, useSport } from "@/contexts/SportContext";
 
-
 // NBA pages
 import NBADashboard from "@/pages/nba/Dashboard";
 import NBAPlayers from "@/pages/nba/Players";
@@ -23,6 +22,10 @@ import Favorites from "@/pages/shared/Favorites";
 import UFCDashboard from "@/pages/ufc/Dashboard";
 import UFCFighterProfile from "@/pages/ufc/FighterProfile";
 import UFCFighters from "@/pages/ufc/Fighters";
+import UFCAnalytics from "@/pages/ufc/Analytics";
+import UFCCompare from "@/pages/ufc/Compare";
+import UFCSchedule from "@/pages/ufc/Schedule";
+import UFCFightPreview from "@/pages/ufc/FightPreview";
 
 // Placeholder
 import ComingSoon from "@/pages/shared/ComingSoon";
@@ -36,7 +39,6 @@ function SportRoutes() {
     case "nba":
       return (
         <Routes>
-          {/* TUS RUTAS DE NBA INTACTAS */}
           <Route index element={<NBADashboard />} />
           <Route path="players" element={<NBAPlayers />} />
           <Route path="players/:id" element={<NBAPlayerProfile />} />
@@ -56,11 +58,17 @@ function SportRoutes() {
       return (
         <Routes>
           <Route index element={<UFCDashboard />} />
-          <Route path="fighters" element={<UFCFighters />} /> {/* <--- AÑADE ESTA RUTA */}
+          <Route path="fighters" element={<UFCFighters />} />
           <Route path="fighters/:id" element={<UFCFighterProfile />} />
+          <Route path="players" element={<Navigate to="fighters" replace />} />
+          <Route path="analytics" element={<UFCAnalytics />} />
+          <Route path="compare" element={<UFCCompare />} />
+          <Route path="schedule" element={<UFCSchedule />} /> {/* 🚀 AÑADIDO ESTO */}
+          <Route path="favorites" element={<Favorites />} />
+          <Route path="preview" element={<UFCFightPreview />} />
           <Route path="*" element={<Navigate to={`/${sport}`} replace />} />
         </Routes>
-      );
+      );  
     default:
       return <ComingSoon />;
   }

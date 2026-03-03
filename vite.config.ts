@@ -11,7 +11,6 @@ export default defineConfig(({ mode }) => ({
     hmr: {
       overlay: false,
     },
-    // 👇 AÑADIDO EL PROXY NINJA PARA LA API OFICIAL DE LA NBA 👇
     proxy: {
       '/nba-api': {
         target: 'https://stats.nba.com/stats',
@@ -24,9 +23,19 @@ export default defineConfig(({ mode }) => ({
           'Referer': 'https://www.nba.com/',
           'Origin': 'https://www.nba.com',
         }
+      },
+      '/espn-mma': {
+        target: 'https://site.api.espn.com/apis/site/v2/sports/mma/ufc',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/espn-mma/, ''),
+      },
+      // 🚀 NUEVO: PROXY PARA LOS RANKINGS TOP 15 REALES DE ESPN
+      '/espn-rankings': {
+        target: 'https://site.web.api.espn.com/apis/site/v2/sports/mma/ufc',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/espn-rankings/, ''),
       }
     }
-    // 👆 FIN DEL PROXY 👆
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {
