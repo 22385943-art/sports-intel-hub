@@ -1,67 +1,71 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ufcService } from "@/services/sportServiceFactory";
-import { TrendingUp, Users, Activity, Target, BarChart3, Shield } from "lucide-react";
+import { ufcService } from "@/services/sports/ufcService";
+import { Swords, Trophy, Activity } from "lucide-react";
+import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { useSport } from "@/contexts/SportContext";
-import { SparkLine } from "@/components/shared/SparkLine";
 
 export default function UFCDashboard() {
-  const { sport } = useSport();
-  const allFighters = ufcService.getAllPlayers();
-  const topFighters = [...allFighters].sort((a, b) => b.record.wins - a.record.wins).slice(0, 5);
-  const topDom = [...allFighters].sort((a, b) => ufcService.computeAdvanced(b).dominanceScore - ufcService.computeAdvanced(a).dominanceScore)[0];
-
-  const metricTiles = [
-    { title: "Fighters Tracked", value: allFighters.length, icon: Users, sparkData: [3, 4, 5, 5, 6, 6], color: "hsl(var(--chart-teal))" },
-    { title: "Weight Classes", value: [...new Set(allFighters.map(f => f.weightClass))].length, icon: Shield, sparkData: [3, 3, 4, 4, 5, 5], color: "hsl(var(--chart-blue))" },
-    { title: "Avg Accuracy", value: `${(allFighters.reduce((s, f) => s + f.stats.strikingAccuracy, 0) / allFighters.length).toFixed(0)}%`, icon: Target, sparkData: [52, 54, 55, 56, 57, 58], color: "hsl(var(--chart-gold))" },
-    { title: "Top DOM", value: ufcService.computeAdvanced(topDom).dominanceScore, icon: Activity, sparkData: [30, 35, 38, 40, 42, 45], color: "hsl(var(--chart-teal))" },
-    { title: "Avg Str/Min", value: (allFighters.reduce((s, f) => s + f.stats.sigStrikesPerMin, 0) / allFighters.length).toFixed(1), icon: TrendingUp, sparkData: [4.5, 4.8, 5.0, 5.2, 5.3, 5.5], color: "hsl(var(--chart-positive))" },
-    { title: "Metrics Active", value: 10, icon: BarChart3, sparkData: [3, 5, 6, 7, 9, 10], color: "hsl(var(--chart-blue))" },
-  ];
+  const fighters = ufcService.getAllPlayers();
+  const nextEvent = ufcService.getUpcomingEvents()[0];
 
   return (
-    <div className="space-y-8">
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8 max-w-7xl mx-auto">
+      
+      {/* HEADER HERO */}
+      <div className="bg-[#0a0f18]/80 backdrop-blur-xl rounded-[2rem] border border-red-500/20 p-8 md:p-12 shadow-[0_0_50px_rgba(239,68,68,0.1)] relative overflow-hidden flex flex-col md:flex-row items-center justify-between">
+        <div className="absolute -right-20 -top-20 opacity-5 pointer-events-none">
+          <Swords className="w-96 h-96" />
+        </div>
+        <div className="relative z-10">
+          <Badge className="bg-red-500/20 text-red-500 border border-red-500/30 font-black tracking-[0.2em] uppercase mb-4">MMA Command Center</Badge>
+          <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter uppercase italic">The Octagon</h1>
+          <p className="text-slate-400 mt-2 max-w-xl">Pound-for-Pound rankings, advanced striking metrics, and upcoming Pay-Per-View breakdowns.</p>
+        </div>
+        
+        {/* UPCOMING EVENT BOX */}
+        <div className="mt-8 md:mt-0 bg-[#111] border border-white/10 rounded-2xl p-6 relative z-10 w-full md:w-80 shadow-2xl">
+          <p className="text-[10px] text-red-500 font-black uppercase tracking-widest mb-2 flex items-center gap-2"><Activity className="w-3 h-3 animate-pulse"/> Next Event</p>
+          <h3 className="text-2xl font-black text-white">{nextEvent.name}</h3>
+          <p className="text-sm font-bold text-slate-400">{nextEvent.mainEvent}</p>
+          <div className="w-full h-px bg-white/10 my-4" />
+          <p className="text-xs font-mono text-slate-500">{nextEvent.date} • {nextEvent.location}</p>
+        </div>
+      </div>
+
+      {/* POUND FOR POUND TOP 4 */}
       <div>
-        <h1 className="text-2xl font-semibold text-foreground">UFC Dashboard</h1>
-        <p className="text-muted-foreground text-sm mt-1">Fighter analytics overview</p>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {metricTiles.map((s) => (
-          <Card key={s.title} className="bg-white/[0.03] border-white/5 overflow-hidden backdrop-blur-xl hover:bg-white/[0.05] transition-all duration-300 hover:scale-[1.02]">
-            <CardContent className="p-5">
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">{s.title}</p>
-                  <p className="text-2xl font-bold font-mono mt-1 text-foreground">{s.value}</p>
+        <h2 className="text-xl font-black uppercase tracking-widest text-white mb-6 flex items-center gap-2">
+          <Trophy className="text-amber-400 w-5 h-5" /> Pound-for-Pound Kings
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {fighters.map((fighter, idx) => (
+            <Link key={fighter.id} to={`/ufc/fighters/${fighter.id}`} className="bg-[#111] border border-white/5 rounded-2xl p-6 hover:border-red-500/50 transition-all hover:shadow-[0_0_30px_rgba(239,68,68,0.15)] group relative overflow-hidden">
+              <span className="absolute top-4 left-4 font-mono font-black text-4xl text-white/5 group-hover:text-red-500/10 transition-colors">#{idx + 1}</span>
+              <div className="flex flex-col items-center text-center relative z-10">
+                <img src={fighter.imageUrl} alt={fighter.name} className="h-40 object-contain drop-shadow-2xl group-hover:scale-110 transition-transform duration-500" />
+                <h3 className="font-black text-lg text-white mt-4">{fighter.name}</h3>
+                <p className="text-xs font-black text-amber-500 tracking-widest uppercase">{fighter.record}</p>
+                <div className="mt-4 flex gap-4 w-full justify-center">
+                  <div className="text-center">
+                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">SLpM</p>
+                    <p className="font-mono font-bold text-slate-300">{fighter.stats.slpm}</p>
+                  </div>
+                  <div className="w-px bg-white/10" />
+                  <div className="text-center">
+                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">TD Avg</p>
+                    <p className="font-mono font-bold text-slate-300">{fighter.stats.tdAvg}</p>
+                  </div>
                 </div>
-                <div className="p-2 rounded-lg bg-white/5"><s.icon className="h-4 w-4 text-muted-foreground" /></div>
-              </div>
-              <div className="h-8"><SparkLine data={s.sparkData} color={s.color} /></div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-      <Card className="bg-white/[0.02] border-white/5 backdrop-blur-xl">
-        <CardHeader className="pb-3 border-b border-white/5"><CardTitle className="text-base font-medium text-foreground">Top Fighters</CardTitle></CardHeader>
-        <CardContent className="space-y-1">
-          {topFighters.map((f, i) => (
-            <Link key={f.id} to={`/${sport}/players/${f.id}`} className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-all duration-300">
-              <div className="flex items-center gap-3">
-                <span className="text-xs font-mono text-muted-foreground w-5 text-right">{i + 1}</span>
-                <div>
-                  <p className="text-sm font-medium text-foreground">{f.name}</p>
-                  <p className="text-xs text-muted-foreground">{f.weightClass}{f.nickname !== "N/A" ? ` · "${f.nickname}"` : ""}</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <p className="text-sm font-mono font-semibold text-foreground">{f.record.wins}-{f.record.losses}</p>
-                <p className="text-xs text-muted-foreground">Record</p>
               </div>
             </Link>
           ))}
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </div>
+
+    </motion.div>
   );
+}
+
+// Para usar el componente Badge si no lo importaste:
+function Badge({ children, className }: any) {
+  return <span className={`px-3 py-1 rounded-full text-[10px] ${className}`}>{children}</span>;
 }
