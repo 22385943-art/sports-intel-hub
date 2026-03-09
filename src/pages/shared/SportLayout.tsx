@@ -16,18 +16,20 @@ import NBACompare from "@/pages/nba/Compare";
 import NBASchedule from "@/pages/nba/Schedule";
 import NBAGamePreview from "@/pages/nba/GamePreview";
 import NBABoxScore from "@/pages/nba/BoxScore";
+
+// Football pages 🚀
+import FootballDashboard from "@/pages/football/Dashboard";
+import FootballPlayers from "@/pages/football/Players";
+import FootballPlayerProfile from "@/pages/football/PlayerProfile";
+import FootballTeams from "@/pages/football/Teams";
+import FootballTeamProfile from "@/pages/football/TeamProfile";
+import FootballAnalytics from "@/pages/football/Analytics";
+import FootballCompare from "@/pages/football/Compare";
+import FootballStandings from "@/pages/football/Standings";
+import FootballSchedule from "@/pages/football/Schedule"; // <-- Importamos el Schedule real
+
+// Shared
 import Favorites from "@/pages/shared/Favorites";
-
-// UFC pages
-import UFCDashboard from "@/pages/ufc/Dashboard";
-import UFCFighterProfile from "@/pages/ufc/FighterProfile";
-import UFCFighters from "@/pages/ufc/Fighters";
-import UFCAnalytics from "@/pages/ufc/Analytics";
-import UFCCompare from "@/pages/ufc/Compare";
-import UFCSchedule from "@/pages/ufc/Schedule";
-import UFCFightPreview from "@/pages/ufc/FightPreview";
-
-// Placeholder
 import ComingSoon from "@/pages/shared/ComingSoon";
 
 function SportRoutes() {
@@ -54,21 +56,22 @@ function SportRoutes() {
           <Route path="*" element={<Navigate to={`/${sport}`} replace />} />
         </Routes>
       );
-    case "ufc":
+    case "football":
       return (
         <Routes>
-          <Route index element={<UFCDashboard />} />
-          <Route path="fighters" element={<UFCFighters />} />
-          <Route path="fighters/:id" element={<UFCFighterProfile />} />
-          <Route path="players" element={<Navigate to="fighters" replace />} />
-          <Route path="analytics" element={<UFCAnalytics />} />
-          <Route path="compare" element={<UFCCompare />} />
-          <Route path="schedule" element={<UFCSchedule />} /> {/* 🚀 AÑADIDO ESTO */}
+          <Route index element={<FootballDashboard />} />
+          <Route path="players" element={<FootballPlayers />} />
+          <Route path="players/:id" element={<FootballPlayerProfile />} />
+          <Route path="teams" element={<FootballTeams />} />
+          <Route path="teams/:id" element={<FootballTeamProfile />} />
+          <Route path="standings" element={<FootballStandings />} />
+          <Route path="schedule" element={<FootballSchedule />} /> {/* <-- Ruta activada */}
+          <Route path="analytics" element={<FootballAnalytics />} />
+          <Route path="compare" element={<FootballCompare />} />
           <Route path="favorites" element={<Favorites />} />
-          <Route path="preview" element={<UFCFightPreview />} />
           <Route path="*" element={<Navigate to={`/${sport}`} replace />} />
         </Routes>
-      );  
+      );
     default:
       return <ComingSoon />;
   }

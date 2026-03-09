@@ -29,7 +29,6 @@ export default function UFCSchedule() {
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8 pb-16 max-w-5xl mx-auto px-4">
-      
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
         <div>
           <h1 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-white mb-2 flex items-center gap-3 italic">
@@ -49,7 +48,6 @@ export default function UFCSchedule() {
             <motion.div key={ev.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }} className={`bg-[#0a0f18] border rounded-[2rem] shadow-2xl relative overflow-hidden transition-all duration-500 ${isLive ? 'border-red-500/50 shadow-[0_0_40px_rgba(239,68,68,0.2)]' : 'border-white/10 hover:border-white/20'}`}>
               <div className="p-6 md:p-8 relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6 cursor-pointer" onClick={() => setExpandedId(isExpanded ? null : ev.id)}>
                 <div className={`absolute top-0 right-0 w-[500px] h-[500px] rounded-full blur-[120px] pointer-events-none opacity-10 ${isNumberedPPV ? 'bg-amber-500' : 'bg-red-500'}`} />
-                
                 <div className="space-y-4 flex-1 relative z-10">
                   <div className="flex flex-wrap items-center gap-3">
                     {isLive ? <Badge className="bg-red-500/20 text-red-500 border-red-500/30 font-black text-[10px] uppercase tracking-widest px-3 py-1 flex items-center gap-1.5 animate-pulse"><Activity className="w-3 h-3" /> Live Now</Badge>
@@ -86,21 +84,16 @@ export default function UFCSchedule() {
                       {ev.bouts && ev.bouts.length > 0 ? ev.bouts.map((bout: any, i: number) => {
                         const isMain = i === 0;
                         const isCoMain = i === 1;
-                        
                         return (
                           <div 
                             key={i} 
-                            onClick={() => {
-                              // Aseguramos que navegamos con IDs válidos, si son 0 se simulará el nombre
-                              navigate(`/ufc/preview`, { state: { f1: { id: bout.f1.id, name: bout.f1.name }, f2: { id: bout.f2.id, name: bout.f2.name }, eventName: ev.name } });
-                            }}
+                            onClick={() => { navigate(`/ufc/preview`, { state: { f1Id: bout.f1.id, f2Id: bout.f2.id, eventName: ev.name } }); }}
                             className={`flex flex-col md:flex-row md:items-center justify-between p-4 rounded-xl border cursor-pointer ${isMain ? 'bg-red-500/10 border-red-500/20 hover:bg-red-500/20' : isCoMain ? 'bg-amber-500/5 border-amber-500/10 hover:bg-amber-500/10' : 'bg-white/5 border-white/5 hover:bg-white/10'} transition-colors group gap-4`}
                           >
                             <div className="flex items-center gap-4">
                               <span className={`text-[10px] font-black uppercase tracking-widest w-20 hidden md:block ${isMain ? 'text-red-400' : isCoMain ? 'text-amber-400' : 'text-slate-500'}`}>
                                 {isMain ? 'Main Event' : isCoMain ? 'Co-Main' : `Bout ${i+1}`}
                               </span>
-                              
                               <div className="flex items-center gap-3">
                                 <div className="flex items-center gap-2">
                                   {bout.f1.rank && <span className={`text-[9px] font-black px-1.5 py-0.5 rounded ${bout.f1.rank === 'C' ? 'bg-amber-500 text-black' : 'bg-[#111] text-slate-400 border border-white/10'}`}>{bout.f1.rank}</span>}
@@ -113,7 +106,6 @@ export default function UFCSchedule() {
                                 </div>
                               </div>
                             </div>
-                            
                             <div className="flex items-center gap-2 text-[9px] font-black text-cyan-500 uppercase tracking-widest group-hover:text-cyan-400 transition-colors">
                               Matchup Preview <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                             </div>

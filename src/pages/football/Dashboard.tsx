@@ -1,100 +1,148 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { footballService } from "@/services/sportServiceFactory";
-import { TrendingUp, Users, Shield, Target, Activity, BarChart3 } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { footballService, DOMESTIC_LEAGUES, EURO_LEAGUES } from "@/services/sports/footballService";
+import { Activity, Shield, Loader2, Trophy, ChevronLeft, ChevronRight, Target } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useSport } from "@/contexts/SportContext";
-import { SparkLine } from "@/components/shared/SparkLine";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+
+// 🚀 PROTECCIÓN CONTRA FOTOS ROTAS (Evita 404 en consola si falla ESPN)
+const handleImgError = (e: any, name: string, type: 'player'|'team') => {
+  if (e.currentTarget.src.includes('ui-avatars')) return;
+  const color = type === 'player' ? '10b981' : 'fff';
+  e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name || 'UNK')}&background=0a0f18&color=${color}&bold=true`;
+};
 
 export default function FootballDashboard() {
-  const { sport } = useSport();
-  const allPlayers = footballService.getAllPlayers();
-  const allTeams = footballService.getAllTeams();
-  const topScorers = [...allPlayers].sort((a, b) => b.stats.goals - a.stats.goals).slice(0, 5);
-  const topTeams = [...allTeams].sort((a, b) => (b.wins * 3 + b.draws) - (a.wins * 3 + a.draws)).slice(0, 5);
+  const [standings, setStandings] = useState<any[]>([]);
+  const [players, setPlayers] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  
+  const [leagueType, setLeagueType] = useState<"domestic" | "euro">("domestic");
+  const [activeLeague, setActiveLeague] = useState(DOMESTIC_LEAGUES[0].id);
 
-  const avgGoals = (allPlayers.reduce((s, p) => s + p.stats.goals, 0) / allPlayers.length).toFixed(1);
-  const topXG = [...allPlayers].sort((a, b) => footballService.computeAdvanced(b).xgContribution - footballService.computeAdvanced(a).xgContribution)[0];
+  useEffect(() => {
+    setIsLoading(true);
+    Promise.all([
+      footballService.fetchRealStandings(activeLeague),
+      footballService.fetchRealPlayers(activeLeague)
+    ])
+    .then(([stData, plData]) => {
+      setStandings(stData || []);
+      setPlayers(plData || []);
+    })
+    .catch(() => {
+      setStandings([]);
+      setPlayers([]);
+    })
+    .finally(() => {
+      setIsLoading(false);
+    });
+  }, [activeLeague]);
 
-  const metricTiles = [
-    { title: "Players Tracked", value: allPlayers.length, icon: Users, sparkData: [5, 6, 6, 7, 8, 8], color: "hsl(var(--chart-teal))" },
-    { title: "Teams", value: allTeams.length, icon: Shield, sparkData: [5, 5, 5, 5, 5, 5], color: "hsl(var(--chart-blue))" },
-    { title: "Avg Goals", value: avgGoals, icon: TrendingUp, sparkData: [8, 10, 12, 14, 15, 16], color: "hsl(var(--chart-gold))" },
-    { title: "Top xG", value: footballService.computeAdvanced(topXG).xgContribution, icon: Activity, sparkData: [12, 14, 15, 17, 18, 20], color: "hsl(var(--chart-teal))" },
-    { title: "Best GD", value: `+${Math.max(...allTeams.map(t => t.goalsFor - t.goalsAgainst))}`, icon: Target, sparkData: [20, 25, 30, 32, 36, 40], color: "hsl(var(--chart-positive))" },
-    { title: "Metrics Active", value: 10, icon: BarChart3, sparkData: [3, 5, 6, 7, 9, 10], color: "hsl(var(--chart-blue))" },
-  ];
+  const activeLeaguesList = leagueType === "domestic" ? DOMESTIC_LEAGUES : EURO_LEAGUES;
+
+  const MetricCarousel = ({ title, icon: Icon, items, renderItem }: any) => {
+    const scrollRef = useRef<HTMLDivElement>(null);
+    if (!items || items.length === 0) return (
+      <div className="pt-6 border-t border-[#222]">
+        <h2 className="text-lg font-black uppercase tracking-widest text-white flex items-center gap-3 mb-4 px-2"><Icon className="w-5 h-5 text-emerald-400" /> {title}</h2>
+        <div className="p-8 text-center bg-[#111] rounded-2xl border border-[#222] text-[#666] font-bold text-xs">No data available from ESPN for this competition right now.</div>
+      </div>
+    );
+    
+    return (
+      <div className="pt-6 border-t border-[#222]">
+        <h2 className="text-lg font-black uppercase tracking-widest text-white flex items-center gap-3 mb-4 px-2">
+          <Icon className="w-5 h-5 text-emerald-400" /> {title}
+        </h2>
+        <div className="relative w-full group flex items-center">
+          <button onClick={() => scrollRef.current?.scrollBy({ left: -300, behavior: "smooth" })} className="absolute -left-4 z-30 p-2 rounded-full bg-[#111] border border-[#333] text-white opacity-0 group-hover:opacity-100 transition-all hover:bg-black shadow-xl"><ChevronLeft className="h-5 w-5" /></button>
+          <div ref={scrollRef} className="flex gap-4 overflow-x-auto pb-4 w-full px-2 scrollbar-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            {items.map((item: any, i: number) => renderItem(item, i))}
+          </div>
+          <button onClick={() => scrollRef.current?.scrollBy({ left: 300, behavior: "smooth" })} className="absolute -right-4 z-30 p-2 rounded-full bg-[#111] border border-[#333] text-white opacity-0 group-hover:opacity-100 transition-all hover:bg-black shadow-xl"><ChevronRight className="h-5 w-5" /></button>
+        </div>
+      </div>
+    );
+  };
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-semibold text-foreground">Football Dashboard</h1>
-        <p className="text-muted-foreground text-sm mt-1">Season overview and key metrics</p>
+    <div className="space-y-8 pb-16 animate-in fade-in duration-500 max-w-7xl mx-auto px-4 overflow-x-hidden">
+      
+      <div className="bg-[#111] rounded-[2rem] border border-[#222] p-8 md:p-12 relative overflow-hidden shadow-2xl flex flex-col items-center text-center">
+        <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="relative z-10 space-y-4">
+          <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest mb-2">
+            <Activity className="h-3.5 w-3.5 animate-pulse" /> Live Global Pitch
+          </div>
+          <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter uppercase italic">European Football</h1>
+          
+          <div className="mt-8 flex justify-center bg-[#1a1a1a] p-1.5 rounded-xl border border-[#333] shadow-lg w-fit mx-auto">
+            <button onClick={() => { setLeagueType("domestic"); setActiveLeague(DOMESTIC_LEAGUES[0].id); }} className={`px-6 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${leagueType === "domestic" ? 'bg-[#222] text-white border border-[#444]' : 'text-[#666] hover:text-white'}`}>Domestic Leagues</button>
+            <button onClick={() => { setLeagueType("euro"); setActiveLeague(EURO_LEAGUES[0].id); }} className={`px-6 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${leagueType === "euro" ? 'bg-[#222] text-white border border-[#444]' : 'text-[#666] hover:text-white'}`}>UEFA Competitions</button>
+          </div>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {metricTiles.map((s) => (
-          <Card key={s.title} className="bg-white/[0.03] border-white/5 overflow-hidden backdrop-blur-xl hover:bg-white/[0.05] transition-all duration-300 hover:scale-[1.02]">
-            <CardContent className="p-5">
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">{s.title}</p>
-                  <p className="text-2xl font-bold font-mono mt-1 text-foreground">{s.value}</p>
-                </div>
-                <div className="p-2 rounded-lg bg-white/5">
-                  <s.icon className="h-4 w-4 text-muted-foreground" />
-                </div>
-              </div>
-              <div className="h-8">
-                <SparkLine data={s.sparkData} color={s.color} />
-              </div>
-            </CardContent>
-          </Card>
+      <div className="flex items-center justify-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+        {activeLeaguesList.map(league => (
+          <button key={league.id} onClick={() => setActiveLeague(league.id)} className={`px-5 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shrink-0 flex items-center gap-2 border ${activeLeague === league.id ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30 shadow-lg' : 'bg-[#111] text-slate-500 border-[#222] hover:bg-[#1a1a1a] hover:text-white'}`}>
+            <img src={league.logo} className="w-5 h-5 object-contain" alt="" />
+            {league.name}
+          </button>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="bg-white/[0.02] border-white/5 backdrop-blur-xl">
-          <CardHeader className="pb-3 border-b border-white/5"><CardTitle className="text-base font-medium text-foreground">Top Scorers</CardTitle></CardHeader>
-          <CardContent className="space-y-1">
-            {topScorers.map((p, i) => (
-              <Link key={p.id} to={`/${sport}/players/${p.id}`} className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-all duration-300">
-                <div className="flex items-center gap-3">
-                  <span className="text-xs font-mono text-muted-foreground w-5 text-right">{i + 1}</span>
-                  <div>
-                    <p className="text-sm font-medium text-foreground">{p.name}</p>
-                    <p className="text-xs text-muted-foreground">{p.teamName} · {p.position}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-mono font-semibold text-primary">{p.stats.goals}</p>
-                  <p className="text-xs text-muted-foreground">Goals</p>
-                </div>
-              </Link>
-            ))}
-          </CardContent>
-        </Card>
+      {isLoading ? (
+        <div className="flex flex-col items-center justify-center py-20 space-y-4">
+          <Loader2 className="h-10 w-10 animate-spin text-emerald-500" />
+          <p className="text-[#888] font-bold text-xs uppercase tracking-widest">Gathering Match Data...</p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          
+          <MetricCarousel title="League Standings" icon={Trophy} items={standings.slice(0,10)} renderItem={(t:any) => (
+            <Link key={t.id} to={`/football/teams/${t.id}`} className="w-[200px] shrink-0 bg-[#111] border border-[#222] rounded-2xl p-5 flex flex-col items-center text-center hover:border-emerald-500/50 hover:bg-[#1a1a1a] transition-all group">
+              <span className="absolute top-3 left-3 text-[10px] font-black text-[#555]">#{t.rank}</span>
+              {/* 🚀 Interceptor en Logo de Equipo */}
+              <img src={t.logo} onError={(e) => handleImgError(e, t.teamName, 'team')} className="w-14 h-14 object-contain mb-3 drop-shadow-md group-hover:scale-110 transition-transform" alt="" />
+              <h3 className="font-bold text-white text-sm truncate w-full mb-2">{t.teamName}</h3>
+              <div className="w-full flex justify-between px-2 text-[10px] font-black text-[#888] uppercase tracking-widest">
+                <span>PTS: <span className="text-emerald-400 text-sm">{t.points}</span></span>
+                <span>GD: {t.gd > 0 ? `+${t.gd}` : t.gd}</span>
+              </div>
+            </Link>
+          )} />
 
-        <Card className="bg-white/[0.02] border-white/5 backdrop-blur-xl">
-          <CardHeader className="pb-3 border-b border-white/5"><CardTitle className="text-base font-medium text-foreground">Standings</CardTitle></CardHeader>
-          <CardContent className="space-y-1">
-            {topTeams.map((t, i) => (
-              <Link key={t.id} to={`/${sport}/teams/${t.id}`} className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-all duration-300">
-                <div className="flex items-center gap-3">
-                  <span className="text-xs font-mono text-muted-foreground w-5 text-right">{i + 1}</span>
-                  <div>
-                    <p className="text-sm font-medium text-foreground">{t.name}</p>
-                    <p className="text-xs text-muted-foreground">{t.league} · GD {t.goalsFor - t.goalsAgainst > 0 ? "+" : ""}{t.goalsFor - t.goalsAgainst}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-mono font-semibold text-primary">{t.wins * 3 + t.draws}</p>
-                  <p className="text-xs text-muted-foreground">Pts</p>
-                </div>
-              </Link>
-            ))}
-          </CardContent>
-        </Card>
-      </div>
+          <MetricCarousel title="Golden Boot Race" icon={Target} items={players.slice(0,10)} renderItem={(p:any, i:number) => (
+            <Link key={p.id} to={`/football/players/${p.id}`} className="w-[240px] shrink-0 bg-[#111] border border-[#222] rounded-2xl p-5 flex items-center gap-4 hover:border-amber-500/50 hover:bg-[#1a1a1a] transition-all group">
+              <span className="text-xs font-black text-[#555] w-4">{i + 1}</span>
+              <Avatar className="h-12 w-12 border border-[#333] bg-black">
+                {/* 🚀 Interceptor en Avatar de Jugador */}
+                <AvatarImage src={p.imageUrl} onError={(e) => handleImgError(e, p.name, 'player')} className="object-cover object-top" />
+                <AvatarFallback className="bg-[#111] text-amber-500 font-bold">{p.name[0]}</AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col flex-1 min-w-0">
+                <span className="font-bold text-white text-sm truncate group-hover:text-amber-400 transition-colors">{p.name}</span>
+                <span className="text-[9px] font-black text-[#666] uppercase tracking-widest truncate">{p.teamName}</span>
+              </div>
+              <div className="text-right flex flex-col">
+                <span className="font-mono font-black text-xl text-amber-400">{p.stats.goals}</span>
+                <span className="text-[8px] font-black text-[#555]">GLS</span>
+              </div>
+            </Link>
+          )} />
+          
+          <MetricCarousel title="Highest Scoring Teams" icon={Shield} items={[...standings].sort((a,b)=> b.gf - a.gf).slice(0,10)} renderItem={(t:any) => (
+            <Link key={`atk-${t.id}`} to={`/football/teams/${t.id}`} className="w-[180px] shrink-0 bg-[#111] border border-[#222] rounded-2xl p-5 flex flex-col justify-center text-center hover:border-blue-500/50 transition-all group">
+              <img src={t.logo} onError={(e) => handleImgError(e, t.teamName, 'team')} className="w-10 h-10 mx-auto mb-3 object-contain opacity-50 group-hover:opacity-100 transition-opacity" alt=""/>
+              <p className="text-[9px] font-black text-[#666] uppercase tracking-widest mb-2 truncate group-hover:text-white transition-colors">{t.teamName}</p>
+              <span className="font-mono font-black text-3xl text-blue-400">{t.gf}</span>
+              <span className="text-[10px] font-black text-[#555] uppercase tracking-widest mt-1">Goals For</span>
+            </Link>
+          )} />
+
+        </div>
+      )}
     </div>
   );
 }

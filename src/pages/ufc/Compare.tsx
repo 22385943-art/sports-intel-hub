@@ -3,21 +3,41 @@ import { ufcService } from "@/services/sports/ufcService";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Legend } from "recharts";
+import { Loader2 } from "lucide-react";
 
 export default function UFCCompare() {
-  const allFighters = ufcService.getAllPlayers();
-  const [f1Id, setF1Id] = useState(allFighters[0]?.id || "");
-  const [f2Id, setF2Id] = useState(allFighters[1]?.id || "");
+  const [allFighters, setAllFighters] = useState<any[]>([]);
+  const [f1Id, setF1Id] = useState<string>("");
+  const [f2Id, setF2Id] = useState<string>("");
 
-  if (allFighters.length < 2) return <div className="text-white text-center py-20 font-bold">Please check your connection. Matchup engine requires data.</div>;
+  useEffect(() => {
+    // Usamos el roster base indestructible de la clase UFCService
+    const fighters = ufcService.getAllPlayers();
+    setAllFighters(fighters);
+    if (fighters.length >= 2) {
+      setF1Id(fighters[0].id);
+      setF2Id(fighters[1].id);
+    }
+  }, []);
 
-  const f1 = ufcService.getPlayerById(f1Id)!;
-  const f2 = ufcService.getPlayerById(f2Id)!;
+  // 🚀 PROTECCIÓN TOTAL CONTRA CRASHES
+  if (allFighters.length < 2 || !f1Id || !f2Id) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[70vh] space-y-4">
+        <Loader2 className="h-10 w-10 animate-spin text-red-500" />
+        <p className="text-slate-500 font-bold text-xs uppercase tracking-widest">Loading Matchup Engine...</p>
+      </div>
+    );
+  }
+
+  const f1 = ufcService.getPlayerById(f1Id) || allFighters[0];
+  const f2 = ufcService.getPlayerById(f2Id) || allFighters[1];
+  
   const adv1 = ufcService.computeAdvanced(f1);
   const adv2 = ufcService.computeAdvanced(f2);
 
-  const n1 = f1.name.split(" ").pop()!;
-  const n2 = f2.name.split(" ").pop()!;
+  const n1 = f1.name.split(" ").pop() || "Fighter 1";
+  const n2 = f2.name.split(" ").pop() || "Fighter 2";
 
   const radarData = [
     { metric: "DMG", [n1]: adv1.damageEfficiency, [n2]: adv2.damageEfficiency },
@@ -37,12 +57,16 @@ export default function UFCCompare() {
       <div className="flex flex-wrap gap-4 items-center bg-[#111] p-4 rounded-2xl border border-white/5">
         <Select value={f1Id} onValueChange={setF1Id}>
           <SelectTrigger className="w-64 bg-black/50 border-white/10 text-white font-bold h-12"><SelectValue /></SelectTrigger>
-          <SelectContent className="bg-[#111] border-white/10 text-white">{allFighters.map(f => <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>)}</SelectContent>
+          <SelectContent className="bg-[#111] border-white/10 text-white">
+            {allFighters.map(f => <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>)}
+          </SelectContent>
         </Select>
         <span className="self-center text-red-500 font-black text-xl italic px-4">VS</span>
         <Select value={f2Id} onValueChange={setF2Id}>
           <SelectTrigger className="w-64 bg-black/50 border-white/10 text-white font-bold h-12"><SelectValue /></SelectTrigger>
-          <SelectContent className="bg-[#111] border-white/10 text-white">{allFighters.map(f => <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>)}</SelectContent>
+          <SelectContent className="bg-[#111] border-white/10 text-white">
+            {allFighters.map(f => <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>)}
+          </SelectContent>
         </Select>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
@@ -65,10 +89,10 @@ export default function UFCCompare() {
           <h3 className="text-sm font-black uppercase tracking-widest text-white mb-6">Stat Comparison</h3>
           <div className="space-y-4">
             {[
-              { label: "Strikes Landed / Min", v1: f1.stats.slpm, v2: f2.stats.slpm },
-              { label: "Striking Accuracy %", v1: f1.stats.strAcc, v2: f2.stats.strAcc },
-              { label: "Takedowns / 15m", v1: f1.stats.tdAvg, v2: f2.stats.tdAvg },
-              { label: "Takedown Defense %", v1: f1.stats.tdDef, v2: f2.stats.tdDef },
+              { label: "Strikes Landed / Min", v1: f1.stats?.slpm || 0, v2: f2.stats?.slpm || 0 },
+              { label: "Striking Accuracy %", v1: f1.stats?.strAcc || 0, v2: f2.stats?.strAcc || 0 },
+              { label: "Takedowns / 15m", v1: f1.stats?.tdAvg || 0, v2: f2.stats?.tdAvg || 0 },
+              { label: "Takedown Defense %", v1: f1.stats?.tdDef || 0, v2: f2.stats?.tdDef || 0 },
               { label: "Dominance Score", v1: adv1.dominanceScore, v2: adv2.dominanceScore },
             ].map(row => {
               const winner = Number(row.v1) > Number(row.v2) ? 1 : Number(row.v2) > Number(row.v1) ? 2 : 0;

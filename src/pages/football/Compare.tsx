@@ -1,83 +1,119 @@
-import { useState } from "react";
-import { footballService } from "@/services/sportServiceFactory";
+import { useState, useEffect } from "react";
+import { footballService, DOMESTIC_LEAGUES } from "@/services/sports/footballService";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Legend } from "recharts";
+import { Loader2, ShieldAlert } from "lucide-react";
 
 export default function FootballCompare() {
-  const allPlayers = footballService.getAllPlayers();
-  const [p1Id, setP1Id] = useState(allPlayers[0].id);
-  const [p2Id, setP2Id] = useState(allPlayers[1].id);
+  const [allPlayers, setAllPlayers] = useState<any[]>([]);
+  const [p1Id, setP1Id] = useState<string>("");
+  const [p2Id, setP2Id] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(true);
 
-  const p1 = footballService.getPlayerById(p1Id)!;
-  const p2 = footballService.getPlayerById(p2Id)!;
+  useEffect(() => {
+    footballService.fetchRealPlayers(DOMESTIC_LEAGUES[0].id).then(players => {
+      if (players && players.length >= 2) {
+        setAllPlayers(players);
+        setP1Id(players[0].id);
+        setP2Id(players[1].id);
+      }
+      setIsLoading(false);
+    });
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[70vh] space-y-4">
+        <Loader2 className="h-10 w-10 animate-spin text-emerald-500" />
+        <p className="text-[#888] font-bold text-xs uppercase tracking-widest">Initializing Scouting Engine...</p>
+      </div>
+    );
+  }
+
+  if (allPlayers.length < 2 || !p1Id || !p2Id) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[70vh] text-[#666] space-y-4">
+        <ShieldAlert className="h-12 w-12 opacity-50" />
+        <p className="font-bold uppercase tracking-widest text-sm">Insufficient Data for Comparison</p>
+      </div>
+    );
+  }
+
+  const p1 = allPlayers.find(p => p.id === p1Id) || allPlayers[0];
+  const p2 = allPlayers.find(p => p.id === p2Id) || allPlayers[1];
+  
   const adv1 = footballService.computeAdvanced(p1);
   const adv2 = footballService.computeAdvanced(p2);
 
-  const n1 = p1.name.split(" ").pop()!;
-  const n2 = p2.name.split(" ").pop()!;
+  const n1 = p1.name.split(" ").pop() || "Player 1";
+  const n2 = p2.name.split(" ").pop() || "Player 2";
 
   const radarData = [
     { metric: "xGC", [n1]: adv1.xgContribution, [n2]: adv2.xgContribution },
     { metric: "PRS", [n1]: adv1.pressingImpact, [n2]: adv2.pressingImpact },
     { metric: "BUV", [n1]: adv1.buildUpValue, [n2]: adv2.buildUpValue },
     { metric: "xT", [n1]: adv1.xT, [n2]: adv2.xT },
-    { metric: "FTI", [n1]: adv1.finalThird, [n2]: adv2.finalThird },
-    { metric: "PPV", [n1]: adv1.progressivePassing, [n2]: adv2.progressivePassing },
+    { metric: "ProgPass", [n1]: adv1.progressivePassing, [n2]: adv2.progressivePassing },
+    { metric: "Goal Inv", [n1]: adv1.goalInvolvement, [n2]: adv2.goalInvolvement },
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-in fade-in">
       <div>
-        <h1 className="text-2xl font-semibold text-foreground">Compare</h1>
-        <p className="text-muted-foreground text-sm mt-1">Head-to-head player comparison</p>
+        <h1 className="text-2xl font-black text-white uppercase italic tracking-tight">Player Scouting Compare</h1>
+        <p className="text-muted-foreground text-sm mt-1">Head-to-head advanced metric analysis</p>
       </div>
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-wrap gap-4 items-center bg-[#111] p-4 rounded-2xl border border-[#222]">
         <Select value={p1Id} onValueChange={setP1Id}>
-          <SelectTrigger className="w-56 bg-white/5 border-white/5"><SelectValue /></SelectTrigger>
-          <SelectContent>{allPlayers.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}</SelectContent>
+          <SelectTrigger className="w-64 bg-black/50 border-[#333] text-white"><SelectValue /></SelectTrigger>
+          <SelectContent className="bg-[#111] text-white border-[#333]">
+            {allPlayers.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
+          </SelectContent>
         </Select>
-        <span className="self-center text-muted-foreground font-mono text-sm">vs</span>
+        <span className="self-center text-emerald-500 font-black italic">VS</span>
         <Select value={p2Id} onValueChange={setP2Id}>
-          <SelectTrigger className="w-56 bg-white/5 border-white/5"><SelectValue /></SelectTrigger>
-          <SelectContent>{allPlayers.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}</SelectContent>
+          <SelectTrigger className="w-64 bg-black/50 border-[#333] text-white"><SelectValue /></SelectTrigger>
+          <SelectContent className="bg-[#111] text-white border-[#333]">
+            {allPlayers.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
+          </SelectContent>
         </Select>
       </div>
+      
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="bg-white/[0.02] border-white/5 backdrop-blur-xl">
-          <CardHeader className="pb-2 border-b border-white/5"><CardTitle className="text-sm font-medium text-foreground">Metric Comparison</CardTitle></CardHeader>
+        <Card className="bg-[#0a0f18]/80 border-[#222] shadow-2xl">
+          <CardHeader className="pb-2 border-b border-[#222]"><CardTitle className="text-sm font-black uppercase tracking-widest text-white">Metric DNA</CardTitle></CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={350}>
-              <RadarChart data={radarData}>
-                <PolarGrid stroke="rgba(255,255,255,0.08)" />
-                <PolarAngleAxis dataKey="metric" tick={{ fontSize: 11, fill: 'hsl(215 20% 55%)' }} />
+              <RadarChart data={radarData} outerRadius="70%">
+                <PolarGrid stroke="rgba(255,255,255,0.1)" />
+                <PolarAngleAxis dataKey="metric" tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.6)', fontWeight: 'bold' }} />
                 <PolarRadiusAxis tick={false} axisLine={false} />
-                <Radar name={n1} dataKey={n1} stroke="hsl(var(--chart-teal))" fill="hsl(var(--chart-teal))" fillOpacity={0.15} />
-                <Radar name={n2} dataKey={n2} stroke="hsl(var(--chart-blue))" fill="hsl(var(--chart-blue))" fillOpacity={0.15} />
-                <Legend />
+                <Radar name={n1} dataKey={n1} stroke="#10b981" fill="#10b981" fillOpacity={0.2} strokeWidth={3} dot={{r: 4, fill: '#111', stroke: '#10b981'}} />
+                <Radar name={n2} dataKey={n2} stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.2} strokeWidth={3} dot={{r: 4, fill: '#111', stroke: '#3b82f6'}} />
+                <Legend wrapperStyle={{paddingTop: '20px'}} />
               </RadarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
-        <Card className="bg-white/[0.02] border-white/5 backdrop-blur-xl">
-          <CardHeader className="pb-2 border-b border-white/5"><CardTitle className="text-sm font-medium text-foreground">Stat Comparison</CardTitle></CardHeader>
-          <CardContent>
-            <div className="space-y-3">
+        
+        <Card className="bg-[#0a0f18]/80 border-[#222] shadow-2xl">
+          <CardHeader className="pb-2 border-b border-[#222]"><CardTitle className="text-sm font-black uppercase tracking-widest text-white">Raw Output</CardTitle></CardHeader>
+          <CardContent className="pt-6">
+            <div className="space-y-4">
               {[
-                { label: "Goals", v1: p1.stats.goals, v2: p2.stats.goals },
-                { label: "Assists", v1: p1.stats.assists, v2: p2.stats.assists },
-                { label: "Pass%", v1: p1.stats.passAccuracy, v2: p2.stats.passAccuracy },
-                { label: "xGC", v1: adv1.xgContribution, v2: adv2.xgContribution },
-                { label: "xT", v1: adv1.xT, v2: adv2.xT },
+                { label: "Goals", v1: p1.stats?.goals || 0, v2: p2.stats?.goals || 0 },
+                { label: "Assists", v1: p1.stats?.assists || 0, v2: p2.stats?.assists || 0 },
+                { label: "Pass Acc %", v1: p1.stats?.passAccuracy || 0, v2: p2.stats?.passAccuracy || 0 },
+                { label: "xG Contrib", v1: adv1.xgContribution, v2: adv2.xgContribution },
+                { label: "Expected Threat", v1: adv1.xT, v2: adv2.xT },
               ].map(row => {
-                const winner = row.v1 > row.v2 ? 1 : row.v2 > row.v1 ? 2 : 0;
+                const winner = Number(row.v1) > Number(row.v2) ? 1 : Number(row.v2) > Number(row.v1) ? 2 : 0;
                 return (
-                  <div key={row.label} className="flex items-center gap-3">
-                    <span className={`font-mono text-sm w-16 text-right ${winner === 1 ? "text-primary font-semibold" : "text-muted-foreground"}`}>{row.v1}</span>
-                    <div className="flex-1 text-center">
-                      <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{row.label}</span>
-                    </div>
-                    <span className={`font-mono text-sm w-16 ${winner === 2 ? "text-primary font-semibold" : "text-muted-foreground"}`}>{row.v2}</span>
+                  <div key={row.label} className="flex items-center justify-between py-2 border-b border-[#222]">
+                    <span className={`font-mono text-xl w-16 text-right font-black ${winner === 1 ? "text-emerald-400" : "text-slate-500"}`}>{row.v1}</span>
+                    <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-slate-400">{row.label}</span>
+                    <span className={`font-mono text-xl w-16 text-left font-black ${winner === 2 ? "text-blue-500" : "text-slate-500"}`}>{row.v2}</span>
                   </div>
                 );
               })}

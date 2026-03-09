@@ -2,6 +2,20 @@ import type { SportService } from "@/types/sports/base";
 import type { NBAPlayer, NBATeam } from "@/data/nba/mockData";
 import { NBA_PLAYERS, NBA_TEAMS, computeTeamMetrics } from "@/data/nba/mockData";
 
+// 🚀 FUNCIÓN ANTI-CUELGUES: Corta la conexión si la NBA no responde en 3 segundos
+const fetchWithTimeout = async (url: string, timeout = 3000) => {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+  try {
+    const response = await fetch(url, { signal: controller.signal });
+    clearTimeout(id);
+    return response;
+  } catch (err) {
+    clearTimeout(id);
+    throw err;
+  }
+};
+
 class NBAService implements SportService<NBAPlayer, NBATeam> {
   sport = "nba" as const;
 
@@ -43,7 +57,8 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
         const urlBase = `/nba-api/leaguedashplayerstats?LastNGames=0&LeagueID=00&MeasureType=Base&Month=0&OpponentTeamID=0&PaceAdjust=N&PerMode=PerGame&Period=0&PlusMinus=N&Rank=N&Season=2025-26&SeasonType=Regular%20Season&TeamID=0`;
         const urlAdv = `/nba-api/leaguedashplayerstats?LastNGames=0&LeagueID=00&MeasureType=Advanced&Month=0&OpponentTeamID=0&PaceAdjust=N&PerMode=PerGame&Period=0&PlusMinus=N&Rank=N&Season=2025-26&SeasonType=Regular%20Season&TeamID=0`;
         
-        const [resBase, resAdv] = await Promise.all([fetch(urlBase), fetch(urlAdv)]);
+        // 🚀 Usamos el timeout aquí para que no se quede colgado
+        const [resBase, resAdv] = await Promise.all([fetchWithTimeout(urlBase), fetchWithTimeout(urlAdv)]);
         if (!resBase.ok || !resAdv.ok) throw new Error("Proxy bloqueado.");
         
         const dataBase = await resBase.json();
@@ -94,13 +109,13 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
         this.playersCache = parsedPlayers;
         return parsedPlayers;
       } catch (err) { 
-        return this.getAllPlayers(); 
+        return this.getAllPlayers(); // 🛡️ Si falla o tarda más de 3s, salta directo a tus Mocks
       }
     })();
     return this.fetchPromise;
   }
 
-computeAllAdvanced(player: any) {
+  computeAllAdvanced(player: any) {
     const s = player.stats || {};
     const min = s.mpg || 1; 
     const missedFG = (s.fga || 0) - (s.fgm || 0);
@@ -114,9 +129,6 @@ computeAllAdvanced(player: any) {
     let vorp = (bpm + 2.0) * (min / 48) * 0.8; 
     if (vorp < -2) vorp = -2;
 
-    // 🚀 NUESTRA SÚPER MÉTRICA PROPIETARIA: SI+ (Sports Intel Plus)
-    // 100 es la media de la liga. Un SI+ de 150+ es nivel MVP.
-    // Combina Impacto(BPM), Eficiencia (TS) y Volumen (PER)
     const siPlus = 100 + (bpm * 4.5) + ((per - 15) * 1.5) + (((s.ts || 55) - 57) * 0.5);
 
     return {
@@ -129,7 +141,7 @@ computeAllAdvanced(player: any) {
       ts: Math.round((s.ts || 0) * 10) / 10 || 0,
       ast: Math.round((s.astPct || 0) * 10) / 10 || 0,
       efg: Math.round((s.efg || 0) * 10) / 10 || 0,
-      si: Math.round(siPlus) || 100, // 🚀 LA INYECTAMOS AQUÍ (Centrada en 100)
+      si: Math.round(siPlus) || 100, 
     };
   }
 
@@ -141,7 +153,7 @@ computeAllAdvanced(player: any) {
       try {
         const paramsBase = "Conference=&DateFrom=&DateTo=&Division=&GameScope=&GameSegment=&LastNGames=0&LeagueID=00&Location=&MeasureType=Base&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PaceAdjust=N&PerMode=PerGame&Period=0&PlayerExperience=&PlayerPosition=&PlusMinus=N&Rank=N&Season=2025-26&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&StarterBench=&TeamID=0&TwoWay=0&VsConference=&VsDivision=";
         const paramsAdv = paramsBase.replace("MeasureType=Base", "MeasureType=Advanced");
-        const [resBase, resAdv] = await Promise.all([fetch(`/nba-api/leaguedashteamstats?${paramsBase}`), fetch(`/nba-api/leaguedashteamstats?${paramsAdv}`)]);
+        const [resBase, resAdv] = await Promise.all([fetchWithTimeout(`/nba-api/leaguedashteamstats?${paramsBase}`), fetchWithTimeout(`/nba-api/leaguedashteamstats?${paramsAdv}`)]);
         if (!resBase.ok || !resAdv.ok) throw new Error("Proxy bloqueado.");
 
         const dataBase = await resBase.json();
@@ -189,7 +201,7 @@ computeAllAdvanced(player: any) {
   async getTeamRosterAndCoaches(teamId: string): Promise<any> {
     try {
       const url = `/nba-api/commonteamroster?LeagueID=00&Season=2025-26&TeamID=${teamId}`;
-      const response = await fetch(url);
+      const response = await fetchWithTimeout(url);
       if (!response.ok) throw new Error("Roster Fetch Failed");
       const data = await response.json();
       
@@ -214,7 +226,7 @@ computeAllAdvanced(player: any) {
   async getTeamLineups(teamId: string): Promise<any[]> {
     try {
       const url = `/nba-api/teamdashlineups?DateFrom=&DateTo=&GameID=&GameSegment=&GroupQuantity=5&LastNGames=0&LeagueID=00&Location=&MeasureType=Advanced&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PaceAdjust=N&PerMode=PerGame&Period=0&PlusMinus=N&Rank=N&Season=2025-26&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&TeamID=${teamId}&VsConference=&VsDivision=`;
-      const response = await fetch(url);
+      const response = await fetchWithTimeout(url);
       if (!response.ok) throw new Error("Lineup Fetch Failed");
       
       const data = await response.json();
@@ -234,7 +246,7 @@ computeAllAdvanced(player: any) {
   async getTeamDetails(teamId: string): Promise<any> {
     try {
       const url = `/nba-api/teamdetails?TeamID=${teamId}`;
-      const response = await fetch(url);
+      const response = await fetchWithTimeout(url);
       if (!response.ok) throw new Error("Details Fetch Failed");
       
       const data = await response.json();
@@ -267,12 +279,9 @@ computeAllAdvanced(player: any) {
 
       return {
         frontOffice: { 
-          coach: bg[bgH.indexOf("HEADCOACH")] || "Unknown", 
-          gm: bg[bgH.indexOf("GENERALMANAGER")] || "Unknown", 
-          owner: bg[bgH.indexOf("OWNER")] || "Unknown", 
-          arena: bg[bgH.indexOf("ARENA")] || "Unknown", 
-          capacity: bg[bgH.indexOf("ARENACAPACITY")] || "Unknown", 
-          yearFounded: bg[bgH.indexOf("YEARFOUNDED")] || "Unknown" 
+          coach: bg[bgH.indexOf("HEADCOACH")] || "Unknown", gm: bg[bgH.indexOf("GENERALMANAGER")] || "Unknown", 
+          owner: bg[bgH.indexOf("OWNER")] || "Unknown", arena: bg[bgH.indexOf("ARENA")] || "Unknown", 
+          capacity: bg[bgH.indexOf("ARENACAPACITY")] || "Unknown", yearFounded: bg[bgH.indexOf("YEARFOUNDED")] || "Unknown" 
         },
         history: { rings, confTitles, retired, leaders }
       };
@@ -305,9 +314,8 @@ computeAllAdvanced(player: any) {
         dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
       }
       
-      const response = await fetch(`/nba-api/scoreboardv3?GameDate=${dateStr}&LeagueID=00`);
+      const response = await fetchWithTimeout(`/nba-api/scoreboardv3?GameDate=${dateStr}&LeagueID=00`);
       const data = await response.json();
-      
       const settings = JSON.parse(localStorage.getItem('sports-intel-settings') || '{"timeZone":"local"}');
 
       const games = data?.scoreboard?.games || [];
@@ -316,17 +324,13 @@ computeAllAdvanced(player: any) {
         let timeStr = "";
 
         if (settings.timeZone && settings.timeZone !== 'local') {
-          timeStr = gameTime.toLocaleTimeString('en-US', { 
-            timeZone: settings.timeZone, 
-            hour: '2-digit', minute: '2-digit' 
-          });
+          timeStr = gameTime.toLocaleTimeString('en-US', { timeZone: settings.timeZone, hour: '2-digit', minute: '2-digit' });
         } else {
           timeStr = gameTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         }
 
         return {
-          gameId: g.gameId,
-          home: g.homeTeam.teamTricolor, homeId: g.homeTeam.teamId,
+          gameId: g.gameId, home: g.homeTeam.teamTricolor, homeId: g.homeTeam.teamId,
           away: g.awayTeam.teamTricolor, awayId: g.awayTeam.teamId,
           homeScore: g.homeTeam.score, awayScore: g.awayTeam.score,
           quarter: g.gameStatus === 1 ? timeStr : (g.gameStatus === 3 ? "FINAL" : `Q${g.period} ${g.gameClock}`),
@@ -334,72 +338,49 @@ computeAllAdvanced(player: any) {
           arena: g.arena?.name || "TBD", city: g.arena?.city || ""
         };
       });
-    } catch (error) {
-      console.error("Error fetching live games:", error);
-      return [];
-    }
+    } catch (error) { return []; }
   }
 
   async fetchStandings(): Promise<any[]> {
     try {
-      const response = await fetch(`/nba-api/leaguestandingsv3?LeagueID=00&Season=2025-26&SeasonType=Regular%20Season`);
+      const response = await fetchWithTimeout(`/nba-api/leaguestandingsv3?LeagueID=00&Season=2025-26&SeasonType=Regular%20Season`);
       const data = await response.json();
       const headers = data.resultSets[0].headers;
       const rows = data.resultSets[0].rowSet;
       
       return rows.map((r: any[]) => ({
-        teamId: r[headers.indexOf("TeamID")],
-        name: r[headers.indexOf("TeamCity")] + " " + r[headers.indexOf("TeamName")],
-        abbreviation: r[headers.indexOf("TeamSlug")],
-        conference: r[headers.indexOf("Conference")],
-        division: r[headers.indexOf("Division")],
-        wins: r[headers.indexOf("WINS")],
-        losses: r[headers.indexOf("LOSSES")],
-        pct: r[headers.indexOf("WinPCT")],
-        rank: r[headers.indexOf("PlayoffRank")],
-        gb: r[headers.indexOf("ConferenceGamesBack")],
-        home: r[headers.indexOf("HOME")] || "-",
-        away: r[headers.indexOf("ROAD")] || "-",
-        l10: r[headers.indexOf("L10")] || "-",
-        streak: r[headers.indexOf("strCurrentStreak")] || "-",
-        confRecord: r[headers.indexOf("ConferenceRecord")] || "-",
-        divRecord: r[headers.indexOf("DivisionRecord")] || "-",
+        teamId: r[headers.indexOf("TeamID")], name: r[headers.indexOf("TeamCity")] + " " + r[headers.indexOf("TeamName")],
+        abbreviation: r[headers.indexOf("TeamSlug")], conference: r[headers.indexOf("Conference")],
+        division: r[headers.indexOf("Division")], wins: r[headers.indexOf("WINS")],
+        losses: r[headers.indexOf("LOSSES")], pct: r[headers.indexOf("WinPCT")],
+        rank: r[headers.indexOf("PlayoffRank")], gb: r[headers.indexOf("ConferenceGamesBack")],
+        home: r[headers.indexOf("HOME")] || "-", away: r[headers.indexOf("ROAD")] || "-",
+        l10: r[headers.indexOf("L10")] || "-", streak: r[headers.indexOf("strCurrentStreak")] || "-",
+        confRecord: r[headers.indexOf("ConferenceRecord")] || "-", divRecord: r[headers.indexOf("DivisionRecord")] || "-",
       }));
-    } catch(e) {
-      console.error("Error fetching standings", e);
-      return [];
-    }
+    } catch(e) { return []; }
   }
 
   async fetchBoxScore(gameId: string): Promise<any> {
     try {
-      const response = await fetch(`/nba-api/boxscoretraditionalv3?GameID=${gameId}&LeagueID=00&playByPlay=false`);
+      const response = await fetchWithTimeout(`/nba-api/boxscoretraditionalv3?GameID=${gameId}&LeagueID=00&playByPlay=false`);
       const data = await response.json();
       return data?.boxScoreTraditional || null;
-    } catch (error) {
-      console.error("Error fetching box score:", error);
-      return null;
-    }
+    } catch (error) { return null; }
   }
 
   async getTeamSchedule(teamId: string): Promise<any[]> {
     try {
-      const response = await fetch(`/nba-api/teamgamelog?DateFrom=&DateTo=&LeagueID=00&Season=2025-26&SeasonType=Regular%20Season&TeamID=${teamId}`);
+      const response = await fetchWithTimeout(`/nba-api/teamgamelog?DateFrom=&DateTo=&LeagueID=00&Season=2025-26&SeasonType=Regular%20Season&TeamID=${teamId}`);
       const data = await response.json();
       const headers = data.resultSets[0].headers;
       const rows = data.resultSets[0].rowSet;
 
       return rows.map((r: any[]) => ({
-        gameId: r[headers.indexOf("Game_ID")],
-        date: r[headers.indexOf("GAME_DATE")],
-        matchup: r[headers.indexOf("MATCHUP")],
-        wl: r[headers.indexOf("WL")],
-        pts: r[headers.indexOf("PTS")],
+        gameId: r[headers.indexOf("Game_ID")], date: r[headers.indexOf("GAME_DATE")],
+        matchup: r[headers.indexOf("MATCHUP")], wl: r[headers.indexOf("WL")], pts: r[headers.indexOf("PTS")],
       }));
-    } catch(e) {
-      console.error(e);
-      return [];
-    }
+    } catch(e) { return []; }
   }
 }
 
