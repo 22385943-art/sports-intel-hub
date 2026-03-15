@@ -9,19 +9,26 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
     hmr: { overlay: false },
     proxy: {
-      // 🚀 SOLO MANTENEMOS LA NBA (ESPN LO ATACAMOS DIRECTO)
       '/nba-api': {
         target: 'https://stats.nba.com/stats',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/nba-api/, ''),
         headers: {
           'Host': 'stats.nba.com',
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-          'Accept': '*/*',
+          'User-Agent': 'Mozilla/5.0',
           'Referer': 'https://www.nba.com/',
-          'Origin': 'https://www.nba.com',
-          'Connection': 'keep-alive'
         }
+      },
+      // 🚀 TÚNELES OBLIGATORIOS PARA FÚTBOL
+      '/api-espn': {
+        target: 'https://site.api.espn.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api-espn/, ''),
+      },
+      '/web-espn': {
+        target: 'https://site.web.api.espn.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/web-espn/, ''),
       }
     }
   },
