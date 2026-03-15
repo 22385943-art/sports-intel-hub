@@ -4,6 +4,7 @@ import { Activity, Crown, Target, TrendingUp, ShieldAlert, Trophy, Loader2, Chev
 import { Link } from "react-router-dom";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useSettings } from "@/hooks/useSettings"; 
+import { motion } from "framer-motion";
 
 export default function NBADashboard() {
   const [players, setPlayers] = useState<any[]>([]);
@@ -76,8 +77,8 @@ export default function NBADashboard() {
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[70vh] space-y-4">
-        <Loader2 className="h-12 w-12 animate-spin text-cyan-500" />
-        <p className="text-[#888] font-bold text-xs uppercase tracking-widest">Loading Command Center...</p>
+        <Loader2 className="h-12 w-12 animate-spin text-cyan-400" />
+        <p className="text-slate-600 font-black text-[10px] uppercase tracking-[0.3em]">Loading Command Center...</p>
       </div>
     );
   }
@@ -107,71 +108,78 @@ export default function NBADashboard() {
   ];
   const teamCarouselData = [...teamMetricsData, ...teamMetricsData];
 
-  const topScorer = getTop10("si")[0] || getTop10("bpm")[0]; // 🚀 Mostramos al líder del SI+
+  const topScorer = getTop10("si")[0] || getTop10("bpm")[0];
 
   return (
-    <div className="space-y-8 pb-16 animate-in fade-in duration-500 max-w-7xl mx-auto px-4 overflow-x-hidden">
-      {/* 🚀 CSS GLOBAL PARA OCULTAR LA BARRA DE SCROLL DEL NAVEGADOR FEA */}
-      <style>{`
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #0a0f18; }
-        ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #374151; }
-      `}</style>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      className="space-y-8 pb-16 max-w-7xl mx-auto px-4 overflow-x-hidden"
+    >
       
       {/* HERO BANNER */}
-      <div className="bg-[#111] rounded-[2rem] border border-[#222] p-8 md:p-12 relative overflow-hidden shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-cyan-500/5 rounded-full blur-[120px] pointer-events-none" />
-        <div className="relative z-10 space-y-4">
-          <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest">
-            <Activity className="h-3.5 w-3.5 animate-pulse" /> Live Season 2025-26
+      <div className="bg-white/[0.02] backdrop-blur-3xl rounded-[2rem] border border-white/[0.05] p-8 md:p-12 relative overflow-hidden shadow-[0_0_80px_rgba(34,211,238,0.03),inset_0_1px_1px_rgba(255,255,255,0.06)]">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-cyan-500/[0.05] rounded-full blur-[150px] pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-500/[0.04] rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent" />
+        
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
+          <div className="space-y-4">
+            <div className="inline-flex items-center gap-2 bg-cyan-500/[0.08] border border-cyan-500/20 text-cyan-400 px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-[0.25em] shadow-[0_0_20px_rgba(34,211,238,0.08)]">
+              <Activity className="h-3.5 w-3.5 animate-pulse drop-shadow-[0_0_4px_rgba(34,211,238,0.6)]" /> Live Season 2025-26
+            </div>
+            <h1 className="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white to-white/50 tracking-tighter">LEAGUE COMMAND CENTER</h1>
+            <p className="text-slate-500 max-w-xl text-sm leading-relaxed">Real-time individual and collective metrics. Monitoring the MVP race and Team Power Rankings across the association.</p>
           </div>
-          <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter">LEAGUE COMMAND CENTER</h1>
-          <p className="text-[#888] max-w-xl text-sm leading-relaxed">Real-time individual and collective metrics. Monitoring the MVP race and Team Power Rankings across the association.</p>
-        </div>
 
-        {topScorer && (
-          <Link to={`/nba/players/${topScorer.id}`} className="bg-[#1a1a1a]/80 backdrop-blur-md border border-[#333] rounded-3xl p-6 flex items-center gap-6 relative z-10 hover:border-cyan-500/50 transition-all group shadow-2xl shrink-0">
-            <div className="absolute -top-3 -right-3 bg-cyan-500 text-black p-2 rounded-full shadow-[0_0_15px_rgba(6,182,212,0.4)]">
-              <Crown className="h-5 w-5" />
-            </div>
-            <Avatar className="h-20 w-20 border-2 border-[#333] bg-black group-hover:scale-105 transition-transform">
-              <AvatarImage src={topScorer.imageUrl} className="object-cover" />
-              <AvatarFallback>{topScorer.name[0]}</AvatarFallback>
-            </Avatar>
-            <div>
-              <p className="text-[10px] font-black text-cyan-400 uppercase tracking-widest mb-1">SI+ Metric Leader</p>
-              <p className="text-2xl font-bold text-white leading-none mb-1">{topScorer.name}</p>
-              <p className="text-sm font-bold text-[#888]">{topScorer.teamId} · {topScorer.adv.si} SI+</p>
-            </div>
-          </Link>
-        )}
+          {topScorer && (
+            <Link to={`/nba/players/${topScorer.id}`} className="bg-white/[0.02] backdrop-blur-2xl border border-white/[0.06] rounded-[2rem] p-6 flex items-center gap-6 relative z-10 hover:border-cyan-500/20 hover:shadow-[0_0_40px_rgba(34,211,238,0.06)] transition-all duration-500 group shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] shrink-0">
+              <div className="absolute -top-3 -right-3 bg-gradient-to-br from-cyan-400 to-cyan-500 text-black p-2 rounded-full shadow-[0_0_20px_rgba(34,211,238,0.4)]">
+                <Crown className="h-5 w-5" />
+              </div>
+              <div className="relative">
+                <div className="absolute inset-0 bg-cyan-500/20 rounded-full blur-xl scale-125 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <Avatar className="h-20 w-20 border-2 border-white/[0.08] bg-[#030712] group-hover:scale-105 transition-transform duration-300 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+                  <AvatarImage src={topScorer.imageUrl} className="object-cover" />
+                  <AvatarFallback className="bg-slate-900 text-slate-500">{topScorer.name[0]}</AvatarFallback>
+                </Avatar>
+              </div>
+              <div>
+                <p className="text-[9px] font-black text-cyan-400 uppercase tracking-[0.25em] mb-1">SI+ Metric Leader</p>
+                <p className="text-2xl font-black text-white leading-none mb-1 tracking-tight">{topScorer.name}</p>
+                <p className="text-sm font-mono font-bold text-slate-500">{topScorer.teamId} · <span className="text-cyan-400">{topScorer.adv.si} SI+</span></p>
+              </div>
+            </Link>
+          )}
+        </div>
       </div>
 
       {/* LIVE SCORES TICKER */}
       <div>
         <Link to="/nba/schedule" className="group inline-flex items-center gap-2 mb-3">
-          <h3 className="text-[10px] font-black text-[#666] uppercase tracking-widest flex items-center gap-2 group-hover:text-white transition-colors">
+          <h3 className="text-[9px] font-black text-slate-600 uppercase tracking-[0.25em] flex items-center gap-2 group-hover:text-white transition-colors duration-300">
             <Activity className="h-3 w-3 text-red-500 group-hover:animate-pulse" /> Schedule
           </h3>
-          <ChevronRight className="h-3 w-3 text-[#666] group-hover:text-white group-hover:translate-x-1 transition-all" />
+          <ChevronRight className="h-3 w-3 text-slate-700 group-hover:text-white group-hover:translate-x-1 transition-all duration-300" />
         </Link>
         <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           {liveGames.length > 0 ? liveGames.map((g, i) => (
-            <Link key={i} to={`/nba/games/${g.gameId}`} state={{ game: g }} className="min-w-[220px] bg-[#111] border border-[#222] rounded-2xl p-5 shadow-lg shrink-0 flex flex-col justify-between hover:bg-[#161616] hover:border-[#444] transition-all relative overflow-hidden group">
-              <div className="flex justify-between items-center mb-5">
-                <span className={`text-[9px] font-black uppercase tracking-widest ${g.status === 'live' ? 'text-red-500 animate-pulse' : 'text-[#777]'}`}>
-                  {g.status === "live" && <span className="mr-1.5 inline-block w-1.5 h-1.5 bg-red-500 rounded-full" />}
+            <Link key={i} to={`/nba/games/${g.gameId}`} state={{ game: g }} className="min-w-[220px] bg-white/[0.02] backdrop-blur-xl border border-white/[0.05] rounded-2xl p-5 shadow-[inset_0_1px_1px_rgba(255,255,255,0.04)] shrink-0 flex flex-col justify-between hover:bg-white/[0.04] hover:border-white/[0.08] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none shadow-[0_0_40px_rgba(34,211,238,0.04)]" />
+              <div className="flex justify-between items-center mb-5 relative z-10">
+                <span className={`text-[8px] font-black uppercase tracking-[0.25em] ${g.status === 'live' ? 'text-red-400' : 'text-slate-600'}`}>
+                  {g.status === "live" && <span className="mr-1.5 inline-block w-1.5 h-1.5 bg-red-500 rounded-full shadow-[0_0_6px_rgba(239,68,68,0.6)] animate-pulse" />}
                   {g.quarter}
                 </span>
               </div>
-              <div className="space-y-3">
+              <div className="space-y-3 relative z-10">
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-3">
                     <img src={`https://cdn.nba.com/logos/nba/${g.awayId}/global/L/logo.svg`} alt={g.away} className="w-6 h-6 object-contain drop-shadow-md" />
                     <span className="font-bold text-white text-sm">{g.away}</span>
                   </div>
-                  <span className="font-mono font-bold text-[#ccc] text-lg">
+                  <span className="font-mono font-black text-white/80 text-lg tracking-tighter">
                     {g.status !== "upcoming" ? (settings.hideResults ? "***" : g.awayScore) : "-"}
                   </span>
                 </div>
@@ -180,36 +188,35 @@ export default function NBADashboard() {
                     <img src={`https://cdn.nba.com/logos/nba/${g.homeId}/global/L/logo.svg`} alt={g.home} className="w-6 h-6 object-contain drop-shadow-md" />
                     <span className="font-bold text-white text-sm">{g.home}</span>
                   </div>
-                  <span className="font-mono font-bold text-[#ccc] text-lg">
+                  <span className="font-mono font-black text-white/80 text-lg tracking-tighter">
                     {g.status !== "upcoming" ? (settings.hideResults ? "***" : g.homeScore) : "-"}
                   </span>
                 </div>
               </div>
             </Link>
           )) : (
-             <div className="text-[#666] text-xs font-bold p-4 bg-[#111] rounded-2xl border border-[#222]">No games scheduled for today.</div>
+             <div className="text-slate-600 text-xs font-bold p-4 bg-white/[0.02] rounded-2xl border border-white/[0.04]">No games scheduled for today.</div>
           )}
         </div>
       </div>
 
-      {/* 🚀 CARRUSEL: PLAYER METRICS (CARRUSEL ARREGLADO) */}
+      {/* PLAYER METRICS CAROUSEL */}
       <div 
-        className="pt-4 border-t border-white/5"
+        className="pt-4 border-t border-white/[0.04]"
         onMouseEnter={() => setIsHoveredPlayer(true)}
         onMouseLeave={() => setIsHoveredPlayer(false)}
       >
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
           <Link to="/nba/analytics" className="group flex items-center gap-2 w-fit">
-            <h2 className="text-xl md:text-2xl font-black uppercase tracking-widest text-white group-hover:text-cyan-400 transition-colors">Player Impact Analytics</h2>
-            <ChevronRight className="h-6 w-6 text-[#666] group-hover:text-cyan-400 group-hover:translate-x-1 transition-all" />
+            <h2 className="text-xl md:text-2xl font-black uppercase tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60 group-hover:to-cyan-400 transition-all duration-300">Player Impact Analytics</h2>
+            <ChevronRight className="h-6 w-6 text-slate-700 group-hover:text-cyan-400 group-hover:translate-x-1 transition-all duration-300" />
           </Link>
         </div>
 
-        {/* 🚀 FIX DE LAS FLECHAS ROJAS: Ahora están fuera de la caja de overflow para que no se pisen */}
         <div className="relative w-full group/carousel flex items-center">
           <button 
             onClick={() => { if(playerCarouselRef.current) playerCarouselRef.current.scrollBy({ left: -350, behavior: "smooth" }) }} 
-            className="absolute -left-4 z-30 p-3 rounded-full bg-[#111]/90 border border-[#333] text-white backdrop-blur-xl opacity-0 group-hover/carousel:opacity-100 transition-all hover:bg-black hover:scale-110 shadow-[0_0_20px_rgba(0,0,0,0.8)]"
+            className="absolute -left-4 z-30 p-3 rounded-full bg-[#030712]/90 border border-white/[0.06] text-white backdrop-blur-xl opacity-0 group-hover/carousel:opacity-100 transition-all duration-300 hover:bg-white/[0.04] hover:scale-110 shadow-[0_0_30px_rgba(0,0,0,0.8)]"
           >
             <ChevronLeft className="h-6 w-6" />
           </button>
@@ -224,30 +231,30 @@ export default function NBADashboard() {
 
           <button 
             onClick={() => { if(playerCarouselRef.current) playerCarouselRef.current.scrollBy({ left: 350, behavior: "smooth" }) }} 
-            className="absolute -right-4 z-30 p-3 rounded-full bg-[#111]/90 border border-[#333] text-white backdrop-blur-xl opacity-0 group-hover/carousel:opacity-100 transition-all hover:bg-black hover:scale-110 shadow-[0_0_20px_rgba(0,0,0,0.8)]"
+            className="absolute -right-4 z-30 p-3 rounded-full bg-[#030712]/90 border border-white/[0.06] text-white backdrop-blur-xl opacity-0 group-hover/carousel:opacity-100 transition-all duration-300 hover:bg-white/[0.04] hover:scale-110 shadow-[0_0_30px_rgba(0,0,0,0.8)]"
           >
             <ChevronRight className="h-6 w-6" />
           </button>
         </div>
       </div>
 
-      {/* 🚀 CARRUSEL: TEAM METRICS */}
+      {/* TEAM METRICS CAROUSEL */}
       <div 
-        className="pt-4 border-t border-white/5"
+        className="pt-4 border-t border-white/[0.04]"
         onMouseEnter={() => setIsHoveredTeam(true)}
         onMouseLeave={() => setIsHoveredTeam(false)}
       >
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
           <Link to="/nba/teams" className="group flex items-center gap-2 w-fit">
-            <h2 className="text-xl md:text-2xl font-black uppercase tracking-widest text-white group-hover:text-cyan-400 transition-colors">Team Performance Analytics</h2>
-            <ChevronRight className="h-6 w-6 text-[#666] group-hover:text-cyan-400 group-hover:translate-x-1 transition-all" />
+            <h2 className="text-xl md:text-2xl font-black uppercase tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60 group-hover:to-cyan-400 transition-all duration-300">Team Performance Analytics</h2>
+            <ChevronRight className="h-6 w-6 text-slate-700 group-hover:text-cyan-400 group-hover:translate-x-1 transition-all duration-300" />
           </Link>
         </div>
 
         <div className="relative w-full group/carousel flex items-center">
           <button 
             onClick={() => { if(teamCarouselRef.current) teamCarouselRef.current.scrollBy({ left: -350, behavior: "smooth" }) }} 
-            className="absolute -left-4 z-30 p-3 rounded-full bg-[#111]/90 border border-[#333] text-white backdrop-blur-xl opacity-0 group-hover/carousel:opacity-100 transition-all hover:bg-black hover:scale-110 shadow-[0_0_20px_rgba(0,0,0,0.8)]"
+            className="absolute -left-4 z-30 p-3 rounded-full bg-[#030712]/90 border border-white/[0.06] text-white backdrop-blur-xl opacity-0 group-hover/carousel:opacity-100 transition-all duration-300 hover:bg-white/[0.04] hover:scale-110 shadow-[0_0_30px_rgba(0,0,0,0.8)]"
           >
             <ChevronLeft className="h-6 w-6" />
           </button>
@@ -262,60 +269,60 @@ export default function NBADashboard() {
 
           <button 
             onClick={() => { if(teamCarouselRef.current) teamCarouselRef.current.scrollBy({ left: 350, behavior: "smooth" }) }} 
-            className="absolute -right-4 z-30 p-3 rounded-full bg-[#111]/90 border border-[#333] text-white backdrop-blur-xl opacity-0 group-hover/carousel:opacity-100 transition-all hover:bg-black hover:scale-110 shadow-[0_0_20px_rgba(0,0,0,0.8)]"
+            className="absolute -right-4 z-30 p-3 rounded-full bg-[#030712]/90 border border-white/[0.06] text-white backdrop-blur-xl opacity-0 group-hover/carousel:opacity-100 transition-all duration-300 hover:bg-white/[0.04] hover:scale-110 shadow-[0_0_30px_rgba(0,0,0,0.8)]"
           >
             <ChevronRight className="h-6 w-6" />
           </button>
         </div>
       </div>
 
-    </div>
+    </motion.div>
   );
 }
 
 function LeaderCard({ title, icon: Icon, accent, data, metricId, type, isTop10 = false }: any) {
   return (
-    <div className="bg-[#111] border border-[#222] rounded-[1.5rem] p-6 shadow-xl h-full">
+    <div className="bg-white/[0.02] backdrop-blur-3xl border border-white/[0.05] rounded-[1.5rem] p-6 shadow-[0_0_40px_rgba(0,0,0,0.2),inset_0_1px_1px_rgba(255,255,255,0.05)] h-full hover:border-white/[0.08] hover:shadow-[0_0_50px_rgba(34,211,238,0.04)] transition-all duration-500">
       {type === "player" && isTop10 ? (
-        <Link to={`/nba/analytics#dict-${metricId}`} className="flex items-center gap-3 mb-4 pb-4 border-b border-[#222] group/title transition-colors">
-          <Icon className={`h-5 w-5 ${accent}`} />
-          <h3 className="text-xs font-black uppercase tracking-widest text-[#aaa] group-hover/title:text-white transition-colors">{title}</h3>
-          <ChevronRight className="h-3 w-3 text-[#555] opacity-0 group-hover/title:opacity-100 group-hover/title:translate-x-1 transition-all ml-auto" />
+        <Link to={`/nba/analytics#dict-${metricId}`} className="flex items-center gap-3 mb-4 pb-4 border-b border-white/[0.04] group/title transition-colors">
+          <Icon className={`h-5 w-5 ${accent} drop-shadow-[0_0_6px_currentColor]`} />
+          <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 group-hover/title:text-white transition-colors">{title}</h3>
+          <ChevronRight className="h-3 w-3 text-slate-700 opacity-0 group-hover/title:opacity-100 group-hover/title:translate-x-1 transition-all ml-auto" />
         </Link>
       ) : (
-        <div className="flex items-center gap-3 mb-4 pb-4 border-b border-[#222]">
-          <Icon className={`h-5 w-5 ${accent}`} />
-          <h3 className="text-xs font-black uppercase tracking-widest text-[#aaa]">{title}</h3>
+        <div className="flex items-center gap-3 mb-4 pb-4 border-b border-white/[0.04]">
+          <Icon className={`h-5 w-5 ${accent} drop-shadow-[0_0_6px_currentColor]`} />
+          <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">{title}</h3>
         </div>
       )}
       
-      <div className="space-y-2">
+      <div className="space-y-1">
         {data.map((item: any, i: number) => (
           <Link 
             key={item.id} 
             to={type === "player" ? `/nba/players/${item.id}` : `/nba/teams/${item.teamId || item.abbreviation}`} 
-            className={`flex items-center justify-between group hover:bg-[#1a1a1a] rounded-xl transition-colors -mx-2 ${isTop10 ? 'p-1.5' : 'p-2'}`}
+            className="flex items-center justify-between group hover:bg-white/[0.03] rounded-xl transition-all duration-300 -mx-2 p-1.5 hover:-translate-y-0.5"
           >
             <div className="flex items-center gap-3">
-              <span className="text-[10px] font-black text-[#555] w-4 text-right pr-1">{i + 1}</span>
+              <span className="text-[9px] font-mono font-black text-slate-700 w-4 text-right">{i + 1}</span>
               {type === "player" ? (
-                <Avatar className={`${isTop10 ? 'h-8 w-8' : 'h-10 w-10'} border border-[#333] bg-black`}>
+                <Avatar className="h-8 w-8 border border-white/[0.06] bg-[#030712] shadow-md">
                   <AvatarImage src={item.imageUrl} className="object-cover" />
-                  <AvatarFallback className="bg-[#111] text-[9px] text-[#555] font-bold">{item.name.substring(0, 2).toUpperCase()}</AvatarFallback>
+                  <AvatarFallback className="bg-slate-900 text-[9px] text-slate-600 font-bold">{item.name.substring(0, 2).toUpperCase()}</AvatarFallback>
                 </Avatar>
               ) : (
-                <img src={nbaService.getTeamLogoUrl(item.abbreviation)} alt={item.name} className={`${isTop10 ? 'h-6 w-6' : 'h-8 w-8'} object-contain`} />
+                <img src={nbaService.getTeamLogoUrl(item.abbreviation)} alt={item.name} className="h-6 w-6 object-contain" />
               )}
               <div className="flex flex-col">
-                <span className={`font-bold text-white group-hover:text-white transition-colors ${isTop10 ? 'text-xs truncate max-w-[120px]' : 'text-sm'}`}>
-                  {type === "player" ? item.name : item.name}
+                <span className="font-bold text-white text-xs truncate max-w-[120px] group-hover:text-cyan-400 transition-colors duration-300">
+                  {item.name}
                 </span>
-                <span className="text-[8px] font-black text-[#666] uppercase tracking-widest">
+                <span className="text-[8px] font-mono font-bold text-slate-700">
                   {type === "player" ? item.teamId : `${item.wins}W - ${item.losses}L`}
                 </span>
               </div>
             </div>
-            <span className={`font-mono font-black ${isTop10 ? 'text-xs' : 'text-sm'} ${accent}`}>
+            <span className={`font-mono font-black text-xs tracking-tighter ${accent}`}>
               {type === "team" && metricId === 'netRtg' && item[metricId] > 0 ? '+' : ''}
               {type === "player" ? item.adv[metricId].toFixed(1) : item[metricId].toFixed(1)}
             </span>
