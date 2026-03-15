@@ -3,7 +3,6 @@ import { useParams, useLocation, Link, Navigate } from "react-router-dom";
 import { nbaService } from "@/services/sportServiceFactory";
 import { Loader2, ChevronLeft, Target, Shield, Activity, TrendingUp, Zap, MapPin, Brain, Swords } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 
 const CompareBar = ({ label, v1, v2, icon: Icon, inverse = false }: any) => {
@@ -73,7 +72,7 @@ export default function GamePreview() {
       const awayRoster = players.filter(p => p.teamId === away?.abbreviation);
       const homeRoster = players.filter(p => p.teamId === home?.abbreviation);
 
-      const getLeader = (roster: any[], stat: string) => [...roster].sort((a,b) => b.stats[stat] - a.stats[stat])[0];
+      const getLeader = (roster: any[], stat: string) => [...roster].sort((a,b) => b.stats[stat] - a.stats[stat])[0] || null;
 
       setLeaders({
         away: {
@@ -92,39 +91,10 @@ export default function GamePreview() {
     });
   }, [game]);
 
+  // 🚀 CONECTADO AL MOTOR PREDICTIVO DEL NBA_SERVICE
   const prediction = useMemo(() => {
     if (!homeTeam || !awayTeam) return null;
-
-    const homeCourtAdvantage = 3.0;
-    const adjustedHomeNet = homeTeam.netRtg + homeCourtAdvantage;
-    const adjustedAwayNet = awayTeam.netRtg;
-    const netDiff = adjustedHomeNet - adjustedAwayNet;
-    
-    let homeWinProb = 50 + (netDiff * 2.8);
-    homeWinProb = Math.max(12, Math.min(88, homeWinProb));
-    const awayWinProb = 100 - homeWinProb;
-
-    const favorite = homeWinProb > 50 ? homeTeam : awayTeam;
-    const underdog = homeWinProb > 50 ? awayTeam : homeTeam;
-    const conf = Math.abs(homeWinProb - 50);
-
-    let verdict = "";
-    if (conf > 20) {
-      verdict = `Clear advantage for the ${favorite.name}. Their robust statistical profile outclasses the ${underdog.name} on almost every front. `;
-    } else if (conf > 8) {
-      verdict = `The ${favorite.name} enter as moderate favorites, largely aided by their specific matchup advantages. `;
-    } else {
-      verdict = `This is a pure statistical toss-up. The ${favorite.name} hold a razor-thin mathematical edge, but this game will be decided in the clutch. `;
-    }
-
-    if (favorite.offRtg - underdog.offRtg > 5) verdict += `Expect ${favorite.abbreviation}'s elite offense to exploit the opposing defense heavily. `;
-    if (underdog.rebPct > favorite.rebPct + 3) verdict += `However, ${underdog.abbreviation} could steal this game if they completely dominate the rebounding battle.`;
-
-    return {
-      homeProb: homeWinProb.toFixed(1), 
-      awayProb: awayWinProb.toFixed(1),
-      verdict
-    };
+    return nbaService.calculateAdvancedWinProbability(awayTeam, homeTeam);
   }, [homeTeam, awayTeam]);
 
   if (!game) return <Navigate to="/nba/schedule" replace />;
@@ -144,8 +114,8 @@ export default function GamePreview() {
           <AvatarFallback className="bg-slate-900 text-[10px] font-bold text-slate-500">{awayL?.name?.substring(0,2)}</AvatarFallback>
         </Avatar>
         <div className="flex flex-col">
-          <span className="font-bold text-white text-xs truncate group-hover/link:text-cyan-400 transition-colors">{awayL?.name}</span>
-          <span className="text-sm font-mono font-black text-slate-400">{awayL?.stats[statKey].toFixed(1)} <span className="text-[8px] font-sans text-slate-600">AVG</span></span>
+          <span className="font-bold text-white text-xs truncate group-hover/link:text-cyan-400 transition-colors">{awayL?.name || "Unknown"}</span>
+          <span className="text-sm font-mono font-black text-slate-400">{awayL?.stats[statKey]?.toFixed(1) || "0.0"} <span className="text-[8px] font-sans text-slate-600">AVG</span></span>
         </div>
       </Link>
       
@@ -153,8 +123,8 @@ export default function GamePreview() {
       
       <Link to={`/nba/players/${homeL?.id}`} className="flex items-center justify-end gap-3 w-[40%] text-right group/link">
         <div className="flex flex-col items-end">
-          <span className="font-bold text-white text-xs truncate group-hover/link:text-rose-400 transition-colors">{homeL?.name}</span>
-          <span className="text-sm font-mono font-black text-slate-400">{homeL?.stats[statKey].toFixed(1)} <span className="text-[8px] font-sans text-slate-600">AVG</span></span>
+          <span className="font-bold text-white text-xs truncate group-hover/link:text-rose-400 transition-colors">{homeL?.name || "Unknown"}</span>
+          <span className="text-sm font-mono font-black text-slate-400">{homeL?.stats[statKey]?.toFixed(1) || "0.0"} <span className="text-[8px] font-sans text-slate-600">AVG</span></span>
         </div>
         <Avatar className="h-11 w-11 border-2 border-white/10 bg-[#0a0f18] shadow-lg">
           <AvatarImage src={homeL?.imageUrl} className="object-cover" />
@@ -179,7 +149,6 @@ export default function GamePreview() {
 
       {/* ═══ SCOREBOARD + WIN PROBABILITY ═══ */}
       <div className="bg-[#0a0f18]/80 backdrop-blur-xl rounded-[2rem] border border-white/[0.06] p-8 md:p-12 shadow-2xl relative overflow-hidden flex flex-col items-center mt-4">
-        {/* Background decoration */}
         <div className="absolute inset-0 flex items-center justify-center opacity-[0.02] pointer-events-none">
           <Swords className="w-[800px] h-[800px]" />
         </div>
