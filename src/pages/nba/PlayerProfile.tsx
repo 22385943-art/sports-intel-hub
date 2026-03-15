@@ -5,9 +5,9 @@ import { nbaService } from "@/services/sportServiceFactory";
 import { ArrowLeft, Loader2, Activity, Target, Zap, Shield, Crown, BarChart3, TrendingUp, Star, Trophy, Award, Users } from "lucide-react";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import type { NBAPlayer } from "@/data/nba/mockData";
-import { useFavorites } from "@/hooks/useFavorites"; // 🚀 AÑADIDO: Hook de Favoritos
+import { useFavorites } from "@/hooks/useFavorites";
+import { motion } from "framer-motion";
 
-// 🎨 PALETA DE COLORES
 const TEAM_COLORS: Record<string, string> = {
   "ATL": "#E03A3E", "BOS": "#007A33", "BKN": "#FFFFFF", "CHA": "#00788C", 
   "CHI": "#CE1141", "CLE": "#860038", "DAL": "#00A3E0", 
@@ -65,7 +65,6 @@ export default function NBAPlayerProfile() {
   const [isDeepDataLoading, setIsDeepDataLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"stats" | "analytics" | "accolades">("stats");
 
-  // 🚀 AÑADIDO: Inicializar Favoritos
   const { toggleFavorite, isFavorite } = useFavorites();
   const isFav = player ? isFavorite(player.id, 'player') : false;
 
@@ -205,8 +204,8 @@ export default function NBAPlayerProfile() {
   if (isBaseLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[70vh] animate-in fade-in space-y-4">
-        <Loader2 className="h-12 w-12 animate-spin text-cyan-500" />
-        <p className="text-slate-500 font-bold text-xs uppercase tracking-widest">Retrieving Player Dossier...</p>
+        <Loader2 className="h-12 w-12 animate-spin text-cyan-400" />
+        <p className="text-slate-600 font-black text-[10px] uppercase tracking-[0.3em]">Retrieving Player Dossier...</p>
       </div>
     );
   }
@@ -229,86 +228,88 @@ export default function NBAPlayerProfile() {
   const swingDisplay = onOffSwing !== null ? (onOffSwing > 0 ? `+${onOffSwing.toFixed(1)}` : onOffSwing.toFixed(1)) : "N/A";
 
   return (
-    <div className="space-y-8 pb-16 animate-in fade-in duration-500 max-w-5xl mx-auto px-4">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      className="space-y-8 pb-16 max-w-5xl mx-auto px-4"
+    >
       
       <div>
-        <Link to={`/${sport}/players`} className="group inline-flex items-center gap-2 text-[10px] font-black text-slate-500 hover:text-white transition-all uppercase tracking-[0.2em] w-max">
+        <Link to={`/${sport}/players`} className="group inline-flex items-center gap-2 text-[9px] font-black text-slate-600 hover:text-cyan-400 transition-all duration-300 uppercase tracking-[0.25em] w-max">
           <ArrowLeft className="h-3.5 w-3.5 group-hover:-translate-x-1 transition-transform" /> Back to Roster
         </Link>
       </div>
 
-      {/* ═══════════════════ PLAYER HERO CARD ═══════════════════ */}
-      <div className="bg-[#1a1a1a] rounded-[1.5rem] overflow-hidden shadow-2xl relative border border-white/5">
+      {/* PLAYER HERO CARD */}
+      <div className="bg-white/[0.02] backdrop-blur-3xl rounded-[2rem] overflow-hidden shadow-[0_0_80px_rgba(0,0,0,0.3),inset_0_1px_1px_rgba(255,255,255,0.06)] relative border border-white/[0.05]">
         
-        {/* Glow temático superior */}
-        <div className="absolute -right-20 -top-20 w-[400px] h-[400px] rounded-full blur-[100px] opacity-25 pointer-events-none" style={{ backgroundColor: themeColor }} />
+        {/* Theme glow */}
+        <div className="absolute -right-20 -top-20 w-[500px] h-[500px] rounded-full blur-[150px] opacity-20 pointer-events-none" style={{ backgroundColor: themeColor }} />
+        <div className="absolute -left-20 -bottom-20 w-[300px] h-[300px] rounded-full blur-[120px] opacity-10 pointer-events-none" style={{ backgroundColor: themeColor }} />
 
-        {/* Marca de agua gigante */}
-        <div className="absolute right-[-10%] top-1/2 -translate-y-1/2 w-[600px] h-[600px] opacity-[0.85] pointer-events-none flex items-center justify-end z-0">
-          <img src={logoUrl} alt="Team Logo" className="w-full h-full object-contain mix-blend-overlay drop-shadow-[0_10px_30px_rgba(0,0,0,0.8)]" />
+        {/* Giant watermark */}
+        <div className="absolute right-[-10%] top-1/2 -translate-y-1/2 w-[600px] h-[600px] opacity-[0.06] pointer-events-none flex items-center justify-end z-0">
+          <img src={logoUrl} alt="Team Logo" className="w-full h-full object-contain" />
         </div>
+
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent to-transparent" style={{ backgroundImage: `linear-gradient(90deg, transparent, ${themeColor}40, transparent)` }} />
 
         <div className="flex flex-col md:flex-row relative z-10">
           
-          {/* Lado Izquierdo: Foto del Jugador */}
-          <div className="w-full md:w-5/12 bg-gradient-to-tr from-[#111] to-[#1c1c1c]/90 flex items-end justify-center pt-10 relative overflow-hidden border-r border-white/5 backdrop-blur-sm">
+          {/* Photo */}
+          <div className="w-full md:w-5/12 bg-gradient-to-tr from-[#030712] to-[#0a0f18]/90 flex items-end justify-center pt-10 relative overflow-hidden border-r border-white/[0.04] backdrop-blur-sm">
             <div className="absolute bottom-0 w-3/4 h-8 bg-black blur-2xl rounded-full" />
             <img 
               src={player.imageUrl} 
               alt={player.name} 
-              className="w-[90%] h-auto object-contain object-bottom drop-shadow-[0_20px_20px_rgba(0,0,0,0.8)] relative z-10" 
+              className="w-[90%] h-auto object-contain object-bottom drop-shadow-[0_20px_30px_rgba(0,0,0,0.9)] relative z-10" 
               onError={(e) => { e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(player.name)}&background=0f172a&color=fff&size=512`; }}
             />
           </div>
 
-          {/* Lado Derecho: Biografía y Botón */}
-          <div className="w-full md:w-7/12 p-8 md:p-12 flex flex-col justify-center bg-[#1a1a1a]/70 backdrop-blur-md">
+          {/* Bio */}
+          <div className="w-full md:w-7/12 p-8 md:p-12 flex flex-col justify-center">
             <div className="mb-4">
-              <h2 className="text-[#a0a0a0] text-xl md:text-2xl font-light uppercase tracking-widest leading-none mb-1">{fName}</h2>
-              <h1 className="text-white text-4xl md:text-5xl font-bold uppercase tracking-tight leading-none">{lName}</h1>
+              <h2 className="text-slate-500 text-xl md:text-2xl font-light uppercase tracking-[0.15em] leading-none mb-1">{fName}</h2>
+              <h1 className="text-transparent bg-clip-text bg-gradient-to-br from-white to-white/60 text-4xl md:text-5xl font-black uppercase tracking-tight leading-none">{lName}</h1>
             </div>
 
             <div className="flex items-center gap-3 mb-8">
-              <div className="h-6 w-6 bg-white rounded-full flex items-center justify-center p-1 shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+              <div className="h-7 w-7 bg-white rounded-full flex items-center justify-center p-1 shadow-[0_0_20px_rgba(255,255,255,0.08)]">
                 <img src={logoUrl} alt={player.teamId} className="w-full h-full object-contain" />
               </div>
-              <span className="text-sm font-bold text-[#d0d0d0]">{player.teamName}</span>
-              <span className="text-[#666] font-black mb-1">•</span>
-              <span className="text-sm font-bold text-[#d0d0d0]">{position} {jersey}</span>
+              <span className="text-sm font-bold text-white/80">{player.teamName}</span>
+              <span className="text-slate-700 font-black">•</span>
+              <span className="text-sm font-bold text-white/80">{position} {jersey}</span>
             </div>
 
             <div className="space-y-3 mb-8">
-              <div className="grid grid-cols-[100px_1fr] items-center">
-                <span className="text-xs font-bold text-[#777] uppercase tracking-wider">HT/WT</span>
-                <span className="text-sm font-bold text-white flex items-center gap-2">
-                  {isDeepDataLoading ? <Loader2 className="h-3 w-3 animate-spin text-[#777]" /> : `${bio?.ht || "-"}, ${bio?.wt ? bio.wt + ' lbs' : "-"}`}
-                </span>
-              </div>
-              <div className="grid grid-cols-[100px_1fr] items-center">
-                <span className="text-xs font-bold text-[#777] uppercase tracking-wider">Birthdate</span>
-                <span className="text-sm font-bold text-white flex items-center gap-2">
-                  {isDeepDataLoading ? <Loader2 className="h-3 w-3 animate-spin text-[#777]" /> : bio?.dob || "-"}
-                </span>
-              </div>
-              <div className="grid grid-cols-[100px_1fr] items-center">
-                <span className="text-xs font-bold text-[#777] uppercase tracking-wider">College</span>
-                <span className="text-sm font-bold text-white flex items-center gap-2">
-                  {isDeepDataLoading ? <Loader2 className="h-3 w-3 animate-spin text-[#777]" /> : bio?.school || "-"}
-                </span>
-              </div>
+              {[
+                { label: "HT/WT", value: isDeepDataLoading ? null : `${bio?.ht || "-"}, ${bio?.wt ? bio.wt + ' lbs' : "-"}` },
+                { label: "Birthdate", value: isDeepDataLoading ? null : bio?.dob || "-" },
+                { label: "College", value: isDeepDataLoading ? null : bio?.school || "-" },
+              ].map((row, i) => (
+                <div key={i} className="grid grid-cols-[100px_1fr] items-center">
+                  <span className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em]">{row.label}</span>
+                  <span className="text-sm font-bold text-white flex items-center gap-2">
+                    {row.value === null ? <Loader2 className="h-3 w-3 animate-spin text-slate-700" /> : row.value}
+                  </span>
+                </div>
+              ))}
             </div>
 
-            {/* 🚀 AÑADIDO: Botón de Favorito Dinámico */}
             <button 
               onClick={() => toggleFavorite({
                 id: player.id, type: 'player', name: player.name, 
                 subtitle: player.teamId, imageUrl: player.imageUrl, url: `/nba/players/${player.id}`
               })}
-              className="w-40 font-bold py-2.5 rounded-full transition-all shadow-[0_0_15px_rgba(0,0,0,0.3)] hover:brightness-110 hover:scale-105 flex items-center justify-center gap-2"
+              className="w-40 font-black py-2.5 rounded-full transition-all duration-300 shadow-[0_0_20px_rgba(0,0,0,0.3)] hover:brightness-110 hover:scale-105 flex items-center justify-center gap-2 text-sm"
               style={{ 
-                backgroundColor: isFav ? '#111' : themeColor,
+                backgroundColor: isFav ? 'transparent' : themeColor,
                 color: isFav ? themeColor : '#fff',
-                border: isFav ? `1px solid ${themeColor}` : 'none'
+                border: isFav ? `2px solid ${themeColor}` : '2px solid transparent',
+                boxShadow: isFav ? 'none' : `0 0 25px ${themeColor}30`
               }}
             >
               <Star className={`w-4 h-4 ${isFav ? 'fill-current' : ''}`} />
@@ -318,102 +319,119 @@ export default function NBAPlayerProfile() {
           </div>
         </div>
 
-        {/* ════ BARRA DE ESTADÍSTICAS INFERIOR ════ */}
-        <div className="bg-[#121212] border-t border-[#2a2a2a] relative z-10">
-          <div className="bg-black py-1.5 border-b border-[#2a2a2a] text-center">
-            <h3 className="text-[10px] font-bold uppercase tracking-widest text-white">2025-26 Regular Season Stats</h3>
+        {/* STAT BAR */}
+        <div className="bg-[#030712]/80 border-t border-white/[0.04] relative z-10">
+          <div className="bg-black/40 py-1.5 border-b border-white/[0.04] text-center">
+            <h3 className="text-[9px] font-black uppercase tracking-[0.3em] text-white/70">2025-26 Regular Season Stats</h3>
           </div>
-          <div className="grid grid-cols-4 py-4 md:py-5 px-4 divide-x divide-[#2a2a2a]">
-            <div className="flex flex-col items-center">
-              <span className="text-[10px] font-bold text-[#888] uppercase tracking-widest mb-1">PTS</span>
-              <span className="text-2xl md:text-3xl font-bold text-white leading-none">{s.ppg.toFixed(1)}</span>
-              <span className="text-[8px] font-black uppercase tracking-widest mt-1.5" style={{ color: themeColor }}>{getRank("ppg")}</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <span className="text-[10px] font-bold text-[#888] uppercase tracking-widest mb-1">REB</span>
-              <span className="text-2xl md:text-3xl font-bold text-white leading-none">{s.rpg.toFixed(1)}</span>
-              <span className="text-[8px] font-black uppercase tracking-widest mt-1.5" style={{ color: themeColor }}>{getRank("rpg")}</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <span className="text-[10px] font-bold text-[#888] uppercase tracking-widest mb-1">AST</span>
-              <span className="text-2xl md:text-3xl font-bold text-white leading-none">{s.apg.toFixed(1)}</span>
-              <span className="text-[8px] font-black uppercase tracking-widest mt-1.5" style={{ color: themeColor }}>{getRank("apg")}</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <span className="text-[10px] font-bold text-[#888] uppercase tracking-widest mb-1">FG%</span>
-              <span className="text-2xl md:text-3xl font-bold text-white leading-none">{s.fgPct.toFixed(1)}</span>
-              <span className="text-[8px] font-black uppercase tracking-widest mt-1.5" style={{ color: themeColor }}>{getRank("fgPct")}</span>
-            </div>
+          <div className="grid grid-cols-4 py-4 md:py-5 px-4 divide-x divide-white/[0.04]">
+            {[
+              { label: "PTS", val: s.ppg.toFixed(1), rank: getRank("ppg") },
+              { label: "REB", val: s.rpg.toFixed(1), rank: getRank("rpg") },
+              { label: "AST", val: s.apg.toFixed(1), rank: getRank("apg") },
+              { label: "FG%", val: s.fgPct.toFixed(1), rank: getRank("fgPct") },
+            ].map((stat, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 + i * 0.1, duration: 0.4 }}
+                className="flex flex-col items-center"
+              >
+                <span className="text-[9px] font-black text-slate-600 uppercase tracking-[0.25em] mb-1">{stat.label}</span>
+                <span className="text-2xl md:text-3xl font-mono font-black text-white leading-none tracking-tighter drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]">{stat.val}</span>
+                <span className="text-[7px] font-black uppercase tracking-[0.2em] mt-1.5" style={{ color: themeColor }}>{stat.rank}</span>
+              </motion.div>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* 🚀 TABS SECUNDARIAS */}
-      <div className="flex flex-wrap justify-center lg:justify-start items-center gap-2 bg-[#0a0f18] p-2 rounded-2xl border border-white/5 w-fit mx-auto lg:mx-0 mt-8 shadow-xl">
-        <button onClick={() => setActiveTab("stats")} className={`px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === "stats" ? 'text-white' : 'text-slate-500 hover:text-white'}`} style={{ backgroundColor: activeTab === "stats" ? `${themeColor}30` : 'transparent', borderColor: activeTab === "stats" ? `${themeColor}50` : 'transparent', borderWidth: '1px' }}>
-          <BarChart3 className="h-4 w-4" style={{ color: activeTab === "stats" ? themeColor : '' }} /> Box Score
-        </button>
-        <button onClick={() => setActiveTab("analytics")} className={`px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === "analytics" ? 'text-white' : 'text-slate-500 hover:text-white'}`} style={{ backgroundColor: activeTab === "analytics" ? `${themeColor}30` : 'transparent', borderColor: activeTab === "analytics" ? `${themeColor}50` : 'transparent', borderWidth: '1px' }}>
-          <Activity className="h-4 w-4" style={{ color: activeTab === "analytics" ? themeColor : '' }} /> Analytics
-        </button>
-        <button onClick={() => setActiveTab("accolades")} className={`px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === "accolades" ? 'text-white' : 'text-slate-500 hover:text-white'}`} style={{ backgroundColor: activeTab === "accolades" ? `${themeColor}30` : 'transparent', borderColor: activeTab === "accolades" ? `${themeColor}50` : 'transparent', borderWidth: '1px' }}>
-          <Trophy className="h-4 w-4" style={{ color: activeTab === "accolades" ? themeColor : '' }} /> Career Accolades
-        </button>
+      {/* TABS */}
+      <div className="flex flex-wrap justify-center lg:justify-start items-center gap-2 bg-white/[0.02] backdrop-blur-xl p-2 rounded-2xl border border-white/[0.05] w-fit mx-auto lg:mx-0 mt-8 shadow-[inset_0_1px_1px_rgba(255,255,255,0.04)]">
+        {[
+          { key: "stats" as const, icon: BarChart3, label: "Box Score" },
+          { key: "analytics" as const, icon: Activity, label: "Analytics" },
+          { key: "accolades" as const, icon: Trophy, label: "Career Accolades" },
+        ].map(tab => (
+          <button
+            key={tab.key}
+            onClick={() => setActiveTab(tab.key)}
+            className={`px-5 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] transition-all duration-300 flex items-center gap-2 border ${
+              activeTab === tab.key ? 'text-white border-white/[0.08] bg-white/[0.04]' : 'text-slate-600 hover:text-white border-transparent'
+            }`}
+            style={activeTab === tab.key ? { backgroundColor: `${themeColor}15`, borderColor: `${themeColor}30` } : {}}
+          >
+            <tab.icon className="h-4 w-4" style={{ color: activeTab === tab.key ? themeColor : '' }} /> {tab.label}
+          </button>
+        ))}
       </div>
 
       {/* TAB CONTENT */}
-      <div className="animate-in slide-in-from-bottom-4 duration-500 relative z-10">
+      <motion.div
+        key={activeTab}
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="relative z-10"
+      >
         
-        {/* TAB 1: STANDARD BOX SCORE */}
+        {/* BOX SCORE */}
         {activeTab === "stats" && (
-          <div className="bg-[#1a1a1a] border border-white/5 rounded-[2rem] p-8 shadow-2xl">
-            <h3 className="text-lg font-black uppercase tracking-[0.2em] text-white flex items-center gap-3 mb-8">
+          <div className="bg-white/[0.02] backdrop-blur-3xl border border-white/[0.05] rounded-[2rem] p-8 shadow-[0_0_40px_rgba(0,0,0,0.2),inset_0_1px_1px_rgba(255,255,255,0.04)]">
+            <h3 className="text-lg font-black uppercase tracking-[0.15em] text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60 flex items-center gap-3 mb-8">
               <BarChart3 className="h-5 w-5" style={{ color: themeColor }} /> Regular Season Totals & Averages
             </h3>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               {[
                 { label: "MIN", val: s.mpg }, { label: "PTS", val: s.ppg.toFixed(1) }, { label: "REB", val: s.rpg.toFixed(1) }, { label: "AST", val: s.apg.toFixed(1) }, { label: "STL", val: s.spg },
                 { label: "BLK", val: s.bpg }, { label: "TOV", val: s.topg }, { label: "FG%", val: s.fgPct, suf: "%" }, { label: "3PT%", val: s.threePct, suf: "%" }, { label: "FT%", val: s.ftPct, suf: "%" },
               ].map((stat, i) => (
-                <div key={i} className="flex flex-col bg-[#111] border border-white/5 p-4 rounded-2xl items-center text-center hover:border-white/10 transition-colors shadow-inner">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-[#777] mb-2">{stat.label}</span>
-                  <span className="text-2xl font-mono font-bold text-white">{stat.val}{stat.suf}</span>
-                </div>
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05, duration: 0.3 }}
+                  className="flex flex-col bg-white/[0.02] border border-white/[0.04] p-4 rounded-2xl items-center text-center hover:border-white/[0.08] hover:-translate-y-0.5 transition-all duration-300 shadow-[inset_0_1px_1px_rgba(255,255,255,0.03)]"
+                >
+                  <span className="text-[9px] font-black uppercase tracking-[0.25em] text-slate-600 mb-2">{stat.label}</span>
+                  <span className="text-2xl font-mono font-black text-white tracking-tighter drop-shadow-[0_0_8px_rgba(255,255,255,0.05)]">{stat.val}{stat.suf}</span>
+                </motion.div>
               ))}
             </div>
           </div>
         )}
 
-        {/* TAB 2: DEEP ANALYTICS */}
+        {/* ANALYTICS */}
         {activeTab === "analytics" && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             
-            <div className="bg-[#1a1a1a] border border-white/5 rounded-[2rem] p-6 shadow-2xl relative overflow-hidden">
-               <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full blur-[80px] pointer-events-none opacity-30" style={{ backgroundColor: themeColor }} />
-               <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-center mb-4">Percentile Analytics</h3>
+            <div className="bg-white/[0.02] backdrop-blur-3xl border border-white/[0.05] rounded-[2rem] p-6 shadow-[0_0_40px_rgba(0,0,0,0.2),inset_0_1px_1px_rgba(255,255,255,0.04)] relative overflow-hidden">
+               <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full blur-[80px] pointer-events-none opacity-20" style={{ backgroundColor: themeColor }} />
+               <h3 className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-500 text-center mb-4">Percentile Analytics</h3>
                <div className="h-[280px] w-full">
                  <ResponsiveContainer width="100%" height="100%">
                     <RadarChart data={radarData} outerRadius="70%">
-                      <PolarGrid stroke="rgba(255,255,255,0.05)" />
-                      <PolarAngleAxis dataKey="stat" tick={{ fill: "#888", fontSize: 9, fontWeight: 800 }} />
+                      <PolarGrid stroke="rgba(255,255,255,0.04)" />
+                      <PolarAngleAxis dataKey="stat" tick={{ fill: "rgba(255,255,255,0.4)", fontSize: 9, fontWeight: 800 }} />
                       <PolarRadiusAxis tick={false} axisLine={false} domain={[0, 100]} />
-                      <RechartsTooltip contentStyle={{ backgroundColor: '#111', border: '1px solid #333', borderRadius: '12px', color: '#fff' }} />
-                      <Radar name={player.name} dataKey="value" stroke={themeColor} fill={themeColor} fillOpacity={0.25} strokeWidth={2.5} dot={{ r: 3, fill: "#111", stroke: themeColor, strokeWidth: 2 }} />
+                      <RechartsTooltip contentStyle={{ backgroundColor: '#030712', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '16px', color: '#fff', fontWeight: 'bold', fontSize: '12px' }} />
+                      <Radar name={player.name} dataKey="value" stroke={themeColor} fill={themeColor} fillOpacity={0.15} strokeWidth={3} dot={{ r: 3, fill: "#030712", stroke: themeColor, strokeWidth: 2 }} />
                     </RadarChart>
                   </ResponsiveContainer>
                </div>
             </div>
 
-            <div className="bg-[#1a1a1a] border border-white/5 rounded-[2rem] p-8 shadow-2xl flex flex-col justify-center relative">
+            <div className="bg-white/[0.02] backdrop-blur-3xl border border-white/[0.05] rounded-[2rem] p-8 shadow-[0_0_40px_rgba(0,0,0,0.2),inset_0_1px_1px_rgba(255,255,255,0.04)] flex flex-col justify-center relative">
                {isDeepDataLoading && (
-                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#1a1a1a]/80 backdrop-blur-sm z-20 rounded-[2rem]">
-                   <Loader2 className="h-8 w-8 animate-spin text-cyan-500" />
+                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#030712]/80 backdrop-blur-sm z-20 rounded-[2rem]">
+                   <Loader2 className="h-8 w-8 animate-spin text-cyan-400" />
                  </div>
                )}
-               <h3 className="text-lg font-black uppercase tracking-[0.2em] text-white flex items-center gap-3 mb-8">
+               <h3 className="text-lg font-black uppercase tracking-[0.15em] text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60 flex items-center gap-3 mb-8">
                  <Zap className="h-5 w-5" style={{ color: themeColor }} /> Advanced Impact Metrics
                </h3>
-               <div className="grid grid-cols-2 gap-5">
+               <div className="grid grid-cols-2 gap-4">
                   {[
                     { label: "Offensive Rtg", val: oRtg, suf: "", icon: <Target className="h-4 w-4 text-orange-400"/>, rank: null },
                     { label: "Defensive Rtg", val: dRtg.toFixed(1), suf: "", icon: <Shield className="h-4 w-4 text-emerald-400"/>, rank: null },
@@ -422,61 +440,73 @@ export default function NBAPlayerProfile() {
                     { label: "Player Eff. (PER)", val: a.per.toFixed(1), suf: "", icon: <Crown className="h-4 w-4 text-amber-400"/>, rank: getAdvRank("per") },
                     { label: "Impact (PIE)", val: a.pie.toFixed(1), suf: "%", icon: <BarChart3 className="h-4 w-4 text-blue-400"/>, rank: getAdvRank("pie") },
                   ].map((m, i) => (
-                    <div key={i} className="bg-[#111] border border-white/5 rounded-2xl p-4 md:p-5 hover:border-white/10 transition-colors shadow-inner flex flex-col justify-center relative">
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: i * 0.08, duration: 0.3 }}
+                      className="bg-white/[0.02] border border-white/[0.04] rounded-2xl p-4 md:p-5 hover:border-white/[0.08] hover:-translate-y-0.5 transition-all duration-300 shadow-[inset_0_1px_1px_rgba(255,255,255,0.03)] flex flex-col justify-center relative"
+                    >
                       <div className="flex items-center gap-2 mb-2">
                         {m.icon}
-                        <span className="text-[9px] font-black text-[#777] uppercase tracking-widest">{m.label}</span>
+                        <span className="text-[8px] font-black text-slate-600 uppercase tracking-[0.25em]">{m.label}</span>
                       </div>
                       <div className="flex items-end gap-2">
-                         <span className="text-2xl md:text-3xl font-mono font-black text-white leading-none">{m.val}<span className="text-base md:text-lg text-[#666] font-sans ml-1">{m.suf}</span></span>
+                         <span className="text-2xl md:text-3xl font-mono font-black text-white leading-none tracking-tighter drop-shadow-[0_0_8px_rgba(255,255,255,0.05)]">{m.val}<span className="text-base md:text-lg text-slate-700 font-sans ml-1">{m.suf}</span></span>
                       </div>
                       {m.rank && (
-                        <div className="absolute bottom-4 right-4 text-[8px] font-black uppercase tracking-widest" style={{ color: themeColor }}>
+                        <div className="absolute bottom-4 right-4 text-[7px] font-black uppercase tracking-[0.2em]" style={{ color: themeColor }}>
                           {m.rank}
                         </div>
                       )}
-                    </div>
+                    </motion.div>
                   ))}
                </div>
             </div>
           </div>
         )}
 
-        {/* 🚀 TAB 3: CAREER ACCOLADES */}
+        {/* CAREER ACCOLADES */}
         {activeTab === "accolades" && (
-          <div className="bg-[#1a1a1a] border border-white/5 rounded-[2rem] p-8 shadow-2xl relative overflow-hidden min-h-[300px]">
-            <Trophy className="absolute -bottom-10 -right-10 h-60 w-60 text-white/[0.03] pointer-events-none" />
+          <div className="bg-white/[0.02] backdrop-blur-3xl border border-white/[0.05] rounded-[2rem] p-8 shadow-[0_0_40px_rgba(0,0,0,0.2),inset_0_1px_1px_rgba(255,255,255,0.04)] relative overflow-hidden min-h-[300px]">
+            <Trophy className="absolute -bottom-10 -right-10 h-60 w-60 text-white/[0.02] pointer-events-none" />
             
             {isDeepDataLoading ? (
                <div className="absolute inset-0 flex flex-col items-center justify-center z-20">
-                 <Loader2 className="h-8 w-8 animate-spin text-amber-500 mb-4" />
-                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-400">Verifying NBA History...</p>
+                 <Loader2 className="h-8 w-8 animate-spin text-amber-400 mb-4" />
+                 <p className="text-[9px] font-black uppercase tracking-[0.3em] text-amber-400/70">Verifying NBA History...</p>
                </div>
             ) : (
               <div className="relative z-10">
-                <h3 className="text-lg font-black uppercase tracking-[0.2em] text-white flex items-center gap-3 mb-10">
+                <h3 className="text-lg font-black uppercase tracking-[0.15em] text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60 flex items-center gap-3 mb-10">
                   <Crown className="h-5 w-5" style={{ color: themeColor }} /> Official Major Achievements
                 </h3>
                 
                 {accolades.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {accolades.map((award, i) => (
-                      <div key={i} className="bg-[#111] border border-white/5 rounded-3xl p-6 flex items-center gap-5 hover:border-white/10 transition-colors shadow-inner group">
-                        <div className="p-3 bg-black/50 rounded-2xl border border-white/5 group-hover:scale-110 transition-transform">
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.08, duration: 0.3 }}
+                        className="bg-white/[0.02] border border-white/[0.04] rounded-2xl p-6 flex items-center gap-5 hover:border-white/[0.08] hover:-translate-y-0.5 transition-all duration-300 shadow-[inset_0_1px_1px_rgba(255,255,255,0.03)] group"
+                      >
+                        <div className="p-3 bg-black/30 rounded-2xl border border-white/[0.04] group-hover:scale-110 transition-transform duration-300">
                           {award.icon}
                         </div>
                         <div>
-                          <span className="text-4xl font-black font-mono text-white leading-none">{award.count}<span className="text-xl text-[#666] ml-1 font-sans">x</span></span>
-                          <p className="text-[11px] font-bold text-[#aaa] uppercase tracking-wider mt-1.5 leading-tight">{award.title}</p>
+                          <span className="text-4xl font-black font-mono text-white leading-none tracking-tighter drop-shadow-[0_0_10px_rgba(255,255,255,0.05)]">{award.count}<span className="text-xl text-slate-700 ml-1 font-sans">x</span></span>
+                          <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em] mt-1.5 leading-tight">{award.title}</p>
                         </div>
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-20 flex flex-col items-center justify-center bg-black/20 rounded-3xl border border-dashed border-white/10">
-                    <Award className="h-12 w-12 text-[#444] mb-4" />
-                    <p className="text-[#888] font-bold uppercase tracking-widest text-xs">No major accolades recorded</p>
-                    <p className="text-[#555] text-[10px] mt-2 max-w-sm">This player has not yet received a major award (All-Star, MVP, All-NBA) tracked by the official database.</p>
+                  <div className="text-center py-20 flex flex-col items-center justify-center bg-black/20 rounded-[2rem] border border-dashed border-white/[0.06]">
+                    <Award className="h-12 w-12 text-slate-800 mb-4" />
+                    <p className="text-slate-600 font-bold uppercase tracking-[0.2em] text-xs">No major accolades recorded</p>
+                    <p className="text-slate-700 text-[10px] mt-2 max-w-sm">This player has not yet received a major award tracked by the official database.</p>
                   </div>
                 )}
               </div>
@@ -484,7 +514,7 @@ export default function NBAPlayerProfile() {
           </div>
         )}
 
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
