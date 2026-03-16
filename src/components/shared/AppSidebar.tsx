@@ -10,7 +10,6 @@ export function AppSidebar() {
   const navigate = useNavigate();
   const basePath = `/${sport}`;
 
-  // 🚀 El Ruteo Dinámico corregido
   const navItems = [
     { title: "Dashboard", path: "", icon: LayoutDashboard },
     { title: "Schedule", path: "/schedule", icon: Calendar },
@@ -23,32 +22,39 @@ export function AppSidebar() {
   ];
 
   return (
-    <Sidebar className="bg-[#111] border-r border-[#1f1f1f]">
+    <Sidebar className="bg-sidebar-background/80 backdrop-blur-2xl border-r border-border/50">
       <SidebarHeader className="p-4">
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center gap-2 w-full rounded-xl px-3 py-2.5 hover:bg-[#1a1a1a] transition-colors text-left border border-transparent hover:border-[#2a2a2a]">
+          <DropdownMenuTrigger className="flex items-center gap-3 w-full rounded-xl px-3 py-3 hover:bg-white/[0.03] transition-all duration-300 text-left border border-transparent hover:border-white/[0.06] group">
             <span className="text-xl">{sportConfig.icon}</span>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-white truncate">{sportConfig.name}</p>
-              <p className="text-[10px] text-[#555] font-mono font-bold uppercase tracking-widest">Sports Intel</p>
+              <p className="text-sm font-black tracking-tight text-foreground truncate">{sportConfig.name}</p>
+              <p className="text-[10px] text-muted-foreground font-mono font-bold uppercase tracking-[0.25em]">Intel Hub</p>
             </div>
-            <ChevronDown className="h-4 w-4 text-[#555]" />
+            <ChevronDown className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-48 bg-[#1a1a1a] border-[#2a2a2a]">
+          <DropdownMenuContent align="start" className="w-52 bg-popover/90 backdrop-blur-2xl border-border/50 shadow-2xl">
             {allSports.map((s) => (
-              <DropdownMenuItem key={s.slug} disabled={!s.enabled} onClick={() => s.enabled && navigate(`/${s.slug}`)} className="gap-2 text-white hover:bg-[#222] focus:bg-[#222]">
-                <span>{s.icon}</span><span>{s.name}</span>{!s.enabled && <span className="ml-auto text-[10px] text-[#555]">Soon</span>}
+              <DropdownMenuItem
+                key={s.slug}
+                disabled={!s.enabled}
+                onClick={() => s.enabled && navigate(`/${s.slug}`)}
+                className="gap-3 text-foreground hover:bg-white/[0.04] focus:bg-white/[0.04] rounded-lg transition-colors"
+              >
+                <span>{s.icon}</span>
+                <span className="font-semibold text-sm">{s.name}</span>
+                {!s.enabled && <span className="ml-auto text-[9px] text-muted-foreground font-mono uppercase tracking-widest">Soon</span>}
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarHeader>
 
-      <SidebarSeparator className="bg-[#1f1f1f]" />
+      <SidebarSeparator className="bg-border/30" />
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-[10px] uppercase tracking-[0.2em] text-[#555] font-black px-4">Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground font-extrabold px-5 mb-1">Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {navItems.map((item) => {
@@ -60,8 +66,16 @@ export function AppSidebar() {
                 return (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild isActive={isActive}>
-                      <NavLink to={fullPath} end={item.path === ""} className={`gap-3 rounded-xl mx-2 px-3 py-2.5 transition-all duration-200 ${isActive ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 shadow-[0_0_12px_rgba(6,182,212,0.1)]' : 'text-[#888] hover:text-white hover:bg-[#1a1a1a] border border-transparent'}`}>
-                        <item.icon className="h-4 w-4" />
+                      <NavLink
+                        to={fullPath}
+                        end={item.path === ""}
+                        className={`gap-3 rounded-xl mx-2 px-3 py-2.5 transition-all duration-300 ease-out ${
+                          isActive
+                            ? 'bg-primary/[0.08] text-primary border border-primary/20 shadow-[0_0_20px_hsl(var(--primary)/0.08),inset_0_1px_1px_rgba(255,255,255,0.04)]'
+                            : 'text-muted-foreground hover:text-foreground hover:bg-white/[0.03] border border-transparent hover:border-white/[0.05]'
+                        }`}
+                      >
+                        <item.icon className={`h-4 w-4 ${isActive ? 'drop-shadow-[0_0_6px_hsl(var(--primary)/0.5)]' : ''}`} />
                         <span className="text-xs font-bold">{item.title}</span>
                       </NavLink>
                     </SidebarMenuButton>
@@ -74,8 +88,8 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="p-4">
-        <div className="rounded-xl bg-[#1a1a1a] border border-[#2a2a2a] p-3">
-          <p className="text-[10px] font-mono font-bold text-[#555] uppercase tracking-widest">Platform v0.2.0</p>
+        <div className="rounded-xl bg-white/[0.02] backdrop-blur-sm border border-white/[0.05] p-3 shadow-[inset_0_1px_1px_rgba(255,255,255,0.03)]">
+          <p className="text-[10px] font-mono font-bold text-muted-foreground uppercase tracking-[0.25em]">Platform v0.2.0</p>
         </div>
       </SidebarFooter>
     </Sidebar>
