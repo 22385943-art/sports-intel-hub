@@ -35,7 +35,6 @@ import ComingSoon from "@/pages/shared/ComingSoon";
 
 function SportRoutes() {
   const { sport, sportConfig } = useSport();
-
   if (!sportConfig.enabled) return <ComingSoon />;
 
   switch (sport) {
@@ -82,23 +81,38 @@ function AnimatedContent() {
   const location = useLocation();
 
   return (
-    <div className="flex-1 flex flex-col min-w-0">
+    <div className="flex-1 flex flex-col min-w-0 relative">
       <Header />
-      <main className="flex-1 relative overflow-hidden">
-        {/* Ambient background glows */}
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -top-[300px] -left-[200px] w-[700px] h-[700px] rounded-full bg-primary/[0.04] blur-[180px]" />
-          <div className="absolute -bottom-[200px] -right-[200px] w-[600px] h-[600px] rounded-full bg-destructive/[0.03] blur-[160px]" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] rounded-full bg-chart-positive/[0.02] blur-[200px]" />
+      <main className="flex-1 relative overflow-x-hidden overflow-y-auto scrollbar-premium">
+        
+        {/* 🚀 MASSIVE VOLUMETRIC LIGHTING & NOISE */}
+        <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden mix-blend-screen">
+          <div className="absolute inset-0 bg-noise opacity-50 mix-blend-overlay z-10" />
+          <motion.div 
+            animate={{ scale: [1, 1.1, 1], opacity: [0.15, 0.25, 0.15] }} 
+            transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -top-[400px] -left-[200px] w-[1000px] h-[1000px] rounded-full bg-cyan-900/[0.15] blur-[150px]" 
+          />
+          <motion.div 
+            animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.2, 0.1] }} 
+            transition={{ duration: 20, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+            className="absolute top-[20%] right-[-400px] w-[900px] h-[900px] rounded-full bg-emerald-900/[0.12] blur-[180px]" 
+          />
+          <motion.div 
+            animate={{ scale: [1, 1.15, 1], opacity: [0.1, 0.2, 0.1] }} 
+            transition={{ duration: 18, repeat: Infinity, ease: "easeInOut", delay: 5 }}
+            className="absolute -bottom-[300px] left-[10%] w-[1000px] h-[1000px] rounded-full bg-rose-900/[0.12] blur-[160px]" 
+          />
         </div>
+
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="relative z-10 p-6 lg:p-8"
+            initial={{ opacity: 0, y: 20, scale: 0.99 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.99 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            className="relative z-10 p-6 lg:p-10"
           >
             <SportRoutes />
           </motion.div>
@@ -112,7 +126,7 @@ export default function SportLayout() {
   return (
     <SportProvider>
       <SidebarProvider>
-        <div className="min-h-screen flex w-full bg-background">
+        <div className="min-h-screen flex w-full bg-background selection:bg-primary/30 selection:text-primary">
           <AppSidebar />
           <AnimatedContent />
         </div>
