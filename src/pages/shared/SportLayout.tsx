@@ -17,7 +17,7 @@ import NBASchedule from "@/pages/nba/Schedule";
 import NBAGamePreview from "@/pages/nba/GamePreview";
 import NBABoxScore from "@/pages/nba/BoxScore";
 
-// Football pages
+// Football pages 🚀
 import FootballDashboard from "@/pages/football/Dashboard";
 import FootballPlayers from "@/pages/football/Players";
 import FootballPlayerProfile from "@/pages/football/PlayerProfile";
@@ -26,7 +26,7 @@ import FootballTeamProfile from "@/pages/football/TeamProfile";
 import FootballAnalytics from "@/pages/football/Analytics";
 import FootballCompare from "@/pages/football/Compare";
 import FootballStandings from "@/pages/football/Standings";
-import FootballSchedule from "@/pages/football/Schedule";
+import FootballSchedule from "@/pages/football/Schedule"; // <-- Importamos el Schedule real
 
 // Shared
 import Favorites from "@/pages/shared/Favorites";
@@ -65,7 +65,7 @@ function SportRoutes() {
           <Route path="teams" element={<FootballTeams />} />
           <Route path="teams/:id" element={<FootballTeamProfile />} />
           <Route path="standings" element={<FootballStandings />} />
-          <Route path="schedule" element={<FootballSchedule />} />
+          <Route path="schedule" element={<FootballSchedule />} /> {/* <-- Ruta activada */}
           <Route path="analytics" element={<FootballAnalytics />} />
           <Route path="compare" element={<FootballCompare />} />
           <Route path="favorites" element={<Favorites />} />
@@ -81,15 +81,9 @@ export default function SportLayout() {
   return (
     <SportProvider>
       <SidebarProvider>
-        <div className="min-h-screen flex w-full bg-[#030712] relative overflow-hidden">
-          {/* Ambient background glows */}
-          <div className="fixed inset-0 pointer-events-none z-0">
-            <div className="absolute w-[800px] h-[800px] bg-cyan-900/[0.07] rounded-full blur-[200px] -top-[200px] -left-[200px]" />
-            <div className="absolute w-[600px] h-[600px] bg-indigo-900/[0.05] rounded-full blur-[180px] top-1/2 right-[-150px]" />
-            <div className="absolute w-[500px] h-[500px] bg-rose-900/[0.04] rounded-full blur-[160px] bottom-[-100px] left-1/3" />
-          </div>
+        <div className="min-h-screen flex w-full bg-[#0a0f18]">
           <AppSidebar />
-          <div className="flex-1 flex flex-col min-w-0 relative z-10">
+          <div className="flex-1 flex flex-col min-w-0">
             <Header />
             <main className="flex-1 p-6 lg:p-8">
               <SportRoutes />
