@@ -439,13 +439,13 @@ export default function ComparePlayers() {
                       <RadarChart data={radarData} outerRadius="70%">
                         <PolarGrid stroke="rgba(255,255,255,0.06)" strokeDasharray="4 4" />
                         <PolarRadiusAxis angle={90} domain={[0, 100]} tick={false} axisLine={false} />
-                        <PolarAngleAxis dataKey="stat" tick={{ fill: "rgba(255,255,255,0.8)", fontSize: 12, fontWeight: 900, textShadow: "0 0 15px rgba(255,255,255,0.5)" }} />
+                        <PolarAngleAxis dataKey="stat" tick={{ fill: "rgba(255,255,255,0.8)", fontSize: 12, fontWeight: 900 }} />
                         <RechartsTooltip 
                           contentStyle={{ backgroundColor: '#050914', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '20px', color: '#fff', fontWeight: '900', fontSize: '13px', backdropFilter: 'blur(20px)', boxShadow: '0 30px 60px rgba(0,0,0,0.8)' }} 
                           itemStyle={{ padding: '4px 0' }}
                         />
-                        <Radar name={p1.name} dataKey="p1" stroke="#22d3ee" strokeWidth={3.5} fill="#22d3ee" fillOpacity={0.15} dot={{ r: 5, fill: "#030712", stroke: "#22d3ee", strokeWidth: 3 }} activeDot={{ r: 8, fill: "#22d3ee", stroke: "#fff", strokeWidth: 2, shadow: "0 0 20px #22d3ee" }} />
-                        <Radar name={p2.name} dataKey="p2" stroke="#f43f5e" strokeWidth={3.5} fill="#f43f5e" fillOpacity={0.15} dot={{ r: 5, fill: "#030712", stroke: "#f43f5e", strokeWidth: 3 }} activeDot={{ r: 8, fill: "#f43f5e", stroke: "#fff", strokeWidth: 2, shadow: "0 0 20px #f43f5e" }} />
+                        <Radar name={p1.name} dataKey="p1" stroke="#22d3ee" strokeWidth={3.5} fill="#22d3ee" fillOpacity={0.15} dot={{ r: 5, fill: "#030712", stroke: "#22d3ee", strokeWidth: 3 }} activeDot={{ r: 8, fill: "#22d3ee", stroke: "#fff", strokeWidth: 2 }} />
+                        <Radar name={p2.name} dataKey="p2" stroke="#f43f5e" strokeWidth={3.5} fill="#f43f5e" fillOpacity={0.15} dot={{ r: 5, fill: "#030712", stroke: "#f43f5e", strokeWidth: 3 }} activeDot={{ r: 8, fill: "#f43f5e", stroke: "#fff", strokeWidth: 2 }} />
                       </RadarChart>
                     </ResponsiveContainer>
                   </div>
