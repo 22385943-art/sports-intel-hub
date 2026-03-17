@@ -17,6 +17,7 @@ import NBACompare from "@/pages/nba/Compare";
 import NBASchedule from "@/pages/nba/Schedule";
 import NBAGamePreview from "@/pages/nba/GamePreview";
 import NBABoxScore from "@/pages/nba/BoxScore";
+import NBARankings from "@/pages/nba/Rankings"; // 🚀 AÑADIDO
 
 // Football pages
 import FootballDashboard from "@/pages/football/Dashboard";
@@ -52,6 +53,7 @@ function SportRoutes() {
           <Route path="games/:id/boxscore" element={<NBABoxScore />} />
           <Route path="analytics" element={<NBAAnalytics />} />
           <Route path="compare" element={<NBACompare />} />
+          <Route path="rankings" element={<NBARankings />} /> {/* 🚀 AÑADIDO */}
           <Route path="favorites" element={<Favorites />} />
           <Route path="*" element={<Navigate to={`/${sport}`} replace />} />
         </Routes>
