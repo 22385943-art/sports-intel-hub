@@ -6,33 +6,70 @@
 
 @layer base {
   :root {
-    --background: 220 20% 97%;
-    --foreground: 222 47% 11%;
+    /* 🏛️ EXECUTIVE CRISP — Premium Light Mode (Apple / Vercel) */
+    --background: 220 14% 96%;
+    --foreground: 224 71% 4%;
+
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 224 71% 4%;
+
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 187 80% 42%;
+    --popover-foreground: 224 71% 4%;
+
+    --primary: 199 89% 38%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 215 20% 90%;
-    --secondary-foreground: 222 47% 11%;
-    --muted: 215 20% 93%;
-    --muted-foreground: 215 20% 45%;
-    --accent: 215 20% 95%;
-    --accent-foreground: 222 47% 11%;
+
+    --secondary: 220 14% 92%;
+    --secondary-foreground: 224 71% 4%;
+
+    --muted: 220 14% 93%;
+    --muted-foreground: 220 9% 46%;
+
+    --accent: 220 14% 95%;
+    --accent-foreground: 224 71% 4%;
+
     --destructive: 0 72% 50%;
     --destructive-foreground: 0 0% 100%;
-    --border: 215 20% 88%;
-    --input: 215 20% 88%;
-    --ring: 187 80% 42%;
+
+    --border: 220 13% 88%;
+    --input: 220 13% 88%;
+    --ring: 199 89% 38%;
     --radius: 0.75rem;
+
+    /* Chart tokens – Light */
+    --chart-teal: 187 72% 42%;
+    --chart-blue: 217 91% 60%;
+    --chart-gold: 45 93% 47%;
+    --chart-positive: 160 84% 39%;
+    --chart-negative: 0 72% 50%;
+    --chart-muted: 220 9% 76%;
+
+    /* Shadows – Light */
+    --shadow-2xs: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-xs: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 12px -2px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.04);
+    --shadow-lg: 0 12px 24px -4px rgba(0,0,0,0.10), 0 4px 8px -4px rgba(0,0,0,0.06);
+    --shadow-xl: 0 20px 40px -8px rgba(0,0,0,0.12), 0 8px 16px -8px rgba(0,0,0,0.08);
+    --shadow-2xl: 0 32px 64px -12px rgba(0,0,0,0.14);
+
+    /* Sidebar – Light */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 224 71% 4%;
+    --sidebar-primary: 199 89% 38%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 14% 95%;
+    --sidebar-accent-foreground: 224 71% 4%;
+    --sidebar-border: 220 13% 90%;
+    --sidebar-ring: 199 89% 38%;
+
     --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
     --font-mono: 'JetBrains Mono', ui-monospace, monospace;
   }
 
   .dark {
     /* 🚀 THE MIDNIGHT ORACLE ABYSS */
-    --background: 226 71% 4%; /* #030712 - Deepest space black */
+    --background: 226 71% 4%;
     --foreground: 210 40% 98%;
 
     --card: 226 71% 6%;
@@ -41,7 +78,7 @@
     --popover: 226 50% 6%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 191 97% 53%; /* Electric Cyan */
+    --primary: 191 97% 53%;
     --primary-foreground: 226 71% 4%;
 
     --secondary: 215 20% 12%;
@@ -53,18 +90,39 @@
     --accent: 215 20% 10%;
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 346 87% 60%; /* Neon Rose */
+    --destructive: 346 87% 60%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 215 20% 12%;
     --input: 215 20% 12%;
     --ring: 191 97% 53%;
 
-    /* Premium Extended Shadows */
+    /* Chart tokens – Dark */
+    --chart-teal: 187 80% 48%;
+    --chart-blue: 217 91% 60%;
+    --chart-gold: 45 93% 55%;
+    --chart-positive: 160 84% 45%;
+    --chart-negative: 346 87% 60%;
+    --chart-muted: 215 20% 25%;
+
+    /* Shadows – Dark (deep volumetric) */
+    --shadow-2xs: 0 1px 2px rgba(0,0,0,0.3);
+    --shadow-xs: 0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
+    --shadow-sm: 0 2px 6px rgba(0,0,0,0.5);
     --shadow-md: 0 8px 16px -4px rgba(0,0,0,0.8), 0 4px 8px -4px rgba(0,0,0,0.8);
     --shadow-lg: 0 20px 30px -5px rgba(0,0,0,0.9), 0 10px 15px -6px rgba(0,0,0,0.9);
     --shadow-xl: 0 30px 50px -10px rgba(0,0,0,1), 0 15px 20px -10px rgba(0,0,0,1);
     --shadow-2xl: 0 50px 100px -20px rgba(0,0,0,1);
+
+    /* Sidebar – Dark */
+    --sidebar-background: 226 71% 5%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 191 97% 53%;
+    --sidebar-primary-foreground: 226 71% 4%;
+    --sidebar-accent: 215 20% 10%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 215 20% 12%;
+    --sidebar-ring: 191 97% 53%;
   }
 }
 
@@ -72,20 +130,28 @@
   * {
     @apply border-border;
   }
+
+  /* Smooth theme transition on everything */
+  html {
+    transition: background-color 0.4s ease, color 0.3s ease;
+  }
+
   body {
     @apply bg-background text-foreground font-sans antialiased selection:bg-primary/30 selection:text-primary;
     font-family: 'Inter', system-ui, sans-serif;
   }
+
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Inter', system-ui, sans-serif;
     @apply font-black tracking-tighter;
   }
+
   code, pre, .font-mono {
     font-family: 'JetBrains Mono', monospace;
   }
 }
 
-/* 🚀 TERMINAL NOISE TEXTURE (High-End Dashboard feel) */
+/* 🚀 TERMINAL NOISE TEXTURE */
 .bg-noise {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
   pointer-events: none;
@@ -100,7 +166,7 @@
   .scrollbar-none::-webkit-scrollbar {
     display: none;
   }
-  
+
   .scrollbar-premium::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -113,22 +179,55 @@
     border-radius: 10px;
   }
   .scrollbar-premium::-webkit-scrollbar-thumb:hover {
-    background: rgba(34, 211, 238, 0.4);
+    background: hsl(191 97% 53% / 0.4);
   }
 }
 
+/* Global scrollbar – dark mode tuned */
+.dark ::-webkit-scrollbar,
+:root.dark ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.dark ::-webkit-scrollbar-track,
+:root.dark ::-webkit-scrollbar-track {
+  background: hsl(226 71% 4%);
+}
+.dark ::-webkit-scrollbar-thumb,
+:root.dark ::-webkit-scrollbar-thumb {
+  background: hsl(215 20% 16%);
+  border-radius: 999px;
+  border: 2px solid hsl(226 71% 4%);
+}
+.dark ::-webkit-scrollbar-thumb:hover,
+:root.dark ::-webkit-scrollbar-thumb:hover {
+  background: hsl(191 97% 53% / 0.5);
+}
+
+/* Light mode scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: hsl(226 71% 4%);
+  background: hsl(220 14% 96%);
 }
 ::-webkit-scrollbar-thumb {
-  background: hsl(215 20% 16%);
+  background: hsl(220 13% 82%);
   border-radius: 999px;
-  border: 2px solid hsl(226 71% 4%);
+  border: 2px solid hsl(220 14% 96%);
 }
 ::-webkit-scrollbar-thumb:hover {
+  background: hsl(199 89% 38% / 0.5);
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: hsl(226 71% 4%);
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: hsl(215 20% 16%);
+  border: 2px solid hsl(226 71% 4%);
+}
+.dark ::-webkit-scrollbar-thumb:hover {
   background: hsl(191 97% 53% / 0.5);
 }
