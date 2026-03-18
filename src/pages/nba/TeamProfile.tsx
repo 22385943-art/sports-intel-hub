@@ -4,7 +4,7 @@ import { useSport } from "@/contexts/SportContext";
 import { nbaService } from "@/services/sportServiceFactory";
 import { 
   ArrowLeft, Trophy, Shield, Activity, Loader2, Zap, Target, BarChart3, Gauge, 
-  Building2, Briefcase, Crown, History, AlertCircle, Users, UserCheck, Star, Calendar // 🚀 AÑADIDO Calendar
+  Building2, Briefcase, Crown, History, AlertCircle, Users, UserCheck, Star, Calendar
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -18,7 +18,7 @@ const ENRICHED_DATA: Record<string, any> = {
   "Mark Daigneault": { img: "/mark_daigneault.jpg" },
 };
 
-const getAvatarUrl = (name: string) => `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0f172a&color=fff&size=256&font-weight=bold`;
+const getAvatarUrl = (name: string) => `https://ui-avatars.com/api/?name=${encodeURIComponent(name || "Unknown")}&background=0f172a&color=fff&size=256&font-weight=bold`;
 
 const convertHeightToCm = (heightStr?: string) => {
   if (!heightStr || !heightStr.includes('-')) return "-";
@@ -61,9 +61,8 @@ export default function NBATeamProfile() {
   const [teamDetails, setTeamDetails] = useState<any>(null); 
   const [bioRoster, setBioRoster] = useState<any[]>([]);
   const [coaches, setCoaches] = useState<any[]>([]);
-  const [schedule, setSchedule] = useState<any[]>([]); // 🚀 NUEVO ESTADO SCHEDULE
+  const [schedule, setSchedule] = useState<any[]>([]); 
   
-  // 🚀 AÑADIDA LA PESTAÑA SCHEDULE
   const [activeTab, setActiveTab] = useState<"roster" | "coaches" | "schedule" | "analytics" | "legacy">("roster");
 
   const { toggleFavorite, isFavorite } = useFavorites();
@@ -84,24 +83,23 @@ export default function NBATeamProfile() {
       setAllTeams(teams);
       setAllLeaguePlayers(players);
       
-      const foundTeam = teams.find(t => t.id === id || t.abbreviation === id);
+      const foundTeam = teams.find(t => String(t.id) === String(id) || t.abbreviation === id);
       setTeam(foundTeam || null);
       
       if (foundTeam) {
         setIsBaseLoading(false); 
-        
         setIsDeepDataLoading(true);
         Promise.all([
           nbaService.getTeamLineups(foundTeam.id),
           nbaService.getTeamDetails(foundTeam.id),
           nbaService.getTeamRosterAndCoaches(foundTeam.id),
-          nbaService.getTeamSchedule(foundTeam.id) // 🚀 LLAMADA A LA API DE SCHEDULE
+          nbaService.getTeamSchedule(foundTeam.id)
         ]).then(([lineups, details, bioData, sched]) => {
           setRealLineups(lineups || []);
           setTeamDetails(details || null);
           setBioRoster(bioData.players || []);
           setCoaches(bioData.coaches || []);
-          setSchedule(sched || []); // Guardamos el calendario
+          setSchedule(sched || []);
           setIsDeepDataLoading(false);
         }).catch(() => setIsDeepDataLoading(false));
       } else {
@@ -112,8 +110,9 @@ export default function NBATeamProfile() {
 
   const sortedCoaches = useMemo(() => {
     const getRank = (c: any) => {
-      if (c.COACH_TYPE === "Head Coach") return 0;
-      const isEnriched = !!ENRICHED_DATA[c.COACH_NAME];
+      if (c.type === "Head Coach" || c.COACH_TYPE === "Head Coach") return 0;
+      const name = c.name || c.COACH_NAME || "";
+      const isEnriched = !!ENRICHED_DATA[name];
       if (isEnriched) return 1;
       return 2;
     };
@@ -121,7 +120,9 @@ export default function NBATeamProfile() {
       const rankA = getRank(a);
       const rankB = getRank(b);
       if (rankA !== rankB) return rankA - rankB;
-      return (a.COACH_NAME || "").localeCompare(b.COACH_NAME || "");
+      const nameA = a.name || a.COACH_NAME || "";
+      const nameB = b.name || b.COACH_NAME || "";
+      return nameA.localeCompare(nameB);
     });
   }, [coaches]);
 
@@ -146,20 +147,31 @@ export default function NBATeamProfile() {
     ];
   }, [team, allTeams]);
 
+  // 🚀 BLINDAJE DE TITANIO PARA NOMBRES EN LINEUPS
+// 🚀 EXTRACTOR INTELIGENTE DE NOMBRES (Arregla a Donovan/Davion Mitchell)
   const parseLineupPlayers = (groupName: string) => {
     if (!groupName) return [];
     const names = groupName.split(" - ");
+    
     return names.map(n => {
-      const cleanName = n.trim(); 
+      const cleanName = n?.trim() || "Unknown"; 
       const parts = cleanName.split(" ");
       const lastName = parts.length > 1 ? parts.slice(1).join(" ") : cleanName;
-      const firstInitial = parts[0][0];
+      const firstInitial = parts[0]?.[0] || "";
 
-      const match = allLeaguePlayers.find(p => 
-        p.name.includes(lastName) && p.name.startsWith(firstInitial)
+      // Buscamos al jugador por Apellido + Inicial, PERO DANDO PRIORIDAD AL EQUIPO ACTUAL
+      let match = allLeaguePlayers.find(p => 
+        p?.name?.includes(lastName) && 
+        p?.name?.startsWith(firstInitial) && 
+        (p?.teamId === team?.abbreviation || String(p?.teamId) === String(team?.id))
       );
 
-      return match ? { id: match.id, name: match.name, imageUrl: nbaService.getImageUrl(match.id) } 
+      // Si por lo que sea no lo encuentra en su equipo (ej: traspaso reciente), busca en toda la liga
+      if (!match) {
+        match = allLeaguePlayers.find(p => p?.name?.includes(lastName) && p?.name?.startsWith(firstInitial));
+      }
+
+      return match ? { id: match.id, name: match.name || "Unknown", imageUrl: nbaService.getImageUrl(match.id) } 
                    : { id: "0", name: cleanName, imageUrl: getAvatarUrl(cleanName) };
     });
   };
@@ -171,7 +183,7 @@ export default function NBATeamProfile() {
     </div>
   );
 
-  if (!team) return <div className="text-white p-10">Franchise not found.</div>;
+  if (!team) return <div className="text-white p-10 font-bold text-center">Franchise not found.</div>;
 
   const winPct = ((team.wins / ((team.wins + team.losses) || 1)) * 100).toFixed(1);
   const isWinning = team.wins >= team.losses;
@@ -221,7 +233,7 @@ export default function NBATeamProfile() {
                 </button>
               </div>
 
-              {!isDeepDataLoading && teamDetails && (
+              {!isDeepDataLoading && teamDetails?.frontOffice && (
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 pt-3 mt-3 border-t border-white/10">
                   <div className="flex items-center gap-2">
                     <Briefcase className="h-3 w-3 text-blue-400" />
@@ -265,7 +277,6 @@ export default function NBATeamProfile() {
         </div>
       </div>
 
-      {/* 🚀 TABS NAVEGACIÓN */}
       <div className="flex flex-wrap items-center gap-2 bg-[#0a0f18] p-2 rounded-3xl border border-white/10 shadow-xl w-fit mx-auto lg:mx-0">
         <button onClick={() => setActiveTab("roster")} className={`px-5 md:px-6 py-2.5 md:py-3 rounded-2xl text-[9px] md:text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === "roster" ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'text-slate-500 hover:text-white'}`}>
           <Users className="h-4 w-4" /> Roster
@@ -299,7 +310,7 @@ export default function NBATeamProfile() {
                     <div className="col-span-4">Player</div>
                     <div className="col-span-1 text-center">No.</div>
                     <div className="col-span-1 text-center">Pos</div>
-                    <div className="col-span-2 text-center">Age / DOB</div>
+                    <div className="col-span-2 text-center">Age</div>
                     <div className="col-span-1 text-center">HT</div>
                     <div className="col-span-1 text-center">WT</div>
                     <div className="col-span-1 text-center">Exp</div>
@@ -307,37 +318,39 @@ export default function NBATeamProfile() {
                   </div>
                   <div className="divide-y divide-white/[0.03]">
                     {bioRoster.map((p, i) => (
-                      <Link key={i} to={`/${sport}/players/${p.PLAYER_ID}`} className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-white/[0.03] transition-colors group items-center">
+                      <Link key={i} to={`/${sport}/players/${p.id}`} className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-white/[0.03] transition-colors group items-center">
                         <div className="col-span-4 flex items-center gap-4">
                           <Avatar className="h-12 w-12 border border-white/[0.08] shadow-lg group-hover:border-emerald-400 transition-colors bg-white">
-                            <AvatarImage src={nbaService.getImageUrl(p.PLAYER_ID)} className="object-cover" />
-                            <AvatarFallback className="bg-slate-800 text-[10px] font-bold text-slate-500">{p.PLAYER.substring(0, 2)}</AvatarFallback>
+                            <AvatarImage src={p.imageUrl} className="object-cover" />
+                            {/* 🚀 BLINDAJE EN ROSTER AVATAR */}
+                            <AvatarFallback className="bg-slate-800 text-[10px] font-bold text-slate-500">
+                              {(p.name || "UN").substring(0, 2).toUpperCase()}
+                            </AvatarFallback>
                           </Avatar>
-                          <span className="font-bold text-white text-sm group-hover:text-emerald-400 transition-colors truncate">{p.PLAYER}</span>
+                          <span className="font-bold text-white text-sm group-hover:text-emerald-400 transition-colors truncate">{p.name || "Unknown Player"}</span>
                         </div>
-                        <div className="col-span-1 text-center font-mono font-black text-slate-300 text-lg">#{p.NUM}</div>
+                        <div className="col-span-1 text-center font-mono font-black text-slate-300 text-lg">#{p.number}</div>
                         <div className="col-span-1 text-center">
-                          <Badge className="bg-white/[0.06] text-slate-400 border-none font-black text-[9px] tracking-wider">{p.POSITION}</Badge>
+                          <Badge className="bg-white/[0.06] text-slate-400 border-none font-black text-[9px] tracking-wider">{p.position}</Badge>
                         </div>
                         <div className="col-span-2 flex flex-col items-center justify-center">
-                          <span className="font-mono font-bold text-white text-sm">{p.AGE}</span>
-                          <span className="text-[9px] font-bold text-slate-500 mt-0.5">{p.BIRTH_DATE}</span>
+                          <span className="font-mono font-bold text-white text-sm">{p.age}</span>
                         </div>
                         <div className="col-span-1 flex flex-col items-center justify-center">
-                          <span className="font-mono font-bold text-slate-300 text-xs">{p.HEIGHT || "-"}</span>
-                          <span className="text-[9px] font-bold text-slate-500 mt-0.5">{convertHeightToCm(p.HEIGHT)}</span>
+                          <span className="font-mono font-bold text-slate-300 text-xs">{p.height || "-"}</span>
+                          <span className="text-[9px] font-bold text-slate-500 mt-0.5">{convertHeightToCm(p.height)}</span>
                         </div>
                         <div className="col-span-1 flex flex-col items-center justify-center">
                           <span className="font-mono font-bold text-slate-300 text-xs">
-                            {p.WEIGHT || "-"} <span className="text-[9px] text-slate-500 font-sans">lbs</span>
+                            {p.weight || "-"} <span className="text-[9px] text-slate-500 font-sans">lbs</span>
                           </span>
-                          <span className="text-[9px] font-bold text-slate-500 mt-0.5">{convertWeightToKg(p.WEIGHT)}</span>
+                          <span className="text-[9px] font-bold text-slate-500 mt-0.5">{convertWeightToKg(p.weight)}</span>
                         </div>
                         <div className="col-span-1 text-center font-mono font-bold text-emerald-400/80 text-sm">
-                          {p.EXP === "R" ? "Rookie" : `${p.EXP} Yrs`}
+                          {p.exp === "R" || p.exp === 0 ? "Rookie" : `${p.exp || '-'} Yrs`}
                         </div>
                         <div className="col-span-1 text-right font-bold text-slate-400 text-xs truncate">
-                          {p.SCHOOL || "-"}
+                          {p.school || "-"}
                         </div>
                       </Link>
                     ))}
@@ -362,16 +375,18 @@ export default function NBATeamProfile() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-8">
                   {sortedCoaches.map((c, i) => {
-                    const customImg = ENRICHED_DATA[c.COACH_NAME]?.img;
-                    const fallbackUrl = getAvatarUrl(c.COACH_NAME);
-                    const imgSrc = customImg ? customImg : `https://cdn.nba.com/headshots/nba/latest/260x190/${c.COACH_ID}.png`;
+                    const nameToUse = c.name || c.COACH_NAME || "Unknown";
+                    const typeToUse = c.type || c.COACH_TYPE || "Coach";
+                    const customImg = ENRICHED_DATA[nameToUse]?.img;
+                    const fallbackUrl = getAvatarUrl(nameToUse);
+                    const imgSrc = customImg ? customImg : fallbackUrl;
                     return (
-                      <div key={c.COACH_ID || i} className="flex flex-col items-center text-center group">
+                      <div key={i} className="flex flex-col items-center text-center group">
                         <div className="h-32 w-32 rounded-full border-2 border-white/10 shadow-lg mb-4 overflow-hidden bg-[#0a0f18] group-hover:border-amber-500/50 transition-colors flex items-center justify-center">
                           <img src={imgSrc} className="w-full h-full object-cover object-top" onError={(e) => { e.currentTarget.src = fallbackUrl; }} />
                         </div>
-                        <h4 className="text-sm font-bold text-white mb-1 group-hover:text-amber-400 transition-colors">{c.COACH_NAME}</h4>
-                        <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">{c.COACH_TYPE}</p>
+                        <h4 className="text-sm font-bold text-white mb-1 group-hover:text-amber-400 transition-colors">{nameToUse}</h4>
+                        <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">{typeToUse}</p>
                       </div>
                     )
                   })}
@@ -381,7 +396,6 @@ export default function NBATeamProfile() {
           </div>
         )}
 
-        {/* 🚀 NUEVA PESTAÑA: SCHEDULE DEL EQUIPO */}
         {activeTab === "schedule" && (
           <div className="bg-[#0a0f18] border border-white/[0.06] rounded-[2rem] p-8 shadow-2xl relative min-h-[400px]">
             {isDeepDataLoading ? (
@@ -399,21 +413,40 @@ export default function NBATeamProfile() {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {schedule.map((g, i) => {
                       const isWin = g.wl === 'W';
-                      const isHome = !g.matchup.includes('@');
-                      const opponent = g.matchup.split(' ')[2];
+                      const opponent = g.opponent || "UNK";
+                      // 🚀 BUSCAMOS EL ID REAL DEL EQUIPO RIVAL PARA QUE NO FALLE EL LOGO
+                      const oppTeam = allTeams.find(t => t.abbreviation === opponent);
+                      const oppId = oppTeam ? oppTeam.id : "0";
                       
+                      const awayId = g.isHome ? oppId : team.id;
+                      const homeId = g.isHome ? team.id : oppId;
+                      const awayAbbr = g.isHome ? opponent : team.abbreviation;
+                      const homeAbbr = g.isHome ? team.abbreviation : opponent;
+                      const awayScore = g.isHome ? g.opponentScore : g.teamScore;
+                      const homeScore = g.isHome ? g.teamScore : g.opponentScore;
+
                       return (
                         <Link 
                           key={i} 
-                          // 🚀 Hacemos trampas mágicas: Le pasamos los datos básicos a BoxScore usando el estado
                           to={`/nba/games/${g.gameId}/boxscore`} 
-                          state={{ game: { gameId: g.gameId, away: isHome ? opponent : team.abbreviation, awayId: "0", home: isHome ? team.abbreviation : opponent, homeId: "0", awayScore: isHome ? 0 : g.pts, homeScore: isHome ? g.pts : 0 } }}
+                          state={{ 
+                            game: { 
+                              gameId: g.gameId, 
+                              away: awayAbbr, 
+                              awayId: awayId, 
+                              home: homeAbbr, 
+                              homeId: homeId, 
+                              awayScore: awayScore, 
+                              homeScore: homeScore,
+                              status: "final" // Fuerza que el boxscore no muestre tiempos en directo
+                            } 
+                          }}
                           className="bg-[#111] border border-white/5 rounded-xl p-4 flex items-center justify-between hover:bg-white/5 transition-colors group"
                         >
                           <div className="flex flex-col gap-1">
                             <span className="text-[10px] font-black text-slate-500">{g.date}</span>
                             <span className="text-sm font-bold text-white flex items-center gap-2">
-                              {isHome ? 'vs' : '@'} <img src={nbaService.getTeamLogoUrl(opponent)} className="w-5 h-5 object-contain" /> {opponent}
+                              {g.isHome ? 'vs' : '@'} <img src={nbaService.getTeamLogoUrl(opponent)} className="w-5 h-5 object-contain" /> {opponent}
                             </span>
                           </div>
                           <div className="flex flex-col items-end gap-1">
@@ -498,25 +531,28 @@ export default function NBATeamProfile() {
                                     <Link key={j} to={p.id !== "0" ? `/${sport}/players/${p.id}` : "#"} className="flex flex-col items-center group/avatar w-16 cursor-pointer">
                                       <Avatar className="h-16 w-16 border-2 border-[#0a0f18] shadow-xl group-hover/avatar:scale-110 group-hover/avatar:border-cyan-400 transition-all bg-white mb-2">
                                         <AvatarImage src={p.imageUrl} className="object-cover" />
-                                        <AvatarFallback className="bg-slate-800 text-xs font-bold text-slate-500">{p.name.substring(0, 2).toUpperCase()}</AvatarFallback>
+                                        {/* 🚀 BLINDAJE EXTREMO EN LINEUP AVATAR */}
+                                        <AvatarFallback className="bg-slate-800 text-xs font-bold text-slate-500">
+                                          {(p.name || "UN").substring(0, 2).toUpperCase()}
+                                        </AvatarFallback>
                                       </Avatar>
                                       <span className="text-[9px] font-bold text-slate-400 text-center leading-tight group-hover/avatar:text-cyan-300">
-                                        {p.name.split(" ").pop()}
+                                        {(p.name || "").split(" ").pop()}
                                       </span>
                                     </Link>
                                   ))}
                                 </div>
                               </div>
-                              <div className="col-span-1 text-center font-mono font-bold text-slate-300 text-base">{Math.round(lu.mins)}</div>
-                              <div className="col-span-1 text-center font-mono font-black text-orange-400 text-base">{lu.offRtg.toFixed(1)}</div>
-                              <div className="col-span-1 text-center font-mono font-black text-emerald-400 text-base">{lu.defRtg.toFixed(1)}</div>
+                              <div className="col-span-1 text-center font-mono font-bold text-slate-300 text-base">{Math.round(lu.min)}</div>
+                              <div className="col-span-1 text-center font-mono font-black text-orange-400 text-base">{lu.offRtg?.toFixed(1) || "-"}</div>
+                              <div className="col-span-1 text-center font-mono font-black text-emerald-400 text-base">{lu.defRtg?.toFixed(1) || "-"}</div>
                               <div className="col-span-1 text-center font-mono font-black">
                                 <Badge className={`border-none text-sm px-3 py-1 ${lu.netRtg > 0 ? 'bg-cyan-500/20 text-cyan-400' : 'bg-rose-500/20 text-rose-400'}`}>
-                                  {lu.netRtg > 0 ? '+' : ''}{lu.netRtg.toFixed(1)}
+                                  {lu.netRtg > 0 ? '+' : ''}{lu.netRtg?.toFixed(1) || "-"}
                                 </Badge>
                               </div>
-                              <div className="col-span-1 text-center font-mono font-bold text-slate-300 text-sm">{lu.tsPct.toFixed(1)}%</div>
-                              <div className="col-span-1 text-center font-mono font-bold text-slate-300 text-sm">{lu.rebPct.toFixed(1)}%</div>
+                              <div className="col-span-1 text-center font-mono font-bold text-slate-300 text-sm">-</div>
+                              <div className="col-span-1 text-center font-mono font-bold text-slate-300 text-sm">-</div>
                             </div>
                           );
                         })}

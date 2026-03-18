@@ -5,7 +5,8 @@ import { nbaService } from "@/services/sportServiceFactory";
 import { ArrowLeft, Loader2, Activity, Target, Zap, Shield, Crown, BarChart3, TrendingUp, Star, Trophy, Award, Users } from "lucide-react";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import type { NBAPlayer } from "@/data/nba/mockData";
-import { useFavorites } from "@/hooks/useFavorites"; // 🚀 AÑADIDO: Hook de Favoritos
+import { useFavorites } from "@/hooks/useFavorites"; 
+import ShotChart from "@/components/ShotChart"; // 🚀 IMPORTACIÓN DEL SHOT CHART
 
 // 🎨 PALETA DE COLORES
 const TEAM_COLORS: Record<string, string> = {
@@ -60,12 +61,12 @@ export default function NBAPlayerProfile() {
   const [bio, setBio] = useState<any>(null);
   const [onOffSwing, setOnOffSwing] = useState<number | null>(null); 
   const [accolades, setAccolades] = useState<any[]>([]); 
+  const [shots, setShots] = useState<any[]>([]); // 🚀 ESTADO DE COORDENADAS
   
   const [isBaseLoading, setIsBaseLoading] = useState(true);
   const [isDeepDataLoading, setIsDeepDataLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"stats" | "analytics" | "accolades">("stats");
+  const [activeTab, setActiveTab] = useState<"stats" | "analytics" | "shotchart" | "accolades">("stats"); // 🚀 AÑADIDA PESTAÑA
 
-  // 🚀 AÑADIDO: Inicializar Favoritos
   const { toggleFavorite, isFavorite } = useFavorites();
   const isFav = player ? isFavorite(player.id, 'player') : false;
 
@@ -100,8 +101,9 @@ export default function NBAPlayerProfile() {
         }
 
         const awardsFetch = fetch(`/nba-api/playerawards?PlayerID=${id}`).then(res => res.json()).catch(() => null);
+        const shotsFetch = nbaService.getPlayerShotChart(id); // 🚀 EXTRAER TIROS
 
-        Promise.all([bioFetch, onOffFetch, awardsFetch]).then(([bioData, onOffData, awardsData]) => {
+        Promise.all([bioFetch, onOffFetch, awardsFetch, shotsFetch]).then(([bioData, onOffData, awardsData, shotData]) => {
           
           if (bioData) {
             try {
@@ -149,6 +151,7 @@ export default function NBAPlayerProfile() {
             } catch (e) { console.error(e); }
           }
           
+          setShots(shotData || []); // 🚀 GUARDAR TIROS
           setIsDeepDataLoading(false);
         });
       } else {
@@ -298,7 +301,7 @@ export default function NBAPlayerProfile() {
               </div>
             </div>
 
-            {/* 🚀 AÑADIDO: Botón de Favorito Dinámico */}
+            {/* Botón de Favorito Dinámico */}
             <button 
               onClick={() => toggleFavorite({
                 id: player.id, type: 'player', name: player.name, 
@@ -356,6 +359,10 @@ export default function NBAPlayerProfile() {
         <button onClick={() => setActiveTab("analytics")} className={`px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === "analytics" ? 'text-white' : 'text-slate-500 hover:text-white'}`} style={{ backgroundColor: activeTab === "analytics" ? `${themeColor}30` : 'transparent', borderColor: activeTab === "analytics" ? `${themeColor}50` : 'transparent', borderWidth: '1px' }}>
           <Activity className="h-4 w-4" style={{ color: activeTab === "analytics" ? themeColor : '' }} /> Analytics
         </button>
+        {/* 🚀 AÑADIDO: BOTÓN SHOT CHART */}
+        <button onClick={() => setActiveTab("shotchart")} className={`px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === "shotchart" ? 'text-white' : 'text-slate-500 hover:text-white'}`} style={{ backgroundColor: activeTab === "shotchart" ? `${themeColor}30` : 'transparent', borderColor: activeTab === "shotchart" ? `${themeColor}50` : 'transparent', borderWidth: '1px' }}>
+          <Target className="h-4 w-4" style={{ color: activeTab === "shotchart" ? themeColor : '' }} /> Shot Chart
+        </button>
         <button onClick={() => setActiveTab("accolades")} className={`px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === "accolades" ? 'text-white' : 'text-slate-500 hover:text-white'}`} style={{ backgroundColor: activeTab === "accolades" ? `${themeColor}30` : 'transparent', borderColor: activeTab === "accolades" ? `${themeColor}50` : 'transparent', borderWidth: '1px' }}>
           <Trophy className="h-4 w-4" style={{ color: activeTab === "accolades" ? themeColor : '' }} /> Career Accolades
         </button>
@@ -364,7 +371,6 @@ export default function NBAPlayerProfile() {
       {/* TAB CONTENT */}
       <div className="animate-in slide-in-from-bottom-4 duration-500 relative z-10">
         
-        {/* TAB 1: STANDARD BOX SCORE */}
         {activeTab === "stats" && (
           <div className="bg-[#1a1a1a] border border-white/5 rounded-[2rem] p-8 shadow-2xl">
             <h3 className="text-lg font-black uppercase tracking-[0.2em] text-white flex items-center gap-3 mb-8">
@@ -384,7 +390,6 @@ export default function NBAPlayerProfile() {
           </div>
         )}
 
-        {/* TAB 2: DEEP ANALYTICS */}
         {activeTab === "analytics" && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             
@@ -442,7 +447,21 @@ export default function NBAPlayerProfile() {
           </div>
         )}
 
-        {/* 🚀 TAB 3: CAREER ACCOLADES */}
+{/* 🚀 TAB 3: SHOT CHART */}
+        {activeTab === "shotchart" && (
+          <div className="bg-[#1a1a1a] border border-white/5 rounded-[2rem] shadow-2xl relative overflow-hidden min-h-[600px]">
+            {isDeepDataLoading ? (
+               <div className="absolute inset-0 flex flex-col items-center justify-center z-20 bg-[#0a0f18]">
+                 <Loader2 className="h-8 w-8 animate-spin text-cyan-500 mb-4" />
+                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-400">Loading Spatial Analytics...</p>
+               </div>
+            ) : (
+               <ShotChart shots={shots} teamAbbr={player.teamId} themeColor={themeColor} />
+            )}
+          </div>
+        )}
+
+        {/* TAB 4: CAREER ACCOLADES */}
         {activeTab === "accolades" && (
           <div className="bg-[#1a1a1a] border border-white/5 rounded-[2rem] p-8 shadow-2xl relative overflow-hidden min-h-[300px]">
             <Trophy className="absolute -bottom-10 -right-10 h-60 w-60 text-white/[0.03] pointer-events-none" />

@@ -35,6 +35,12 @@ const fetchSafeJSON = async (endpoint: string) => {
     throw new Error("All proxies failed for " + endpoint);
 };
 
+const parsePct = (val: number): number => {
+    if (val === undefined || val === null || isNaN(val)) return 0.0;
+    const pct = (val <= 1 && val > 0) || val === 1 ? val * 100 : val;
+    return Number(pct.toFixed(1));
+};
+
 class NBAService implements SportService<NBAPlayer, NBATeam> {
   sport = "nba" as const;
 
@@ -45,7 +51,6 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
   private historicalTeamsCache: Map<string, any[]> = new Map();
   private fetchTeamsPromises: Map<string, Promise<any[]>> = new Map();
 
-  // 🚀 BLINDAJE EXTREMO CONTRA IDs NULOS QUE ROMPIAN LA WEB
   getImageUrl(id: any): string {
     if (id === null || id === undefined) return "https://cdn.nba.com/headshots/nba/latest/260x190/fallback.png";
     const stringId = String(id).trim();
@@ -82,9 +87,10 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
       return Math.min(100, Math.round((below / arr.length) * 100));
   }
 
-  // 🚀 ALGORITMO OFICIAL DE LA NBA PRORRATEADO
   qualifiesForLeaderboard(player: any, metric: string, maxGP: number): boolean {
     const s = player.stats || {};
+    if ((s.gp || 0) < 5) return false; 
+
     const gp = s.gp || 0;
     const safeMaxGP = Math.max(1, maxGP);
     
@@ -126,13 +132,6 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
         const headersBase = dataBase.resultSets[0].headers;
         const rowsBase = dataBase.resultSets[0].rowSet;
 
-        // 🚀 FORMATEADOR DE DECIMALES PUROS DE LA API (Multiplica x100 y retiene 1 decimal real)
-        const parsePct = (val: number) => {
-            if (!val || isNaN(val)) return 0.0;
-            const pct = val <= 1 ? val * 100 : val;
-            return Number(pct.toFixed(1));
-        };
-
         const advMap = new Map();
         if (dataAdv && dataAdv.resultSets[0].rowSet.length > 0) {
             const h = dataAdv.resultSets[0].headers;
@@ -171,7 +170,7 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
 
           const p = {
             id: playerId,
-            name: getString(row, headersBase, "PLAYER_NAME", "Unknown"),
+            name: getString(row, headersBase, "PLAYER_NAME", "Unknown Player"),
             teamId: getString(row, headersBase, "TEAM_ABBREVIATION", "FA"),
             position: "NBA", imageUrl: this.getImageUrl(playerId),
             age: getStat(row, headersBase, "AGE"),
@@ -288,8 +287,6 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
         const headersBase = dataBase.resultSets[0].headers;
         const rowsBase = dataBase.resultSets[0].rowSet;
 
-        const parsePct = (val: number) => val <= 1 ? Number((val * 100).toFixed(1)) : Number(val.toFixed(1));
-
         const advMap = new Map();
         if (dataAdv && dataAdv.resultSets[0].rowSet.length > 0) {
             const h = dataAdv.resultSets[0].headers;
@@ -329,7 +326,7 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
 
         const parsedTeams = rowsBase.map((row: any[]) => {
           const tId = getString(row, headersBase, "TEAM_ID", "0");
-          const name = getString(row, headersBase, "TEAM_NAME", "Unknown");
+          const name = getString(row, headersBase, "TEAM_NAME", "Unknown Team");
           const mascot = name.split(' ').pop() || "";
           const staticTeam = NBA_TEAMS.find(t => t.name === name || t.name.includes(mascot));
 
@@ -356,19 +353,37 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
     return promise;
   }
 
-  // 🚀 REPARADO: Funciones de perfil de equipo rellenadas y blindadas
   async getTeamSchedule(teamId: string): Promise<any[]> { 
     try {
-        const data = await fetchSafeJSON(`/teamgamelog?DateFrom=&DateTo=&LeagueID=00&Season=2025-26&SeasonType=Regular%20Season&TeamID=${teamId}`);
+        const data = await fetchSafeJSON(`/leaguegamefinder?TeamID=${teamId}&PlayerOrTeam=T&Season=2025-26&SeasonType=Regular%20Season`);
         if (!data || !data.resultSets || data.resultSets.length === 0) return [];
         const headers = data.resultSets[0].headers;
-        return data.resultSets[0].rowSet.map((r: any[]) => ({
-            gameId: getString(r, headers, "Game_ID", ""), 
-            date: getString(r, headers, "GAME_DATE", ""),
-            matchup: getString(r, headers, "MATCHUP", ""), 
-            wl: getString(r, headers, "WL", "-"), 
-            pts: getStat(r, headers, "PTS")
-        }));
+        
+        return data.resultSets[0].rowSet.map((r: any[]) => {
+            const matchup = getString(r, headers, "MATCHUP", "UNK vs. UNK");
+            const isHome = !matchup.includes("@");
+            const oppParts = matchup.split(isHome ? "vs." : "@");
+            const opponentStr = oppParts.length > 1 ? String(oppParts[1]).trim().substring(0, 3).toUpperCase() : "UNK";
+
+            const pts = getStat(r, headers, "PTS");
+            const plusMinus = getStat(r, headers, "PLUS_MINUS");
+            const oppPts = pts - plusMinus; 
+
+            return {
+                id: getString(r, headers, "GAME_ID", "0"), 
+                gameId: getString(r, headers, "GAME_ID", "0"), 
+                date: getString(r, headers, "GAME_DATE", "Unknown"),
+                matchup: matchup,
+                opponent: opponentStr,  
+                isHome: isHome,
+                wl: getString(r, headers, "WL", "-"), 
+                result: getString(r, headers, "WL", "-"), 
+                pts: pts,
+                teamScore: pts,
+                opponentScore: oppPts,
+                score: `${pts}-${oppPts}`
+            };
+        });
     } catch(e) { return []; }
   }
   
@@ -377,6 +392,7 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
         const data = await fetchSafeJSON(`/leaguedashlineups?GroupQuantity=5&LastNGames=0&LeagueID=00&MeasureType=Advanced&Month=0&OpponentTeamID=0&PaceAdjust=N&PerMode=PerGame&Period=0&PlusMinus=N&Rank=N&Season=2025-26&SeasonType=Regular%20Season&TeamID=${teamId}`);
         if (!data || !data.resultSets || data.resultSets.length === 0) return [];
         const headers = data.resultSets[0].headers;
+        
         return data.resultSets[0].rowSet.slice(0, 10).map((r: any[]) => ({
             groupId: getString(r, headers, "GROUP_ID", ""), 
             groupName: getString(r, headers, "GROUP_NAME", "Unknown Lineup"),
@@ -396,15 +412,24 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
         const pHeaders = data.resultSets[0].headers;
         const players = data.resultSets[0].rowSet.map((r: any[]) => {
             const pid = getString(r, pHeaders, "PLAYER_ID", "") || getString(r, pHeaders, "PlayerID", "");
-            const rawName = getString(r, pHeaders, "PLAYER", "") || getString(r, pHeaders, "PLAYER_NAME", "");
+            
+            let rawName = "Unknown Player";
+            if (pHeaders.includes("PLAYER")) {
+                rawName = getString(r, pHeaders, "PLAYER", "Unknown Player");
+            } else if (pHeaders.includes("PLAYER_NAME")) {
+                rawName = getString(r, pHeaders, "PLAYER_NAME", "Unknown Player");
+            }
+
             return {
                 id: String(pid), 
-                name: rawName ? String(rawName) : "Unknown Player",
+                name: String(rawName),
                 number: getString(r, pHeaders, "NUM", "0"), 
                 position: getString(r, pHeaders, "POSITION", "-"),
                 height: getString(r, pHeaders, "HEIGHT", "-"), 
                 weight: getString(r, pHeaders, "WEIGHT", "-"),
                 age: getStat(r, pHeaders, "AGE"), 
+                exp: getString(r, pHeaders, "EXP", "0"),
+                school: getString(r, pHeaders, "SCHOOL", "-"),
                 imageUrl: this.getImageUrl(pid)
             };
         });
@@ -457,7 +482,43 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
     } catch(e) { return []; }
   }
 
-  async fetchBoxScore(gameId: string): Promise<any> { return null; }
+  async fetchBoxScore(gameId: string): Promise<any> { 
+    try {
+      const data = await fetchSafeJSON(`/boxscoretraditionalv3?GameID=${gameId}&LeagueID=00&playByPlay=false`);
+      return data?.boxScoreTraditional || null;
+    } catch (error) {
+      console.error("Error al cargar el Box Score:", error);
+      return null;
+    }
+  }
+
+  // 🚀 NUEVO: EXTRACCIÓN DE SHOT CHARTS (Coordenadas X,Y)
+// 🚀 NUEVO: EXTRACCIÓN DE SHOT CHARTS BLINDADA (Busca en el tiempo si no hay datos)
+  async getPlayerShotChart(playerId: string, season: string = "2024-25"): Promise<any[]> {
+    const seasonsToTry = ["2024-25", "2023-24", "2022-23"];
+    
+    for (const s of seasonsToTry) {
+      try {
+        const url = `/shotchartdetail?ContextMeasure=FGA&LastNGames=0&LeagueID=00&Month=0&OpponentTeamID=0&PaceAdjust=N&PerMode=PerGame&Period=0&PlayerID=${playerId}&PlusMinus=N&Position=&Rank=N&RookieYear=&Season=${s}&SeasonSegment=&SeasonType=Regular%20Season&TeamID=0&VsConference=&VsDivision=`;
+        
+        const data = await fetchSafeJSON(url);
+        if (data && data.resultSets && data.resultSets[0].rowSet.length > 0) {
+          const headers = data.resultSets[0].headers;
+          return data.resultSets[0].rowSet.map((r: any[]) => ({
+            x: getStat(r, headers, "LOC_X"),
+            y: getStat(r, headers, "LOC_Y"),
+            made: getStat(r, headers, "SHOT_MADE_FLAG") === 1,
+            zone: getString(r, headers, "SHOT_ZONE_BASIC", ""),
+            type: getString(r, headers, "ACTION_TYPE", "Jump Shot"),
+          }));
+        }
+      } catch (error) {
+        continue; // Si da error 500, intenta con la temporada anterior
+      }
+    }
+    return [];
+  }
+
   async getTeamDetails(teamId: string): Promise<any> { return null; }
   async getPlayerGameLog(playerId: string): Promise<any[]> { return []; }
   async searchRealPlayersWithStats(query: string): Promise<NBAPlayer[]> { return []; }
