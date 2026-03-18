@@ -493,30 +493,26 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
   }
 
   // 🚀 NUEVO: EXTRACCIÓN DE SHOT CHARTS (Coordenadas X,Y)
-// 🚀 NUEVO: EXTRACCIÓN DE SHOT CHARTS BLINDADA (Busca en el tiempo si no hay datos)
-  async getPlayerShotChart(playerId: string, season: string = "2024-25"): Promise<any[]> {
-    const seasonsToTry = ["2024-25", "2023-24", "2022-23"];
-    
-    for (const s of seasonsToTry) {
-      try {
-        const url = `/shotchartdetail?ContextMeasure=FGA&LastNGames=0&LeagueID=00&Month=0&OpponentTeamID=0&PaceAdjust=N&PerMode=PerGame&Period=0&PlayerID=${playerId}&PlusMinus=N&Position=&Rank=N&RookieYear=&Season=${s}&SeasonSegment=&SeasonType=Regular%20Season&TeamID=0&VsConference=&VsDivision=`;
-        
-        const data = await fetchSafeJSON(url);
-        if (data && data.resultSets && data.resultSets[0].rowSet.length > 0) {
-          const headers = data.resultSets[0].headers;
-          return data.resultSets[0].rowSet.map((r: any[]) => ({
-            x: getStat(r, headers, "LOC_X"),
-            y: getStat(r, headers, "LOC_Y"),
-            made: getStat(r, headers, "SHOT_MADE_FLAG") === 1,
-            zone: getString(r, headers, "SHOT_ZONE_BASIC", ""),
-            type: getString(r, headers, "ACTION_TYPE", "Jump Shot"),
-          }));
-        }
-      } catch (error) {
-        continue; // Si da error 500, intenta con la temporada anterior
-      }
+  async getPlayerShotChart(playerId: string, season: string = "2025-26"): Promise<any[]> {
+    try {
+      // ContextMeasure=FGA nos trae TODOS los tiros intentados
+      const url = `/shotchartdetail?ContextMeasure=FGA&LastNGames=0&LeagueID=00&Month=0&OpponentTeamID=0&PaceAdjust=N&PerMode=PerGame&Period=0&PlayerID=${playerId}&PlusMinus=N&Position=&Rank=N&RookieYear=&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&TeamID=0&VsConference=&VsDivision=`;
+      
+      const data = await fetchSafeJSON(url);
+      if (!data || !data.resultSets || data.resultSets.length === 0) return [];
+
+      const headers = data.resultSets[0].headers;
+      return data.resultSets[0].rowSet.map((r: any[]) => ({
+        x: getStat(r, headers, "LOC_X"),
+        y: getStat(r, headers, "LOC_Y"),
+        made: getStat(r, headers, "SHOT_MADE_FLAG") === 1,
+        zone: getString(r, headers, "SHOT_ZONE_BASIC", ""),
+        type: getString(r, headers, "ACTION_TYPE", "Jump Shot"),
+      }));
+    } catch (error) {
+      console.error("Error obteniendo el Shot Chart:", error);
+      return [];
     }
-    return [];
   }
 
   async getTeamDetails(teamId: string): Promise<any> { return null; }

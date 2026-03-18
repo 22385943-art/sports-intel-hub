@@ -447,16 +447,16 @@ export default function NBAPlayerProfile() {
           </div>
         )}
 
-{/* 🚀 TAB 3: SHOT CHART */}
+        {/* 🚀 TAB 3: SHOT CHART */}
         {activeTab === "shotchart" && (
-          <div className="bg-[#1a1a1a] border border-white/5 rounded-[2rem] shadow-2xl relative overflow-hidden min-h-[600px]">
+          <div className="bg-[#1a1a1a] border border-white/5 rounded-[2rem] p-6 shadow-2xl relative overflow-hidden min-h-[400px] flex items-center justify-center">
             {isDeepDataLoading ? (
-               <div className="absolute inset-0 flex flex-col items-center justify-center z-20 bg-[#0a0f18]">
-                 <Loader2 className="h-8 w-8 animate-spin text-cyan-500 mb-4" />
-                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-400">Loading Spatial Analytics...</p>
+               <div className="absolute inset-0 flex flex-col items-center justify-center z-20">
+                 <Loader2 className="h-8 w-8 animate-spin text-rose-500 mb-4" />
+                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-rose-400">Loading Shot Spatial Data...</p>
                </div>
             ) : (
-               <ShotChart shots={shots} teamAbbr={player.teamId} themeColor={themeColor} />
+               <ShotChart shots={shots} />
             )}
           </div>
         )}
