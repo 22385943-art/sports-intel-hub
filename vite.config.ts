@@ -19,7 +19,6 @@ export default defineConfig(({ mode }) => ({
           'Referer': 'https://www.nba.com/',
         }
       },
-      // 🚀 TÚNELES OBLIGATORIOS PARA FÚTBOL
       '/api-espn': {
         target: 'https://site.api.espn.com',
         changeOrigin: true,

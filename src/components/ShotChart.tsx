@@ -1,8 +1,6 @@
-import React, { useMemo, useState, Suspense } from 'react';
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Environment, Html, Text, ContactShadows } from '@react-three/drei';
-import * as THREE from 'three';
-import { Target, Loader2 } from 'lucide-react';
+import React, { useMemo, useRef, useEffect, useState } from 'react';
+import * as d3 from 'd3';
+import { nbaService } from '@/services/sportServiceFactory';
 
 interface Shot {
   x: number;
@@ -14,7 +12,6 @@ interface Shot {
 interface ShotChartProps {
   shots: Shot[];
   teamAbbr?: string;
-  themeColor?: string;
 }
 
 const LEAGUE_AVERAGES: Record<string, number> = {
@@ -27,114 +24,21 @@ const LEAGUE_AVERAGES: Record<string, number> = {
   "Backcourt": 5.0,
 };
 
-// 🚀 LA PISTA DE CRISTAL PROCEDURAL (No necesita descargas)
-function ProceduralCourt({ themeColor }: { themeColor: string }) {
-  return (
-    <group position={[0, -0.5, 0]}>
-      {/* Suelo Principal (Cristal oscuro) */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-        <planeGeometry args={[100, 100]} />
-        <meshStandardMaterial 
-          color="#050914" 
-          roughness={0.1} 
-          metalness={0.8} 
-        />
-      </mesh>
+// Paleta de colores más agresiva para fondo oscuro
+const colorScale = d3.scaleLinear<string>()
+  .domain([-10, -5, 0, 5, 10])
+  .range(["#3b82f6", "#60a5fa", "#ffffff00", "#f59e0b", "#ef4444"])
+  .interpolate(d3.interpolateRgb);
 
-      {/* Línea de Triple (Matemática) */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 10]}>
-        <ringGeometry args={[23.75, 24, 64, 1, 0, Math.PI]} />
-        <meshBasicMaterial color="#ffffff" opacity={0.3} transparent side={THREE.DoubleSide} />
-      </mesh>
+export default function ShotChart({ shots, teamAbbr }: ShotChartProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [hoveredZone, setHoveredZone] = useState<string | null>(null);
 
-      {/* Pintura Central (Glow del equipo) */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, 28]}>
-        <planeGeometry args={[16, 19]} />
-        <meshStandardMaterial color={themeColor} opacity={0.15} transparent />
-      </mesh>
-      
-      {/* Líneas de la Pintura */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 28]}>
-        <planeGeometry args={[16, 19]} />
-        <meshBasicMaterial color="#ffffff" wireframe opacity={0.2} transparent />
-      </mesh>
-
-      {/* Sombras de contacto para hiper-realismo */}
-      <ContactShadows resolution={1024} scale={50} blur={2} opacity={0.5} far={10} color="#000000" />
-    </group>
-  );
-}
-
-// 🚀 LOS HEXÁGONOS DE DATOS
-function ShotHexBin({ position, made, total, pct, diff, zone }: any) {
-  const [hovered, setHovered] = useState(false);
-
-  const getMaterialColor = () => {
-    if (total < 3) return new THREE.Color("rgba(255,255,255,0.1)"); 
-    if (diff >= 5) return new THREE.Color("#22c55e").multiplyScalar(1.5);
-    if (diff >= 1) return new THREE.Color("#84cc16");
-    if (diff > -2) return new THREE.Color("#eab308");
-    if (diff > -6) return new THREE.Color("#0ea5e9");
-    return new THREE.Color("#3b82f6");
-  };
-
-  const materialColor = getMaterialColor();
-  const height = hovered ? 4 : Math.max(0.5, (total / 50) * 3); // Altura dinámica según volumen
-
-  return (
-    <group 
-      position={position} 
-      onPointerOver={(e) => { e.stopPropagation(); setHovered(true); }} 
-      onPointerOut={() => setHovered(false)}
-    >
-      <mesh castShadow receiveShadow position={[0, height / 2, 0]}>
-        <cylinderGeometry args={[2.5, 2.5, height, 6]} /> 
-        <meshStandardMaterial 
-          color={materialColor} 
-          emissive={materialColor}
-          emissiveIntensity={hovered ? 0.6 : 0.2}
-          transparent
-          opacity={total < 3 ? 0.2 : 0.9}
-          metalness={0.5}
-          roughness={0.2}
-        />
-      </mesh>
-
-      {/* Tooltip inmersivo al pasar el ratón */}
-      {hovered && total >= 3 && (
-        <Html distanceFactor={15} position={[0, height + 2, 0]} center zIndexRange={[100, 0]}>
-          <div className="bg-black/90 backdrop-blur-xl border border-white/10 p-4 rounded-xl shadow-2xl text-white font-sans w-48 text-center">
-            <p className="font-black text-[9px] uppercase tracking-widest text-slate-400 mb-1">{zone}</p>
-            <p className="text-2xl font-black font-mono leading-none">{made}<span className="text-lg text-slate-600">/{total}</span></p>
-            <p className={`text-xs font-bold mt-1 ${diff >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
-              {pct.toFixed(1)}%
-            </p>
-          </div>
-        </Html>
-      )}
-
-      {/* Texto superior fijo */}
-      {total >= 3 && (
-        <Text
-          position={[0, height + 0.1, 0]}
-          rotation={[-Math.PI / 2, 0, 0]} 
-          fontSize={1.5}
-          color="#ffffff"
-          anchorX="center"
-          anchorY="middle"
-        >
-          {`${pct.toFixed(0)}%`}
-        </Text>
-      )}
-    </group>
-  );
-}
-
-export default function ShotChart({ shots, teamAbbr, themeColor = "#3b82f6" }: ShotChartProps) {
-  
   const zoneStats = useMemo(() => {
-    const stats: Record<string, { made: number; total: number; pct: number; diff: number }> = {};
-    Object.keys(LEAGUE_AVERAGES).forEach(z => { stats[z] = { made: 0, total: 0, pct: 0, diff: 0 }; });
+    const stats: Record<string, { made: number; total: number; pct: number; diff: number; color: string }> = {};
+    Object.keys(LEAGUE_AVERAGES).forEach(z => { 
+      stats[z] = { made: 0, total: 0, pct: 0, diff: 0, color: "#ffffff00" }; 
+    });
 
     shots.forEach(s => {
       if (stats[s.zone]) {
@@ -147,77 +51,160 @@ export default function ShotChart({ shots, teamAbbr, themeColor = "#3b82f6" }: S
       if (stats[z].total > 0) {
         stats[z].pct = (stats[z].made / stats[z].total) * 100;
         stats[z].diff = stats[z].pct - LEAGUE_AVERAGES[z];
+        stats[z].color = colorScale(stats[z].diff);
       }
     });
     return stats;
   }, [shots]);
 
-  // Mapeo adaptado para R3F
   const hexBins = [
-    { zone: "Left Corner 3", pos: [22, 0, 30] },
-    { zone: "Right Corner 3", pos: [-22, 0, 30] },
-    { zone: "Restricted Area", pos: [0, 0, 35] },
-    { zone: "In The Paint (Non-RA)", pos: [0, 0, 25] },
-    { zone: "Mid-Range", pos: [0, 0, 15] },
-    { zone: "Above the Break 3", pos: [0, 0, -5] },
+    { zone: "Left Corner 3", x: 40, y: 350 },
+    { zone: "Right Corner 3", x: 460, y: 350 },
+    { zone: "Restricted Area", x: 250, y: 410 },
+    { zone: "In The Paint (Non-RA)", x: 250, y: 320 },
+    { zone: "Mid-Range", x: 250, y: 220 },
+    { zone: "Above the Break 3", x: 250, y: 100 },
   ];
 
-  const totalMade = shots.filter(s => s.made).length;
-  const totalShots = shots.length;
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    hexBins.forEach(bin => {
+      const stat = zoneStats[bin.zone];
+      if (stat.total < 3) return;
+
+      const x = bin.x;
+      const y = bin.y;
+      const radius = Math.max(40, (stat.total / 150) * 120); 
+
+      const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+      gradient.addColorStop(0, stat.color);
+      gradient.addColorStop(0.4, stat.color); // Color más sólido en el centro
+      gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
+
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, 2 * Math.PI);
+      ctx.fill();
+    });
+  }, [zoneStats, hexBins]);
 
   return (
-    <div className="bg-[#030712] border border-white/[0.06] rounded-[2.5rem] p-4 shadow-2xl relative w-full h-[600px] overflow-hidden">
+    <div className="bg-[#0a0f18] border border-white/[0.06] rounded-[2.5rem] p-8 shadow-2xl relative w-full overflow-hidden min-h-[700px] flex flex-col items-center perspective-1000">
       
-      {/* OVERLAYS UI */}
-      <div className="absolute top-6 left-6 flex items-center gap-3 z-20 p-4 bg-black/60 rounded-3xl backdrop-blur-md border border-white/10">
-        <Target className="w-8 h-8 text-cyan-400" />
-        <div>
-          <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Spatial Analytics</span>
-          <p className="text-white text-2xl font-black font-mono leading-none mt-1">{totalMade}<span className="text-slate-600">/{totalShots}</span></p>
+      {/* UI Superior */}
+      <div className="w-full flex justify-between items-start z-30 mb-8 px-4">
+        <div className="flex flex-col gap-1">
+          <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Overall Efficiency</span>
+          <span className="font-mono text-4xl font-black text-white drop-shadow-md">
+            {shots.filter(s => s.made).length}
+            <span className="text-slate-600 text-2xl">/{shots.length}</span> 
+            <span className="text-lg text-emerald-400 ml-2">({shots.length > 0 ? ((shots.filter(s => s.made).length / shots.length) * 100).toFixed(1) : "0.0"}%)</span>
+          </span>
+        </div>
+        <div className="flex flex-col items-end gap-2 opacity-80">
+          <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">vs League Average</span>
+          <div className="flex items-center gap-1.5 p-2 bg-black/40 rounded-xl border border-white/10 shadow-lg">
+            <span className="text-[9px] font-bold text-blue-500 mr-1">COLD</span>
+            <div className="w-3.5 h-3.5 rounded bg-blue-500" />
+            <div className="w-3.5 h-3.5 rounded bg-blue-400" />
+            <div className="w-3.5 h-3.5 rounded bg-slate-700" />
+            <div className="w-3.5 h-3.5 rounded bg-orange-400" />
+            <div className="w-3.5 h-3.5 rounded bg-red-500" />
+            <span className="text-[9px] font-bold text-red-500 ml-1">HOT</span>
+          </div>
         </div>
       </div>
 
-      <div className="absolute top-6 right-6 z-20 text-center p-3 bg-black/60 rounded-2xl border border-white/5 backdrop-blur-sm pointer-events-none">
-          <p className="text-[9px] font-bold text-slate-500">3D INTERACTIVE HUB</p>
-          <p className="text-[11px] font-medium text-white mt-1">Left Click: Rotate • Scroll: Zoom</p>
+      {/* 🚀 EL ENTORNO 3D ISOMÉTRICO (Sin fotos que molesten) */}
+      <div 
+        className="relative z-10 w-full max-w-2xl aspect-[500/470] transition-transform duration-700 ease-out hover:scale-105"
+        style={{ 
+          transform: 'rotateX(40deg) translateY(-20px)', 
+          transformStyle: 'preserve-3d',
+          boxShadow: '0 50px 100px -20px rgba(0,0,0,0.8)'
+        }}
+      >
+        
+        {/* FONDO DARK PREMIUM (Sustituye a la madera fea) */}
+        <div className="absolute inset-0 rounded-xl bg-gradient-to-b from-[#0f172a] to-[#020617] border border-slate-700/50 overflow-hidden">
+          {/* Grid sutil analítico */}
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px]" />
+        </div>
+
+        {/* CANVAS DEL MAPA DE CALOR */}
+        <canvas 
+          ref={canvasRef} 
+          width={500} 
+          height={470} 
+          className="absolute inset-0 w-full h-full z-10"
+          style={{ mixBlendMode: 'screen', filter: 'blur(8px)' }}
+        />
+
+        {/* CAPA DE LÍNEAS SVG Y TEXTO */}
+        <svg viewBox="0 -20 500 460" className="absolute inset-0 w-full h-full z-20 rounded-sm">
+          {teamAbbr && (
+            <g className="opacity-20" transform="translate(250, 0)">
+              <circle cx="0" cy="0" r="60" fill="none" stroke="#fff" strokeWidth="2" />
+              <image href={nbaService.getTeamLogoUrl(teamAbbr)} x="-40" y="-40" width="80" height="80" />
+            </g>
+          )}
+
+          {/* Líneas de la pista (ahora sí, nítidas y solas) */}
+          <g className="text-slate-400 opacity-60 pointer-events-none" stroke="currentColor" strokeWidth="2" fill="none">
+            <path d="M 30 422.5 L 30 282.5 A 237.5 237.5 0 0 1 470 282.5 L 470 422.5" />
+            <rect x="170" y="232.5" width="160" height="190" />
+            <rect x="190" y="232.5" width="120" height="190" />
+            <path d="M 190 232.5 A 60 60 0 0 1 310 232.5" strokeDasharray="6 6" />
+            <path d="M 190 232.5 A 60 60 0 0 0 310 232.5" />
+            <line x1="220" y1="387.5" x2="280" y2="387.5" strokeWidth="3" />
+            <circle cx="250" cy="375" r="7.5" stroke="#f59e0b" strokeWidth="2" />
+          </g>
+
+          {/* Datos */}
+          {hexBins.map((bin, i) => {
+            const stat = zoneStats[bin.zone];
+            if (stat.total < 3) return null;
+
+            return (
+              <g 
+                key={i} 
+                transform={`translate(${bin.x}, ${bin.y})`}
+                className="cursor-crosshair group"
+                onMouseEnter={() => setHoveredZone(bin.zone)}
+                onMouseLeave={() => setHoveredZone(null)}
+              >
+                <circle cx="0" cy="0" r="40" fill="transparent" />
+                <text x="0" y="2" textAnchor="middle" fill="#ffffff" className="font-mono text-2xl font-black drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)]">
+                  {stat.pct.toFixed(0)}<span className="text-sm">%</span>
+                </text>
+                <text x="0" y="18" textAnchor="middle" fill="#cbd5e1" className="font-sans text-[10px] font-bold mt-1 uppercase tracking-widest opacity-90">
+                  {stat.made}/{stat.total}
+                </text>
+              </g>
+            );
+          })}
+        </svg>
+
+        {/* TOOLTIP 3D FLOTANTE */}
+        {hoveredZone && zoneStats[hoveredZone].total >= 3 && (
+          <div 
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900/95 backdrop-blur-md border border-slate-600 p-5 rounded-2xl shadow-2xl z-30 text-white font-sans w-64 text-center pointer-events-none"
+            style={{ transform: 'translate(-50%, -50%) translateZ(50px) rotateX(-40deg)' }} // Contrarresta la inclinación para leerse plano
+          >
+            <p className="font-black text-[10px] uppercase tracking-widest text-slate-400 mb-1">{hoveredZone}</p>
+            <p className="text-4xl font-black font-mono leading-none">{zoneStats[hoveredZone].made}<span className="text-2xl text-slate-500">/{zoneStats[hoveredZone].total}</span></p>
+            <p className={`text-base font-bold mt-2 ${zoneStats[hoveredZone].diff >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+              {zoneStats[hoveredZone].pct.toFixed(1)}% ({zoneStats[hoveredZone].diff >= 0 ? `+${zoneStats[hoveredZone].diff.toFixed(1)}%` : `${zoneStats[hoveredZone].diff.toFixed(1)}%`})
+            </p>
+          </div>
+        )}
       </div>
-
-      {/* CANVAS 3D */}
-      <Canvas shadows camera={{ position: [0, 40, 60], fov: 50 }}>
-        <Suspense fallback={<Html center><Loader2 className="w-10 h-10 animate-spin text-cyan-500" /></Html>}>
-          
-          <ambientLight intensity={0.5} />
-          <spotLight position={[0, 60, 20]} angle={0.5} penumbra={1} intensity={2} castShadow shadow-bias={-0.0001} />
-          <pointLight position={[0, 20, 0]} intensity={1.5} color={themeColor} />
-
-          {/* Pista Procedural de Cristal */}
-          <ProceduralCourt themeColor={themeColor} />
-
-          {/* Hexágonos */}
-          {hexBins.map((bin, i) => (
-            <ShotHexBin 
-              key={i} 
-              position={bin.pos} 
-              made={zoneStats[bin.zone].made}
-              total={zoneStats[bin.zone].total}
-              pct={zoneStats[bin.zone].pct}
-              diff={zoneStats[bin.zone].diff}
-              zone={bin.zone}
-            />
-          ))}
-          
-          <Environment preset="city" />
-          <OrbitControls 
-            enablePan={false} 
-            minPolarAngle={Math.PI / 6} 
-            maxPolarAngle={Math.PI / 2.2} 
-            minDistance={30}
-            maxDistance={100}
-            autoRotate
-            autoRotateSpeed={0.5}
-          />
-        </Suspense>
-      </Canvas>
     </div>
   );
 }
