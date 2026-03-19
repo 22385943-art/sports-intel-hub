@@ -1,4 +1,5 @@
-import { LayoutDashboard, Users, Shield, BarChart3, GitCompare, ChevronDown, Trophy, Calendar, Star, ListOrdered } from "lucide-react";
+// 🚀 1. Importa el icono Flame
+import { LayoutDashboard, Users, Shield, BarChart3, GitCompare, ChevronDown, Trophy, Calendar, Star, ListOrdered, Flame } from "lucide-react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useSport } from "@/contexts/SportContext";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter, SidebarSeparator } from "@/components/ui/sidebar";
@@ -10,13 +11,15 @@ export function AppSidebar() {
   const navigate = useNavigate();
   const basePath = `/${sport}`;
 
+  // 🚀 2. Añade Clutch Kings a los NavItems
   const navItems = [
     { title: "Dashboard", path: "", icon: LayoutDashboard },
     { title: "Schedule", path: "/schedule", icon: Calendar },
     { title: sportConfig.playerLabel, path: sport === "ufc" ? "/fighters" : "/players", icon: Users },
     ...(sport !== "ufc" ? [{ title: "Teams", path: "/teams", icon: Shield }] : []),
     ...(sport !== "ufc" ? [{ title: "Standings", path: "/standings", icon: Trophy }] : []),
-    ...(sport !== "ufc" ? [{ title: "Rankings", path: "/rankings", icon: ListOrdered }] : []), // 🚀 RUTA AÑADIDA
+    ...(sport !== "ufc" ? [{ title: "Rankings", path: "/rankings", icon: ListOrdered }] : []),
+    ...(sport !== "ufc" ? [{ title: "Season Awards Tracker", path: "/awards", icon: Trophy }] : []), // AÑADIDO AQUI
     { title: "Favorites", path: "/favorites", icon: Star },
     { title: "Analytics", path: "/analytics", icon: BarChart3 },
     { title: "Compare", path: "/compare", icon: GitCompare },

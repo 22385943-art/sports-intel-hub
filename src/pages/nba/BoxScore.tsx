@@ -4,6 +4,8 @@ import { nbaService } from "@/services/sportServiceFactory";
 import { Loader2, ChevronLeft, BarChart3, Users, Crown, EyeOff } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useSettings } from "@/hooks/useSettings"; 
+// Asegúrate de que la ruta al componente sea la correcta en tu proyecto
+import MomentumChart from "@/components/MomentumChart"; 
 
 export default function BoxScore() {
   const { id } = useParams();
@@ -40,7 +42,6 @@ export default function BoxScore() {
   const awayStats = boxScore.awayTeam || {};
   const homeStats = boxScore.homeTeam || {};
 
-  // 🚀 BLINDAJE PARA PARTIDOS EN VIVO (Evita leer propiedades de null)
   const safeAwayStats = awayStats.statistics || {};
   const safeHomeStats = homeStats.statistics || {};
 
@@ -128,9 +129,16 @@ export default function BoxScore() {
   const awayLeaders = { pts: getGameLeader(awayStats, 'points'), reb: getGameLeader(awayStats, 'reboundsTotal'), ast: getGameLeader(awayStats, 'assists') };
   const homeLeaders = { pts: getGameLeader(homeStats, 'points'), reb: getGameLeader(homeStats, 'reboundsTotal'), ast: getGameLeader(homeStats, 'assists') };
 
-  const renderGameLeaderCard = (title: string, awayLeader: any, homeLeader: any) => {
-    const safeAway = awayLeader || { personId: "0", name: "N/A", value: 0 };
-    const safeHome = homeLeader || { personId: "0", name: "N/A", value: 0 };
+  // 🚀 FIX APLICADO: Añadido statKey y extracción segura de values
+  const renderGameLeaderCard = (title: string, awayLeader: any, homeLeader: any, statKey: string) => {
+    const safeAway = awayLeader || {};
+    const safeHome = homeLeader || {};
+
+    const awayVal = safeAway.statistics?.[statKey] ?? 0;
+    const homeVal = safeHome.statistics?.[statKey] ?? 0;
+    
+    const awayName = awayLeader ? getPlayerName(awayLeader) : "N/A";
+    const homeName = homeLeader ? getPlayerName(homeLeader) : "N/A";
 
     return (
       <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4 flex flex-col items-center">
@@ -139,11 +147,11 @@ export default function BoxScore() {
           <div className="flex flex-col items-center gap-2">
             <Avatar className="w-12 h-12 border-2 border-[#0a0f18] shadow-lg bg-slate-800">
               <AvatarImage src={nbaService.getImageUrl(safeAway.personId)} className="object-cover" />
-              <AvatarFallback className="text-[10px] font-bold text-white">{String(safeAway.name || "UN").substring(0, 2)}</AvatarFallback>
+              <AvatarFallback className="text-[10px] font-bold text-white">{awayName.substring(0, 2)}</AvatarFallback>
             </Avatar>
             <div className="text-center">
-              <p className="text-xl font-black font-mono text-white leading-none">{safeAway.value || 0}</p>
-              <p className="text-[9px] font-bold text-slate-400 uppercase truncate max-w-[60px]">{String(safeAway.name || "N/A").split(" ").pop()}</p>
+              <p className="text-xl font-black font-mono text-white leading-none">{awayVal}</p>
+              <p className="text-[9px] font-bold text-slate-400 uppercase truncate max-w-[60px]">{awayName.split(" ").pop()}</p>
             </div>
           </div>
           
@@ -152,11 +160,11 @@ export default function BoxScore() {
           <div className="flex flex-col items-center gap-2">
             <Avatar className="w-12 h-12 border-2 border-[#0a0f18] shadow-lg bg-slate-800">
               <AvatarImage src={nbaService.getImageUrl(safeHome.personId)} className="object-cover" />
-              <AvatarFallback className="text-[10px] font-bold text-white">{String(safeHome.name || "UN").substring(0, 2)}</AvatarFallback>
+              <AvatarFallback className="text-[10px] font-bold text-white">{homeName.substring(0, 2)}</AvatarFallback>
             </Avatar>
             <div className="text-center">
-              <p className="text-xl font-black font-mono text-white leading-none">{safeHome.value || 0}</p>
-              <p className="text-[9px] font-bold text-slate-400 uppercase truncate max-w-[60px]">{String(safeHome.name || "N/A").split(" ").pop()}</p>
+              <p className="text-xl font-black font-mono text-white leading-none">{homeVal}</p>
+              <p className="text-[9px] font-bold text-slate-400 uppercase truncate max-w-[60px]">{homeName.split(" ").pop()}</p>
             </div>
           </div>
         </div>
@@ -172,7 +180,6 @@ export default function BoxScore() {
     </div>
   );
 
-  // 🚀 BLINDAJE PARA FORMATEO DE PORCENTAJES
   const formatTeamPct = (made?: number, att?: number, pct?: number) => {
     const m = made || 0;
     const a = att || 0;
@@ -237,65 +244,80 @@ export default function BoxScore() {
             {activeTab === "home" && renderPlayerTable(homeStats)}
             
             {activeTab === "team" && (
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              <div className="space-y-6">
                 
-                <div className="lg:col-span-4 space-y-4">
-                  <div className="bg-[#111] rounded-[1.5rem] border border-[#222] p-6 shadow-xl h-full">
-                    <h3 className="text-sm font-black uppercase tracking-widest text-white mb-6 flex items-center gap-2">
-                      <Crown className="w-4 h-4 text-amber-500" /> Game Leaders
-                    </h3>
-                    <div className="flex justify-between items-center mb-4 px-4">
-                      <img src={`https://cdn.nba.com/logos/nba/${game.awayId}/global/L/logo.svg`} className="w-6 h-6 object-contain" />
-                      <img src={`https://cdn.nba.com/logos/nba/${game.homeId}/global/L/logo.svg`} className="w-6 h-6 object-contain" />
-                    </div>
-                    <div className="space-y-3">
-                      {renderGameLeaderCard("Points", awayLeaders.pts, homeLeaders.pts)}
-                      {renderGameLeaderCard("Rebounds", awayLeaders.reb, homeLeaders.reb)}
-                      {renderGameLeaderCard("Assists", awayLeaders.ast, homeLeaders.ast)}
-                    </div>
-                  </div>
+                {/* 🚀 EL MOMENTUM CHART AQUÍ */}
+                <div className="w-full">
+                  <MomentumChart 
+                    gameId={id!} 
+                    homeTeam={game.home} 
+                    awayTeam={game.away}
+                    homeLogo={`https://cdn.nba.com/logos/nba/${game.homeId}/global/L/logo.svg`}
+                    awayLogo={`https://cdn.nba.com/logos/nba/${game.awayId}/global/L/logo.svg`}
+                  />
                 </div>
 
-                <div className="lg:col-span-8">
-                  <div className="bg-[#111] rounded-[1.5rem] border border-[#222] p-6 md:p-8 shadow-xl h-full">
-                    <h3 className="text-sm font-black uppercase tracking-widest text-white mb-6 text-center">Team Matchup</h3>
-                    
-                    <div className="flex justify-between items-center mb-6 border-b border-[#222] pb-4 px-4">
-                      <img src={`https://cdn.nba.com/logos/nba/${game.awayId}/global/L/logo.svg`} className="w-10 h-10 object-contain" />
-                      <span className="text-[10px] font-black text-[#555] uppercase tracking-widest">Stats</span>
-                      <img src={`https://cdn.nba.com/logos/nba/${game.homeId}/global/L/logo.svg`} className="w-10 h-10 object-contain" />
-                    </div>
-
-                    <div className="px-2">
-                      {/* 🚀 LECTURAS 100% SEGURAS CON LOS OBJETOS BLINDADOS */}
-                      <StatRow isBold label="Field Goals" 
-                        away={formatTeamPct(safeAwayStats.fieldGoalsMade, safeAwayStats.fieldGoalsAttempted, safeAwayStats.fieldGoalsPercentage)} 
-                        home={formatTeamPct(safeHomeStats.fieldGoalsMade, safeHomeStats.fieldGoalsAttempted, safeHomeStats.fieldGoalsPercentage)} />
-                      <StatRow isBold label="3 Pointers" 
-                        away={formatTeamPct(safeAwayStats.threePointersMade, safeAwayStats.threePointersAttempted, safeAwayStats.threePointersPercentage)} 
-                        home={formatTeamPct(safeHomeStats.threePointersMade, safeHomeStats.threePointersAttempted, safeHomeStats.threePointersPercentage)} />
-                      <StatRow isBold label="Free Throws" 
-                        away={formatTeamPct(safeAwayStats.freeThrowsMade, safeAwayStats.freeThrowsAttempted, safeAwayStats.freeThrowsPercentage)} 
-                        home={formatTeamPct(safeHomeStats.freeThrowsMade, safeHomeStats.freeThrowsAttempted, safeHomeStats.freeThrowsPercentage)} />
-                      
-                      <StatRow isBold label="Total Rebounds" away={safeAwayStats.reboundsTotal || 0} home={safeHomeStats.reboundsTotal || 0} />
-                      <StatRow label="Offensive Rebounds" away={safeAwayStats.reboundsOffensive || 0} home={safeHomeStats.reboundsOffensive || 0} />
-                      <StatRow label="Defensive Rebounds" away={safeAwayStats.reboundsDefensive || 0} home={safeHomeStats.reboundsDefensive || 0} />
-                      
-                      <StatRow isBold label="Assists" away={safeAwayStats.assists || 0} home={safeHomeStats.assists || 0} />
-                      <StatRow isBold label="Steals" away={safeAwayStats.steals || 0} home={safeHomeStats.steals || 0} />
-                      <StatRow isBold label="Blocks" away={safeAwayStats.blocks || 0} home={safeHomeStats.blocks || 0} />
-                      
-                      <StatRow isBold label="Turnovers" away={safeAwayStats.turnoversTeam || 0} home={safeHomeStats.turnoversTeam || 0} />
-                      <StatRow label="Points off Turnovers" away={safeAwayStats.pointsFromTurnovers || 0} home={safeHomeStats.pointsFromTurnovers || 0} />
-                      
-                      <StatRow isBold label="Fast Break Points" away={safeAwayStats.pointsFastBreak || 0} home={safeHomeStats.pointsFastBreak || 0} />
-                      <StatRow isBold label="Points in Paint" away={safeAwayStats.pointsInThePaint || 0} home={safeHomeStats.pointsInThePaint || 0} />
-                      <StatRow isBold label="Fouls" away={safeAwayStats.foulsPersonal || 0} home={safeHomeStats.foulsPersonal || 0} />
+                {/* EL GRID EXISTENTE (Leaders & Matchup) */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                  
+                  <div className="lg:col-span-4 space-y-4">
+                    <div className="bg-[#111] rounded-[1.5rem] border border-[#222] p-6 shadow-xl h-full">
+                      <h3 className="text-sm font-black uppercase tracking-widest text-white mb-6 flex items-center gap-2">
+                        <Crown className="w-4 h-4 text-amber-500" /> Game Leaders
+                      </h3>
+                      <div className="flex justify-between items-center mb-4 px-4">
+                        <img src={`https://cdn.nba.com/logos/nba/${game.awayId}/global/L/logo.svg`} className="w-6 h-6 object-contain" />
+                        <img src={`https://cdn.nba.com/logos/nba/${game.homeId}/global/L/logo.svg`} className="w-6 h-6 object-contain" />
+                      </div>
+                      <div className="space-y-3">
+                        {/* 🚀 FIX: Pasamos la key del stat al final de cada función */}
+                        {renderGameLeaderCard("Points", awayLeaders.pts, homeLeaders.pts, "points")}
+                        {renderGameLeaderCard("Rebounds", awayLeaders.reb, homeLeaders.reb, "reboundsTotal")}
+                        {renderGameLeaderCard("Assists", awayLeaders.ast, homeLeaders.ast, "assists")}
+                      </div>
                     </div>
                   </div>
-                </div>
 
+                  <div className="lg:col-span-8">
+                    <div className="bg-[#111] rounded-[1.5rem] border border-[#222] p-6 md:p-8 shadow-xl h-full">
+                      <h3 className="text-sm font-black uppercase tracking-widest text-white mb-6 text-center">Team Matchup</h3>
+                      
+                      <div className="flex justify-between items-center mb-6 border-b border-[#222] pb-4 px-4">
+                        <img src={`https://cdn.nba.com/logos/nba/${game.awayId}/global/L/logo.svg`} className="w-10 h-10 object-contain" />
+                        <span className="text-[10px] font-black text-[#555] uppercase tracking-widest">Stats</span>
+                        <img src={`https://cdn.nba.com/logos/nba/${game.homeId}/global/L/logo.svg`} className="w-10 h-10 object-contain" />
+                      </div>
+
+                      <div className="px-2">
+                        <StatRow isBold label="Field Goals" 
+                          away={formatTeamPct(safeAwayStats.fieldGoalsMade, safeAwayStats.fieldGoalsAttempted, safeAwayStats.fieldGoalsPercentage)} 
+                          home={formatTeamPct(safeHomeStats.fieldGoalsMade, safeHomeStats.fieldGoalsAttempted, safeHomeStats.fieldGoalsPercentage)} />
+                        <StatRow isBold label="3 Pointers" 
+                          away={formatTeamPct(safeAwayStats.threePointersMade, safeAwayStats.threePointersAttempted, safeAwayStats.threePointersPercentage)} 
+                          home={formatTeamPct(safeHomeStats.threePointersMade, safeHomeStats.threePointersAttempted, safeHomeStats.threePointersPercentage)} />
+                        <StatRow isBold label="Free Throws" 
+                          away={formatTeamPct(safeAwayStats.freeThrowsMade, safeAwayStats.freeThrowsAttempted, safeAwayStats.freeThrowsPercentage)} 
+                          home={formatTeamPct(safeHomeStats.freeThrowsMade, safeHomeStats.freeThrowsAttempted, safeHomeStats.freeThrowsPercentage)} />
+                        
+                        <StatRow isBold label="Total Rebounds" away={safeAwayStats.reboundsTotal || 0} home={safeHomeStats.reboundsTotal || 0} />
+                        <StatRow label="Offensive Rebounds" away={safeAwayStats.reboundsOffensive || 0} home={safeHomeStats.reboundsOffensive || 0} />
+                        <StatRow label="Defensive Rebounds" away={safeAwayStats.reboundsDefensive || 0} home={safeHomeStats.reboundsDefensive || 0} />
+                        
+                        <StatRow isBold label="Assists" away={safeAwayStats.assists || 0} home={safeHomeStats.assists || 0} />
+                        <StatRow isBold label="Steals" away={safeAwayStats.steals || 0} home={safeHomeStats.steals || 0} />
+                        <StatRow isBold label="Blocks" away={safeAwayStats.blocks || 0} home={safeHomeStats.blocks || 0} />
+                        
+                        <StatRow isBold label="Turnovers" away={safeAwayStats.turnoversTeam || 0} home={safeHomeStats.turnoversTeam || 0} />
+                        <StatRow label="Points off Turnovers" away={safeAwayStats.pointsFromTurnovers || 0} home={safeHomeStats.pointsFromTurnovers || 0} />
+                        
+                        <StatRow isBold label="Fast Break Points" away={safeAwayStats.pointsFastBreak || 0} home={safeHomeStats.pointsFastBreak || 0} />
+                        <StatRow isBold label="Points in Paint" away={safeAwayStats.pointsInThePaint || 0} home={safeHomeStats.pointsInThePaint || 0} />
+                        <StatRow isBold label="Fouls" away={safeAwayStats.foulsPersonal || 0} home={safeHomeStats.foulsPersonal || 0} />
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
               </div>
             )}
           </div>

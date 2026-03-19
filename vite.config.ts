@@ -19,6 +19,12 @@ export default defineConfig(({ mode }) => ({
           'Referer': 'https://www.nba.com/',
         }
       },
+      // 🚀 AÑADIDO: Proxy para evitar el error CORS de cdn.nba.com
+      '/nba-cdn': {
+        target: 'https://cdn.nba.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/nba-cdn/, ''),
+      },
       '/api-espn': {
         target: 'https://site.api.espn.com',
         changeOrigin: true,

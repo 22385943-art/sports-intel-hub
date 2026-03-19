@@ -89,7 +89,6 @@ export default function NBADashboard() {
     }).slice(0, 10);
   };
 
-  // 🚀 FORMATEADOR LIMPIO. SIEMPRE PINTA YY.X%
   const formatValue = (val: number, format: "number" | "percent" | "rating") => {
     if (val === undefined || val === null || isNaN(val)) return "0.0";
     return format === 'percent' ? `${val.toFixed(1)}%` : val.toFixed(1);
@@ -371,8 +370,9 @@ export default function NBADashboard() {
             {activeTab === "teams" && (
               <>
                 <LeaderboardPanel title="Net Rating" icon={TrendingUp} data={getTopTeams("netRtg")} metric="netRtg" type="team" linkType="ranking" colorClass="cyan" glowClass="group-hover:shadow-[0_0_20px_rgba(34,211,238,0.3)]" />
-                <LeaderboardPanel title="Clutch Net Rtg" icon={Flame} data={getTopTeams("clutchNetRtg", "clutch")} metric="clutchNetRtg" type="team" linkType="ranking" colorClass="rose" glowClass="group-hover:shadow-[0_0_20px_rgba(244,63,94,0.3)]" />
-                <LeaderboardPanel title="Opponent FG%" icon={ShieldAlert} data={getTopTeams("oppFgPct", "opp", true)} metric="oppFgPct" type="team" linkType="ranking" colorClass="emerald" glowClass="group-hover:shadow-[0_0_20px_rgba(52,211,153,0.3)]" format="percent" />
+                {/* 🚀 ARREGLO DE SOURCE AQUI */}
+                <LeaderboardPanel title="Clutch Net Rtg" icon={Flame} data={getTopTeams("clutchNetRtg", "clutch")} metric="clutchNetRtg" source="clutch" type="team" linkType="ranking" colorClass="rose" glowClass="group-hover:shadow-[0_0_20px_rgba(244,63,94,0.3)]" />
+                <LeaderboardPanel title="Opponent FG%" icon={ShieldAlert} data={getTopTeams("oppFgPct", "opp", true)} metric="oppFgPct" source="opp" type="team" linkType="ranking" colorClass="emerald" glowClass="group-hover:shadow-[0_0_20px_rgba(52,211,153,0.3)]" format="percent" />
                 <LeaderboardPanel title="AST to TO Ratio" icon={Brain} data={getTopTeams("astTo")} metric="astTo" type="team" linkType="ranking" colorClass="purple" glowClass="group-hover:shadow-[0_0_20px_rgba(168,85,247,0.3)]" />
                 <LeaderboardPanel title="Pace (Poss/48)" icon={FastForward} data={getTopTeams("pace")} metric="pace" type="team" linkType="ranking" colorClass="orange" glowClass="group-hover:shadow-[0_0_20px_rgba(249,115,22,0.3)]" />
               </>

@@ -6,7 +6,7 @@ import { ArrowLeft, Loader2, Activity, Target, Zap, Shield, Crown, BarChart3, Tr
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import type { NBAPlayer } from "@/data/nba/mockData";
 import { useFavorites } from "@/hooks/useFavorites"; 
-import ShotChart from "@/components/ShotChart"; // 🚀 IMPORTACIÓN DEL SHOT CHART
+import ShotChart from "@/components/ShotChart";
 
 // 🎨 PALETA DE COLORES
 const TEAM_COLORS: Record<string, string> = {
@@ -58,14 +58,16 @@ export default function NBAPlayerProfile() {
   
   const [player, setPlayer] = useState<NBAPlayer | null>(null);
   const [allPlayers, setAllPlayers] = useState<NBAPlayer[]>([]);
+  const [allTeams, setAllTeams] = useState<any[]>([]); // 🚀 FIX: Usamos los equipos oficiales para los Splits
   const [bio, setBio] = useState<any>(null);
   const [onOffSwing, setOnOffSwing] = useState<number | null>(null); 
   const [accolades, setAccolades] = useState<any[]>([]); 
-  const [shots, setShots] = useState<any[]>([]); // 🚀 ESTADO DE COORDENADAS
+  const [shots, setShots] = useState<any[]>([]); 
+  const [gameLog, setGameLog] = useState<any[]>([]);
   
   const [isBaseLoading, setIsBaseLoading] = useState(true);
   const [isDeepDataLoading, setIsDeepDataLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"stats" | "analytics" | "shotchart" | "accolades">("stats"); // 🚀 AÑADIDA PESTAÑA
+  const [activeTab, setActiveTab] = useState<"stats" | "analytics" | "shotchart" | "accolades" | "splits">("stats");
 
   const { toggleFavorite, isFavorite } = useFavorites();
   const isFav = player ? isFavorite(player.id, 'player') : false;
@@ -83,6 +85,7 @@ export default function NBAPlayerProfile() {
       nbaService.fetchAllOfficialTeams()
     ]).then(([players, teams]) => {
       setAllPlayers(players);
+      setAllTeams(teams); // Guardamos la lista robusta de equipos
       
       const foundPlayer = players.find(p => p.id === id);
       setPlayer(foundPlayer || null);
@@ -101,10 +104,10 @@ export default function NBAPlayerProfile() {
         }
 
         const awardsFetch = fetch(`/nba-api/playerawards?PlayerID=${id}`).then(res => res.json()).catch(() => null);
-        const shotsFetch = nbaService.getPlayerShotChart(id); // 🚀 EXTRAER TIROS
+        const shotsFetch = nbaService.getPlayerShotChart(id); 
+        const gameLogFetch = nbaService.getPlayerGameLog(id);
 
-        Promise.all([bioFetch, onOffFetch, awardsFetch, shotsFetch]).then(([bioData, onOffData, awardsData, shotData]) => {
-          
+        Promise.all([bioFetch, onOffFetch, awardsFetch, shotsFetch, gameLogFetch]).then(([bioData, onOffData, awardsData, shotData, logData]) => {
           if (bioData) {
             try {
               const info = bioData.resultSets[0];
@@ -151,7 +154,8 @@ export default function NBAPlayerProfile() {
             } catch (e) { console.error(e); }
           }
           
-          setShots(shotData || []); // 🚀 GUARDAR TIROS
+          setShots(shotData || []); 
+          setGameLog(logData || []);
           setIsDeepDataLoading(false);
         });
       } else {
@@ -242,18 +246,12 @@ export default function NBAPlayerProfile() {
 
       {/* ═══════════════════ PLAYER HERO CARD ═══════════════════ */}
       <div className="bg-[#1a1a1a] rounded-[1.5rem] overflow-hidden shadow-2xl relative border border-white/5">
-        
-        {/* Glow temático superior */}
         <div className="absolute -right-20 -top-20 w-[400px] h-[400px] rounded-full blur-[100px] opacity-25 pointer-events-none" style={{ backgroundColor: themeColor }} />
-
-        {/* Marca de agua gigante */}
         <div className="absolute right-[-10%] top-1/2 -translate-y-1/2 w-[600px] h-[600px] opacity-[0.85] pointer-events-none flex items-center justify-end z-0">
           <img src={logoUrl} alt="Team Logo" className="w-full h-full object-contain mix-blend-overlay drop-shadow-[0_10px_30px_rgba(0,0,0,0.8)]" />
         </div>
 
         <div className="flex flex-col md:flex-row relative z-10">
-          
-          {/* Lado Izquierdo: Foto del Jugador */}
           <div className="w-full md:w-5/12 bg-gradient-to-tr from-[#111] to-[#1c1c1c]/90 flex items-end justify-center pt-10 relative overflow-hidden border-r border-white/5 backdrop-blur-sm">
             <div className="absolute bottom-0 w-3/4 h-8 bg-black blur-2xl rounded-full" />
             <img 
@@ -264,7 +262,6 @@ export default function NBAPlayerProfile() {
             />
           </div>
 
-          {/* Lado Derecho: Biografía y Botón */}
           <div className="w-full md:w-7/12 p-8 md:p-12 flex flex-col justify-center bg-[#1a1a1a]/70 backdrop-blur-md">
             <div className="mb-4">
               <h2 className="text-[#a0a0a0] text-xl md:text-2xl font-light uppercase tracking-widest leading-none mb-1">{fName}</h2>
@@ -301,7 +298,6 @@ export default function NBAPlayerProfile() {
               </div>
             </div>
 
-            {/* Botón de Favorito Dinámico */}
             <button 
               onClick={() => toggleFavorite({
                 id: player.id, type: 'player', name: player.name, 
@@ -321,7 +317,6 @@ export default function NBAPlayerProfile() {
           </div>
         </div>
 
-        {/* ════ BARRA DE ESTADÍSTICAS INFERIOR ════ */}
         <div className="bg-[#121212] border-t border-[#2a2a2a] relative z-10">
           <div className="bg-black py-1.5 border-b border-[#2a2a2a] text-center">
             <h3 className="text-[10px] font-bold uppercase tracking-widest text-white">2025-26 Regular Season Stats</h3>
@@ -359,16 +354,17 @@ export default function NBAPlayerProfile() {
         <button onClick={() => setActiveTab("analytics")} className={`px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === "analytics" ? 'text-white' : 'text-slate-500 hover:text-white'}`} style={{ backgroundColor: activeTab === "analytics" ? `${themeColor}30` : 'transparent', borderColor: activeTab === "analytics" ? `${themeColor}50` : 'transparent', borderWidth: '1px' }}>
           <Activity className="h-4 w-4" style={{ color: activeTab === "analytics" ? themeColor : '' }} /> Analytics
         </button>
-        {/* 🚀 AÑADIDO: BOTÓN SHOT CHART */}
         <button onClick={() => setActiveTab("shotchart")} className={`px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === "shotchart" ? 'text-white' : 'text-slate-500 hover:text-white'}`} style={{ backgroundColor: activeTab === "shotchart" ? `${themeColor}30` : 'transparent', borderColor: activeTab === "shotchart" ? `${themeColor}50` : 'transparent', borderWidth: '1px' }}>
           <Target className="h-4 w-4" style={{ color: activeTab === "shotchart" ? themeColor : '' }} /> Shot Chart
         </button>
         <button onClick={() => setActiveTab("accolades")} className={`px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === "accolades" ? 'text-white' : 'text-slate-500 hover:text-white'}`} style={{ backgroundColor: activeTab === "accolades" ? `${themeColor}30` : 'transparent', borderColor: activeTab === "accolades" ? `${themeColor}50` : 'transparent', borderWidth: '1px' }}>
-          <Trophy className="h-4 w-4" style={{ color: activeTab === "accolades" ? themeColor : '' }} /> Career Accolades
+          <Trophy className="h-4 w-4" style={{ color: activeTab === "accolades" ? themeColor : '' }} /> Accolades
+        </button>
+        <button onClick={() => setActiveTab("splits")} className={`px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === "splits" ? 'text-white' : 'text-slate-500 hover:text-white'}`} style={{ backgroundColor: activeTab === "splits" ? `${themeColor}30` : 'transparent', borderColor: activeTab === "splits" ? `${themeColor}50` : 'transparent', borderWidth: '1px' }}>
+          <TrendingUp className="h-4 w-4" style={{ color: activeTab === "splits" ? themeColor : '' }} /> Context Splits
         </button>
       </div>
 
-      {/* TAB CONTENT */}
       <div className="animate-in slide-in-from-bottom-4 duration-500 relative z-10">
         
         {activeTab === "stats" && (
@@ -392,7 +388,6 @@ export default function NBAPlayerProfile() {
 
         {activeTab === "analytics" && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            
             <div className="bg-[#1a1a1a] border border-white/5 rounded-[2rem] p-6 shadow-2xl relative overflow-hidden">
                <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full blur-[80px] pointer-events-none opacity-30" style={{ backgroundColor: themeColor }} />
                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-center mb-4">Percentile Analytics</h3>
@@ -447,7 +442,6 @@ export default function NBAPlayerProfile() {
           </div>
         )}
 
-        {/* 🚀 TAB 3: SHOT CHART */}
         {activeTab === "shotchart" && (
           <div className="bg-[#1a1a1a] border border-white/5 rounded-[2rem] p-6 shadow-2xl relative overflow-hidden min-h-[400px] flex items-center justify-center">
             {isDeepDataLoading ? (
@@ -461,11 +455,9 @@ export default function NBAPlayerProfile() {
           </div>
         )}
 
-        {/* TAB 4: CAREER ACCOLADES */}
         {activeTab === "accolades" && (
           <div className="bg-[#1a1a1a] border border-white/5 rounded-[2rem] p-8 shadow-2xl relative overflow-hidden min-h-[300px]">
             <Trophy className="absolute -bottom-10 -right-10 h-60 w-60 text-white/[0.03] pointer-events-none" />
-            
             {isDeepDataLoading ? (
                <div className="absolute inset-0 flex flex-col items-center justify-center z-20">
                  <Loader2 className="h-8 w-8 animate-spin text-amber-500 mb-4" />
@@ -476,7 +468,6 @@ export default function NBAPlayerProfile() {
                 <h3 className="text-lg font-black uppercase tracking-[0.2em] text-white flex items-center gap-3 mb-10">
                   <Crown className="h-5 w-5" style={{ color: themeColor }} /> Official Major Achievements
                 </h3>
-                
                 {accolades.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {accolades.map((award, i) => (
@@ -500,6 +491,86 @@ export default function NBAPlayerProfile() {
                 )}
               </div>
             )}
+          </div>
+        )}
+
+        {/* 🚀 TAB 5: CONTEXT SPLITS (Fraud Detector FIX) */}
+        {activeTab === "splits" && (
+          <div className="space-y-6">
+            <h3 className="text-lg font-black uppercase tracking-[0.2em] text-white flex items-center gap-3 mb-6">
+              <TrendingUp className="h-5 w-5" style={{ color: themeColor }} /> Performance Context
+            </h3>
+
+            {(() => {
+              if (!gameLog.length || !allTeams.length) return <div className="text-[#888]">Insufficient game data for splits.</div>;
+              
+              const getAverages = (games: any[]) => {
+                if (!games.length) return { pts: 0, reb: 0, ast: 0, ts: 0, count: 0 };
+                const totals = games.reduce((acc, g) => ({
+                  pts: acc.pts + g.pts, reb: acc.reb + g.reb, ast: acc.ast + g.ast, ts: acc.ts + (g.ts || 0)
+                }), { pts: 0, reb: 0, ast: 0, ts: 0 });
+                return {
+                  pts: (totals.pts / games.length).toFixed(1),
+                  reb: (totals.reb / games.length).toFixed(1),
+                  ast: (totals.ast / games.length).toFixed(1),
+                  ts: (totals.ts / games.length).toFixed(1),
+                  count: games.length
+                };
+              };
+
+              const wins = gameLog.filter(g => g.wl === "W");
+              const losses = gameLog.filter(g => g.wl === "L");
+              const home = gameLog.filter(g => g.isHome);
+              const away = gameLog.filter(g => !g.isHome);
+              
+              // 🚀 LÓGICA DE CONTENDERS CORREGIDA: Cruzamos con la lista oficial de equipos
+              const contenders = gameLog.filter(g => {
+                const oppTeam = allTeams.find(t => t.abbreviation.toLowerCase() === g.opponent.toLowerCase());
+                if (!oppTeam) return false;
+                const winPct = oppTeam.wins / (oppTeam.wins + oppTeam.losses);
+                return winPct >= 0.500;
+              });
+              
+              const lottery = gameLog.filter(g => {
+                const oppTeam = allTeams.find(t => t.abbreviation.toLowerCase() === g.opponent.toLowerCase());
+                if (!oppTeam) return false;
+                const winPct = oppTeam.wins / (oppTeam.wins + oppTeam.losses);
+                return winPct < 0.500;
+              });
+
+              const renderSplitCard = (titleA: string, dataA: any, titleB: string, dataB: any, colorA: string, colorB: string) => (
+                <div className="bg-[#1a1a1a] border border-white/5 rounded-[2rem] p-6 shadow-2xl flex flex-col md:flex-row gap-4 relative overflow-hidden">
+                  <div className="flex-1 bg-[#111] border border-white/5 p-5 rounded-2xl relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-1 h-full" style={{ backgroundColor: colorA }} />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-4 block">{titleA} ({dataA.count}G)</span>
+                    <div className="flex justify-between items-end">
+                      <div><span className="block text-2xl font-black text-white">{dataA.pts}</span><span className="text-[9px] font-bold text-[#666] uppercase">PTS</span></div>
+                      <div><span className="block text-2xl font-black text-white">{dataA.reb}</span><span className="text-[9px] font-bold text-[#666] uppercase">REB</span></div>
+                      <div><span className="block text-2xl font-black text-white">{dataA.ast}</span><span className="text-[9px] font-bold text-[#666] uppercase">AST</span></div>
+                      <div><span className="block text-2xl font-black" style={{ color: colorA }}>{dataA.ts}%</span><span className="text-[9px] font-bold text-[#666] uppercase">TS%</span></div>
+                    </div>
+                  </div>
+                  <div className="flex-1 bg-[#111] border border-white/5 p-5 rounded-2xl relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-1 h-full" style={{ backgroundColor: colorB }} />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-4 block">{titleB} ({dataB.count}G)</span>
+                    <div className="flex justify-between items-end">
+                      <div><span className="block text-2xl font-black text-white">{dataB.pts}</span><span className="text-[9px] font-bold text-[#666] uppercase">PTS</span></div>
+                      <div><span className="block text-2xl font-black text-white">{dataB.reb}</span><span className="text-[9px] font-bold text-[#666] uppercase">REB</span></div>
+                      <div><span className="block text-2xl font-black text-white">{dataB.ast}</span><span className="text-[9px] font-bold text-[#666] uppercase">AST</span></div>
+                      <div><span className="block text-2xl font-black" style={{ color: colorB }}>{dataB.ts}%</span><span className="text-[9px] font-bold text-[#666] uppercase">TS%</span></div>
+                    </div>
+                  </div>
+                </div>
+              );
+
+              return (
+                <div className="space-y-6">
+                  {renderSplitCard("vs. Contenders (>.500)", getAverages(contenders), "vs. Lottery (<.500)", getAverages(lottery), "#10b981", "#f43f5e")}
+                  {renderSplitCard("In Wins", getAverages(wins), "In Losses", getAverages(losses), "#3b82f6", "#8b5cf6")}
+                  {renderSplitCard("Home Games", getAverages(home), "Road Games", getAverages(away), "#f59e0b", "#64748b")}
+                </div>
+              );
+            })()}
           </div>
         )}
 

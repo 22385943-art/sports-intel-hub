@@ -12,6 +12,7 @@ const getString = (row: any[], headers: string[], key: string, fallback: string)
     return idx !== -1 && row[idx] !== null && row[idx] !== undefined ? String(row[idx]) : fallback;
 };
 
+// 🚀 BLINDAJE EXTREMO: Si fallan los proxies o la API da error 500, devuelve null y NO crashea.
 const fetchSafeJSON = async (endpoint: string) => {
     const fullUrl = `https://stats.nba.com/stats${endpoint}`;
     const proxies = [
@@ -28,11 +29,13 @@ const fetchSafeJSON = async (endpoint: string) => {
             clearTimeout(id);
             if (res.ok) {
                 const text = await res.text();
-                if (!text.trim().startsWith('<')) return JSON.parse(text);
+                if (!text.trim().startsWith('<') && !text.includes("System.InvalidOperationException")) {
+                    return JSON.parse(text);
+                }
             }
         } catch (e) {}
     }
-    throw new Error("All proxies failed for " + endpoint);
+    return null; // CRUCIAL: No lanzar Error para no romper React
 };
 
 const parsePct = (val: number): number => {
@@ -119,15 +122,14 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
         const urlAdv = `/leaguedashplayerstats?LastNGames=0&LeagueID=00&MeasureType=Advanced&Month=0&OpponentTeamID=0&PaceAdjust=N&PerMode=PerGame&Period=0&PlusMinus=N&Rank=N&Season=${season}&SeasonType=Regular%20Season&TeamID=0`;
         const urlHustle = `/leaguehustlestatsplayer?LastNGames=0&LeagueID=00&Month=0&OpponentTeamID=0&PaceAdjust=N&PerMode=PerGame&PlusMinus=N&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&TeamID=0`;
 
-        const [resBase, resAdv, resHustle] = await Promise.allSettled([
+        const [dataBase, dataAdv, dataHustle] = await Promise.all([
             fetchSafeJSON(urlBase), fetchSafeJSON(urlAdv), fetchSafeJSON(urlHustle)
         ]);
 
-        if (resBase.status === 'rejected' || !resBase.value?.resultSets) throw new Error("Base API Failed");
-
-        const dataBase = resBase.value;
-        const dataAdv = resAdv.status === 'fulfilled' ? resAdv.value : null;
-        const dataHustle = resHustle.status === 'fulfilled' ? resHustle.value : null;
+        if (!dataBase || !dataBase.resultSets) {
+            console.warn("Base API Failed, applying automatic fallback.");
+            return this.getAllPlayers();
+        }
 
         const headersBase = dataBase.resultSets[0].headers;
         const rowsBase = dataBase.resultSets[0].rowSet;
@@ -163,10 +165,12 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
             });
         }
 
+// ... (arriba queda igual hasta el fetchAllOfficialPlayers)
         let parsedPlayers = rowsBase.map((row: any[]) => {
           const playerId = getString(row, headersBase, "PLAYER_ID", "0");
           const baseAdv = advMap.get(playerId) || {};
           const baseHustle = hustleMap.get(playerId) || { deflections: 0, contestedShots: 0, contested3pt: 0, chargesDrawn: 0 };
+          const gp = getStat(row, headersBase, "GP"); // 🚀 Extraemos GP primero
 
           const p = {
             id: playerId,
@@ -175,7 +179,10 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
             position: "NBA", imageUrl: this.getImageUrl(playerId),
             age: getStat(row, headersBase, "AGE"),
             stats: {
-              gp: getStat(row, headersBase, "GP"), mpg: getStat(row, headersBase, "MIN"),
+              gp: gp, 
+              // 🚀 SOLUCIÓN MAGISTRAL: Convertimos el promedio (1.0) en Partidos Totales Titular
+              gs: Math.round(getStat(row, headersBase, "GS") * gp), 
+              mpg: getStat(row, headersBase, "MIN"),
               ppg: getStat(row, headersBase, "PTS"), rpg: getStat(row, headersBase, "REB"), apg: getStat(row, headersBase, "AST"),
               spg: getStat(row, headersBase, "STL"), bpg: getStat(row, headersBase, "BLK"), topg: getStat(row, headersBase, "TOV"),
               fga: getStat(row, headersBase, "FGA"), fgm: getStat(row, headersBase, "FGM"), 
@@ -195,6 +202,7 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
           };
           return { ...p, adv: this.computeAllAdvanced(p as any) };
         });
+// ... (el resto del archivo nbaService.ts se queda igual)
 
         const allPPG = parsedPlayers.map(p => p.stats.ppg).sort((a,b)=>a-b);
         const allAPG = parsedPlayers.map(p => p.stats.apg).sort((a,b)=>a-b);
@@ -270,19 +278,22 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
         const paramsOpp = paramsBase.replace("MeasureType=Base", "MeasureType=Opponent");
         const urlClutch = `/leaguedashteamclutch?ClutchTime=Last%205%20Minutes&DateFrom=&DateTo=&Direction=DESC&GameScope=&GameSegment=&LastNGames=0&LeagueID=00&Location=&MeasureType=Advanced&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PaceAdjust=N&PerMode=PerGame&Period=0&PlayerExperience=&PlayerPosition=&PlusMinus=N&PointDiff=5&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&Sort=W_PCT&StarterBench=&TeamID=0&VsConference=&VsDivision=`;
 
-        const [resBase, resAdv, resOpp, resClutch] = await Promise.allSettled([
+        const [resBase, resAdv, resOpp, resClutch] = await Promise.all([
             fetchSafeJSON(`/leaguedashteamstats${paramsBase}`),
             fetchSafeJSON(`/leaguedashteamstats${paramsAdv}`),
             fetchSafeJSON(`/leaguedashteamstats${paramsOpp}`),
             fetchSafeJSON(urlClutch)
         ]);
 
-        if (resBase.status === 'rejected' || !resBase.value?.resultSets) throw new Error("Team Base API Failed");
+        if (!resBase || !resBase.resultSets) {
+            console.warn("Team Base API Failed");
+            return this.getAllTeams();
+        }
 
-        const dataBase = resBase.value;
-        const dataAdv = resAdv.status === 'fulfilled' ? resAdv.value : null;
-        const dataOpp = resOpp.status === 'fulfilled' ? resOpp.value : null;
-        const dataClutch = resClutch.status === 'fulfilled' ? resClutch.value : null;
+        const dataBase = resBase;
+        const dataAdv = resAdv;
+        const dataOpp = resOpp;
+        const dataClutch = resClutch;
 
         const headersBase = dataBase.resultSets[0].headers;
         const rowsBase = dataBase.resultSets[0].rowSet;
@@ -292,10 +303,12 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
             const h = dataAdv.resultSets[0].headers;
             dataAdv.resultSets[0].rowSet.forEach((row: any[]) => {
               advMap.set(String(row[h.indexOf("TEAM_ID")]), {
-                offRtg: getStat(row, h, "OFF_RATING"), defRtg: getStat(row, h, "DEF_RATING"),
-                netRtg: getStat(row, h, "NET_RATING"), pace: getStat(row, h, "PACE"),
+                offRtg: getStat(row, h, "OFF_RATING") || 0, 
+                defRtg: getStat(row, h, "DEF_RATING") || 0,
+                netRtg: getStat(row, h, "NET_RATING") || 0, 
+                pace: getStat(row, h, "PACE") || 0,
                 tsPct: parsePct(getStat(row, h, "TS_PCT")), 
-                astTo: getStat(row, h, "AST_TO"),
+                astTo: getStat(row, h, "AST_TO") || 0,
                 rebPct: parsePct(getStat(row, h, "REB_PCT"))
               });
             });
@@ -308,7 +321,7 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
               oppMap.set(String(row[h.indexOf("TEAM_ID")]), {
                 oppFgPct: parsePct(getStat(row, h, "OPP_FG_PCT")),
                 opp3ptPct: parsePct(getStat(row, h, "OPP_FG3_PCT")),
-                oppPtsOffTov: getStat(row, h, "OPP_PTS_OFF_TOV")
+                oppPtsOffTov: getStat(row, h, "OPP_PTS_OFF_TOV") || 0
               });
             });
         }
@@ -318,7 +331,7 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
             const h = dataClutch.resultSets[0].headers;
             dataClutch.resultSets[0].rowSet.forEach((row: any[]) => {
               clutchMap.set(String(row[h.indexOf("TEAM_ID")]), {
-                clutchNetRtg: getStat(row, h, "NET_RATING"),
+                clutchNetRtg: getStat(row, h, "NET_RATING") || 0,
                 clutchWinPct: parsePct(getStat(row, h, "W_PCT"))
               });
             });
@@ -351,6 +364,70 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
     })();
     this.fetchTeamsPromises.set(season, promise);
     return promise;
+  }
+
+  // 🚀 DATOS AUXILIARES (Premios). Las URLs están perfectas para no fallar
+  async fetchAwardAuxData(season: string = "2025-26", prevSeason: string = "2024-25") {
+    try {
+        const rookieUrl = `/leaguedashplayerstats?College=&Conference=&Country=&DateFrom=&DateTo=&Division=&DraftPick=&DraftYear=&GameScope=&GameSegment=&Height=&LastNGames=0&LeagueID=00&Location=&MeasureType=Base&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PaceAdjust=N&PerMode=Totals&Period=0&PlayerExperience=Rookie&PlayerPosition=&PlusMinus=N&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&StarterBench=&TeamID=0&VsConference=&VsDivision=&Weight=`;
+        const clutchUrl = `/leaguedashplayerclutch?AheadBehind=&ClutchTime=Last%205%20Minutes&DateFrom=&DateTo=&Direction=DESC&GameScope=&GameSegment=&LastNGames=0&LeagueID=00&Location=&MeasureType=Base&Month=0&OpponentTeamID=0&Outcome=&PaceAdjust=N&PerMode=Totals&Period=0&PlayerExperience=&PlayerPosition=&PlusMinus=N&PointDiff=5&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&Sort=PTS&StarterBench=&TeamID=0&VsConference=&VsDivision=`;
+        const benchUrl = `/leaguedashplayerstats?College=&Conference=&Country=&DateFrom=&DateTo=&Division=&DraftPick=&DraftYear=&GameScope=&GameSegment=&Height=&LastNGames=0&LeagueID=00&Location=&MeasureType=Base&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PaceAdjust=N&PerMode=Totals&Period=0&PlayerExperience=&PlayerPosition=&PlusMinus=N&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&StarterBench=Bench&TeamID=0&VsConference=&VsDivision=&Weight=`;
+        
+        const [resRookies, resClutch, resBench, prevPlayers, prevTeams] = await Promise.all([
+            fetchSafeJSON(rookieUrl),
+            fetchSafeJSON(clutchUrl),
+            fetchSafeJSON(benchUrl),
+            this.fetchAllOfficialPlayers(prevSeason),
+            this.fetchAllOfficialTeams(prevSeason)
+        ]);
+
+        const prevPlayersMap = new Map<string, any>();
+        if (prevPlayers && Array.isArray(prevPlayers)) {
+            prevPlayers.forEach((p: any) => prevPlayersMap.set(p.id, p));
+        }
+
+        const rookies = new Set<string>();
+        if (resRookies && resRookies.resultSets && resRookies.resultSets[0].rowSet.length > 0) {
+            const h = resRookies.resultSets[0].headers;
+            resRookies.resultSets[0].rowSet.forEach((r: any[]) => rookies.add(String(r[h.indexOf("PLAYER_ID")])));
+        } else if (prevPlayersMap.size > 50) {
+            // Fallback infalible
+            const currentPlayers = this.playersCache || [];
+            currentPlayers.forEach(p => {
+                if (!prevPlayersMap.has(p.id) && p.age <= 23) rookies.add(p.id);
+            });
+        }
+
+        const clutchStats = new Map<string, any>();
+        if (resClutch && resClutch.resultSets && resClutch.resultSets[0].rowSet.length > 0) {
+            const h = resClutch.resultSets[0].headers;
+            resClutch.resultSets[0].rowSet.forEach((r: any[]) => {
+                clutchStats.set(String(r[h.indexOf("PLAYER_ID")]), {
+                    pts: getStat(r, h, "PTS"),
+                    ts: parsePct(getStat(r, h, "PTS") / (2 * (getStat(r, h, "FGA") + 0.44 * getStat(r, h, "FTA")))),
+                    plusMinus: getStat(r, h, "PLUS_MINUS"),
+                    gp: getStat(r, h, "GP")
+                });
+            });
+        }
+
+        const benchStats = new Map<string, number>();
+        if (resBench && resBench.resultSets && resBench.resultSets[0].rowSet.length > 0) {
+            const h = resBench.resultSets[0].headers;
+            resBench.resultSets[0].rowSet.forEach((r: any[]) => {
+                benchStats.set(String(r[h.indexOf("PLAYER_ID")]), getStat(r, h, "GP"));
+            });
+        }
+
+        const prevTeamsMap = new Map<string, any>();
+        if (prevTeams && Array.isArray(prevTeams)) {
+            prevTeams.forEach((t: any) => prevTeamsMap.set(t.id, t));
+        }
+
+        return { rookies, clutchStats, benchStats, prevPlayers: prevPlayersMap, prevTeams: prevTeamsMap };
+    } catch (e) {
+        return { rookies: new Set(), clutchStats: new Map(), benchStats: new Map(), prevPlayers: new Map(), prevTeams: new Map() };
+    }
   }
 
   async getTeamSchedule(teamId: string): Promise<any[]> { 
@@ -492,31 +569,57 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
     }
   }
 
-  // 🚀 NUEVO: EXTRACCIÓN DE SHOT CHARTS (Coordenadas X,Y)
-  async getPlayerShotChart(playerId: string, season: string = "2025-26"): Promise<any[]> {
-    try {
-      // ContextMeasure=FGA nos trae TODOS los tiros intentados
-      const url = `/shotchartdetail?ContextMeasure=FGA&LastNGames=0&LeagueID=00&Month=0&OpponentTeamID=0&PaceAdjust=N&PerMode=PerGame&Period=0&PlayerID=${playerId}&PlusMinus=N&Position=&Rank=N&RookieYear=&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&TeamID=0&VsConference=&VsDivision=`;
-      
-      const data = await fetchSafeJSON(url);
-      if (!data || !data.resultSets || data.resultSets.length === 0) return [];
+  async getPlayerShotChart(playerId: string, season: string = "2024-25"): Promise<any[]> {
+    const seasonsToTry = ["2024-25", "2023-24", "2022-23"];
+    for (const s of seasonsToTry) {
+      try {
+        const url = `/shotchartdetail?ContextMeasure=FGA&LastNGames=0&LeagueID=00&Month=0&OpponentTeamID=0&PaceAdjust=N&PerMode=PerGame&Period=0&PlayerID=${playerId}&PlusMinus=N&Position=&Rank=N&RookieYear=&Season=${s}&SeasonSegment=&SeasonType=Regular%20Season&TeamID=0&VsConference=&VsDivision=`;
+        const data = await fetchSafeJSON(url);
+        if (data && data.resultSets && data.resultSets[0].rowSet.length > 0) {
+          const headers = data.resultSets[0].headers;
+          return data.resultSets[0].rowSet.map((r: any[]) => ({
+            x: getStat(r, headers, "LOC_X"),
+            y: getStat(r, headers, "LOC_Y"),
+            made: getStat(r, headers, "SHOT_MADE_FLAG") === 1,
+            zone: getString(r, headers, "SHOT_ZONE_BASIC", ""),
+            type: getString(r, headers, "ACTION_TYPE", "Jump Shot"),
+          }));
+        }
+      } catch (error) {
+        continue; 
+      }
+    }
+    return [];
+  }
 
+  async getTeamDetails(teamId: string): Promise<any> { return null; }
+  
+  async getPlayerGameLog(playerId: string, season: string = "2025-26"): Promise<any[]> { 
+    try {
+      const data = await fetchSafeJSON(`/playergamelog?PlayerID=${playerId}&Season=${season}&SeasonType=Regular%20Season`);
+      if (!data || !data.resultSets || data.resultSets.length === 0) return [];
+      
       const headers = data.resultSets[0].headers;
-      return data.resultSets[0].rowSet.map((r: any[]) => ({
-        x: getStat(r, headers, "LOC_X"),
-        y: getStat(r, headers, "LOC_Y"),
-        made: getStat(r, headers, "SHOT_MADE_FLAG") === 1,
-        zone: getString(r, headers, "SHOT_ZONE_BASIC", ""),
-        type: getString(r, headers, "ACTION_TYPE", "Jump Shot"),
-      }));
+      return data.resultSets[0].rowSet.map((r: any[]) => {
+        const matchup = getString(r, headers, "MATCHUP", "");
+        return {
+          date: getString(r, headers, "GAME_DATE", ""),
+          matchup: matchup,
+          isHome: !matchup.includes("@"),
+          opponent: matchup.split(matchup.includes("@") ? "@" : "vs.")[1]?.trim() || "UNK",
+          wl: getString(r, headers, "WL", ""),
+          pts: getStat(r, headers, "PTS"),
+          reb: getStat(r, headers, "REB"),
+          ast: getStat(r, headers, "AST"),
+          ts: parsePct(getStat(r, headers, "PTS") / (2 * (getStat(r, headers, "FGA") + 0.44 * getStat(r, headers, "FTA"))))
+        };
+      });
     } catch (error) {
-      console.error("Error obteniendo el Shot Chart:", error);
+      console.error("Error fetching game log:", error);
       return [];
     }
   }
 
-  async getTeamDetails(teamId: string): Promise<any> { return null; }
-  async getPlayerGameLog(playerId: string): Promise<any[]> { return []; }
   async searchRealPlayersWithStats(query: string): Promise<NBAPlayer[]> { return []; }
   async getLivePlayers(): Promise<NBAPlayer[]> { return this.fetchAllOfficialPlayers("2025-26"); }
   findSimilarPlayers() { return []; }
