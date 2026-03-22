@@ -12,7 +12,7 @@ const getString = (row: any[], headers: string[], key: string, fallback: string)
     return idx !== -1 && row[idx] !== null && row[idx] !== undefined ? String(row[idx]) : fallback;
 };
 
-// 🚀 BLINDAJE EXTREMO: Si fallan los proxies o la API da error 500, devuelve null y NO crashea.
+// 🚀 BLINDAJE EXTREMO
 const fetchSafeJSON = async (endpoint: string) => {
     const fullUrl = `https://stats.nba.com/stats${endpoint}`;
     const proxies = [
@@ -35,7 +35,7 @@ const fetchSafeJSON = async (endpoint: string) => {
             }
         } catch (e) {}
     }
-    return null; // CRUCIAL: No lanzar Error para no romper React
+    return null; 
 };
 
 const parsePct = (val: number): number => {
@@ -75,7 +75,11 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
     return NBA_PLAYERS.map(player => {
       const basePlayer = { ...player, imageUrl: this.getImageUrl(player.id) };
       const adv = this.computeAllAdvanced(basePlayer as NBAPlayer);
-      return { ...basePlayer, adv } as any;
+      return { 
+          ...basePlayer, 
+          adv,
+          hustle: { deflections: 0, contestedShots: 0, contested3pt: 0, chargesDrawn: 0 } 
+      } as any;
     });
   }
   
@@ -165,12 +169,11 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
             });
         }
 
-// ... (arriba queda igual hasta el fetchAllOfficialPlayers)
         let parsedPlayers = rowsBase.map((row: any[]) => {
           const playerId = getString(row, headersBase, "PLAYER_ID", "0");
           const baseAdv = advMap.get(playerId) || {};
           const baseHustle = hustleMap.get(playerId) || { deflections: 0, contestedShots: 0, contested3pt: 0, chargesDrawn: 0 };
-          const gp = getStat(row, headersBase, "GP"); // 🚀 Extraemos GP primero
+          const gp = getStat(row, headersBase, "GP"); 
 
           const p = {
             id: playerId,
@@ -180,7 +183,6 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
             age: getStat(row, headersBase, "AGE"),
             stats: {
               gp: gp, 
-              // 🚀 SOLUCIÓN MAGISTRAL: Convertimos el promedio (1.0) en Partidos Totales Titular
               gs: Math.round(getStat(row, headersBase, "GS") * gp), 
               mpg: getStat(row, headersBase, "MIN"),
               ppg: getStat(row, headersBase, "PTS"), rpg: getStat(row, headersBase, "REB"), apg: getStat(row, headersBase, "AST"),
@@ -202,7 +204,6 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
           };
           return { ...p, adv: this.computeAllAdvanced(p as any) };
         });
-// ... (el resto del archivo nbaService.ts se queda igual)
 
         const allPPG = parsedPlayers.map(p => p.stats.ppg).sort((a,b)=>a-b);
         const allAPG = parsedPlayers.map(p => p.stats.apg).sort((a,b)=>a-b);
@@ -359,14 +360,13 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
         return parsedTeams;
       } catch (err) {
         this.fetchTeamsPromises.delete(season);
-        return [];
+        return season === "2025-26" ? this.getAllTeams() : [];
       }
     })();
     this.fetchTeamsPromises.set(season, promise);
     return promise;
   }
 
-  // 🚀 DATOS AUXILIARES (Premios). Las URLs están perfectas para no fallar
   async fetchAwardAuxData(season: string = "2025-26", prevSeason: string = "2024-25") {
     try {
         const rookieUrl = `/leaguedashplayerstats?College=&Conference=&Country=&DateFrom=&DateTo=&Division=&DraftPick=&DraftYear=&GameScope=&GameSegment=&Height=&LastNGames=0&LeagueID=00&Location=&MeasureType=Base&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PaceAdjust=N&PerMode=Totals&Period=0&PlayerExperience=Rookie&PlayerPosition=&PlusMinus=N&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&StarterBench=&TeamID=0&VsConference=&VsDivision=&Weight=`;
@@ -391,7 +391,6 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
             const h = resRookies.resultSets[0].headers;
             resRookies.resultSets[0].rowSet.forEach((r: any[]) => rookies.add(String(r[h.indexOf("PLAYER_ID")])));
         } else if (prevPlayersMap.size > 50) {
-            // Fallback infalible
             const currentPlayers = this.playersCache || [];
             currentPlayers.forEach(p => {
                 if (!prevPlayersMap.has(p.id) && p.age <= 23) rookies.add(p.id);
@@ -483,6 +482,8 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
   
   async getTeamRosterAndCoaches(teamId: string): Promise<any> { 
     try {
+        if (!teamId || isNaN(Number(teamId))) return { players: [], coaches: [] };
+
         const data = await fetchSafeJSON(`/commonteamroster?LeagueID=00&Season=2025-26&TeamID=${teamId}`);
         if (!data || !data.resultSets || data.resultSets.length < 1) return { players: [], coaches: [] };
 
@@ -569,9 +570,12 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
     }
   }
 
-  async getPlayerShotChart(playerId: string, season: string = "2024-25"): Promise<any[]> {
-    const seasonsToTry = ["2024-25", "2023-24", "2022-23"];
-    for (const s of seasonsToTry) {
+  // 🚀 FIX: Shot Chart actualizado para coger la temporada actual 2025-26 primero
+  async getPlayerShotChart(playerId: string, season: string = "2025-26"): Promise<any[]> {
+    const seasonsToTry = [season, "2024-25", "2023-24", "2022-23"];
+    
+    // Convertimos a un Set para evitar duplicar el intento si la season actual ya estaba en el array original
+    for (const s of Array.from(new Set(seasonsToTry))) {
       try {
         const url = `/shotchartdetail?ContextMeasure=FGA&LastNGames=0&LeagueID=00&Month=0&OpponentTeamID=0&PaceAdjust=N&PerMode=PerGame&Period=0&PlayerID=${playerId}&PlusMinus=N&Position=&Rank=N&RookieYear=&Season=${s}&SeasonSegment=&SeasonType=Regular%20Season&TeamID=0&VsConference=&VsDivision=`;
         const data = await fetchSafeJSON(url);

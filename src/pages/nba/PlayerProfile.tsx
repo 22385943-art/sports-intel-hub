@@ -58,7 +58,7 @@ export default function NBAPlayerProfile() {
   
   const [player, setPlayer] = useState<NBAPlayer | null>(null);
   const [allPlayers, setAllPlayers] = useState<NBAPlayer[]>([]);
-  const [allTeams, setAllTeams] = useState<any[]>([]); // 🚀 FIX: Usamos los equipos oficiales para los Splits
+  const [allTeams, setAllTeams] = useState<any[]>([]);
   const [bio, setBio] = useState<any>(null);
   const [onOffSwing, setOnOffSwing] = useState<number | null>(null); 
   const [accolades, setAccolades] = useState<any[]>([]); 
@@ -85,7 +85,7 @@ export default function NBAPlayerProfile() {
       nbaService.fetchAllOfficialTeams()
     ]).then(([players, teams]) => {
       setAllPlayers(players);
-      setAllTeams(teams); // Guardamos la lista robusta de equipos
+      setAllTeams(teams); 
       
       const foundPlayer = players.find(p => p.id === id);
       setPlayer(foundPlayer || null);
@@ -104,7 +104,10 @@ export default function NBAPlayerProfile() {
         }
 
         const awardsFetch = fetch(`/nba-api/playerawards?PlayerID=${id}`).then(res => res.json()).catch(() => null);
-        const shotsFetch = nbaService.getPlayerShotChart(id); 
+        
+        // 🚀 FIX: Forzamos expresamente la temporada actual para el Shot Chart
+        const shotsFetch = nbaService.getPlayerShotChart(id, "2025-26"); 
+        
         const gameLogFetch = nbaService.getPlayerGameLog(id);
 
         Promise.all([bioFetch, onOffFetch, awardsFetch, shotsFetch, gameLogFetch]).then(([bioData, onOffData, awardsData, shotData, logData]) => {
