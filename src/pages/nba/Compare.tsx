@@ -7,7 +7,7 @@ import {
 } from "recharts";
 import {
   Search, ChevronDown, Loader2, Hexagon, Flame, Target, Shield,
-  Activity, Zap, Brain, Crown, ShieldAlert, Crosshair 
+  Activity, Zap, Brain, Crown, ShieldAlert, Crosshair, TrendingUp, BarChart3, Crosshair as CrosshairIcon
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -45,6 +45,17 @@ const areColorsTooSimilar = (hex1: string, hex2: string) => {
 const normalizeStr = (s: string) => {
     if (!s) return "";
     return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+};
+
+const getMultiplier = (p: any, mode: string) => {
+    if (mode === 'Per Game' || !p || !p.stats || !p.adv) return 1;
+    if (mode === 'Per 36 Min') return p.stats.mpg > 0 ? 36 / p.stats.mpg : 1;
+    if (mode === 'Per 75') {
+        const pace = p.adv.pace || 100;
+        const possPerGame = (p.stats.mpg / 48) * pace;
+        return possPerGame > 0 ? 75 / possPerGame : 1;
+    }
+    return 1;
 };
 
 const getArchetype = (p: any) => {
@@ -104,7 +115,7 @@ const PlayerCombobox = ({
 
   const generateSeasons = () => {
       const seasons = [];
-      for (let i = 2025; i >= 1973; i--) { // 🚀 FIX: Ampliado a 1973 para incluir a MJ, Magic, Bird, Kareem.
+      for (let i = 2025; i >= 1946; i--) { 
           const shortYear = String(i + 1).slice(2).padStart(2, '0');
           seasons.push(`${i}-${shortYear}`); 
       }
@@ -194,9 +205,9 @@ const PlayerCombobox = ({
                       <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 font-mono text-center px-4">Decrypting Archives<br/><span className="text-[8px] text-slate-600">(Historical seasons may take longer)</span></span>
                     </div>
                   ) : isError ? (
-                    <div className="text-center py-12 text-slate-500 text-[10px] font-black uppercase tracking-[0.3em] font-mono">
-                      Data unavailable for {season}
-                      <br/><span className="text-[8px] text-slate-600 mt-2 block">Please wait 10 seconds and try again (Rate Limit)</span>
+                    <div className="text-center py-12 flex flex-col items-center gap-3">
+                        <span className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em] font-mono">Proxy Rate Limit / No Data</span>
+                        <button onClick={() => onSeasonChange(season)} className="text-[10px] uppercase font-black tracking-widest px-4 py-2 bg-white/5 rounded-lg text-white hover:bg-white/10 transition-colors border border-white/10">Retry Connection</button>
                     </div>
                   ) : (
                     filtered.map((p, i) => (
@@ -238,37 +249,41 @@ const PlayerCombobox = ({
   );
 };
 
-const TugBar = ({ label, icon, v1, v2, z1, z2, c1, c2, reverse = false }: { label: string; icon: React.ReactNode; v1: number | undefined; v2: number | undefined; z1?: number; z2?: number; c1: string; c2: string; reverse?: boolean }) => {
+const TugBar = ({ label, icon, v1, v2, z1, z2, c1, c2, reverse = false, showPlus = false }: { label: string; icon: React.ReactNode; v1: number | undefined; v2: number | undefined; z1?: number; z2?: number; c1: string; c2: string; reverse?: boolean; showPlus?: boolean }) => {
   const safeV1 = Number(v1) || 0;
   const safeV2 = Number(v2) || 0;
 
-  const total = safeV1 + safeV2 || 1;
-  const p1Pct = (safeV1 / total) * 100;
-  const p2Pct = (safeV2 / total) * 100;
+  const minVal = Math.min(0, safeV1, safeV2);
+  const shiftedV1 = safeV1 - minVal;
+  const shiftedV2 = safeV2 - minVal;
+  const total = shiftedV1 + shiftedV2 || 1;
+  
+  const p1Pct = (shiftedV1 / total) * 100;
+  const p2Pct = (shiftedV2 / total) * 100;
   
   let winner = "tie";
-  // 🚀 FIX: Era-Adjusted Dominance (Percentiles)
-  if (z1 !== undefined && z2 !== undefined) {
-      winner = z1 > z2 ? "p1" : z2 > z1 ? "p2" : "tie";
+  if (z1 !== undefined && z2 !== undefined && z1 !== z2) {
+      if (reverse) winner = z1 < z2 ? "p1" : "p2";
+      else winner = z1 > z2 ? "p1" : "p2";
   } else {
       if (reverse) winner = safeV1 < safeV2 ? "p1" : safeV2 < safeV1 ? "p2" : "tie";
       else winner = safeV1 > safeV2 ? "p1" : safeV2 > safeV1 ? "p2" : "tie";
   }
 
   const delta = Math.abs(safeV1 - safeV2).toFixed(1);
+  const formatVal = (v: number) => showPlus && v > 0 ? `+${v.toFixed(1)}` : v.toFixed(1);
 
   return (
     <div className="group py-5 border-b border-white/[0.03] last:border-b-0 hover:bg-white/[0.015] transition-all duration-500 px-4 rounded-xl relative overflow-hidden">
       <div className="flex items-center justify-between mb-4 relative z-10">
         
-        {/* P1 Value & Delta */}
         <motion.span
           initial={{ opacity: 0 }} animate={{ opacity: 1 }}
           className={`text-2xl md:text-3xl font-black font-mono tracking-tighter transition-all duration-500 flex items-center gap-2 ${winner === "p1" ? "" : "text-muted-foreground/30"}`}
           style={winner === "p1" ? { color: c1, textShadow: `0 0 15px ${hexToRgba(c1, 0.6)}` } : {}}
         >
-          {safeV1.toFixed(1)}
-          {winner === "p1" && safeV1 > 0 && <span className="text-xs text-emerald-400 drop-shadow-none bg-emerald-500/10 px-2 py-0.5 rounded-md">(+{delta})</span>}
+          {formatVal(safeV1)}
+          {winner === "p1" && (safeV1 !== safeV2) && <span className="text-[10px] font-bold tracking-widest text-emerald-400 drop-shadow-none bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20">(+{delta})</span>}
         </motion.span>
         
         <div className="flex items-center gap-2 group-hover:-translate-y-0.5 transition-transform duration-500">
@@ -276,18 +291,16 @@ const TugBar = ({ label, icon, v1, v2, z1, z2, c1, c2, reverse = false }: { labe
           <span className="text-[10px] font-black uppercase tracking-[0.25em] text-muted-foreground group-hover:text-foreground/80 transition-colors font-mono">{label}</span>
         </div>
 
-        {/* P2 Value & Delta */}
         <motion.span
           initial={{ opacity: 0 }} animate={{ opacity: 1 }}
           className={`text-2xl md:text-3xl font-black font-mono tracking-tighter transition-all duration-500 flex items-center gap-2 ${winner === "p2" ? "" : "text-muted-foreground/30"}`}
           style={winner === "p2" ? { color: c2, textShadow: `0 0 15px ${hexToRgba(c2, 0.6)}` } : {}}
         >
-          {winner === "p2" && safeV2 > 0 && <span className="text-xs text-emerald-400 drop-shadow-none bg-emerald-500/10 px-2 py-0.5 rounded-md">(+{delta})</span>}
-          {safeV2.toFixed(1)}
+          {winner === "p2" && (safeV2 !== safeV1) && <span className="text-[10px] font-bold tracking-widest text-emerald-400 drop-shadow-none bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20">(+{delta})</span>}
+          {formatVal(safeV2)}
         </motion.span>
       </div>
 
-      {/* The Neon Track */}
       <div className="relative h-3 w-full rounded-full overflow-hidden bg-[#000000] shadow-[inset_0_2px_6px_rgba(0,0,0,0.8)] border border-white/[0.03]">
         <motion.div
           initial={{ width: 0 }} animate={{ width: `${p1Pct}%` }} transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
@@ -314,6 +327,9 @@ const TugBar = ({ label, icon, v1, v2, z1, z2, c1, c2, reverse = false }: { labe
 export default function ComparePlayers() {
   const [isLoading, setIsLoading] = useState(true);
   
+  const [activeTab, setActiveTab] = useState<"overall" | "offense" | "defense" | "advanced" | "shooting">("overall");
+  const [perMode, setPerMode] = useState<"Per Game" | "Per 75" | "Per 36 Min">("Per Game");
+
   const [p1Id, setP1Id] = useState("203999");
   const [p1Season, setP1Season] = useState("2025-26");
   const [p1Data, setP1Data] = useState<any>(null);
@@ -346,6 +362,38 @@ export default function ComparePlayers() {
 
   const radarData = useMemo(() => {
     if (!p1 || !p2) return [];
+    
+    if (activeTab === "offense") {
+        return [
+          { stat: "Scoring", p1: p1.percentiles?.Scoring ?? 50, p2: p2.percentiles?.Scoring ?? 50 },
+          { stat: "Playmaking", p1: p1.percentiles?.Playmaking ?? 50, p2: p2.percentiles?.Playmaking ?? 50 },
+          { stat: "Off Rtg", p1: p1.percentiles?.OffRtg ?? 50, p2: p2.percentiles?.OffRtg ?? 50 },
+          { stat: "Off Reb", p1: p1.percentiles?.OReb ?? 50, p2: p2.percentiles?.OReb ?? 50 },
+          { stat: "Ast %", p1: p1.percentiles?.AstPct ?? 50, p2: p2.percentiles?.AstPct ?? 50 },
+          { stat: "Efficiency", p1: p1.percentiles?.Efficiency ?? 50, p2: p2.percentiles?.Efficiency ?? 50 },
+        ];
+    }
+    if (activeTab === "defense") {
+        return [
+          { stat: "Impact", p1: p1.percentiles?.Defense ?? 50, p2: p2.percentiles?.Defense ?? 50 },
+          { stat: "Def Rtg", p1: p1.percentiles?.DefRtg ?? 50, p2: p2.percentiles?.DefRtg ?? 50 },
+          { stat: "Def Reb", p1: p1.percentiles?.DReb ?? 50, p2: p2.percentiles?.DReb ?? 50 },
+          { stat: "Contested", p1: p1.percentiles?.Contested ?? 50, p2: p2.percentiles?.Contested ?? 50 },
+          { stat: "Contest 3s", p1: p1.percentiles?.Contested3 ?? 50, p2: p2.percentiles?.Contested3 ?? 50 },
+          { stat: "Deflections", p1: p1.percentiles?.Deflections ?? 50, p2: p2.percentiles?.Deflections ?? 50 },
+        ];
+    }
+    if (activeTab === "advanced") {
+        return [
+          { stat: "SI+", p1: p1.percentiles?.SI ?? 50, p2: p2.percentiles?.SI ?? 50 },
+          { stat: "PER", p1: p1.percentiles?.PER ?? 50, p2: p2.percentiles?.PER ?? 50 },
+          { stat: "VORP", p1: p1.percentiles?.VORP ?? 50, p2: p2.percentiles?.VORP ?? 50 },
+          { stat: "BPM", p1: p1.percentiles?.Impact ?? 50, p2: p2.percentiles?.Impact ?? 50 },
+          { stat: "PIE", p1: p1.percentiles?.PIE ?? 50, p2: p2.percentiles?.PIE ?? 50 },
+          { stat: "Net Rtg", p1: p1.percentiles?.NetRtg ?? 50, p2: p2.percentiles?.NetRtg ?? 50 },
+        ];
+    }
+    
     return [
       { stat: "Scoring", p1: p1.percentiles?.Scoring ?? 50, p2: p2.percentiles?.Scoring ?? 50 },
       { stat: "Playmaking", p1: p1.percentiles?.Playmaking ?? 50, p2: p2.percentiles?.Playmaking ?? 50 },
@@ -354,42 +402,94 @@ export default function ComparePlayers() {
       { stat: "Impact", p1: p1.percentiles?.Impact ?? 50, p2: p2.percentiles?.Impact ?? 50 },
       { stat: "Rebounding", p1: p1.percentiles?.Rebounding ?? 50, p2: p2.percentiles?.Rebounding ?? 50 },
     ];
-  }, [p1, p2]);
+  }, [p1, p2, activeTab]);
 
   const statBars = useMemo(() => {
     if (!p1 || !p2) return [];
+    const mult1 = getMultiplier(p1, perMode);
+    const mult2 = getMultiplier(p2, perMode);
+
+    const getVal = (p: any, val: number | undefined, isCount: boolean, mult: number) => {
+        if (val === undefined || val === null) return 0;
+        return isCount ? val * mult : val;
+    };
+
+    if (activeTab === "offense") {
+        return [
+            { label: "PTS", v1: getVal(p1, p1.stats?.ppg, true, mult1), v2: getVal(p2, p2.stats?.ppg, true, mult2), z1: p1.zScores?.Scoring, z2: p2.zScores?.Scoring, icon: <Flame className="w-4 h-4 text-orange-500" /> },
+            { label: "AST", v1: getVal(p1, p1.stats?.apg, true, mult1), v2: getVal(p2, p2.stats?.apg, true, mult2), z1: p1.zScores?.Playmaking, z2: p2.zScores?.Playmaking, icon: <Activity className="w-4 h-4 text-purple-400" /> },
+            { label: "OREB", v1: getVal(p1, p1.stats?.oreb, true, mult1), v2: getVal(p2, p2.stats?.oreb, true, mult2), z1: p1.zScores?.OReb, z2: p2.zScores?.OReb, icon: <Shield className="w-4 h-4 text-slate-400" /> },
+            { label: "AST %", v1: p1.adv?.astPct, v2: p2.adv?.astPct, z1: p1.zScores?.AstPct, z2: p2.zScores?.AstPct, icon: <Activity className="w-4 h-4 text-cyan-400" /> },
+            { label: "AST RATIO", v1: p1.playmaking?.astRatio, v2: p2.playmaking?.astRatio, icon: <Brain className="w-4 h-4 text-purple-500" /> },
+            { label: "AST/TO", v1: p1.playmaking?.astTo, v2: p2.playmaking?.astTo, icon: <Brain className="w-4 h-4 text-emerald-400" /> },
+            { label: "OFF RTG", v1: p1.adv?.offRtg, v2: p2.adv?.offRtg, z1: p1.zScores?.OffRtg, z2: p2.zScores?.OffRtg, icon: <Flame className="w-4 h-4 text-rose-500" /> },
+            { label: "TS%", v1: p1.adv?.ts, v2: p2.adv?.ts, z1: p1.zScores?.Efficiency, z2: p2.zScores?.Efficiency, icon: <Target className="w-4 h-4 text-emerald-400" /> },
+            { label: "rTS%", v1: p1.adv?.rTS, v2: p2.adv?.rTS, showPlus: true, icon: <TrendingUp className="w-4 h-4 text-emerald-500" /> },
+            { label: "3PA", v1: getVal(p1, p1.stats?.fg3a, true, mult1), v2: getVal(p2, p2.stats?.fg3a, true, mult2), icon: <CrosshairIcon className="w-4 h-4 text-cyan-400" /> },
+            { label: "3P%", v1: p1.stats?.threePct, v2: p2.stats?.threePct, icon: <Target className="w-4 h-4 text-cyan-500" /> },
+            { label: "FTA", v1: getVal(p1, p1.stats?.fta, true, mult1), v2: getVal(p2, p2.stats?.fta, true, mult2), icon: <Flame className="w-4 h-4 text-orange-400" /> },
+            { label: "FT%", v1: p1.stats?.ftPct, v2: p2.stats?.ftPct, icon: <Target className="w-4 h-4 text-orange-500" /> },
+        ];
+    }
+
+    if (activeTab === "defense") {
+        return [
+            { label: "DREB", v1: getVal(p1, p1.stats?.dreb, true, mult1), v2: getVal(p2, p2.stats?.dreb, true, mult2), z1: p1.zScores?.DReb, z2: p2.zScores?.DReb, icon: <Shield className="w-4 h-4 text-slate-400" /> },
+            { label: "STL", v1: getVal(p1, p1.stats?.spg, true, mult1), v2: getVal(p2, p2.stats?.spg, true, mult2), z1: p1.zScores?.Defense, z2: p2.zScores?.Defense, icon: <Target className="w-4 h-4 text-rose-500" /> }, 
+            { label: "BLK", v1: getVal(p1, p1.stats?.bpg, true, mult1), v2: getVal(p2, p2.stats?.bpg, true, mult2), z1: p1.zScores?.Defense, z2: p2.zScores?.Defense, icon: <ShieldAlert className="w-4 h-4 text-slate-500" /> }, 
+            { label: "CONTESTED", v1: getVal(p1, p1.hustle?.contestedShots, true, mult1), v2: getVal(p2, p2.hustle?.contestedShots, true, mult2), z1: p1.zScores?.Contested, z2: p2.zScores?.Contested, icon: <ShieldAlert className="w-4 h-4 text-amber-500" /> },
+            { label: "CONTEST 3", v1: getVal(p1, p1.hustle?.contested3pt, true, mult1), v2: getVal(p2, p2.hustle?.contested3pt, true, mult2), z1: p1.zScores?.Contested3, z2: p2.zScores?.Contested3, icon: <ShieldAlert className="w-4 h-4 text-cyan-500" /> },
+            { label: "DEFLECTS", v1: getVal(p1, p1.hustle?.deflections, true, mult1), v2: getVal(p2, p2.hustle?.deflections, true, mult2), z1: p1.zScores?.Deflections, z2: p2.zScores?.Deflections, icon: <Activity className="w-4 h-4 text-orange-500" /> },
+            { label: "DEF RTG", v1: p1.adv?.defRating, v2: p2.adv?.defRating, z1: p1.zScores?.DefRtg, z2: p2.zScores?.DefRtg, reverse: true, icon: <Shield className="w-4 h-4 text-emerald-400" /> },
+        ];
+    }
+
+    if (activeTab === "advanced") {
+        return [
+            { label: "SI+", v1: p1.adv?.si, v2: p2.adv?.si, z1: p1.zScores?.SI, z2: p2.zScores?.SI, icon: <Activity className="w-4 h-4 text-cyan-400" /> },
+            { label: "PER", v1: p1.adv?.per, v2: p2.adv?.per, z1: p1.zScores?.PER, z2: p2.zScores?.PER, icon: <Flame className="w-4 h-4 text-orange-500" /> },
+            { label: "BPM", v1: p1.adv?.bpm, v2: p2.adv?.bpm, z1: p1.zScores?.Impact, z2: p2.zScores?.Impact, showPlus: true, icon: <BarChart3 className="w-4 h-4 text-emerald-400" /> },
+            { label: "VORP", v1: p1.adv?.vorp, v2: p2.adv?.vorp, z1: p1.zScores?.VORP, z2: p2.zScores?.VORP, icon: <Crown className="w-4 h-4 text-amber-400" /> },
+            { label: "PIE", v1: p1.adv?.pie, v2: p2.adv?.pie, z1: p1.zScores?.PIE, z2: p2.zScores?.PIE, icon: <ShieldAlert className="w-4 h-4 text-purple-400" /> },
+            { label: "NET RTG", v1: p1.adv?.net, v2: p2.adv?.net, z1: p1.zScores?.NetRtg, z2: p2.zScores?.NetRtg, showPlus: true, icon: <TrendingUp className="w-4 h-4 text-rose-500" /> },
+            { label: "USG%", v1: p1.adv?.usg, v2: p2.adv?.usg, z1: p1.zScores?.USG, z2: p2.zScores?.USG, icon: <Zap className="w-4 h-4 text-amber-500" /> },
+            { label: "TS%", v1: p1.adv?.ts, v2: p2.adv?.ts, z1: p1.zScores?.Efficiency, z2: p2.zScores?.Efficiency, icon: <Target className="w-4 h-4 text-emerald-500" /> },
+            { label: "AST%", v1: p1.adv?.astPct, v2: p2.adv?.astPct, z1: p1.zScores?.AstPct, z2: p2.zScores?.AstPct, icon: <Activity className="w-4 h-4 text-blue-400" /> },
+            { label: "eFG%", v1: p1.adv?.efg, v2: p2.adv?.efg, z1: p1.zScores?.EFG, z2: p2.zScores?.EFG, icon: <CrosshairIcon className="w-4 h-4 text-cyan-500" /> },
+        ];
+    }
+
     return [
-      { label: "PPG", v1: p1.stats?.ppg ?? 0, v2: p2.stats?.ppg ?? 0, z1: p1.percentiles?.Scoring, z2: p2.percentiles?.Scoring, icon: <Flame className="w-4 h-4 text-orange-500" /> },
-      { label: "RPG", v1: p1.stats?.rpg ?? 0, v2: p2.stats?.rpg ?? 0, z1: p1.percentiles?.Rebounding, z2: p2.percentiles?.Rebounding, icon: <Shield className="w-4 h-4 text-slate-400" /> },
-      { label: "APG", v1: p1.stats?.apg ?? 0, v2: p2.stats?.apg ?? 0, z1: p1.percentiles?.Playmaking, z2: p2.percentiles?.Playmaking, icon: <Activity className="w-4 h-4 text-purple-400" /> },
-      { label: "SPG", v1: p1.stats?.spg ?? 0, v2: p2.stats?.spg ?? 0, icon: <Target className="w-4 h-4 text-rose-500" /> }, 
-      { label: "BPG", v1: p1.stats?.bpg ?? 0, v2: p2.stats?.bpg ?? 0, icon: <ShieldAlert className="w-4 h-4 text-slate-500" /> }, 
-      { label: "TS%", v1: p1.adv?.ts ?? 0, v2: p2.adv?.ts ?? 0, z1: p1.percentiles?.Efficiency, z2: p2.percentiles?.Efficiency, icon: <Target className="w-4 h-4 text-emerald-400" /> },
-      { label: "USG%", v1: p1.adv?.usg ?? 0, v2: p2.adv?.usg ?? 0, icon: <Zap className="w-4 h-4 text-amber-400" /> },
-      { label: "PIE", v1: p1.adv?.pie ?? 0, v2: p2.adv?.pie ?? 0, z1: p1.percentiles?.Impact, z2: p2.percentiles?.Impact, icon: <Crown className="w-4 h-4 text-blue-400" /> },
-      { label: "TOV", v1: p1.stats?.topg ?? 0, v2: p2.stats?.topg ?? 0, icon: <ShieldAlert className="w-4 h-4 text-rose-500" />, reverse: true },
+      { label: "PPG", v1: getVal(p1, p1.stats?.ppg, true, mult1), v2: getVal(p2, p2.stats?.ppg, true, mult2), z1: p1.zScores?.Scoring, z2: p2.zScores?.Scoring, icon: <Flame className="w-4 h-4 text-orange-500" /> },
+      { label: "RPG", v1: getVal(p1, p1.stats?.rpg, true, mult1), v2: getVal(p2, p2.stats?.rpg, true, mult2), z1: p1.zScores?.Rebounding, z2: p2.zScores?.Rebounding, icon: <Shield className="w-4 h-4 text-slate-400" /> },
+      { label: "APG", v1: getVal(p1, p1.stats?.apg, true, mult1), v2: getVal(p2, p2.stats?.apg, true, mult2), z1: p1.zScores?.Playmaking, z2: p2.zScores?.Playmaking, icon: <Activity className="w-4 h-4 text-purple-400" /> },
+      { label: "SPG", v1: getVal(p1, p1.stats?.spg, true, mult1), v2: getVal(p2, p2.stats?.spg, true, mult2), z1: p1.zScores?.Defense, z2: p2.zScores?.Defense, icon: <Target className="w-4 h-4 text-rose-500" /> }, 
+      { label: "BPG", v1: getVal(p1, p1.stats?.bpg, true, mult1), v2: getVal(p2, p2.stats?.bpg, true, mult2), z1: p1.zScores?.Defense, z2: p2.zScores?.Defense, icon: <ShieldAlert className="w-4 h-4 text-slate-500" /> }, 
+      { label: "TS%", v1: p1.adv?.ts, v2: p2.adv?.ts, z1: p1.zScores?.Efficiency, z2: p2.zScores?.Efficiency, icon: <Target className="w-4 h-4 text-emerald-400" /> },
+      { label: "rTS%", v1: p1.adv?.rTS, v2: p2.adv?.rTS, showPlus: true, icon: <TrendingUp className="w-4 h-4 text-emerald-500" /> },
+      { label: "NET RTG", v1: p1.adv?.net, v2: p2.adv?.net, z1: p1.zScores?.NetRtg, z2: p2.zScores?.NetRtg, showPlus: true, icon: <BarChart3 className="w-4 h-4 text-cyan-400" /> },
+      { label: "TOV", v1: getVal(p1, p1.stats?.topg, true, mult1), v2: getVal(p2, p2.stats?.topg, true, mult2), reverse: true, icon: <ShieldAlert className="w-4 h-4 text-rose-500" /> },
     ];
-  }, [p1, p2]);
+  }, [p1, p2, activeTab, perMode]);
 
   const dominanceScore = useMemo(() => {
     let p1Wins = 0;
     let p2Wins = 0;
     statBars.forEach(s => {
-      const z1 = s.z1;
-      const z2 = s.z2;
       const v1 = Number(s.v1) || 0;
       const v2 = Number(s.v2) || 0;
       
-      if (z1 !== undefined && z2 !== undefined) {
-          if (z1 > z2) p1Wins++;
-          else if (z2 > z1) p2Wins++;
-      } else {
-          if (s.reverse) {
-              if (v1 < v2) p1Wins++;
-              else if (v2 < v1) p2Wins++;
+      if (s.reverse) {
+          if (s.z1 !== undefined && s.z2 !== undefined && s.z1 !== s.z2) {
+              if (s.z1 < s.z2) p1Wins++; else p2Wins++;
           } else {
-              if (v1 > v2) p1Wins++;
-              else if (v2 > v1) p2Wins++;
+              if (v1 < v2) p1Wins++; else if (v2 < v1) p2Wins++;
+          }
+      } else {
+          if (s.z1 !== undefined && s.z2 !== undefined && s.z1 !== s.z2) {
+              if (s.z1 > s.z2) p1Wins++; else p2Wins++;
+          } else {
+              if (v1 > v2) p1Wins++; else if (v2 > v1) p2Wins++;
           }
       }
     });
@@ -398,17 +498,17 @@ export default function ComparePlayers() {
 
   const aiVerdict = useMemo(() => {
     if (!p1 || !p2) return null;
-    const impactWinner = (p1.percentiles?.Impact || 0) > (p2.percentiles?.Impact || 0) ? p1 : p2;
-    const scoringWinner = (p1.percentiles?.Scoring || 0) > (p2.percentiles?.Scoring || 0) ? p1 : p2;
-    const effWinner = (p1.percentiles?.Efficiency || 0) > (p2.percentiles?.Efficiency || 0) ? p1 : p2;
-    const playWinner = (p1.percentiles?.Playmaking || 0) > (p2.percentiles?.Playmaking || 0) ? p1 : p2;
+    const impactWinner = (p1.adv?.bpm || 0) > (p2.adv?.bpm || 0) ? p1 : p2;
+    const scoringWinner = (p1.stats?.ppg || 0) > (p2.stats?.ppg || 0) ? p1 : p2;
+    const effWinner = (p1.adv?.ts || 0) > (p2.adv?.ts || 0) ? p1 : p2;
+    const playWinner = (p1.stats?.apg || 0) > (p2.stats?.apg || 0) ? p1 : p2;
 
-    if (p1.percentiles?.Impact === p2.percentiles?.Impact) return <p>Neural Analysis concludes an era-adjusted statistical deadlock. Both athletes represent identical tiers of systemic dominance.</p>;
+    if (p1.adv?.bpm === p2.adv?.bpm) return <p>Neural Analysis concludes a statistical deadlock. Both athletes represent identical tiers of systemic dominance in their respective eras.</p>;
 
     return (
       <p className="text-lg text-slate-300/90 leading-relaxed font-medium max-w-4xl tracking-wide">
         <span className="text-white font-bold">{impactWinner.name}</span> dictates the overall algorithmic advantage via <span className="text-emerald-400 font-bold drop-shadow-[0_0_8px_rgba(52,211,153,0.5)]">Era-Adjusted Plus/Minus ({impactWinner.adv?.bpm > 0 ? '+' : ''}{(impactWinner.adv?.bpm || 0).toFixed(1)})</span>. 
-        While <span className="text-white font-bold">{scoringWinner.name}</span> commands the superior scoring volume relative to their era <span className="text-orange-400 font-bold drop-shadow-[0_0_8px_rgba(249,115,22,0.5)]">({Math.max(p1.stats?.ppg || 0, p2.stats?.ppg || 0).toFixed(1)} PPG)</span>, <span className="text-white font-bold">{effWinner.name}</span> operates with peak true shooting efficiency <span className="text-cyan-400 font-bold drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]">({Math.max(p1.adv?.ts || 0, p2.adv?.ts || 0).toFixed(1)}%)</span>. 
+        While <span className="text-white font-bold">{scoringWinner.name}</span> commands the superior scoring volume <span className="text-orange-400 font-bold drop-shadow-[0_0_8px_rgba(249,115,22,0.5)]">({Math.max(p1.stats?.ppg || 0, p2.stats?.ppg || 0).toFixed(1)} PPG)</span>, <span className="text-white font-bold">{effWinner.name}</span> operates with peak true shooting efficiency <span className="text-cyan-400 font-bold drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]">({Math.max(p1.adv?.ts || 0, p2.adv?.ts || 0).toFixed(1)}%)</span>. 
         Playmaking engine favors <span className="text-white font-bold">{playWinner.name}</span>. Overall archetype synergy leans toward the more impactful metric profile.
       </p>
     );
@@ -431,7 +531,6 @@ export default function ComparePlayers() {
 
       <div className="max-w-7xl mx-auto space-y-10">
         
-        {/* HEADER & SELECTORS */}
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: "easeOut" }} className="flex flex-col gap-8">
           <div className="text-center">
             <Badge className="bg-white/[0.02] border-white/[0.08] text-slate-400 font-black text-[9px] uppercase tracking-[0.3em] px-6 py-2 mb-5 shadow-[inset_0_1px_2px_rgba(255,255,255,0.05)] backdrop-blur-xl">
@@ -451,6 +550,32 @@ export default function ComparePlayers() {
               </div>
             </div>
             <PlayerCombobox value={p2Id} onChange={(id, p) => { setP2Id(id); if(p) setP2Data({...p, archetype: getArchetype(p)}); else setP2Data(null); }} season={p2Season} onSeasonChange={setP2Season} themeColor={color2} />
+          </div>
+
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 mt-4 w-full max-w-5xl mx-auto border-t border-white/[0.05] pt-6">
+             <div className="flex bg-white/[0.02] border border-white/[0.05] p-1 rounded-xl shadow-inner backdrop-blur-md overflow-x-auto max-w-full">
+                {["overall", "offense", "defense", "advanced", "shooting"].map((tab) => (
+                    <button 
+                       key={tab} 
+                       onClick={() => setActiveTab(tab as any)}
+                       className={`px-5 py-2.5 rounded-lg text-xs font-black uppercase tracking-[0.2em] transition-all duration-300 ${activeTab === tab ? "bg-white/10 text-white shadow-md" : "text-slate-500 hover:text-slate-300 hover:bg-white/5"}`}
+                    >
+                        {tab}
+                    </button>
+                ))}
+             </div>
+
+             <div className="flex bg-white/[0.02] border border-white/[0.05] p-1 rounded-xl shadow-inner backdrop-blur-md shrink-0">
+                {["Per Game", "Per 75", "Per 36 Min"].map((mode) => (
+                    <button 
+                       key={mode} 
+                       onClick={() => setPerMode(mode as any)}
+                       className={`px-4 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${perMode === mode ? "bg-amber-500/20 text-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.2)]" : "text-slate-500 hover:text-slate-300 hover:bg-white/5"}`}
+                    >
+                        {mode}
+                    </button>
+                ))}
+             </div>
           </div>
         </motion.div>
 
@@ -520,68 +645,74 @@ export default function ComparePlayers() {
               </div>
             </div>
 
-            {/* 🚀 HOLOGRAPHIC RADAR & NEON TUGBARS */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-              
-              <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.4, duration: 0.5 }} className="lg:col-span-5">
-                <div className="bg-white/[0.01] border border-white/[0.04] rounded-[2.5rem] p-8 md:p-10 backdrop-blur-3xl shadow-2xl relative overflow-hidden h-full flex flex-col group hover:border-white/[0.08] transition-colors duration-500">
-                  <div className="absolute inset-0 shadow-[inset_0_1px_2px_rgba(255,255,255,0.03)] pointer-events-none rounded-[2.5rem]" />
-                  <div className="absolute -top-20 -left-20 w-80 h-80 rounded-full blur-[100px] pointer-events-none transition-colors duration-1000" style={{ backgroundColor: hexToRgba(color1, 0.06) }} />
-                  <div className="absolute -bottom-20 -right-20 w-80 h-80 rounded-full blur-[100px] pointer-events-none transition-colors duration-1000" style={{ backgroundColor: hexToRgba(color2, 0.06) }} />
-                  
-                  <div className="text-center mb-10 relative z-10">
-                    <h3 className="text-[12px] font-black uppercase tracking-[0.4em] text-white drop-shadow-lg mb-1">Style DNA Hologram</h3>
-                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.25em] font-mono">League Percentile (0-100)</p>
-                  </div>
+            {activeTab === "shooting" ? (
+               <div className="bg-white/[0.01] border border-white/[0.04] rounded-[2.5rem] p-16 backdrop-blur-3xl shadow-2xl relative overflow-hidden flex flex-col items-center justify-center min-h-[500px]">
+                  <CrosshairIcon className="w-20 h-20 text-slate-700 mb-6" />
+                  <h3 className="text-2xl font-black text-white tracking-widest uppercase mb-2">Shot Tracking System</h3>
+                  <p className="text-slate-400 text-sm max-w-lg text-center font-medium">The spatial shot chart integration is currently initializing. Stay tuned for the advanced court projection engine.</p>
+               </div>
+            ) : (
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                  <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.4, duration: 0.5 }} className="lg:col-span-5">
+                    <div className="bg-white/[0.01] border border-white/[0.04] rounded-[2.5rem] p-8 md:p-10 backdrop-blur-3xl shadow-2xl relative overflow-hidden h-full flex flex-col group hover:border-white/[0.08] transition-colors duration-500">
+                      <div className="absolute inset-0 shadow-[inset_0_1px_2px_rgba(255,255,255,0.03)] pointer-events-none rounded-[2.5rem]" />
+                      <div className="absolute -top-20 -left-20 w-80 h-80 rounded-full blur-[100px] pointer-events-none transition-colors duration-1000" style={{ backgroundColor: hexToRgba(color1, 0.06) }} />
+                      <div className="absolute -bottom-20 -right-20 w-80 h-80 rounded-full blur-[100px] pointer-events-none transition-colors duration-1000" style={{ backgroundColor: hexToRgba(color2, 0.06) }} />
+                      
+                      <div className="text-center mb-10 relative z-10">
+                        <h3 className="text-[12px] font-black uppercase tracking-[0.4em] text-white drop-shadow-lg mb-1">Style DNA Hologram</h3>
+                        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.25em] font-mono">League Percentile (0-100)</p>
+                      </div>
 
-                  <div className="flex-1 min-h-[380px] relative z-10">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <RadarChart data={radarData} outerRadius="70%">
-                        <PolarGrid stroke="rgba(255,255,255,0.06)" strokeDasharray="4 4" />
-                        <PolarRadiusAxis angle={90} domain={[0, 100]} tick={false} axisLine={false} />
-                        <PolarAngleAxis dataKey="stat" tick={{ fill: "rgba(255,255,255,0.8)", fontSize: 12, fontWeight: 900 }} />
-                        <RechartsTooltip 
-                          contentStyle={{ backgroundColor: '#050914', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '20px', color: '#fff', fontWeight: '900', fontSize: '13px', backdropFilter: 'blur(20px)', boxShadow: '0 30px 60px rgba(0,0,0,0.8)' }} 
-                          itemStyle={{ padding: '4px 0' }}
-                        />
-                        <Radar name={p1NameYear} dataKey="p1" stroke={color1} strokeWidth={3.5} fill={color1} fillOpacity={0.15} dot={{ r: 5, fill: "#030712", stroke: color1, strokeWidth: 3 }} activeDot={{ r: 8, fill: color1, stroke: "#fff", strokeWidth: 2 }} />
-                        <Radar name={p2NameYear} dataKey="p2" stroke={color2} strokeWidth={3.5} fill={color2} fillOpacity={0.15} dot={{ r: 5, fill: "#030712", stroke: color2, strokeWidth: 3 }} activeDot={{ r: 8, fill: color2, stroke: "#fff", strokeWidth: 2 }} />
-                      </RadarChart>
-                    </ResponsiveContainer>
-                  </div>
+                      <div className="flex-1 min-h-[380px] relative z-10">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <RadarChart data={radarData} outerRadius="70%">
+                            <PolarGrid stroke="rgba(255,255,255,0.06)" strokeDasharray="4 4" />
+                            <PolarRadiusAxis angle={90} domain={[0, 100]} tick={false} axisLine={false} />
+                            <PolarAngleAxis dataKey="stat" tick={{ fill: "rgba(255,255,255,0.8)", fontSize: 12, fontWeight: 900 }} />
+                            <RechartsTooltip 
+                              contentStyle={{ backgroundColor: '#050914', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '20px', color: '#fff', fontWeight: '900', fontSize: '13px', backdropFilter: 'blur(20px)', boxShadow: '0 30px 60px rgba(0,0,0,0.8)' }} 
+                              itemStyle={{ padding: '4px 0' }}
+                            />
+                            <Radar name={p1NameYear} dataKey="p1" stroke={color1} strokeWidth={3.5} fill={color1} fillOpacity={0.15} dot={{ r: 5, fill: "#030712", stroke: color1, strokeWidth: 3 }} activeDot={{ r: 8, fill: color1, stroke: "#fff", strokeWidth: 2 }} />
+                            <Radar name={p2NameYear} dataKey="p2" stroke={color2} strokeWidth={3.5} fill={color2} fillOpacity={0.15} dot={{ r: 5, fill: "#030712", stroke: color2, strokeWidth: 3 }} activeDot={{ r: 8, fill: color2, stroke: "#fff", strokeWidth: 2 }} />
+                          </RadarChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.5, duration: 0.5 }} className="lg:col-span-7">
+                    <div className="bg-white/[0.01] border border-white/[0.04] rounded-[2.5rem] p-8 md:p-10 backdrop-blur-3xl shadow-2xl h-full relative overflow-hidden hover:border-white/[0.08] transition-colors duration-500 flex flex-col">
+                      <div className="absolute inset-0 shadow-[inset_0_1px_2px_rgba(255,255,255,0.03)] pointer-events-none rounded-[2.5rem]" />
+                      
+                      <div className="flex flex-col items-center mb-8 relative z-10 border-b border-white/[0.05] pb-6">
+                         <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground mb-3 font-mono">Era-Adjusted Dominance</h3>
+                         <div className="flex items-center gap-6 bg-black/40 px-6 py-2.5 rounded-full border border-white/[0.05] shadow-inner">
+                            <span className="text-xl font-black font-mono" style={{ color: color1, textShadow: `0 0 15px ${hexToRgba(color1, 0.5)}` }}>{dominanceScore.p1Wins}</span>
+                            <div className="w-12 h-px bg-white/10" />
+                            <span className="text-xl font-black font-mono" style={{ color: color2, textShadow: `0 0 15px ${hexToRgba(color2, 0.5)}` }}>{dominanceScore.p2Wins}</span>
+                         </div>
+                      </div>
+
+                      <div className="flex items-center justify-between mb-8 relative z-10">
+                        <span className="text-[12px] font-black uppercase tracking-[0.25em] px-4 py-1.5 rounded-lg border" style={{ color: color1, backgroundColor: hexToRgba(color1, 0.08), borderColor: hexToRgba(color1, 0.2), boxShadow: `0 0 20px ${hexToRgba(color1, 0.1)}` }}>
+                          {p1.name.split(" ").pop()} '{p1Season.substring(2,4)}
+                        </span>
+                        <span className="text-[12px] font-black uppercase tracking-[0.25em] px-4 py-1.5 rounded-lg border" style={{ color: color2, backgroundColor: hexToRgba(color2, 0.08), borderColor: hexToRgba(color2, 0.2), boxShadow: `0 0 20px ${hexToRgba(color2, 0.1)}` }}>
+                          {p2.name.split(" ").pop()} '{p2Season.substring(2,4)}
+                        </span>
+                      </div>
+                      
+                      <div className="divide-y divide-white/[0.02] space-y-2 relative z-10 flex-1">
+                        {statBars.map((s, i) => (
+                          <TugBar key={i} label={s.label} icon={s.icon} v1={s.v1} v2={s.v2} z1={s.z1} z2={s.z2} c1={color1} c2={color2} reverse={s.reverse} showPlus={s.showPlus} />
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
                 </div>
-              </motion.div>
-
-              <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.5, duration: 0.5 }} className="lg:col-span-7">
-                <div className="bg-white/[0.01] border border-white/[0.04] rounded-[2.5rem] p-8 md:p-10 backdrop-blur-3xl shadow-2xl h-full relative overflow-hidden hover:border-white/[0.08] transition-colors duration-500 flex flex-col">
-                  <div className="absolute inset-0 shadow-[inset_0_1px_2px_rgba(255,255,255,0.03)] pointer-events-none rounded-[2.5rem]" />
-                  
-                  <div className="flex flex-col items-center mb-8 relative z-10 border-b border-white/[0.05] pb-6">
-                     <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground mb-3 font-mono">Category Dominance</h3>
-                     <div className="flex items-center gap-6 bg-black/40 px-6 py-2.5 rounded-full border border-white/[0.05] shadow-inner">
-                        <span className="text-xl font-black font-mono" style={{ color: color1, textShadow: `0 0 15px ${hexToRgba(color1, 0.5)}` }}>{dominanceScore.p1Wins}</span>
-                        <div className="w-12 h-px bg-white/10" />
-                        <span className="text-xl font-black font-mono" style={{ color: color2, textShadow: `0 0 15px ${hexToRgba(color2, 0.5)}` }}>{dominanceScore.p2Wins}</span>
-                     </div>
-                  </div>
-
-                  <div className="flex items-center justify-between mb-8 relative z-10">
-                    <span className="text-[12px] font-black uppercase tracking-[0.25em] px-4 py-1.5 rounded-lg border" style={{ color: color1, backgroundColor: hexToRgba(color1, 0.08), borderColor: hexToRgba(color1, 0.2), boxShadow: `0 0 20px ${hexToRgba(color1, 0.1)}` }}>
-                      {p1.name.split(" ").pop()} '{p1Season.substring(2,4)}
-                    </span>
-                    <span className="text-[12px] font-black uppercase tracking-[0.25em] px-4 py-1.5 rounded-lg border" style={{ color: color2, backgroundColor: hexToRgba(color2, 0.08), borderColor: hexToRgba(color2, 0.2), boxShadow: `0 0 20px ${hexToRgba(color2, 0.1)}` }}>
-                      {p2.name.split(" ").pop()} '{p2Season.substring(2,4)}
-                    </span>
-                  </div>
-                  
-                  <div className="divide-y divide-white/[0.02] space-y-2 relative z-10 flex-1">
-                    {statBars.map((s, i) => (
-                      <TugBar key={i} label={s.label} icon={s.icon} v1={s.v1} v2={s.v2} z1={s.z1} z2={s.z2} c1={color1} c2={color2} reverse={s.reverse} />
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-            </div>
+            )}
 
             {/* 🚀 NEURAL TERMINAL VERDICT (ENRICHED TEXT) */}
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.6 }} className="relative bg-[#030712]/50 border border-emerald-500/[0.15] rounded-[2.5rem] p-10 md:p-14 shadow-[0_40px_80px_rgba(0,0,0,0.8)] overflow-hidden group hover:border-emerald-500/30 transition-all duration-700 backdrop-blur-md">
