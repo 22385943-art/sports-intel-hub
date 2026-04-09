@@ -12,7 +12,6 @@ const getString = (row: any[], headers: string[], key: string, fallback: string)
     return idx !== -1 && row[idx] !== null && row[idx] !== undefined ? String(row[idx]) : fallback;
 };
 
-// 🚀 Z-Score Helper
 const zScore = (val: number, arr: number[]) => {
     if (!arr || arr.length === 0 || val === undefined || isNaN(val)) return 0;
     const mean = arr.reduce((a, b) => a + b, 0) / arr.length;
@@ -20,7 +19,6 @@ const zScore = (val: number, arr: number[]) => {
     return (val - mean) / sd;
 };
 
-// 🚀 FIX: Motor de fetch con reintentos para evitar bloqueos temporales del proxy + Proxy CodeTabs
 const fetchSafeJSON = async (endpoint: string, retries = 1) => {
     const isCurrentSeason = endpoint.includes('2025-26') || endpoint.includes('GameDate');
     const separator = endpoint.includes('?') ? '&' : '?';
@@ -45,14 +43,48 @@ const fetchSafeJSON = async (endpoint: string, retries = 1) => {
                 clearTimeout(id);
                 if (res.ok) {
                     const text = await res.text();
-                    // Evitamos procesar HTML de error de los proxies
                     if (!text.trim().startsWith('<') && !text.includes("System.InvalidOperationException") && !text.includes("Rate Limit")) {
                         return JSON.parse(text);
                     }
                 }
             } catch (e) {}
         }
-        if (i < retries) await new Promise(r => setTimeout(r, 1000)); // Breve respiro antes de reintentar
+        if (i < retries) await new Promise(r => setTimeout(r, 1000));
+    }
+    return null; 
+};
+
+const fetchLongJSON = async (endpoint: string, retries = 1) => {
+    const isCurrentSeason = endpoint.includes('2025-26') || endpoint.includes('GameDate');
+    const separator = endpoint.includes('?') ? '&' : '?';
+    const finalEndpoint = isCurrentSeason 
+        ? `${endpoint}${separator}cb=${Math.floor(Date.now() / 1800000)}` 
+        : endpoint;
+
+    const fullUrl = `https://stats.nba.com/stats${finalEndpoint}`;
+    const proxies = [
+        `/nba-api${finalEndpoint}`,
+        `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(fullUrl)}`,
+        `https://api.allorigins.win/raw?url=${encodeURIComponent(fullUrl)}`,
+        `https://corsproxy.io/?${encodeURIComponent(fullUrl)}`
+    ];
+    
+    for (let i = 0; i <= retries; i++) {
+        for (const proxy of proxies) {
+            try {
+                const controller = new AbortController();
+                const id = setTimeout(() => controller.abort(), 12000); 
+                const res = await fetch(proxy, { signal: controller.signal });
+                clearTimeout(id);
+                if (res.ok) {
+                    const text = await res.text();
+                    if (!text.trim().startsWith('<') && !text.includes("System.InvalidOperationException") && !text.includes("Rate Limit")) {
+                        return JSON.parse(text);
+                    }
+                }
+            } catch (e) {}
+        }
+        if (i < retries) await new Promise(r => setTimeout(r, 1000));
     }
     return null; 
 };
@@ -72,6 +104,8 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
   private fetchPromises: Map<string, Promise<NBAPlayer[]>> = new Map();
   private historicalTeamsCache: Map<string, any[]> = new Map();
   private fetchTeamsPromises: Map<string, Promise<any[]>> = new Map();
+  private onOffCache: Map<string, number> = new Map();
+  private clutchCache: Map<string, any> = new Map();
 
   getImageUrl(id: any): string {
     if (id === null || id === undefined) return "https://cdn.nba.com/headshots/nba/latest/260x190/fallback.png";
@@ -93,15 +127,11 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
   getAllPlayers(): NBAPlayer[] {
     return NBA_PLAYERS.map(player => {
       const basePlayer = { ...player, imageUrl: this.getImageUrl(player.id) };
-      
-      // Protegemos el fallback de métricas básicas
       if (basePlayer.stats) {
           basePlayer.stats.oreb = basePlayer.stats.oreb ?? Math.round((basePlayer.stats.rpg || 0) * 0.25 * 10) / 10;
           basePlayer.stats.dreb = basePlayer.stats.dreb ?? Math.round((basePlayer.stats.rpg || 0) * 0.75 * 10) / 10;
       }
-      
       const adv = this.computeAllAdvanced(basePlayer as NBAPlayer);
-      
       return { 
           ...basePlayer, 
           adv: {
@@ -134,10 +164,8 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
   qualifiesForLeaderboard(player: any, metric: string, maxGP: number): boolean {
     const s = player.stats || {};
     if ((s.gp || 0) < 5) return false; 
-
     const gp = s.gp || 0;
     const safeMaxGP = Math.max(1, maxGP);
-    
     const totalFGM = (s.fgm || 0) * gp;
     const total3PM = (s.fg3m ?? s.tpm ?? 0) * gp;
     const totalFTM = (s.ftm ?? 0) * gp;
@@ -239,7 +267,6 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
           const ast = getStat(row, headersBase, "AST");
           const tov = getStat(row, headersBase, "TOV");
           
-          // 🚀 FALLBACK OREB/DREB para pre-1973 donde no existían en las actas
           const rawOreb = getStat(row, headersBase, "OREB");
           const rawDreb = getStat(row, headersBase, "DREB");
           const oreb = rawOreb || Math.round((reb * 0.25) * 10) / 10;
@@ -264,23 +291,13 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
             position: "NBA", imageUrl: this.getImageUrl(playerId),
             age: getStat(row, headersBase, "AGE"),
             stats: {
-              gp: gp, 
-              gs: Math.round(getStat(row, headersBase, "GS") * gp), 
-              mpg: min,
-              ppg: pts, rpg: reb, apg: ast,
-              oreb: oreb, dreb: dreb, // 🚀 Blindados
+              gp: gp, gs: Math.round(getStat(row, headersBase, "GS") * gp), mpg: min,
+              ppg: pts, rpg: reb, apg: ast, oreb: oreb, dreb: dreb,
               spg: getStat(row, headersBase, "STL"), bpg: getStat(row, headersBase, "BLK"), topg: tov,
-              fga: fga, fgm: getStat(row, headersBase, "FGM"), 
-              fgPct: parsePct(getStat(row, headersBase, "FG_PCT")),
-              fg3a: getStat(row, headersBase, "FG3A"), fg3m: getStat(row, headersBase, "FG3M"), 
-              threePct: parsePct(getStat(row, headersBase, "FG3_PCT")),
-              fta: fta, ftm: getStat(row, headersBase, "FTM"), 
-              ftPct: parsePct(getStat(row, headersBase, "FT_PCT")),
-              // Clonamos ratings básicos aquí para asegurar lectura
-              offRtg: offRtgVal,
-              defRating: defRtgVal,
-              netRtg: netRtgVal,
-              net: netRtgVal
+              fga: fga, fgm: getStat(row, headersBase, "FGM"), fgPct: parsePct(getStat(row, headersBase, "FG_PCT")),
+              fg3a: getStat(row, headersBase, "FG3A"), fg3m: getStat(row, headersBase, "FG3M"), threePct: parsePct(getStat(row, headersBase, "FG3_PCT")),
+              fta: fta, ftm: getStat(row, headersBase, "FTM"), ftPct: parsePct(getStat(row, headersBase, "FT_PCT")),
+              offRtg: offRtgVal, defRating: defRtgVal, netRtg: netRtgVal, net: netRtgVal
             },
             adv: {
               ...baseAdv,
@@ -288,18 +305,12 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
               usg: baseAdv.usg !== undefined ? baseAdv.usg : fallbackUSG,
               astTo: baseAdv.astTo !== undefined ? baseAdv.astTo : fallbackAstTo,
               pace: baseAdv.pace !== undefined ? baseAdv.pace : 100, 
-              orebPct: baseAdv.orebPct || 0, 
-              drebPct: baseAdv.drebPct || 0,
-              offRtg: offRtgVal,
-              defRating: defRtgVal,
-              netRtg: netRtgVal,
-              net: netRtgVal // 🚀 Blindados
+              orebPct: baseAdv.orebPct || 0, drebPct: baseAdv.drebPct || 0,
+              offRtg: offRtgVal, defRating: defRtgVal, netRtg: netRtgVal, net: netRtgVal
             },
             hustle: baseHustle,
             playmaking: {
-                astPct: baseAdv.astPct || 0,
-                astTo: baseAdv.astTo || fallbackAstTo,
-                astRatio: baseAdv.astRatio || 0
+                astPct: baseAdv.astPct || 0, astTo: baseAdv.astTo || fallbackAstTo, astRatio: baseAdv.astRatio || 0
             }
           };
           
@@ -341,66 +352,42 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
             const mpg = p.stats.mpg || 1;
             const stl = p.stats.spg || 0;
             const blk = p.stats.bpg || 0;
-            const reb = p.stats.rpg || 0; 
+            const defRtg = p.adv?.defRating || 115;
             
-            if (stl === 0 && blk === 0) {
-                return (reb / mpg) * 36;
-            }
-            return ((stl * 2.5 + blk * 2.5 + reb * 0.5) / mpg) * 36;
+            const teamImpact = Math.max(0, 115 - defRtg) * 1.5; 
+            const individualImpact = (((stl * 2.5) + (blk * 1.5)) / mpg) * 36;
+            return teamImpact + individualImpact;
         };
         const allDefImpact = qualifiedPlayers.map(calcDefImpact).sort((a,b)=>a-b);
 
         parsedPlayers = parsedPlayers.map((p: any) => {
             p.adv.rTS = Number((p.adv.ts - leagueAvgTS).toFixed(1));
-
             return {
                 ...p,
                 zScores: { 
-                    Scoring: zScore(p.stats.ppg, allPPG),
-                    Playmaking: zScore(p.stats.apg, allAPG),
-                    Rebounding: zScore(p.stats.rpg, allRPG),
-                    Efficiency: zScore(p.adv.ts, allTS),
-                    Impact: zScore(p.adv.bpm, allBPM),
-                    Defense: zScore(calcDefImpact(p), allDefImpact),
-                    OReb: zScore(p.stats.oreb, allOReb),
-                    DReb: zScore(p.stats.dreb, allDReb),
-                    AstPct: zScore(p.adv.astPct, allAstPct),
-                    OffRtg: zScore(p.adv.offRtg, allOffRtg),
-                    DefRtg: zScore(115 - (p.adv.defRating || 115), allDefRtgInv),
-                    NetRtg: zScore(p.adv.net, allNetRtg),
-                    Contested: zScore(p.hustle.contestedShots, allContested),
-                    Contested3: zScore(p.hustle.contested3pt, allContested3),
-                    Deflections: zScore(p.hustle.deflections, allDeflections),
-                    SI: zScore(p.adv.si, allSI),
-                    PER: zScore(p.adv.per, allPER),
-                    VORP: zScore(p.adv.vorp, allVORP),
-                    PIE: zScore(p.adv.pie, allPIE),
-                    USG: zScore(p.adv.usg, allUSG),
-                    EFG: zScore(p.adv.efg, allEFG)
+                    Scoring: zScore(p.stats.ppg, allPPG), Playmaking: zScore(p.stats.apg, allAPG),
+                    Rebounding: zScore(p.stats.rpg, allRPG), Efficiency: zScore(p.adv.ts, allTS),
+                    Impact: zScore(p.adv.bpm, allBPM), Defense: zScore(calcDefImpact(p), allDefImpact),
+                    OReb: zScore(p.stats.oreb, allOReb), DReb: zScore(p.stats.dreb, allDReb),
+                    AstPct: zScore(p.adv.astPct, allAstPct), OffRtg: zScore(p.adv.offRtg, allOffRtg),
+                    DefRtg: zScore(115 - (p.adv.defRating || 115), allDefRtgInv), NetRtg: zScore(p.adv.net, allNetRtg),
+                    Contested: zScore(p.hustle.contestedShots, allContested), Contested3: zScore(p.hustle.contested3pt, allContested3),
+                    Deflections: zScore(p.hustle.deflections, allDeflections), SI: zScore(p.adv.si, allSI),
+                    PER: zScore(p.adv.per, allPER), VORP: zScore(p.adv.vorp, allVORP),
+                    PIE: zScore(p.adv.pie, allPIE), USG: zScore(p.adv.usg, allUSG), EFG: zScore(p.adv.efg, allEFG)
                 },
                 percentiles: {
-                    Scoring: this.calcPercentile(p.stats.ppg, allPPG),
-                    Playmaking: this.calcPercentile(p.stats.apg, allAPG),
-                    Rebounding: this.calcPercentile(p.stats.rpg, allRPG),
-                    Efficiency: this.calcPercentile(p.adv.ts, allTS),
-                    Impact: this.calcPercentile(p.adv.bpm, allBPM),
-                    Shooting: this.calcPercentile(p.stats.threePct, all3P),
-                    Defense: this.calcPercentile(calcDefImpact(p), allDefImpact),
-                    OReb: this.calcPercentile(p.stats.oreb, allOReb),
-                    DReb: this.calcPercentile(p.stats.dreb, allDReb),
-                    AstPct: this.calcPercentile(p.adv.astPct, allAstPct),
-                    OffRtg: this.calcPercentile(p.adv.offRtg, allOffRtg),
-                    DefRtg: this.calcPercentile(115 - (p.adv.defRating || 115), allDefRtgInv),
-                    NetRtg: this.calcPercentile(p.adv.net, allNetRtg),
-                    Contested: this.calcPercentile(p.hustle.contestedShots, allContested),
-                    Contested3: this.calcPercentile(p.hustle.contested3pt, allContested3),
-                    Deflections: this.calcPercentile(p.hustle.deflections, allDeflections),
-                    SI: this.calcPercentile(p.adv.si, allSI),
-                    PER: this.calcPercentile(p.adv.per, allPER),
-                    VORP: this.calcPercentile(p.adv.vorp, allVORP),
-                    PIE: this.calcPercentile(p.adv.pie, allPIE),
-                    USG: this.calcPercentile(p.adv.usg, allUSG),
-                    EFG: this.calcPercentile(p.adv.efg, allEFG)
+                    Scoring: this.calcPercentile(p.stats.ppg, allPPG), Playmaking: this.calcPercentile(p.stats.apg, allAPG),
+                    Rebounding: this.calcPercentile(p.stats.rpg, allRPG), Efficiency: this.calcPercentile(p.adv.ts, allTS),
+                    Impact: this.calcPercentile(p.adv.bpm, allBPM), Shooting: this.calcPercentile(p.stats.threePct, all3P),
+                    Defense: this.calcPercentile(calcDefImpact(p), allDefImpact), OReb: this.calcPercentile(p.stats.oreb, allOReb),
+                    DReb: this.calcPercentile(p.stats.dreb, allDReb), AstPct: this.calcPercentile(p.adv.astPct, allAstPct),
+                    OffRtg: this.calcPercentile(p.adv.offRtg, allOffRtg), DefRtg: this.calcPercentile(115 - (p.adv.defRating || 115), allDefRtgInv),
+                    NetRtg: this.calcPercentile(p.adv.net, allNetRtg), Contested: this.calcPercentile(p.hustle.contestedShots, allContested),
+                    Contested3: this.calcPercentile(p.hustle.contested3pt, allContested3), Deflections: this.calcPercentile(p.hustle.deflections, allDeflections),
+                    SI: this.calcPercentile(p.adv.si, allSI), PER: this.calcPercentile(p.adv.per, allPER),
+                    VORP: this.calcPercentile(p.adv.vorp, allVORP), PIE: this.calcPercentile(p.adv.pie, allPIE),
+                    USG: this.calcPercentile(p.adv.usg, allUSG), EFG: this.calcPercentile(p.adv.efg, allEFG)
                 }
             };
         });
@@ -419,7 +406,6 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
     return promise;
   }
 
-  // 🚀 FIX: Protegemos los Ratings para que no se borren y las demás páginas puedan leerlos
   computeAllAdvanced(player: any) {
     const s = player.stats || {};
     const a = player.adv || {};
@@ -439,22 +425,18 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
     const siPlus = 100 + (bpm * 4.5) + ((per - 15) * 1.5) + ((finalTS - 55) * 0.5);
 
     return {
-      ...a, // Mantenemos TODA la información inyectada previa (offRtg, netRtg, orebPct...)
+      ...a, 
       per: Math.max(0, Math.round(per * 10) / 10) || 0,
       bpm: Math.round(bpm * 10) / 10 || 0,
       vorp: Math.round(vorp * 10) / 10 || 0,
       pie: a.pie ?? s.pie ?? Math.round((per / 2.5) * 10) / 10,
-      // Aseguramos que NET esté siempre presente sea cual sea la nomenclatura
       net: a.net ?? a.netRtg ?? s.net ?? s.netRtg ?? 0,
       netRtg: a.netRtg ?? s.netRtg ?? a.net ?? s.net ?? 0,
       offRtg: a.offRtg ?? s.offRtg ?? 115,
       defRating: a.defRating ?? s.defRating ?? 115,
       oreb: s.oreb ?? a.oreb ?? 0,
       dreb: s.dreb ?? a.dreb ?? 0,
-      usg: finalUSG, 
-      ts: finalTS, 
-      efg: a.efg ?? s.efg ?? 0, 
-      ast: a.astPct ?? s.astPct ?? 0,
+      usg: finalUSG, ts: finalTS, efg: a.efg ?? s.efg ?? 0, ast: a.astPct ?? s.astPct ?? 0,
       si: Math.round(siPlus) || 100,
     };
   }
@@ -558,7 +540,11 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
     return promise;
   }
 
+  // 🚀 CÁLCULO DE CLUTCH BPM Y PERCENTILES REALES DE LA LIGA
   async fetchAwardAuxData(season: string = "2025-26", prevSeason: string = "2024-25") {
+    const cacheKey = `clutch-${season}`;
+    if (this.clutchCache.has(cacheKey)) return this.clutchCache.get(cacheKey);
+
     try {
         const rookieUrl = `/leaguedashplayerstats?College=&Conference=&Country=&DateFrom=&DateTo=&Division=&DraftPick=&DraftYear=&GameScope=&GameSegment=&Height=&LastNGames=0&LeagueID=00&Location=&MeasureType=Base&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PaceAdjust=N&PerMode=Totals&Period=0&PlayerExperience=Rookie&PlayerPosition=&PlusMinus=N&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&StarterBench=&TeamID=0&VsConference=&VsDivision=&Weight=`;
         const clutchUrl = `/leaguedashplayerclutch?AheadBehind=&ClutchTime=Last%205%20Minutes&DateFrom=&DateTo=&Direction=DESC&GameScope=&GameSegment=&LastNGames=0&LeagueID=00&Location=&MeasureType=Base&Month=0&OpponentTeamID=0&Outcome=&PaceAdjust=N&PerMode=Totals&Period=0&PlayerExperience=&PlayerPosition=&PlusMinus=N&PointDiff=5&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&Sort=PTS&StarterBench=&TeamID=0&VsConference=&VsDivision=`;
@@ -581,22 +567,70 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
         if (resRookies && resRookies.resultSets && resRookies.resultSets[0].rowSet.length > 0) {
             const h = resRookies.resultSets[0].headers;
             resRookies.resultSets[0].rowSet.forEach((r: any[]) => rookies.add(String(r[h.indexOf("PLAYER_ID")])));
-        } else if (prevPlayersMap.size > 50) {
-            const currentPlayers = this.playersCache || [];
-            currentPlayers.forEach(p => {
-                if (!prevPlayersMap.has(p.id) && p.age <= 23) rookies.add(p.id);
-            });
         }
 
         const clutchStats = new Map<string, any>();
+        const clutchDataRaw: any[] = [];
+        
         if (resClutch && resClutch.resultSets && resClutch.resultSets[0].rowSet.length > 0) {
             const h = resClutch.resultSets[0].headers;
             resClutch.resultSets[0].rowSet.forEach((r: any[]) => {
-                clutchStats.set(String(r[h.indexOf("PLAYER_ID")]), {
-                    pts: getStat(r, h, "PTS"),
-                    ts: parsePct(getStat(r, h, "PTS") / (2 * (getStat(r, h, "FGA") + 0.44 * getStat(r, h, "FTA")))),
-                    plusMinus: getStat(r, h, "PLUS_MINUS"),
-                    gp: getStat(r, h, "GP")
+                const min = getStat(r, h, "MIN");
+                const fga = getStat(r, h, "FGA");
+                const fta = getStat(r, h, "FTA");
+                const fgm = getStat(r, h, "FGM");
+                const ftm = getStat(r, h, "FTM");
+                const pts = getStat(r, h, "PTS");
+                const stl = getStat(r, h, "STL");
+                const blk = getStat(r, h, "BLK");
+                const reb = getStat(r, h, "REB");
+                const ast = getStat(r, h, "AST");
+                const tov = getStat(r, h, "TOV");
+                const gp = getStat(r, h, "GP");
+                
+                let clutchBpm = -10;
+                if (min > 0) {
+                    const mult = 36 / min;
+                    const missedFG = fga - fgm;
+                    const missedFT = fta - ftm;
+                    const baseEff = (pts + reb + ast + (stl * 2) + (blk * 2) - missedFG - missedFT - (tov * 2)) * mult;
+                    clutchBpm = (baseEff / 2.5) - 6;
+                }
+
+                clutchDataRaw.push({
+                    id: String(r[h.indexOf("PLAYER_ID")]),
+                    gp, min, pts, fga, fgm, fta, ftm, stl, blk, reb, ast, tov, clutchBpm,
+                    fgPct: parsePct(getStat(r, h, "FG_PCT")),
+                    fg3a: getStat(r, h, "FG3A"),
+                    fg3Pct: parsePct(getStat(r, h, "FG3_PCT")),
+                    ftPct: parsePct(getStat(r, h, "FT_PCT")),
+                    oreb: getStat(r, h, "OREB"),
+                    ts: parsePct(pts / (2 * (fga + 0.44 * fta))),
+                    plusMinus: getStat(r, h, "PLUS_MINUS")
+                });
+            });
+
+            // Generación de Percentiles Reales para el Clutch Radar Chart
+            const validClutch = clutchDataRaw.filter(p => p.min >= 10); // Solo jugadores con al menos 10 min en clutch
+            const allClutchPts = validClutch.map(p => (p.pts / p.min) * 36).sort((a,b)=>a-b);
+            const allClutchAst = validClutch.map(p => (p.ast / p.min) * 36).sort((a,b)=>a-b);
+            const allClutchReb = validClutch.map(p => (p.reb / p.min) * 36).sort((a,b)=>a-b);
+            const allClutchDef = validClutch.map(p => ((p.stl + p.blk) / p.min) * 36).sort((a,b)=>a-b);
+            const allClutchTs = validClutch.map(p => p.ts).sort((a,b)=>a-b);
+            const allClutchBpm = validClutch.map(p => p.clutchBpm).sort((a,b)=>a-b);
+
+            clutchDataRaw.forEach(p => {
+                const p36 = p.min > 0 ? 36 / p.min : 0;
+                clutchStats.set(p.id, {
+                    ...p,
+                    percentiles: {
+                        Scoring: this.calcPercentile(p.pts * p36, allClutchPts),
+                        Playmaking: this.calcPercentile(p.ast * p36, allClutchAst),
+                        Rebounding: this.calcPercentile(p.reb * p36, allClutchReb),
+                        Defense: this.calcPercentile((p.stl + p.blk) * p36, allClutchDef),
+                        Efficiency: this.calcPercentile(p.ts, allClutchTs),
+                        Impact: this.calcPercentile(p.clutchBpm, allClutchBpm)
+                    }
                 });
             });
         }
@@ -614,7 +648,9 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
             prevTeams.forEach((t: any) => prevTeamsMap.set(t.id, t));
         }
 
-        return { rookies, clutchStats, benchStats, prevPlayers: prevPlayersMap, prevTeams: prevTeamsMap };
+        const result = { rookies, clutchStats, benchStats, prevPlayers: prevPlayersMap, prevTeams: prevTeamsMap };
+        this.clutchCache.set(cacheKey, result);
+        return result;
     } catch (e) {
         return { rookies: new Set(), clutchStats: new Map(), benchStats: new Map(), prevPlayers: new Map(), prevTeams: new Map() };
     }
@@ -765,25 +801,22 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
   }
 
   async getPlayerShotChart(playerId: string, season: string = "2025-26"): Promise<any[]> {
-    const seasonsToTry = [season, "2024-25", "2023-24", "2022-23"];
-    
-    for (const s of Array.from(new Set(seasonsToTry))) {
-      try {
-        const url = `/shotchartdetail?ContextMeasure=FGA&LastNGames=0&LeagueID=00&Month=0&OpponentTeamID=0&PaceAdjust=N&PerMode=PerGame&Period=0&PlayerID=${playerId}&PlusMinus=N&Position=&Rank=N&RookieYear=&Season=${s}&SeasonSegment=&SeasonType=Regular%20Season&TeamID=0&VsConference=&VsDivision=`;
-        const data = await fetchSafeJSON(url);
-        if (data && data.resultSets && data.resultSets[0].rowSet.length > 0) {
-          const headers = data.resultSets[0].headers;
-          return data.resultSets[0].rowSet.map((r: any[]) => ({
-            x: getStat(r, headers, "LOC_X"),
-            y: getStat(r, headers, "LOC_Y"),
-            made: getStat(r, headers, "SHOT_MADE_FLAG") === 1,
-            zone: getString(r, headers, "SHOT_ZONE_BASIC", ""),
-            type: getString(r, headers, "ACTION_TYPE", "Jump Shot"),
-          }));
-        }
-      } catch (error) {
-        continue; 
+    try {
+      const url = `/shotchartdetail?ContextMeasure=FGA&LastNGames=0&LeagueID=00&Month=0&OpponentTeamID=0&PaceAdjust=N&PerMode=PerGame&Period=0&PlayerID=${playerId}&PlusMinus=N&Position=&Rank=N&RookieYear=&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&TeamID=0&VsConference=&VsDivision=`;
+      const data = await fetchSafeJSON(url);
+      
+      if (data && data.resultSets && data.resultSets[0].rowSet.length > 0) {
+        const headers = data.resultSets[0].headers;
+        return data.resultSets[0].rowSet.map((r: any[]) => ({
+          x: getStat(r, headers, "LOC_X"),
+          y: getStat(r, headers, "LOC_Y"),
+          made: getStat(r, headers, "SHOT_MADE_FLAG") === 1,
+          zone: getString(r, headers, "SHOT_ZONE_BASIC", ""),
+          type: getString(r, headers, "ACTION_TYPE", "Jump Shot"),
+        }));
       }
+    } catch (error) {
+      console.error(`Error fetching real shot chart for ${playerId} in ${season}`, error);
     }
     return [];
   }
