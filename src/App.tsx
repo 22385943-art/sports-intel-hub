@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import SportLayout from "@/pages/shared/SportLayout";
 import NotFound from "@/pages/NotFound";
 
+
 const queryClient = new QueryClient();
 
 const App = () => {

@@ -170,13 +170,9 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
     const total3PM = (s.fg3m ?? s.tpm ?? 0) * gp;
     const totalFTM = (s.ftm ?? 0) * gp;
 
-    const minFGM = (300 / 82) * safeMaxGP;
-    const min3PM = (82 / 82) * safeMaxGP;
-    const minFTM = (125 / 82) * safeMaxGP;
-
-    if (['fgPct', 'ts', 'efg'].includes(metric)) return totalFGM >= minFGM;
-    if (metric === 'threePct') return total3PM >= min3PM;
-    if (metric === 'ftPct') return totalFTM >= minFTM;
+    if (['fgPct', 'ts', 'efg'].includes(metric)) return totalFGM >= (300 / 82) * safeMaxGP;
+    if (metric === 'threePct') return total3PM >= (82 / 82) * safeMaxGP;
+    if (metric === 'ftPct') return totalFTM >= (125 / 82) * safeMaxGP;
 
     return true;
   }
@@ -447,35 +443,47 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
 
     const promise = (async () => {
       try {
-        const paramsBase = `?Conference=&DateFrom=&DateTo=&Division=&GameScope=&GameSegment=&LastNGames=0&LeagueID=00&Location=&MeasureType=Base&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PaceAdjust=N&PerMode=PerGame&Period=0&PlayerExperience=&PlayerPosition=&PlusMinus=N&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&StarterBench=&TeamID=0&TwoWay=0&VsConference=&VsDivision=`;
-        const paramsAdv = paramsBase.replace("MeasureType=Base", "MeasureType=Advanced");
-        const paramsOpp = paramsBase.replace("MeasureType=Base", "MeasureType=Opponent");
-        const urlClutch = `/leaguedashteamclutch?ClutchTime=Last%205%20Minutes&DateFrom=&DateTo=&Direction=DESC&GameScope=&GameSegment=&LastNGames=0&LeagueID=00&Location=&MeasureType=Advanced&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PaceAdjust=N&PerMode=PerGame&Period=0&PlayerExperience=&PlayerPosition=&PlusMinus=N&PointDiff=5&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&Sort=W_PCT&StarterBench=&TeamID=0&VsConference=&VsDivision=`;
+        const paramsTeamBase = `?Conference=&DateFrom=&DateTo=&Division=&GameScope=&GameSegment=&LastNGames=0&LeagueID=00&Location=&MeasureType=Base&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PaceAdjust=N&PerMode=PerGame&Period=0&PlusMinus=N&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&TeamID=0&TwoWay=0&VsConference=&VsDivision=`;
+        const paramsAdv = paramsTeamBase.replace("MeasureType=Base", "MeasureType=Advanced");
+        const paramsOpp = paramsTeamBase.replace("MeasureType=Base", "MeasureType=Opponent");
+        const paramsMisc = paramsTeamBase.replace("MeasureType=Base", "MeasureType=Misc"); 
+        const paramsScoring = paramsTeamBase.replace("MeasureType=Base", "MeasureType=Scoring"); 
+        
+        const paramsClutch = `?AheadBehind=Ahead%20or%20Behind&ClutchTime=Last%205%20Minutes&DateFrom=&DateTo=&Direction=DESC&GameScope=&GameSegment=&LastNGames=0&LeagueID=00&Location=&MeasureType=Base&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PaceAdjust=N&PerMode=Totals&Period=0&PlusMinus=N&PointDiff=5&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&StarterBench=&TeamID=0&VsConference=&VsDivision=`;
+        const urlClutchBase = `/leaguedashteamclutch${paramsClutch}`;
+        const urlClutchAdv = `/leaguedashteamclutch${paramsClutch.replace("MeasureType=Base", "MeasureType=Advanced")}`;
+        const urlHustle = `/leaguehustlestatsteam?LastNGames=0&LeagueID=00&Month=0&OpponentTeamID=0&PaceAdjust=N&PerMode=PerGame&PlusMinus=N&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&TeamID=0`;
 
-        const [resBase, resAdv, resOpp, resClutch] = await Promise.all([
-            fetchSafeJSON(`/leaguedashteamstats${paramsBase}`),
+        const [resBase, resAdv, resOpp] = await Promise.all([
+            fetchSafeJSON(`/leaguedashteamstats${paramsTeamBase}`),
             fetchSafeJSON(`/leaguedashteamstats${paramsAdv}`).catch(() => null),
-            fetchSafeJSON(`/leaguedashteamstats${paramsOpp}`).catch(() => null),
-            fetchSafeJSON(urlClutch).catch(() => null)
+            fetchSafeJSON(`/leaguedashteamstats${paramsOpp}`).catch(() => null)
         ]);
 
-        if (!resBase || !resBase.resultSets) {
-            console.warn("Team Base API Failed");
-            return this.getAllTeams();
-        }
+        await new Promise(resolve => setTimeout(resolve, 800));
 
-        const dataBase = resBase;
-        const dataAdv = resAdv;
-        const dataOpp = resOpp;
-        const dataClutch = resClutch;
+        const [resMisc, resHustle, resScoring] = await Promise.all([
+            fetchSafeJSON(`/leaguedashteamstats${paramsMisc}`).catch(() => null),
+            fetchSafeJSON(urlHustle).catch(() => null),
+            fetchSafeJSON(`/leaguedashteamstats${paramsScoring}`).catch(() => null)
+        ]);
 
-        const headersBase = dataBase.resultSets[0].headers;
-        const rowsBase = dataBase.resultSets[0].rowSet;
+        await new Promise(resolve => setTimeout(resolve, 800));
+
+        const [resClutchBase, resClutchAdv] = await Promise.all([
+            fetchSafeJSON(urlClutchBase).catch(() => null),
+            fetchSafeJSON(urlClutchAdv).catch(() => null)
+        ]);
+
+        if (!resBase || !resBase.resultSets) return this.getAllTeams();
+
+        const headersBase = resBase.resultSets[0].headers;
+        const rowsBase = resBase.resultSets[0].rowSet;
 
         const advMap = new Map();
-        if (dataAdv && dataAdv.resultSets && dataAdv.resultSets[0].rowSet.length > 0) {
-            const h = dataAdv.resultSets[0].headers;
-            dataAdv.resultSets[0].rowSet.forEach((row: any[]) => {
+        if (resAdv && resAdv.resultSets && resAdv.resultSets[0].rowSet.length > 0) {
+            const h = resAdv.resultSets[0].headers;
+            resAdv.resultSets[0].rowSet.forEach((row: any[]) => {
               advMap.set(String(row[h.indexOf("TEAM_ID")]), {
                 offRtg: getStat(row, h, "OFF_RATING") || 0, 
                 defRtg: getStat(row, h, "DEF_RATING") || 0,
@@ -483,50 +491,330 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
                 pace: getStat(row, h, "PACE") || 0,
                 tsPct: parsePct(getStat(row, h, "TS_PCT")), 
                 astTo: getStat(row, h, "AST_TO") || 0,
-                rebPct: parsePct(getStat(row, h, "REB_PCT"))
+                astPct: parsePct(getStat(row, h, "AST_PCT")),
+                rebPct: parsePct(getStat(row, h, "REB_PCT")),
+                orebPct: parsePct(getStat(row, h, "OREB_PCT")),
+                drebPct: parsePct(getStat(row, h, "DREB_PCT")),
+                efgPct: parsePct(getStat(row, h, "EFG_PCT")),
+                astRatio: getStat(row, h, "AST_RATIO") || 0,
+                pie: parsePct(getStat(row, h, "PIE")),
+                tovPct: parsePct(getStat(row, h, "TM_TOV_PCT")) || 0
               });
             });
         }
 
         const oppMap = new Map();
-        if (dataOpp && dataOpp.resultSets && dataOpp.resultSets[0].rowSet.length > 0) {
-            const h = dataOpp.resultSets[0].headers;
-            dataOpp.resultSets[0].rowSet.forEach((row: any[]) => {
+        if (resOpp && resOpp.resultSets && resOpp.resultSets[0].rowSet.length > 0) {
+            const h = resOpp.resultSets[0].headers;
+            resOpp.resultSets[0].rowSet.forEach((row: any[]) => {
+              const oppFga = getStat(row, h, "OPP_FGA");
+              const oppFta = getStat(row, h, "OPP_FTA");
+              const oppFg3a = getStat(row, h, "OPP_FG3A");
+              const oppFgm = getStat(row, h, "OPP_FGM");
+              const oppFg3m = getStat(row, h, "OPP_FG3M");
+              const opp2pa = Math.max(1, oppFga - oppFg3a);
+              const opp2pm = Math.max(0, oppFgm - oppFg3m);
+              const opp2ptPct = parsePct(opp2pm / opp2pa);
+              const oppFtaRate = oppFga > 0 ? parsePct(oppFta / oppFga) : 0;
+
               oppMap.set(String(row[h.indexOf("TEAM_ID")]), {
                 oppFgPct: parsePct(getStat(row, h, "OPP_FG_PCT")),
                 opp3ptPct: parsePct(getStat(row, h, "OPP_FG3_PCT")),
-                oppPtsOffTov: getStat(row, h, "OPP_PTS_OFF_TOV") || 0
+                opp2ptPct: opp2ptPct, 
+                oppTov: getStat(row, h, "OPP_TOV") || 0,
+                oppFtaRate: oppFtaRate
               });
+            });
+        }
+
+        const miscMap = new Map();
+        if (resMisc && resMisc.resultSets && resMisc.resultSets[0].rowSet.length > 0) {
+            const h = resMisc.resultSets[0].headers;
+            resMisc.resultSets[0].rowSet.forEach((row: any[]) => {
+              miscMap.set(String(row[h.indexOf("TEAM_ID")]), {
+                ptsOffTov: getStat(row, h, "PTS_OFF_TOV") || 0,
+                ptsFb: getStat(row, h, "PTS_FB") || 0,
+                pts2ndChance: getStat(row, h, "PTS_2ND_CHANCE") || 0,
+                ptsPaint: getStat(row, h, "PTS_PAINT") || 0,
+                oppPtsOffTov: getStat(row, h, "OPP_PTS_OFF_TOV") || 0,
+                oppPtsFb: getStat(row, h, "OPP_PTS_FB") || 0,
+                oppPts2ndChance: getStat(row, h, "OPP_PTS_2ND_CHANCE") || 0,
+                oppPtsPaint: getStat(row, h, "OPP_PTS_PAINT") || 0
+              });
+            });
+        }
+
+        const hustleMap = new Map();
+        if (resHustle && resHustle.resultSets && resHustle.resultSets[0].rowSet.length > 0) {
+            const h = resHustle.resultSets[0].headers;
+            resHustle.resultSets[0].rowSet.forEach((row: any[]) => {
+              hustleMap.set(String(row[h.indexOf("TEAM_ID")]), {
+                boxOuts: getStat(row, h, "BOX_OUTS") || 0,
+                looseBalls: getStat(row, h, "LOOSE_BALLS_RECOVERED") || 0,
+              });
+            });
+        }
+
+        const scoringMap = new Map();
+        if (resScoring && resScoring.resultSets && resScoring.resultSets[0].rowSet.length > 0) {
+            const h = resScoring.resultSets[0].headers;
+            resScoring.resultSets[0].rowSet.forEach((row: any[]) => {
+              scoringMap.set(String(row[h.indexOf("TEAM_ID")]), {
+                pctFgmAst: parsePct(getStat(row, h, "PCT_AST_FGM")),
+                pct2fgmAst: parsePct(getStat(row, h, "PCT_AST_2PM")),
+                pct3fgmAst: parsePct(getStat(row, h, "PCT_AST_3PM")),
+                pctPts2pt: parsePct(getStat(row, h, "PCT_PTS_2PT")),
+                pctPts3pt: parsePct(getStat(row, h, "PCT_PTS_3PT")),
+                pctPtsFt: parsePct(getStat(row, h, "PCT_PTS_FT")),
+              });
+            });
+        }
+
+        const clutchAdvMap = new Map();
+        if (resClutchAdv && resClutchAdv.resultSets && resClutchAdv.resultSets[0].rowSet.length > 0) {
+            const h = resClutchAdv.resultSets[0].headers;
+            resClutchAdv.resultSets[0].rowSet.forEach((row: any[]) => {
+                clutchAdvMap.set(String(row[h.indexOf("TEAM_ID")]), {
+                    offRtg: getStat(row, h, "OFF_RATING") || 0,
+                    defRtg: getStat(row, h, "DEF_RATING") || 0,
+                    netRtg: getStat(row, h, "NET_RATING") || 0,
+                    astPct: parsePct(getStat(row, h, "AST_PCT")),
+                    astTo: getStat(row, h, "AST_TO") || 0,
+                    astRatio: getStat(row, h, "AST_RATIO") || 0,
+                    orebPct: parsePct(getStat(row, h, "OREB_PCT")),
+                    drebPct: parsePct(getStat(row, h, "DREB_PCT")),
+                    rebPct: parsePct(getStat(row, h, "REB_PCT")),
+                    tovPct: parsePct(getStat(row, h, "TM_TOV_PCT")),
+                    efgPct: parsePct(getStat(row, h, "EFG_PCT")),
+                    pace: getStat(row, h, "PACE") || 0,
+                    pie: parsePct(getStat(row, h, "PIE")),
+                });
             });
         }
 
         const clutchMap = new Map();
-        if (dataClutch && dataClutch.resultSets && dataClutch.resultSets[0].rowSet.length > 0) {
-            const h = dataClutch.resultSets[0].headers;
-            dataClutch.resultSets[0].rowSet.forEach((row: any[]) => {
-              clutchMap.set(String(row[h.indexOf("TEAM_ID")]), {
-                clutchNetRtg: getStat(row, h, "NET_RATING") || 0,
-                clutchWinPct: parsePct(getStat(row, h, "W_PCT"))
+        const clutchDataRaw: any[] = [];
+        if (resClutchBase && resClutchBase.resultSets && resClutchBase.resultSets[0].rowSet.length > 0) {
+            const h = resClutchBase.resultSets[0].headers;
+            resClutchBase.resultSets[0].rowSet.forEach((row: any[]) => {
+              const pts = getStat(row, h, "PTS");
+              const fga = getStat(row, h, "FGA");
+              const fta = getStat(row, h, "FTA");
+              clutchDataRaw.push({
+                  id: String(row[h.indexOf("TEAM_ID")]),
+                  gp: getStat(row, h, "GP"), 
+                  min: getStat(row, h, "MIN"), 
+                  wins: getStat(row, h, "W"), 
+                  losses: getStat(row, h, "L"),
+                  pts: pts, fga: fga, fta: fta,
+                  ts: parsePct(pts / (2 * (fga + 0.44 * fta))),
+                  winPct: parsePct(getStat(row, h, "W_PCT")),
+                  adv: clutchAdvMap.get(String(row[h.indexOf("TEAM_ID")])) || {}
               });
+            });
+
+            const validClutch = clutchDataRaw.filter(t => t.min >= 10);
+            const allClutchOff = validClutch.map(t => t.adv.offRtg || 115).sort((a,b)=>a-b);
+            const allClutchDefInv = validClutch.map(t => 115 - (t.adv.defRtg || 115)).sort((a,b)=>a-b);
+            const allClutchNet = validClutch.map(t => t.adv.netRtg || 0).sort((a,b)=>a-b);
+            const allClutchPace = validClutch.map(t => t.adv.pace || 100).sort((a,b)=>a-b);
+            const allClutchTs = validClutch.map(t => t.ts).sort((a,b)=>a-b);
+            const allClutchReb = validClutch.map(t => t.adv.rebPct || 50).sort((a,b)=>a-b);
+
+            clutchDataRaw.forEach(t => {
+                clutchMap.set(t.id, {
+                    wins: t.wins,
+                    losses: t.losses,
+                    winPct: t.winPct,
+                    gp: t.gp,
+                    min: t.min,
+                    offRtg: t.adv.offRtg || 0,
+                    defRtg: t.adv.defRtg || 0,
+                    netRtg: t.adv.netRtg || 0,
+                    astPct: t.adv.astPct || 0,
+                    astTo: t.adv.astTo || 0,
+                    astRatio: t.adv.astRatio || 0,
+                    orebPct: t.adv.orebPct || 0,
+                    drebPct: t.adv.drebPct || 0,
+                    rebPct: t.adv.rebPct || 0,
+                    tovPct: t.adv.tovPct || 0,
+                    efgPct: t.adv.efgPct || 0,
+                    tsPct: t.ts || 0,
+                    pace: t.adv.pace || 0,
+                    pie: t.adv.pie || 0,
+                    percentiles: {
+                        Offense: this.calcPercentile(t.adv.offRtg || 115, allClutchOff),
+                        Defense: this.calcPercentile(115 - (t.adv.defRtg || 115), allClutchDefInv),
+                        NetRating: this.calcPercentile(t.adv.netRtg || 0, allClutchNet),
+                        Pace: this.calcPercentile(t.adv.pace || 100, allClutchPace),
+                        Efficiency: this.calcPercentile(t.ts, allClutchTs),
+                        Rebounding: this.calcPercentile(t.adv.rebPct || 50, allClutchReb)
+                    }
+                });
             });
         }
 
-        const parsedTeams = rowsBase.map((row: any[]) => {
+        let parsedTeams = rowsBase.map((row: any[]) => {
           const tId = getString(row, headersBase, "TEAM_ID", "0");
           const name = getString(row, headersBase, "TEAM_NAME", "Unknown Team");
-          const mascot = name.split(' ').pop() || "";
-          const staticTeam = NBA_TEAMS.find(t => t.name === name || t.name.includes(mascot));
+          const staticTeam = NBA_TEAMS.find(t => t.name === name || t.name.includes(name.split(' ').pop() || ""));
+          const pts = getStat(row, headersBase, "PTS");
+          const fga = getStat(row, headersBase, "FGA");
+          const fta = getStat(row, headersBase, "FTA");
+          const plusMinus = getStat(row, headersBase, "PLUS_MINUS");
+          const wins = getStat(row, headersBase, "W");
+          const losses = getStat(row, headersBase, "L");
+          const winPct = (wins + losses > 0) ? parsePct(wins / (wins + losses)) : 0;
+          
+          const mData = miscMap.get(tId) || { ptsOffTov: 0, ptsFb: 0, pts2ndChance: 0, ptsPaint: 0, oppPtsOffTov: 0, oppPtsFb: 0, oppPts2ndChance: 0, oppPtsPaint: 0 };
+          const hData = hustleMap.get(tId) || { boxOuts: 0, looseBalls: 0 };
+          const sData = scoringMap.get(tId) || { pctFgmAst: 0, pct2fgmAst: 0, pct3fgmAst: 0, pctPts2pt: 0, pctPts3pt: 0, pctPtsFt: 0 };
 
           return {
             id: tId, name: name, abbreviation: staticTeam?.abbreviation || name.substring(0, 3).toUpperCase(),
             conference: staticTeam?.conference || "Unknown",
-            wins: getStat(row, headersBase, "W"), losses: getStat(row, headersBase, "L"),
-            ppg: getStat(row, headersBase, "PTS"),
+            wins: wins, losses: losses, winPct: winPct,
+            min: getStat(row, headersBase, "MIN"),
+            ppg: pts, 
+            oppPpg: pts - plusMinus,
+            fgm: getStat(row, headersBase, "FGM"),
+            fga: fga,
+            fgPct: parsePct(getStat(row, headersBase, "FG_PCT")),
+            fg3m: getStat(row, headersBase, "FG3M"),
+            fg3a: getStat(row, headersBase, "FG3A"),
+            threePct: parsePct(getStat(row, headersBase, "FG3_PCT")),
+            ftm: getStat(row, headersBase, "FTM"),
+            fta: fta,
+            ftPct: parsePct(getStat(row, headersBase, "FT_PCT")),
+            oreb: getStat(row, headersBase, "OREB"),
+            dreb: getStat(row, headersBase, "DREB"),
+            reb: getStat(row, headersBase, "REB"),
+            apg: getStat(row, headersBase, "AST"),
+            tov: getStat(row, headersBase, "TOV"),
+            spg: getStat(row, headersBase, "STL"),
+            bpg: getStat(row, headersBase, "BLK"),
+            blka: getStat(row, headersBase, "BLKA"),
+            pf: getStat(row, headersBase, "PF"),
+            pfd: getStat(row, headersBase, "PFD"),
+            plusMinus: plusMinus,
+
+            ftaRate: fga > 0 ? parsePct(fta / fga) : 0,
+
+            pctFgmAst: sData.pctFgmAst,
+            pct2fgmAst: sData.pct2fgmAst,
+            pct3fgmAst: sData.pct3fgmAst,
+            pctPts2pt: sData.pctPts2pt,
+            pctPts3pt: sData.pctPts3pt,
+            pctPtsFt: sData.pctPtsFt,
+            
+            ptsOffTov: mData.ptsOffTov,
+            ptsFb: mData.ptsFb,
+            pts2ndChance: mData.pts2ndChance,
+            ptsPaint: mData.ptsPaint,
+            pctPtsOffTov: pts > 0 ? parsePct(mData.ptsOffTov / pts) : 0,
+            pctPtsPitp: pts > 0 ? parsePct(mData.ptsPaint / pts) : 0,
+
+            boxOuts: hData.boxOuts,
+            looseBalls: hData.looseBalls,
+            
+            imageUrl: this.getTeamLogoUrl(staticTeam?.abbreviation || ""),
             ...advMap.get(tId),
-            opp: oppMap.get(tId) || { oppFgPct: 0, opp3ptPct: 0 },
-            clutch: clutchMap.get(tId) || { clutchNetRtg: 0, clutchWinPct: 0 }
+            opp: {
+                ...(oppMap.get(tId) || { oppFgPct: 0, opp3ptPct: 0, opp2ptPct: 0, oppTov: 0, oppFtaRate: 0 }),
+                oppPtsPaint: mData.oppPtsPaint,
+                oppPtsOffTov: mData.oppPtsOffTov,
+                oppPtsFb: mData.oppPtsFb,
+                oppPts2ndChance: mData.oppPts2ndChance
+            },
+            clutch: clutchMap.get(tId) || null
           };
         });
+
+        const allOffRtg = parsedTeams.map((t:any) => t.offRtg || 115).sort((a:number,b:number)=>a-b);
+        const allDefRtgInv = parsedTeams.map((t:any) => 115 - (t.defRtg || 115)).sort((a:number,b:number)=>a-b);
+        const allNetRtg = parsedTeams.map((t:any) => t.netRtg || 0).sort((a:number,b:number)=>a-b);
+        const allPace = parsedTeams.map((t:any) => t.pace || 100).sort((a:number,b:number)=>a-b);
+        const allTsPct = parsedTeams.map((t:any) => t.tsPct || 55).sort((a:number,b:number)=>a-b);
+        const allRebPct = parsedTeams.map((t:any) => t.rebPct || 50).sort((a:number,b:number)=>a-b);
+        
+        const allAPG = parsedTeams.map((t:any) => t.apg || 0).sort((a:number,b:number)=>a-b);
+        const allAstTo = parsedTeams.map((t:any) => t.astTo || 1.5).sort((a:number,b:number)=>a-b);
+        const allOrebPct = parsedTeams.map((t:any) => t.orebPct || 25).sort((a:number,b:number)=>a-b);
+        
+        const allSPG = parsedTeams.map((t:any) => t.spg || 0).sort((a:number,b:number)=>a-b);
+        const allBPG = parsedTeams.map((t:any) => t.bpg || 0).sort((a:number,b:number)=>a-b);
+        const allDrebPct = parsedTeams.map((t:any) => t.drebPct || 75).sort((a:number,b:number)=>a-b);
+        const allOpp2pInv = parsedTeams.map((t:any) => 100 - (t.opp?.opp2ptPct || 50)).sort((a:number,b:number)=>a-b); 
+        const allOpp3pInv = parsedTeams.map((t:any) => 100 - (t.opp?.opp3ptPct || 35)).sort((a:number,b:number)=>a-b); 
+        
+        // 🚀 FIX: AÑADIDO ALLPPG PARA LA PESTAÑA TRADITIONAL
+        const allPPG = parsedTeams.map((t:any) => t.ppg || 0).sort((a:number,b:number)=>a-b);
+        const allFgPct = parsedTeams.map((t:any) => t.fgPct || 45).sort((a:number,b:number)=>a-b);
+        const all3pPct = parsedTeams.map((t:any) => t.threePct || 35).sort((a:number,b:number)=>a-b);
+        const allFtPct = parsedTeams.map((t:any) => t.ftPct || 75).sort((a:number,b:number)=>a-b);
+        const allRawReb = parsedTeams.map((t:any) => t.reb || 40).sort((a:number,b:number)=>a-b);
+        
+        const allOppPtsFbInv = parsedTeams.map((t:any) => 100 - (t.opp?.oppPtsFb || 15)).sort((a:number,b:number)=>a-b); 
+        const allOppTov = parsedTeams.map((t:any) => t.opp?.oppTov || 13).sort((a:number,b:number)=>a-b); 
+
+        const allPtsFb = parsedTeams.map((t:any) => t.ptsFb || 0).sort((a:number,b:number)=>a-b);
+        const allPts2nd = parsedTeams.map((t:any) => t.pts2ndChance || 0).sort((a:number,b:number)=>a-b);
+        const allPtsOffTov = parsedTeams.map((t:any) => t.ptsOffTov || 0).sort((a:number,b:number)=>a-b);
+        const allTovPctInv = parsedTeams.map((t:any) => 100 - (t.tovPct || 15)).sort((a:number,b:number)=>a-b);
+        const allLooseBalls = parsedTeams.map((t:any) => t.looseBalls || 0).sort((a:number,b:number)=>a-b);
+        const allBoxOuts = parsedTeams.map((t:any) => t.boxOuts || 0).sort((a:number,b:number)=>a-b); 
+        const allFtaRate = parsedTeams.map((t:any) => t.ftaRate || 0).sort((a:number,b:number)=>a-b);
+        const allPct3pt = parsedTeams.map((t:any) => t.pctPts3pt || 0).sort((a:number,b:number)=>a-b);
+        const allFgmAst = parsedTeams.map((t:any) => t.pctFgmAst || 0).sort((a:number,b:number)=>a-b);
+
+        parsedTeams = parsedTeams.map((t:any) => ({
+            ...t,
+            percentiles: {
+                Offense: this.calcPercentile(t.offRtg || 115, allOffRtg),
+                Defense: this.calcPercentile(115 - (t.defRtg || 115), allDefRtgInv),
+                NetRating: this.calcPercentile(t.netRtg || 0, allNetRtg),
+                Pace: this.calcPercentile(t.pace || 100, allPace),
+                Efficiency: this.calcPercentile(t.tsPct || 55, allTsPct),
+                Rebounding: this.calcPercentile(t.rebPct || 50, allRebPct),
+                
+                // 🚀 FIX: MAPEO DE PUNTOS PARA EL RADAR TRADITIONAL
+                Points: this.calcPercentile(t.ppg, allPPG),
+                RawReb: this.calcPercentile(t.reb, allRawReb),
+                FgPct: this.calcPercentile(t.fgPct, allFgPct),
+                ThreePct: this.calcPercentile(t.threePct, all3pPct),
+                FtPct: this.calcPercentile(t.ftPct, allFtPct),
+                
+                Playmaking: this.calcPercentile(t.apg, allAPG),
+                BallSecurity: this.calcPercentile(t.astTo, allAstTo),
+                OffReb: this.calcPercentile(t.orebPct, allOrebPct),
+                
+                Steals: this.calcPercentile(t.spg, allSPG),
+                Blocks: this.calcPercentile(t.bpg, allBPG),
+                DefReb: this.calcPercentile(t.drebPct, allDrebPct),
+                InteriorDef: this.calcPercentile(100 - (t.opp?.opp2ptPct || 50), allOpp2pInv),
+                PerimDefense: this.calcPercentile(100 - (t.opp?.opp3ptPct || 35), allOpp3pInv),
+                TransitionDef: this.calcPercentile(100 - (t.opp?.oppPtsFb || 15), allOppPtsFbInv),
+                TurnoversForced: this.calcPercentile(t.opp?.oppTov || 13, allOppTov),
+
+                FastBreak: this.calcPercentile(t.ptsFb, allPtsFb),
+                SecondChance: this.calcPercentile(t.pts2ndChance, allPts2nd),
+                PtsOffTov: this.calcPercentile(t.ptsOffTov, allPtsOffTov),
+                Hustle: this.calcPercentile(t.looseBalls, allLooseBalls),
+                BoxOuts: this.calcPercentile(t.boxOuts, allBoxOuts), 
+                TurnoverAvoidance: this.calcPercentile(100 - (t.tovPct || 15), allTovPctInv),
+                FtaRate: this.calcPercentile(t.ftaRate, allFtaRate),
+                ShotProfile: this.calcPercentile(t.pctPts3pt, allPct3pt),
+                BallMovement: this.calcPercentile(t.pctFgmAst, allFgmAst)
+            },
+            zScores: {
+                Offense: zScore(t.offRtg || 115, allOffRtg),
+                Defense: zScore(115 - (t.defRtg || 115), allDefRtgInv),
+                NetRating: zScore(t.netRtg || 0, allNetRtg),
+                Pace: zScore(t.pace || 100, allPace),
+                Efficiency: zScore(t.tsPct || 55, allTsPct),
+                Rebounding: zScore(t.rebPct || 50, allRebPct)
+            }
+        }));
 
         this.historicalTeamsCache.set(season, parsedTeams);
         if (season === "2025-26") this.teamsCache = parsedTeams;
@@ -540,22 +828,31 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
     return promise;
   }
 
-  // 🚀 CÁLCULO DE CLUTCH BPM Y PERCENTILES REALES DE LA LIGA
   async fetchAwardAuxData(season: string = "2025-26", prevSeason: string = "2024-25") {
     const cacheKey = `clutch-${season}`;
     if (this.clutchCache.has(cacheKey)) return this.clutchCache.get(cacheKey);
 
     try {
         const rookieUrl = `/leaguedashplayerstats?College=&Conference=&Country=&DateFrom=&DateTo=&Division=&DraftPick=&DraftYear=&GameScope=&GameSegment=&Height=&LastNGames=0&LeagueID=00&Location=&MeasureType=Base&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PaceAdjust=N&PerMode=Totals&Period=0&PlayerExperience=Rookie&PlayerPosition=&PlusMinus=N&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&StarterBench=&TeamID=0&VsConference=&VsDivision=&Weight=`;
-        const clutchUrl = `/leaguedashplayerclutch?AheadBehind=&ClutchTime=Last%205%20Minutes&DateFrom=&DateTo=&Direction=DESC&GameScope=&GameSegment=&LastNGames=0&LeagueID=00&Location=&MeasureType=Base&Month=0&OpponentTeamID=0&Outcome=&PaceAdjust=N&PerMode=Totals&Period=0&PlayerExperience=&PlayerPosition=&PlusMinus=N&PointDiff=5&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&Sort=PTS&StarterBench=&TeamID=0&VsConference=&VsDivision=`;
+        
+        const paramsClutch = `?AheadBehind=Ahead%20or%20Behind&ClutchTime=Last%205%20Minutes&DateFrom=&DateTo=&Direction=DESC&GameScope=&GameSegment=&LastNGames=0&LeagueID=00&Location=&MeasureType=Base&Month=0&OpponentTeamID=0&Outcome=&PaceAdjust=N&PerMode=Totals&Period=0&PlayerExperience=&PlayerPosition=&PlusMinus=N&PointDiff=5&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&Sort=PTS&StarterBench=&TeamID=0&VsConference=&VsDivision=`;
+        const clutchUrlBase = `/leaguedashplayerclutch${paramsClutch}`;
+        const clutchUrlAdv = `/leaguedashplayerclutch${paramsClutch.replace("MeasureType=Base", "MeasureType=Advanced")}`;
+        
         const benchUrl = `/leaguedashplayerstats?College=&Conference=&Country=&DateFrom=&DateTo=&Division=&DraftPick=&DraftYear=&GameScope=&GameSegment=&Height=&LastNGames=0&LeagueID=00&Location=&MeasureType=Base&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PaceAdjust=N&PerMode=Totals&Period=0&PlayerExperience=&PlayerPosition=&PlusMinus=N&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&StarterBench=Bench&TeamID=0&VsConference=&VsDivision=&Weight=`;
         
-        const [resRookies, resClutch, resBench, prevPlayers, prevTeams] = await Promise.all([
+        const [resRookies, prevPlayers, prevTeams] = await Promise.all([
             fetchSafeJSON(rookieUrl).catch(() => null),
-            fetchSafeJSON(clutchUrl).catch(() => null),
-            fetchSafeJSON(benchUrl).catch(() => null),
             this.fetchAllOfficialPlayers(prevSeason),
             this.fetchAllOfficialTeams(prevSeason)
+        ]);
+
+        await new Promise(resolve => setTimeout(resolve, 800));
+
+        const [resBench, resClutchBase, resClutchAdv] = await Promise.all([
+            fetchSafeJSON(benchUrl).catch(() => null),
+            fetchSafeJSON(clutchUrlBase).catch(() => null),
+            fetchSafeJSON(clutchUrlAdv).catch(() => null)
         ]);
 
         const prevPlayersMap = new Map<string, any>();
@@ -569,12 +866,20 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
             resRookies.resultSets[0].rowSet.forEach((r: any[]) => rookies.add(String(r[h.indexOf("PLAYER_ID")])));
         }
 
+        const clutchAdvMap = new Map();
+        if (resClutchAdv && resClutchAdv.resultSets && resClutchAdv.resultSets[0].rowSet.length > 0) {
+            const h = resClutchAdv.resultSets[0].headers;
+            resClutchAdv.resultSets[0].rowSet.forEach((row: any[]) => {
+                clutchAdvMap.set(String(row[h.indexOf("PLAYER_ID")]), getStat(row, h, "NET_RATING") || 0);
+            });
+        }
+
         const clutchStats = new Map<string, any>();
         const clutchDataRaw: any[] = [];
         
-        if (resClutch && resClutch.resultSets && resClutch.resultSets[0].rowSet.length > 0) {
-            const h = resClutch.resultSets[0].headers;
-            resClutch.resultSets[0].rowSet.forEach((r: any[]) => {
+        if (resClutchBase && resClutchBase.resultSets && resClutchBase.resultSets[0].rowSet.length > 0) {
+            const h = resClutchBase.resultSets[0].headers;
+            resClutchBase.resultSets[0].rowSet.forEach((r: any[]) => {
                 const min = getStat(r, h, "MIN");
                 const fga = getStat(r, h, "FGA");
                 const fta = getStat(r, h, "FTA");
@@ -588,48 +893,39 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
                 const tov = getStat(r, h, "TOV");
                 const gp = getStat(r, h, "GP");
                 
-                let clutchBpm = -10;
-                if (min > 0) {
-                    const mult = 36 / min;
-                    const missedFG = fga - fgm;
-                    const missedFT = fta - ftm;
-                    const baseEff = (pts + reb + ast + (stl * 2) + (blk * 2) - missedFG - missedFT - (tov * 2)) * mult;
-                    clutchBpm = (baseEff / 2.5) - 6;
-                }
-
                 clutchDataRaw.push({
                     id: String(r[h.indexOf("PLAYER_ID")]),
-                    gp, min, pts, fga, fgm, fta, ftm, stl, blk, reb, ast, tov, clutchBpm,
+                    gp, min, pts, fga, fgm, fta, ftm, stl, blk, reb, ast, tov,
                     fgPct: parsePct(getStat(r, h, "FG_PCT")),
                     fg3a: getStat(r, h, "FG3A"),
                     fg3Pct: parsePct(getStat(r, h, "FG3_PCT")),
                     ftPct: parsePct(getStat(r, h, "FT_PCT")),
                     oreb: getStat(r, h, "OREB"),
                     ts: parsePct(pts / (2 * (fga + 0.44 * fta))),
-                    plusMinus: getStat(r, h, "PLUS_MINUS")
+                    plusMinus: getStat(r, h, "PLUS_MINUS"),
+                    clutchNetRtg: clutchAdvMap.get(String(r[h.indexOf("PLAYER_ID")])) || 0
                 });
             });
 
-            // Generación de Percentiles Reales para el Clutch Radar Chart
-            const validClutch = clutchDataRaw.filter(p => p.min >= 10); // Solo jugadores con al menos 10 min en clutch
-            const allClutchPts = validClutch.map(p => (p.pts / p.min) * 36).sort((a,b)=>a-b);
-            const allClutchAst = validClutch.map(p => (p.ast / p.min) * 36).sort((a,b)=>a-b);
-            const allClutchReb = validClutch.map(p => (p.reb / p.min) * 36).sort((a,b)=>a-b);
-            const allClutchDef = validClutch.map(p => ((p.stl + p.blk) / p.min) * 36).sort((a,b)=>a-b);
+            const validClutch = clutchDataRaw.filter(p => p.min >= 10); 
+            const allClutchPts = validClutch.map(p => (p.pts / p.min) * 48).sort((a,b)=>a-b);
+            const allClutchAst = validClutch.map(p => (p.ast / p.min) * 48).sort((a,b)=>a-b);
+            const allClutchReb = validClutch.map(p => (p.reb / p.min) * 48).sort((a,b)=>a-b);
+            const allClutchDef = validClutch.map(p => ((p.stl + p.blk) / p.min) * 48).sort((a,b)=>a-b);
             const allClutchTs = validClutch.map(p => p.ts).sort((a,b)=>a-b);
-            const allClutchBpm = validClutch.map(p => p.clutchBpm).sort((a,b)=>a-b);
+            const allClutchBpm = validClutch.map(p => p.clutchNetRtg).sort((a,b)=>a-b);
 
             clutchDataRaw.forEach(p => {
-                const p36 = p.min > 0 ? 36 / p.min : 0;
+                const p48 = p.min > 0 ? 48 / p.min : 0;
                 clutchStats.set(p.id, {
                     ...p,
                     percentiles: {
-                        Scoring: this.calcPercentile(p.pts * p36, allClutchPts),
-                        Playmaking: this.calcPercentile(p.ast * p36, allClutchAst),
-                        Rebounding: this.calcPercentile(p.reb * p36, allClutchReb),
-                        Defense: this.calcPercentile((p.stl + p.blk) * p36, allClutchDef),
+                        Scoring: this.calcPercentile(p.pts * p48, allClutchPts),
+                        Playmaking: this.calcPercentile(p.ast * p48, allClutchAst),
+                        Rebounding: this.calcPercentile(p.reb * p48, allClutchReb),
+                        Defense: this.calcPercentile((p.stl + p.blk) * p48, allClutchDef),
                         Efficiency: this.calcPercentile(p.ts, allClutchTs),
-                        Impact: this.calcPercentile(p.clutchBpm, allClutchBpm)
+                        Impact: this.calcPercentile(p.clutchNetRtg, allClutchBpm)
                     }
                 });
             });
@@ -821,34 +1117,31 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
     return [];
   }
 
-  async getTeamDetails(teamId: string): Promise<any> { return null; }
-  
-  async getPlayerGameLog(playerId: string, season: string = "2025-26"): Promise<any[]> { 
+  async getTeamShotChart(teamId: string, season: string = "2025-26", isOpponent: boolean = false): Promise<any[]> {
     try {
-      const data = await fetchSafeJSON(`/playergamelog?PlayerID=${playerId}&Season=${season}&SeasonType=Regular%20Season`);
-      if (!data || !data.resultSets || data.resultSets.length === 0) return [];
+      const tId = isOpponent ? "0" : teamId;
+      const oppId = isOpponent ? teamId : "0"; 
+      const url = `/shotchartdetail?ContextMeasure=FGA&LastNGames=0&LeagueID=00&Month=0&OpponentTeamID=${oppId}&PaceAdjust=N&PerMode=PerGame&Period=0&PlayerID=0&PlusMinus=N&Position=&Rank=N&RookieYear=&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&TeamID=${tId}&VsConference=&VsDivision=`;
+      const data = await fetchSafeJSON(url);
       
-      const headers = data.resultSets[0].headers;
-      return data.resultSets[0].rowSet.map((r: any[]) => {
-        const matchup = getString(r, headers, "MATCHUP", "");
-        return {
-          date: getString(r, headers, "GAME_DATE", ""),
-          matchup: matchup,
-          isHome: !matchup.includes("@"),
-          opponent: matchup.split(matchup.includes("@") ? "@" : "vs.")[1]?.trim() || "UNK",
-          wl: getString(r, headers, "WL", ""),
-          pts: getStat(r, headers, "PTS"),
-          reb: getStat(r, headers, "REB"),
-          ast: getStat(r, headers, "AST"),
-          ts: parsePct(getStat(r, headers, "PTS") / (2 * (getStat(r, headers, "FGA") + 0.44 * getStat(r, headers, "FTA"))))
-        };
-      });
+      if (data && data.resultSets && data.resultSets[0].rowSet.length > 0) {
+        const headers = data.resultSets[0].headers;
+        return data.resultSets[0].rowSet.map((r: any[]) => ({
+          x: getStat(r, headers, "LOC_X"),
+          y: getStat(r, headers, "LOC_Y"),
+          made: getStat(r, headers, "SHOT_MADE_FLAG") === 1,
+          zone: getString(r, headers, "SHOT_ZONE_BASIC", ""),
+          type: getString(r, headers, "ACTION_TYPE", "Jump Shot"),
+        }));
+      }
     } catch (error) {
-      console.error("Error fetching game log:", error);
-      return [];
+      console.error(`Error fetching team shot chart`, error);
     }
+    return [];
   }
 
+  async getTeamDetails(teamId: string): Promise<any> { return null; }
+  async getPlayerGameLog(playerId: string, season: string = "2025-26"): Promise<any[]> { return []; }
   async searchRealPlayersWithStats(query: string): Promise<NBAPlayer[]> { return []; }
   async getLivePlayers(): Promise<NBAPlayer[]> { return this.fetchAllOfficialPlayers("2025-26"); }
   findSimilarPlayers() { return []; }

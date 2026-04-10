@@ -23,6 +23,7 @@ export interface PlayerShootingProfile {
 interface ShootingComparisonProps {
   player1: PlayerShootingProfile;
   player2: PlayerShootingProfile;
+  isDefense?: boolean;
 }
 
 type ZoneId = 'rim' | 'paintL' | 'paintR' | 'midL' | 'midR' | 'elbowL' | 'elbowR' | 'highPost' | 'corner3L' | 'corner3R' | 'wing3L' | 'wing3R' | 'topKey3' | 'deep3';
@@ -51,7 +52,7 @@ const COURT_ZONES: ZoneDef[] = [
   { id: 'deep3', label: 'Deep / Logo', top: '92%', left: '50%' },
 ];
 
-export const ShootingComparison: React.FC<ShootingComparisonProps> = ({ player1, player2 }) => {
+export const ShootingComparison: React.FC<ShootingComparisonProps> = ({ player1, player2, isDefense = false }) => {
   const [hoveredZone, setHoveredZone] = useState<ZoneId | null>(null);
 
   const classifyShot = (x: number, y: number): ZoneId => {
@@ -107,8 +108,8 @@ export const ShootingComparison: React.FC<ShootingComparisonProps> = ({ player1,
     const s1 = p1ZoneStats[zoneId];
     const s2 = p2ZoneStats[zoneId];
     
-    // REGLA 1: ZONA MUERTA
-    if (s1.makes === 0 && s2.makes === 0) return null;
+    if (s1.makes === 0 && s2.makes === 0 && !isDefense) return null;
+    if (s1.attempts === 0 && s2.attempts === 0) return null;
 
     let winner = null;
     let loser = null;
@@ -116,25 +117,24 @@ export const ShootingComparison: React.FC<ShootingComparisonProps> = ({ player1,
     let loseStats = null;
     let isVolumeWin = false;
 
-    // REGLA 2: FORFEIT
-    if (s1.makes > 0 && s2.attempts === 0) {
+    // 🚀 INVERSIÓN MATEMÁTICA: Si es mapa defensivo, premia al menor porcentaje
+    const isP1Better = isDefense ? s1.pct < s2.pct : s1.pct > s2.pct;
+    const isP2Better = isDefense ? s2.pct < s1.pct : s2.pct > s1.pct;
+
+    if (s1.attempts > 0 && s2.attempts === 0) {
       winner = player1; loser = player2; winStats = s1; loseStats = s2;
-    } else if (s2.makes > 0 && s1.attempts === 0) {
+    } else if (s2.attempts > 0 && s1.attempts === 0) {
       winner = player2; loser = player1; winStats = s2; loseStats = s1;
     } 
-    // 🚀 REGLA 3: DOMINANCIA ABSOLUTA (Pareto Rule)
-    // Protege contra la trampa del Bayesiano en porcentajes por debajo de la media de la liga.
-    // Si un jugador es estrictamente mejor (Mejor % y Mayor o igual volumen), gana automáticamente.
-    else if (s1.pct > s2.pct && s1.attempts >= s2.attempts) {
+    else if (isP1Better && s1.attempts >= s2.attempts) {
       winner = player1; loser = player2; winStats = s1; loseStats = s2;
-    } else if (s2.pct > s1.pct && s2.attempts >= s1.attempts) {
+    } else if (isP2Better && s2.attempts >= s1.attempts) {
       winner = player2; loser = player1; winStats = s2; loseStats = s1;
     } else if (s1.pct === s2.pct && s1.attempts > s2.attempts) {
       winner = player1; loser = player2; winStats = s1; loseStats = s2; isVolumeWin = true;
     } else if (s2.pct === s1.pct && s2.attempts > s1.attempts) {
       winner = player2; loser = player1; winStats = s2; loseStats = s1; isVolumeWin = true;
     }
-    // REGLA 4: SUAVIZADO BAYESIANO (Casos cruzados: ej. 1/1 vs 5/10, o 13/36 vs 5/10)
     else if (s1.attempts > 0 && s2.attempts > 0) {
       const VIRTUAL_MAKES = 8;
       const VIRTUAL_ATTEMPTS = 20;
@@ -142,24 +142,25 @@ export const ShootingComparison: React.FC<ShootingComparisonProps> = ({ player1,
       const adj1 = (s1.makes + VIRTUAL_MAKES) / (s1.attempts + VIRTUAL_ATTEMPTS);
       const adj2 = (s2.makes + VIRTUAL_MAKES) / (s2.attempts + VIRTUAL_ATTEMPTS);
 
-      if (adj1 > adj2) { winner = player1; loser = player2; winStats = s1; loseStats = s2; }
-      else if (adj2 > adj1) { winner = player2; loser = player1; winStats = s2; loseStats = s1; }
-      // Empate Bayesiano -> Volvemos al Bruto
-      else if (s1.pct > s2.pct) { winner = player1; loser = player2; winStats = s1; loseStats = s2; }
-      else if (s2.pct > s1.pct) { winner = player2; loser = player1; winStats = s2; loseStats = s1; }
+      const adjP1Better = isDefense ? adj1 < adj2 : adj1 > adj2;
+      const adjP2Better = isDefense ? adj2 < adj1 : adj2 > adj1;
+
+      if (adjP1Better) { winner = player1; loser = player2; winStats = s1; loseStats = s2; }
+      else if (adjP2Better) { winner = player2; loser = player1; winStats = s2; loseStats = s1; }
+      else if (isP1Better) { winner = player1; loser = player2; winStats = s1; loseStats = s2; }
+      else if (isP2Better) { winner = player2; loser = player1; winStats = s2; loseStats = s1; }
       else if (s1.attempts > s2.attempts) { winner = player1; loser = player2; winStats = s1; loseStats = s2; isVolumeWin = true; }
       else if (s2.attempts > s1.attempts) { winner = player2; loser = player1; winStats = s2; loseStats = s1; isVolumeWin = true; }
     }
 
     if (!winner || !winStats || !loseStats) return null;
 
-    // REGLA 5: THE BRICK PENALTY (El agujero negro)
-    if (winStats.pct <= 20 && winStats.attempts >= 3) {
+    if (!isDefense && winStats.pct <= 20 && winStats.attempts >= 3) {
       return null;
     }
 
-    // Flag de transparencia
-    if (winStats.pct < loseStats.pct) isVolumeWin = true;
+    if (winStats.pct < loseStats.pct && !isDefense) isVolumeWin = true;
+    if (winStats.pct > loseStats.pct && isDefense) isVolumeWin = true;
 
     return { winner, loser, winStats, loseStats, isVolumeWin };
   };
@@ -168,7 +169,6 @@ export const ShootingComparison: React.FC<ShootingComparisonProps> = ({ player1,
 
   return (
     <div className="w-full space-y-8">
-      {/* HEADER: GLOBAL EFFICIENCY METRICS */}
       <div className="grid grid-cols-2 gap-4">
         {[player1, player2].map((p, idx) => (
           <motion.div 

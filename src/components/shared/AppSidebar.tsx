@@ -11,7 +11,7 @@ export function AppSidebar() {
   const navigate = useNavigate();
   const basePath = `/${sport}`;
 
-  // 🚀 2. Añade Clutch Kings a los NavItems
+  // 🚀 2. Añadidas las pestañas de Player Compare y Team Compare
   const navItems = [
     { title: "Dashboard", path: "", icon: LayoutDashboard },
     { title: "Schedule", path: "/schedule", icon: Calendar },
@@ -19,10 +19,11 @@ export function AppSidebar() {
     ...(sport !== "ufc" ? [{ title: "Teams", path: "/teams", icon: Shield }] : []),
     ...(sport !== "ufc" ? [{ title: "Standings", path: "/standings", icon: Trophy }] : []),
     ...(sport !== "ufc" ? [{ title: "Rankings", path: "/rankings", icon: ListOrdered }] : []),
-    ...(sport !== "ufc" ? [{ title: "Season Awards Tracker", path: "/awards", icon: Trophy }] : []), // AÑADIDO AQUI
+    ...(sport !== "ufc" ? [{ title: "Season Awards Tracker", path: "/awards", icon: Trophy }] : []),
     { title: "Favorites", path: "/favorites", icon: Star },
     { title: "Analytics", path: "/analytics", icon: BarChart3 },
-    { title: "Compare", path: "/compare", icon: GitCompare },
+    { title: "Player Compare", path: "/compare", icon: GitCompare }, // 🚀 Renombrado para más claridad
+    ...(sport !== "ufc" ? [{ title: "Team Compare", path: "/compare-teams", icon: GitCompare }] : []), // 🚀 AÑADIDO AQUÍ
   ];
 
   return (

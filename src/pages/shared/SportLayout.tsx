@@ -14,11 +14,12 @@ import NBATeamProfile from "@/pages/nba/TeamProfile";
 import NBAStandings from "@/pages/nba/Standings";
 import NBAAnalytics from "@/pages/nba/Analytics";
 import NBACompare from "@/pages/nba/Compare";
+import CompareTeams from "@/pages/nba/CompareTeams"; // 🚀 AÑADIDO: Importamos el Team Compare
 import NBASchedule from "@/pages/nba/Schedule";
 import NBAGamePreview from "@/pages/nba/GamePreview";
 import NBABoxScore from "@/pages/nba/BoxScore";
 import NBARankings from "@/pages/nba/Rankings"; 
-import NBAAwardsTracker from "@/pages/nba/AwardsTracker"; // 🚀 AÑADIDO: Importamos la vista
+import NBAAwardsTracker from "@/pages/nba/AwardsTracker"; 
 
 // Football pages
 import FootballDashboard from "@/pages/football/Dashboard";
@@ -54,8 +55,9 @@ function SportRoutes() {
           <Route path="games/:id/boxscore" element={<NBABoxScore />} />
           <Route path="analytics" element={<NBAAnalytics />} />
           <Route path="compare" element={<NBACompare />} />
+          <Route path="compare-teams" element={<CompareTeams />} /> {/* 🚀 AÑADIDO: Ruta registrada */}
           <Route path="rankings" element={<NBARankings />} />
-          <Route path="awards" element={<NBAAwardsTracker />} /> {/* 🚀 AÑADIDO: Ruta registrada */}
+          <Route path="awards" element={<NBAAwardsTracker />} /> 
           <Route path="favorites" element={<Favorites />} />
           <Route path="*" element={<Navigate to={`/${sport}`} replace />} />
         </Routes>
