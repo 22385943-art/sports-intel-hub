@@ -136,8 +136,13 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
   }
 
   async fetchAllOfficialPlayers(season: string = "2025-26"): Promise<NBAPlayer[]> {
-    if (this.historicalPlayersCache.has(season)) return this.historicalPlayersCache.get(season)!;
-    if (this.fetchPromises.has(season)) return this.fetchPromises.get(season)!;
+    if (this.historicalPlayersCache.has(season)) {
+        return JSON.parse(JSON.stringify(this.historicalPlayersCache.get(season)!));
+    }
+    if (this.fetchPromises.has(season)) {
+        const p = await this.fetchPromises.get(season)!;
+        return JSON.parse(JSON.stringify(p));
+    }
 
     const promise = (async () => {
       try {
@@ -158,6 +163,7 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
         }
 
         if (!dataBase || !dataBase.resultSets) {
+            console.warn(`Base API Failed for season ${season}. Falling back to mock data.`);
             return this.getAllPlayers();
         }
 
@@ -263,7 +269,9 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
                     contested2pt: getStat(row, h, "CONTESTED_SHOTS_2PT"),
                     chargesDrawn: getStat(row, h, "CHARGES_DRAWN"),
                     looseBalls: getStat(row, h, "LOOSE_BALLS_RECOVERED"),
-                    boxOuts: getStat(row, h, "BOX_OUTS")
+                    boxOuts: getStat(row, h, "BOX_OUTS"),
+                    // 🚀 AÑADIDO: Extracción de Screen Assists desde la API
+                    screenAssists: getStat(row, h, "SCREEN_AST") || getStat(row, h, "SCREEN_ASSISTS")
                   });
                 });
             }
@@ -307,7 +315,7 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
         const parsedPlayersRaw = rowsBase.map((row: any[]) => {
           const playerId = getString(row, headersBase, "PLAYER_ID", "0");
           const baseAdv = advMap.get(playerId) || {};
-          const hData = hustleMap.get(playerId) || { deflections: 0, contestedShots: 0, contested3pt: 0, contested2pt: 0, chargesDrawn: 0, looseBalls: 0, boxOuts: 0 };
+          const hData = hustleMap.get(playerId) || { deflections: 0, contestedShots: 0, contested3pt: 0, contested2pt: 0, chargesDrawn: 0, looseBalls: 0, boxOuts: 0, screenAssists: 0 };
           const mData = miscMap.get(playerId) || { ptsOffTov: 0, pts2ndChance: 0, ptsFb: 0, ptsPaint: 0 };
           const sData = scoringMap.get(playerId) || { pctPts2pt: 0, pctPts3pt: 0, pctPtsFt: 0, pctFgmAst: 0, pctFgmUast: 0 };
           const passData = passingMap.get(playerId) || { passesMade: 0, potentialAst: 0, secondaryAst: 0, astPtsCreated: 0, astToPassPct: 0 };
@@ -331,6 +339,10 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
           const rawDreb = getStat(row, headersBase, "DREB");
           const oreb = rawOreb || Math.round((reb * 0.25) * 10) / 10;
           const dreb = rawDreb || Math.round((reb * 0.75) * 10) / 10;
+
+          const fg2m = fgm - getStat(row, headersBase, "FG3M");
+          const fg2a = fga - fg3a;
+          const fg2Pct = fg2a > 0 ? parsePct(fg2m / fg2a) : 0;
 
           totalLeaguePTS += (pts * gp); totalLeagueFGA += (fga * gp); totalLeagueFTA += (fta * gp);
 
@@ -361,6 +373,7 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
               fga: fga, fgm: fgm, fgPct: parsePct(getStat(row, headersBase, "FG_PCT")),
               fg3a: fg3a, fg3m: getStat(row, headersBase, "FG3M"), threePct: parsePct(getStat(row, headersBase, "FG3_PCT")),
               fta: fta, ftm: getStat(row, headersBase, "FTM"), ftPct: parsePct(getStat(row, headersBase, "FT_PCT")),
+              fg2Pct: fg2Pct,
               offRtg: offRtgVal, defRating: defRtgVal, netRtg: netRtgVal, net: netRtgVal,
               plusMinus: getStat(row, headersBase, "PLUS_MINUS"),
               pf: getStat(row, headersBase, "PF")
@@ -378,6 +391,7 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
                 boxOuts: (hasHustle ? hData.boxOuts : dreb * 0.5) * per36, 
                 looseBalls: (hasHustle ? hData.looseBalls : spg * 0.5) * per36,
                 chargesDrawn: (hasHustle ? hData.chargesDrawn : 0) * per36,
+                screenAssists: (hasHustle ? hData.screenAssists : oreb * 0.5) * per36, // Proxy Tradicional: OReb
                 potentialAst: (hasTracking ? passData.potentialAst : ast * 1.8) * per36, 
                 passesMade: (hasTracking ? passData.passesMade : ast * 6.0) * per36,
                 secondaryAst: (hasTracking ? passData.secondaryAst : ast * 0.2) * per36, 
@@ -432,6 +446,8 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
         const all3PM = qualifiedPlayers.map((p: any) => p.per36Stats.fg3m).sort((a,b)=>a-b);
         const all3PA = qualifiedPlayers.map((p: any) => p.per36Stats.fg3a).sort((a,b)=>a-b);
         const allWinPct = qualifiedPlayers.map((p: any) => p.stats.winPct).sort((a,b)=>a-b);
+        const allFG2Pct = qualifiedPlayers.map((p: any) => p.stats.fg2Pct).sort((a,b)=>a-b); 
+        const allFgPct = qualifiedPlayers.map((p: any) => p.stats.fgPct).sort((a,b)=>a-b);
         
         const allOReb = qualifiedPlayers.map((p: any) => p.per36Stats.oreb).sort((a,b)=>a-b);
         const allDReb = qualifiedPlayers.map((p: any) => p.per36Stats.dreb).sort((a,b)=>a-b);
@@ -447,6 +463,7 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
         const allBoxOuts = qualifiedPlayers.map((p: any) => p.per36Stats.boxOuts).sort((a,b)=>a-b);
         const allLooseBalls = qualifiedPlayers.map((p: any) => p.per36Stats.looseBalls).sort((a,b)=>a-b);
         const allCharges = qualifiedPlayers.map((p: any) => p.per36Stats.chargesDrawn).sort((a,b)=>a-b);
+        const allScreenAssists = qualifiedPlayers.map((p: any) => p.per36Stats.screenAssists).sort((a,b)=>a-b);
         
         const allPER = qualifiedPlayers.map((p: any) => p.adv.per).sort((a,b)=>a-b);
         const allVORP = qualifiedPlayers.map((p: any) => p.adv.vorp).sort((a,b)=>a-b);
@@ -505,10 +522,14 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
             const pDReb = this.calcPercentile(p.per36Stats.dreb, allDReb);
             const pDefl = this.calcPercentile(p.per36Stats.deflections, allDeflections);
             const pContested = this.calcPercentile(p.per36Stats.contestedShots, allContested);
+            const pContested3 = this.calcPercentile(p.per36Stats.contested3pt, allContested3);
+            const pContested2 = this.calcPercentile(p.per36Stats.contested2pt, allContested2);
             
             const pNet = this.calcPercentile(p.adv.net, allNetRtg);
             const pBPM = this.calcPercentile(p.adv.bpm, allBPM);
             const pPIE = this.calcPercentile(p.adv.pie, allPIE);
+            const pPER = this.calcPercentile(p.adv.per, allPER);
+            const pFG2Pct = this.calcPercentile(p.stats.fg2Pct, allFG2Pct);
 
             let perimeterD = 50, interiorD = 50, globalDef = 50, finishing = 50, midRange = 50;
             const scoringIndex = Math.round((pPPG * 2.0 + pTS * 0.8) / 2.8);
@@ -516,24 +537,38 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
 
             try {
                 if (hasTracking) {
-                    perimeterD = Math.round((this.calcPercentile(100 - p.tracking.dfg3Pct, allDFG3Inv) * 2.0 + pDefl * 1.0 + pSPG * 1.0 + this.calcPercentile(p.per36Stats.contested3pt, allContested3) * 1.0) / 5.0);
-                    interiorD = Math.round((this.calcPercentile(100 - p.tracking.dfg2Pct, allDFG2Inv) * 2.0 + pBPG * 1.5 + this.calcPercentile(p.per36Stats.contested2pt, allContested2) * 1.0) / 4.5);
-                    globalDef = Math.round((this.calcPercentile(115 - (p.adv.defRating || 115), allDefRtgInv) * 2.0 + this.calcPercentile(100 - p.tracking.dfgPct, allDFGInv) * 2.5 + Math.max(pSPG, pBPG) * 1.0 + pContested * 0.5) / 6.0);
-                    finishing = Math.round((this.calcPercentile(p.per36Stats.paintFGM, allPaintFGM) * 1.5 + pTS * 1.0) / 2.5); 
-                    midRange = Math.round((this.calcPercentile(p.per36Stats.midRangeFGM, allMidRangeFGM) * 1.5 + (this.calcPercentile(p.stats.fgPct, allTS) * 1.0)) / 2.5); 
+                    perimeterD = Math.round((this.calcPercentile(115 - (p.adv.defRating || 115), allDefRtgInv) * 2.5 + this.calcPercentile(100 - p.tracking.dfg3Pct, allDFG3Inv) * 2.5 + pDefl * 1.0 + pSPG * 1.0 + pContested3 * 1.0) / 8.0);
+                    interiorD = Math.round((this.calcPercentile(115 - (p.adv.defRating || 115), allDefRtgInv) * 2.0 + this.calcPercentile(100 - p.tracking.dfg2Pct, allDFG2Inv) * 2.0 + pBPG * 4.0 + pContested2 * 1.0 + pDReb * 0.5) / 9.5);
+                    globalDef = Math.round((this.calcPercentile(115 - (p.adv.defRating || 115), allDefRtgInv) * 4.0 + this.calcPercentile(100 - p.tracking.dfgPct, allDFGInv) * 2.5 + Math.max(pSPG, pBPG) * 1.0 + pContested * 0.5) / 8.0);
+                    finishing = Math.round((this.calcPercentile(p.per36Stats.paintFGM, allPaintFGM) * 3.5 + this.calcPercentile(p.adv.ftaRate, allFtaRate) * 1.5 + pFG2Pct * 0.5) / 5.5); 
+                    midRange = Math.round((this.calcPercentile(p.per36Stats.midRangeFGM, allMidRangeFGM) * 4.0 + this.calcPercentile(p.stats.ftPct, allFtPct) * 1.0) / 5.0); 
                 } else {
-                    perimeterD = Math.round((pSPG * 1.5 + this.calcPercentile(p.adv.bpm, allBPM)) / 2.5); 
-                    interiorD = Math.round((pBPG * 2.5 + this.calcPercentile(p.stats.mpg > 0 ? p.stats.bpg / p.stats.mpg : 0, allBlkPct) * 1.5) / 4.0); 
-                    globalDef = Math.round((this.calcPercentile(115 - (p.adv.defRating || 115), allDefRtgInv) * 2.0 + this.calcPercentile(p.adv.bpm, allBPM) * 1.5 + Math.max(pSPG, pBPG) * 1.0) / 4.5);
-                    finishing = Math.round((this.calcPercentile(p.per36Stats.paintFGM, allPaintFGM) * 1.5 + this.calcPercentile(p.stats.fgPct, allTS) * 1.0) / 2.5);
-                    midRange = Math.round((this.calcPercentile(p.per36Stats.twoPA, allTwoPA) * 1.0 + this.calcPercentile(p.stats.ftPct, allFtPct) * 3.0) / 4.0);
+                    perimeterD = Math.round((this.calcPercentile(115 - (p.adv.defRating || 115), allDefRtgInv) * 2.5 + pSPG * 1.5 + pBPM * 1.0) / 5.0); 
+                    interiorD = Math.round((this.calcPercentile(115 - (p.adv.defRating || 115), allDefRtgInv) * 2.0 + pBPG * 4.0 + this.calcPercentile(p.stats.mpg > 0 ? p.stats.bpg / p.stats.mpg : 0, allBlkPct) * 1.5 + pDReb * 0.5) / 8.0); 
+                    globalDef = Math.round((this.calcPercentile(115 - (p.adv.defRating || 115), allDefRtgInv) * 4.0 + pBPM * 1.5 + Math.max(pSPG, pBPG) * 1.0) / 6.5);
+                    finishing = Math.round((this.calcPercentile(p.per36Stats.paintFGM, allPaintFGM) * 3.5 + this.calcPercentile(p.adv.ftaRate, allFtaRate) * 1.5 + pFG2Pct * 0.5) / 5.5); 
+                    midRange = Math.round((this.calcPercentile(p.per36Stats.twoPA, allTwoPA) * 4.0 + this.calcPercentile(p.stats.ftPct, allFtPct) * 1.0) / 5.0);
                 }
-            } catch(e) {
-                console.warn("Calculation fallback triggered for player", p.name);
+            } catch(e) {}
+
+            let hustleScore = 50;
+            if (hasTracking) {
+                hustleScore = Math.round((
+                    this.calcPercentile(p.per36Stats.deflections, allDeflections) * 4.0 +
+                    this.calcPercentile(p.per36Stats.looseBalls, allLooseBalls) * 3.0 +
+                    this.calcPercentile(p.per36Stats.chargesDrawn, allCharges) * 2.0 +
+                    this.calcPercentile(p.per36Stats.screenAssists, allScreenAssists) * 1.0 +
+                    this.calcPercentile(p.per36Stats.boxOuts, allBoxOuts) * 0.5
+                ) / 10.5);
+            } else {
+                hustleScore = Math.round((
+                    this.calcPercentile(p.per36Stats.spg, allSPG) * 4.0 +
+                    this.calcPercentile(p.per36Stats.oreb, allOReb) * 1.0 +
+                    this.calcPercentile(p.per36Stats.dreb, allDReb) * 0.5
+                ) / 5.5);
             }
 
-            const hustleScore = Math.round((this.calcPercentile(p.per36Stats.boxOuts, allBoxOuts) + this.calcPercentile(p.per36Stats.looseBalls, allLooseBalls) + this.calcPercentile(p.per36Stats.chargesDrawn, allCharges) * 2) / 4);
-            const overallImpact = Math.round((pNet + pBPM + pPIE) / 3);
+            const overallImpact = Math.round((pNet + pBPM + pPIE + pPER) / 4.0);
 
             const pPotentialAst = this.calcPercentile(p.per36Stats.potentialAst, allPotentialAst);
             const pPasses = this.calcPercentile(p.per36Stats.passesMade, allPassesMade);
@@ -551,7 +586,7 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
                     Rebounding: this.calcPercentile(p.per36Stats.rpg, allRPG), 
                     Efficiency: pTS,
                     Impact: pBPM, 
-                    Shooting: Math.round((this.calcPercentile(p.per36Stats.fg3m, all3PM) * 1.5 + this.calcPercentile(p.stats.threePct, all3P) * 1.0) / 2.5),
+                    Shooting: Math.round((this.calcPercentile(p.per36Stats.fg3m, all3PM) * 2.5 + this.calcPercentile(p.stats.threePct, all3P) * 1.0) / 3.5),
                     Defense: globalDef, 
                     OReb: this.calcPercentile(p.per36Stats.oreb, allOReb),
                     DReb: pDReb, 
@@ -561,13 +596,13 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
                     NetRtg: pNet, 
                     Contested: pContested,
                     Deflections: pDefl,
-                    PER: this.calcPercentile(p.adv.per, allPER),
+                    PER: pPER,
                     WinPct: this.calcPercentile(p.stats.winPct, allWinPct), 
                     WS48: this.calcPercentile(p.adv.ws48, allWS48),
                     VORP: this.calcPercentile(p.adv.vorp, allVORP),
                     PIE: pPIE,
                     USG: pUSG, 
-                    EFG: this.calcPercentile(p.adv.efg, allEFG),
+                    EFG: this.calcPercentile(p.stats.fgPct, allFgPct), 
 
                     ScoringIndex: Math.min(100, Math.max(0, scoringIndex)),
                     PlayCreation: Math.min(100, Math.max(0, playCreation)),
@@ -575,7 +610,7 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
                     InteriorD: Math.min(100, Math.max(0, interiorD)),
                     Hustle: Math.min(100, Math.max(0, hustleScore)),
                     OverallImpact: Math.min(100, Math.max(0, overallImpact)),
-                    SystemicImpact: Math.min(100, Math.max(0, overallImpact)),
+                    SystemicImpact: Math.min(100, Math.max(0, overallImpact)), 
 
                     Finishing: Math.min(100, Math.max(0, finishing)),
                     MidRange: Math.min(100, Math.max(0, midRange)),
@@ -600,7 +635,7 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
         this.historicalPlayersCache.set(season, parsedPlayers as unknown as NBAPlayer[]);
         if (season === "2025-26") this.playersCache = parsedPlayers as unknown as NBAPlayer[];
 
-        return parsedPlayers as unknown as NBAPlayer[];
+        return JSON.parse(JSON.stringify(parsedPlayers));
       } catch (err) {
         console.error("Critical Error parsing all players:", err);
         this.fetchPromises.delete(season);
@@ -609,10 +644,9 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
     })();
 
     this.fetchPromises.set(season, promise);
-    return promise;
+    return promise.then(data => JSON.parse(JSON.stringify(data)));
   }
 
-  // 🚀 FIX: FÓRMULA ORIGINAL DE MVP RESTAURADA. Jokic vuelve a sus 181 pts.
   computeAllAdvanced(player: any) {
     const s = player.stats || {};
     const a = player.adv || {};
@@ -687,8 +721,13 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
   }
 
   async fetchAllOfficialTeams(season: string = "2025-26"): Promise<any[]> {
-    if (this.historicalTeamsCache.has(season)) return this.historicalTeamsCache.get(season)!;
-    if (this.fetchTeamsPromises.has(season)) return this.fetchTeamsPromises.get(season)!;
+    if (this.historicalTeamsCache.has(season)) {
+        return JSON.parse(JSON.stringify(this.historicalTeamsCache.get(season)!));
+    }
+    if (this.fetchTeamsPromises.has(season)) {
+        const teams = await this.fetchTeamsPromises.get(season)!;
+        return JSON.parse(JSON.stringify(teams));
+    }
 
     const promise = (async () => {
       try {
@@ -698,8 +737,7 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
         const paramsMisc = paramsTeamBase.replace("MeasureType=Base", "MeasureType=Misc"); 
         const paramsScoring = paramsTeamBase.replace("MeasureType=Base", "MeasureType=Scoring"); 
         
-        // 🚀 FIX CRÍTICO: URL EXACTA de la NBA. Requiere PointDiff=5 y StarterBench vacío. SIN ESTO, ERROR 500.
-        const paramsClutch = `?AheadBehind=Ahead%20or%20Behind&ClutchTime=Last%205%20Minutes&DateFrom=&DateTo=&Direction=DESC&GameScope=&GameSegment=&LastNGames=0&LeagueID=00&Location=&MeasureType=Base&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PaceAdjust=N&PerMode=PerGame&Period=0&PlusMinus=N&PointDiff=5&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&StarterBench=&TeamID=0&VsConference=&VsDivision=`;
+        const paramsClutch = `?AheadBehind=Ahead%20or%20Behind&ClutchTime=Last%205%20Minutes&DateFrom=&DateTo=&Direction=DESC&GameScope=&GameSegment=&LastNGames=0&LeagueID=00&Location=&MeasureType=Base&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PaceAdjust=N&PerMode=PerGame&Period=0&PlayerExperience=&PlayerPosition=&PlusMinus=N&PointDiff=5&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&StarterBench=&TeamID=0&VsConference=&VsDivision=`;
         const urlClutchBase = `/leaguedashteamclutch${paramsClutch}`;
         const urlClutchAdv = `/leaguedashteamclutch${paramsClutch.replace("MeasureType=Base", "MeasureType=Advanced")}`;
         
@@ -853,14 +891,13 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
               const wins = getStat(row, h, "W");
               const losses = getStat(row, h, "L");
               
-              // 🚀 FIX: Lectura robusta del Win Pct de Clutch
               const apiWinPct = getStat(row, h, "W_PCT");
-              const wPct = (apiWinPct !== undefined && apiWinPct !== 0) ? parsePct(apiWinPct) : (wins + losses > 0 ? parsePct(wins / (wins + losses)) : 0);
+              const wPct = (apiWinPct !== undefined && apiWinPct !== null) ? parsePct(apiWinPct) : (wins + losses > 0 ? parsePct(wins / (wins + losses)) : 0);
 
+              const pts = getStat(row, h, "PTS");
               const fga = getStat(row, h, "FGA");
               const fta = getStat(row, h, "FTA");
-              const pts = getStat(row, h, "PTS");
-              const tsPct = (fga > 0 || fta > 0) ? parsePct(pts / (2 * (fga + 0.44 * fta))) : 0;
+              const calculatedTs = (fga > 0 || fta > 0) ? parsePct(pts / (2 * (fga + 0.44 * fta))) : 0;
 
               clutchDataRaw.push({
                   id: tId,
@@ -869,13 +906,12 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
                   wins: wins, 
                   losses: losses,
                   pts: pts, fga: fga, fta: fta,
-                  tsPct: tsPct, // Usamos la convención correcta
+                  tsPct: calculatedTs, 
                   winPct: wPct,
                   adv: clutchAdvMap.get(tId) || {}
               });
             });
         } else {
-            // Fake Data Fallback en caso de que la API Clutch esté caída por IP Rate Limit
             rowsBase.forEach((row: any[]) => {
                 const tId = getString(row, headersBase, "TEAM_ID", "0");
                 const adv = advMap.get(tId) || {};
@@ -899,9 +935,11 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
 
         clutchDataRaw.forEach(t => {
             clutchMap.set(t.id, {
-                ...t,         // 🚀 FIX: Aplanamos todos los datos (pts, fga, min, etc.)
-                ...t.adv,     // 🚀 FIX: Aplanamos los datos avanzados (astPct, orebPct, etc.)
-                clutchNetRtg: t.adv.netRtg || 0, // Clave que buscan los Rankings
+                ...t,         
+                ...t.adv,     
+                clutchNetRtg: t.adv.netRtg || 0,
+                clutchWinPct: t.winPct || 0,
+                ts: t.tsPct || 0,
                 percentiles: {
                     Offense: this.calcPercentile(t.adv.offRtg || 115, allClutchOff),
                     Defense: this.calcPercentile(115 - (t.adv.defRtg || 115), allClutchDefInv),
@@ -931,11 +969,7 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
           const adv = advMap.get(tId) || {};
           const clData = clutchMap.get(tId);
 
-          return {
-            id: tId, name: name, abbreviation: staticTeam?.abbreviation || name.substring(0, 3).toUpperCase(),
-            conference: staticTeam?.conference || "Unknown",
-            wins: wins, losses: losses, winPct: winPct,
-            min: getStat(row, headersBase, "MIN"),
+          const statsObj = {
             ppg: pts, 
             oppPpg: pts - plusMinus,
             fgm: getStat(row, headersBase, "FGM"),
@@ -958,9 +992,26 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
             pf: getStat(row, headersBase, "PF"),
             pfd: getStat(row, headersBase, "PFD"),
             plusMinus: plusMinus,
-
             ftaRate: fga > 0 ? parsePct(fta / fga) : 0,
+            winPct: winPct
+          };
 
+          const advFixed = {
+              ...adv,
+              astToTeam: adv.astTo || 1.5
+          };
+
+          return {
+            id: tId, name: name, abbreviation: staticTeam?.abbreviation || name.substring(0, 3).toUpperCase(),
+            conference: staticTeam?.conference || "Unknown",
+            wins: wins, losses: losses, winPct: winPct,
+            min: getStat(row, headersBase, "MIN"),
+            
+            ...statsObj,
+            ...advFixed,
+            stats: statsObj,
+            adv: advFixed,
+            
             pctFgmAst: sData.pctFgmAst,
             pct2fgmAst: sData.pct2fgmAst,
             pct3fgmAst: sData.pct3fgmAst,
@@ -979,7 +1030,6 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
             looseBalls: hData.looseBalls,
             
             imageUrl: this.getTeamLogoUrl(staticTeam?.abbreviation || ""),
-            ...adv,
             opp: {
                 ...(oppMap.get(tId) || { oppFgPct: 0, opp3ptPct: 0, opp2ptPct: 0, oppTov: 0, oppFtaRate: 0 }),
                 oppPtsPaint: mData.oppPtsPaint,
@@ -987,10 +1037,18 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
                 oppPtsFb: mData.oppPtsFb,
                 oppPts2ndChance: mData.oppPts2ndChance
             },
-            // 🚀 FIX: Asignamos clData directo, que ya está 100% aplanado y listo
             clutch: clData || {
                 clutchNetRtg: adv.netRtg || 0,
+                clutchWinPct: winPct,
                 winPct: winPct,
+                tsPct: adv.tsPct || 0,
+                ts: adv.tsPct || 0,
+                offRtg: adv.offRtg || 0,
+                defRtg: adv.defRtg || 0,
+                netRtg: adv.netRtg || 0,
+                pace: adv.pace || 0,
+                rebPct: adv.rebPct || 0,
+                astTo: adv.astTo || 0,
                 percentiles: { Offense: 50, Defense: 50, NetRating: 50, Pace: 50, Efficiency: 50, Rebounding: 50 }
             }
         };
@@ -1082,14 +1140,14 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
 
         this.historicalTeamsCache.set(season, parsedTeams);
         if (season === "2025-26") this.teamsCache = parsedTeams;
-        return parsedTeams;
+        return JSON.parse(JSON.stringify(parsedTeams));
       } catch (err) {
         this.fetchTeamsPromises.delete(season);
-        return season === "2025-26" ? this.getAllTeams() : [];
+        return season === "2025-26" ? JSON.parse(JSON.stringify(this.getAllTeams())) : [];
       }
     })();
     this.fetchTeamsPromises.set(season, promise);
-    return promise;
+    return promise.then(data => JSON.parse(JSON.stringify(data)));
   }
 
   async fetchAwardAuxData(season: string = "2025-26", prevSeason: string = "2024-25") {
@@ -1136,7 +1194,11 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
             resClutchAdv.resultSets[0].rowSet.forEach((row: any[]) => {
                 clutchAdvMap.set(String(row[h.indexOf("PLAYER_ID")]), {
                     netRtg: getStat(row, h, "NET_RATING") || 0,
-                    defRtg: getStat(row, h, "DEF_RATING") || 115
+                    defRtg: getStat(row, h, "DEF_RATING") || 115,
+                    astPct: parsePct(getStat(row, h, "AST_PCT")),
+                    astTo: getStat(row, h, "AST_TO") || 0,
+                    astRatio: getStat(row, h, "AST_RATIO") || 0,
+                    pie: parsePct(getStat(row, h, "PIE")),
                 });
             });
         }
@@ -1151,6 +1213,8 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
                 const fga = getStat(r, h, "FGA");
                 const fta = getStat(r, h, "FTA");
                 const pts = getStat(r, h, "PTS");
+                const wins = getStat(r, h, "W");
+                const losses = getStat(r, h, "L");
                 
                 clutchDataRaw.push({
                     id: String(r[h.indexOf("PLAYER_ID")]),
@@ -1159,14 +1223,9 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
                     stl: getStat(r, h, "STL"), blk: getStat(r, h, "BLK"),
                     reb: getStat(r, h, "REB"), ast: getStat(r, h, "AST"),
                     tov: getStat(r, h, "TOV"),
-                    fgPct: parsePct(getStat(r, h, "FG_PCT")),
-                    fg3a: getStat(r, h, "FG3A"),
-                    fg3Pct: parsePct(getStat(r, h, "FG3_PCT")),
-                    ftPct: parsePct(getStat(r, h, "FT_PCT")),
-                    oreb: getStat(r, h, "OREB"),
+                    winPct: (wins + losses > 0) ? parsePct(wins / (wins + losses)) : 0,
                     ts: parsePct(pts / (2 * (fga + 0.44 * fta))),
-                    plusMinus: getStat(r, h, "PLUS_MINUS"),
-                    adv: clutchAdvMap.get(String(r[h.indexOf("PLAYER_ID")])) || { netRtg: 0, defRtg: 115 }
+                    adv: clutchAdvMap.get(String(r[h.indexOf("PLAYER_ID")])) || { netRtg: 0, defRtg: 115, astPct: 0, astTo: 0, astRatio: 0, pie: 0 }
                 });
             });
 
@@ -1174,28 +1233,40 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
             const allClutchPts = validClutch.map(p => (p.pts / p.min) * 48).sort((a,b)=>a-b);
             const allClutchAst = validClutch.map(p => (p.ast / p.min) * 48).sort((a,b)=>a-b);
             const allClutchReb = validClutch.map(p => (p.reb / p.min) * 48).sort((a,b)=>a-b);
-            const allClutchDefStocks = validClutch.map(p => ((p.stl + p.blk) / p.min) * 48).sort((a,b)=>a-b);
             const allClutchTs = validClutch.map(p => p.ts).sort((a,b)=>a-b);
             const allClutchBpm = validClutch.map(p => p.adv.netRtg).sort((a,b)=>a-b);
             const allClutchDefRtgInv = validClutch.map(p => 115 - (p.adv.defRtg || 115)).sort((a,b)=>a-b);
+            
+            const allClutchBlk = validClutch.map(p => (p.blk / p.min) * 48).sort((a,b)=>a-b);
+            const allClutchStl = validClutch.map(p => (p.stl / p.min) * 48).sort((a,b)=>a-b);
+            const allClutchAstPct = validClutch.map(p => p.adv.astPct).sort((a,b)=>a-b);
+            const allClutchAstTo = validClutch.map(p => p.adv.astTo).sort((a,b)=>a-b);
+            const allClutchAstRatio = validClutch.map(p => p.adv.astRatio).sort((a,b)=>a-b);
+            const allClutchPie = validClutch.map(p => p.adv.pie).sort((a,b)=>a-b);
+            const allClutchWinPct = validClutch.map(p => p.winPct).sort((a,b)=>a-b);
 
             clutchDataRaw.forEach(p => {
                 const p48 = p.min > 0 ? 48 / p.min : 0;
                 
                 const pDefRtg = this.calcPercentile(115 - (p.adv.defRtg || 115), allClutchDefRtgInv);
-                const pStocks = this.calcPercentile((p.stl + p.blk) * p48, allClutchDefStocks);
-                const clutchDef = Math.round((pDefRtg * 2.0 + pStocks * 1.0) / 3.0);
+                const pStl = this.calcPercentile(p.stl * p48, allClutchStl);
+                const pBlk = this.calcPercentile(p.blk * p48, allClutchBlk);
+                
+                const clutchDef = Math.round((pDefRtg * 4.0 + pBlk * 1.5 + pStl * 1.0) / 6.5);
+                const clutchScoring = Math.round((this.calcPercentile(p.pts * p48, allClutchPts) * 2.0 + this.calcPercentile(p.ts, allClutchTs) * 0.8) / 2.8);
+                const clutchPlaymaking = Math.round((this.calcPercentile(p.ast * p48, allClutchAst) * 2.5 + this.calcPercentile(p.adv.astPct, allClutchAstPct) * 1.0 + this.calcPercentile(p.adv.astTo, allClutchAstTo) * 1.0 + this.calcPercentile(p.adv.astRatio, allClutchAstRatio) * 0.5) / 5.0);
+                const clutchImpact = Math.round((this.calcPercentile(p.adv.netRtg, allClutchBpm) * 2.0 + this.calcPercentile(p.adv.pie, allClutchPie) * 2.0 + this.calcPercentile(p.winPct, allClutchWinPct) * 1.0) / 5.0);
 
                 clutchStats.set(p.id, {
                     ...p,
                     clutchNetRtg: p.adv.netRtg,
                     percentiles: {
-                        Scoring: this.calcPercentile(p.pts * p48, allClutchPts),
-                        Playmaking: this.calcPercentile(p.ast * p48, allClutchAst),
+                        Scoring: Math.min(100, Math.max(0, clutchScoring)),
+                        Playmaking: Math.min(100, Math.max(0, clutchPlaymaking)),
                         Rebounding: this.calcPercentile(p.reb * p48, allClutchReb),
                         Defense: Math.min(100, Math.max(0, clutchDef)),
                         Efficiency: this.calcPercentile(p.ts, allClutchTs),
-                        Impact: this.calcPercentile(p.adv.netRtg, allClutchBpm)
+                        Impact: Math.min(100, Math.max(0, clutchImpact))
                     }
                 });
             });
@@ -1345,11 +1416,27 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
     } catch (error) { return []; }
   }
 
-  // 🚀 FIX: Fallback blindado. Jamás petará el .includes()
   async fetchStandings(): Promise<any[]> {
     try {
       const data = await fetchSafeJSON(`/leaguestandingsv3?LeagueID=00&Season=2025-26&SeasonType=Regular%20Season`);
-      if (!data || !data.resultSets || data.resultSets.length === 0) return NBA_TEAMS; 
+      
+      if (!data || !data.resultSets || data.resultSets.length === 0) {
+        return NBA_TEAMS.map((t, i) => ({
+            id: String(t.id),
+            teamId: String(t.id),
+            name: t.name,
+            abbreviation: t.abbreviation,
+            conference: t.conference,
+            wins: t.wins || 0,
+            losses: t.losses || 0,
+            pct: (t.wins || 0) / ((t.wins || 0) + (t.losses || 1)),
+            winPct: (t.wins || 0) / ((t.wins || 0) + (t.losses || 1)),
+            rank: i + 1,
+            gb: 0,
+            l10: "5-5",
+            streak: "1W"
+        }));
+      }
       
       const headers = data.resultSets[0].headers;
       const rows = data.resultSets[0].rowSet;
@@ -1359,7 +1446,7 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
       return rows.map((r: any[]) => {
         const teamId = r[getIdx("teamid")] || 0;
         const rawConf = r[getIdx("conference")];
-        const streakStr = getString(r, headers, "CurrentStreak", ""); 
+        const rawStreak = r[getIdx("strcurrentstreak")] || r[getIdx("currentstreak")]; 
         
         const fallbackTeam = NBA_TEAMS.find(t => String(t.id) === String(teamId));
         let safeConference = fallbackTeam?.conference || "East";
@@ -1368,8 +1455,10 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
             safeConference = rawConf;
         }
 
+        const safeStreak = (rawStreak !== undefined && rawStreak !== null) ? String(rawStreak).trim() : "1W";
+
         return {
-            id: String(teamId), // 🚀 FIX: Esto arregla el Warning de la consola "unique key prop" en el mapeo de React
+            id: String(teamId), 
             teamId: String(teamId), 
             name: r[getIdx("teamcity")] ? `${r[getIdx("teamcity")]} ${r[getIdx("teamname")]}` : fallbackTeam?.name || "Unknown", 
             abbreviation: r[getIdx("teamslug")] || fallbackTeam?.abbreviation || "UNK", 
@@ -1381,10 +1470,26 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
             rank: r[getIdx("playoffrank")] || r[getIdx("playoffrank")] || 1,
             gb: r[getIdx("conferencerecord")] || 0, 
             l10: r[getIdx("l10")] || "5-5", 
-            streak: String(streakStr) || "1W" 
+            streak: safeStreak
         };
       });
-    } catch(e) { return NBA_TEAMS; } 
+    } catch(e) { 
+        return NBA_TEAMS.map((t, i) => ({
+            id: String(t.id),
+            teamId: String(t.id),
+            name: t.name,
+            abbreviation: t.abbreviation,
+            conference: t.conference,
+            wins: t.wins || 0,
+            losses: t.losses || 0,
+            pct: (t.wins || 0) / ((t.wins || 0) + (t.losses || 1)),
+            winPct: (t.wins || 0) / ((t.wins || 0) + (t.losses || 1)),
+            rank: i + 1,
+            gb: 0,
+            l10: "5-5",
+            streak: "1W"
+        })); 
+    } 
   }
 
   async fetchBoxScore(gameId: string): Promise<any> { 

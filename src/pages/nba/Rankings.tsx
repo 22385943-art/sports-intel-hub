@@ -126,11 +126,23 @@ export default function Rankings() {
     setSearch("");
   }, [metric]);
 
+  // 🚀 LA FUNCIÓN QUE CAUSABA EL CAOS ESTÁ ARREGLADA AQUÍ
   const getRawVal = (item: any, m: string, isTeam: boolean, source: string) => {
       let key = m;
       if (m === "astToTeam") key = "astTo"; 
-      if (isTeam) return item.opp?.[key] ?? item.clutch?.[key] ?? item[key];
-      return item[source]?.[key] ?? item[key];
+      
+      if (isTeam) {
+          // Si la métrica es del CLUTCH, miramos SOLO en la carpeta clutch
+          if (source === "clutch") return item.clutch?.[key] ?? 0;
+          // Si la métrica es de OPPONENT, miramos SOLO en la carpeta opp
+          if (source === "opp") return item.opp?.[key] ?? 0;
+          
+          // Si la métrica es GENERAL (stats/adv), miramos SOLO en la raíz del equipo
+          return item[key] ?? 0;
+      }
+      
+      // Para jugadores, sigue funcionando como siempre
+      return item[source]?.[key] ?? item[key] ?? 0;
   };
 
   const getTop5 = (m: string, isTeam: boolean) => {
@@ -326,7 +338,7 @@ export default function Rankings() {
           
           {currentData.map((item, index) => {
             const actualRank = (page - 1) * ITEMS_PER_PAGE + index + 1;
-            const rawVal = getRawVal(item, metric, type === "team", config.source);
+            const rawVal = getRawVal(item, metric as string, type === "team", config.source);
             
             return (
               <Link 
@@ -350,7 +362,7 @@ export default function Rankings() {
                   </div>
                 </div>
                 <div className={`w-24 text-right font-mono font-black text-xl text-${config.color}-400 group-hover:drop-shadow-[0_0_10px_rgba(var(--${config.color}-500),0.5)] transition-all`}>
-                  {metric.includes('net') || metric.includes('Net') && rawVal > 0 ? '+' : ''}{formatValue(rawVal, config.format)}
+                  {metric!.includes('net') || metric!.includes('Net') && rawVal > 0 ? '+' : ''}{formatValue(rawVal, config.format)}
                 </div>
               </Link>
             )
