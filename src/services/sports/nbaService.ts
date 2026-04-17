@@ -23,15 +23,15 @@ const fetchSafeJSON = async (endpoint: string, retries = 1) => {
     const fullUrl = `https://stats.nba.com/stats${endpoint}`;
     const proxies = [
         `/nba-api${endpoint}`,
-        `https://api.allorigins.win/raw?url=${encodeURIComponent(fullUrl)}`,
-        `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(fullUrl)}`
+        `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(fullUrl)}`,
+        `https://api.allorigins.win/raw?url=${encodeURIComponent(fullUrl)}`
     ];
     
     for (let i = 0; i <= retries; i++) {
         for (const proxy of proxies) {
             try {
                 const controller = new AbortController();
-                const id = setTimeout(() => controller.abort(), 6000); 
+                const id = setTimeout(() => controller.abort(), 8000); 
                 const res = await fetch(proxy, { signal: controller.signal });
                 clearTimeout(id);
                 if (res.ok) {
@@ -42,7 +42,7 @@ const fetchSafeJSON = async (endpoint: string, retries = 1) => {
                 }
             } catch (e) {}
         }
-        if (i < retries) await new Promise(r => setTimeout(r, 1500));
+        if (i < retries) await new Promise(r => setTimeout(r, 2000));
     }
     return null; 
 };
@@ -51,6 +51,303 @@ const parsePct = (val: number): number => {
     if (val === undefined || val === null || isNaN(val)) return 0.0;
     const pct = (val <= 1 && val > 0) || val === 1 ? val * 100 : val;
     return Number(pct.toFixed(1));
+};
+
+export const calculateLeagueContext = (players: any[]) => {
+    const validPlayers = players.filter(p => (p.stats?.mpg || 0) >= 12);
+    if (validPlayers.length === 0) return null;
+
+    const getAvg = (key: string) => validPlayers.reduce((sum, p) => sum + (p.adv?.[key] || 0), 0) / validPlayers.length;
+    const getStd = (key: string, avg: number) => {
+        const variance = validPlayers.reduce((sum, p) => sum + Math.pow((p.adv?.[key] || 0) - avg, 2), 0) / validPlayers.length;
+        return Math.sqrt(variance);
+    };
+
+    const avgTS = getAvg('ts');   const stdTS = getStd('ts', avgTS) || 4.5;
+    const avgUSG = getAvg('usg'); const stdUSG = getStd('usg', avgUSG) || 6.0;
+    const avgPER = getAvg('per'); const stdPER = getStd('per', avgPER) || 4.5;
+    const avgBPM = getAvg('bpm'); const stdBPM = getStd('bpm', avgBPM) || 3.5;
+
+    return { avgTS, stdTS, avgUSG, stdUSG, avgPER, stdPER, avgBPM, stdBPM };
+};
+
+// 🚀 DATA SCIENCE: EL MOTOR DEFINITIVO (BPM Core + Safety Floor)
+export const calculatePlayer2KRating = (p: any, leagueContext?: any, seasonStr?: string) => {
+    if (!p || !p.percentiles) {
+        return { 
+            ovr: 70, tier: "Bronze", color: "#cd7f32", reliability: 1, 
+            pillars: {
+                sco: { grade: "C", pct: 50, raw: "15.0 PTS (55.0%)", label: "SCORE" },
+                reb: { grade: "C", pct: 50, raw: "1.0 ORB / 3.0 DRB", label: "REB" },
+                ply: { grade: "C", pct: 50, raw: "3.0 AST (1.5 A/T)", label: "PLAY" },
+                def: { grade: "C", pct: 50, raw: "0.5 STL / 0.5 BLK", label: "STOCKS" }
+            }
+        };
+    }
+    
+    const pct = p.percentiles;
+
+    const mpgVal = p.stats?.mpg || 0;
+    const volumeModifier = Math.min(1, Math.pow(mpgVal / 32, 0.3));
+
+    const getGrade = (pctNum: number) => {
+        if (pctNum >= 95) return "S";
+        if (pctNum >= 85) return "A+";
+        if (pctNum >= 75) return "A";
+        if (pctNum >= 60) return "B";
+        if (pctNum >= 40) return "C";
+        if (pctNum >= 20) return "D";
+        return "F";
+    };
+
+    // 🏀 1. PILAR SCORE
+    let effectiveEfficiency = pct.Efficiency || 50;
+    if ((pct.Scoring || 50) < 75) {
+        effectiveEfficiency = Math.min(effectiveEfficiency, (pct.Scoring || 50) + 10);
+    }
+    const scoringPct = (((pct.Scoring || 50) * 0.75) * volumeModifier) + (effectiveEfficiency * 0.25);
+    const rawPts = p.per36Stats?.ppg || p.stats?.ppg || 0;
+    const rawTs = p.adv?.ts || 50;
+    const scoringText = `${rawPts.toFixed(1)} PTS (${rawTs.toFixed(1)}%)`;
+
+    // 🚀 LA BARRERA TEMPORAL
+    let hasTracking = false;
+    const playerSeason = seasonStr || p.season || leagueContext?.season;
+    if (playerSeason) {
+        const startYear = parseInt(playerSeason.split("-")[0]);
+        hasTracking = startYear >= 2013; 
+    } else {
+        const rawDefl = p.per36Stats?.deflections ?? p.stats?.deflections ?? 0;
+        const rawCont = p.per36Stats?.contestedShots ?? p.stats?.contestedShots ?? 0;
+        hasTracking = rawDefl > 0.1 || rawCont > 0.1;
+    }
+
+    // 👐 2. PILAR REB
+    let reboundingPct = 50;
+    if (hasTracking) {
+        const contestedRebPct = pct.ContestedReb || pct.Rebounding || 50; 
+        const rebConvPct = pct.RebConversion || pct.Rebounding || 50;
+        reboundingPct = ((pct.Rebounding || 50) * 0.25) + ((pct.OReb || 50) * 0.20) + ((pct.DReb || 50) * 0.20) + 
+                        (contestedRebPct * 0.15) + (rebConvPct * 0.10) + ((pct.BoxOuts || 50) * 0.10);
+    } else {
+        reboundingPct = ((pct.Rebounding || 50) * 0.40) + ((pct.OReb || 50) * 0.35) + ((pct.DReb || 50) * 0.25);
+    }
+    const rawOrb = p.per36Stats?.oreb || p.stats?.oreb || 0;
+    const rawDrb = p.per36Stats?.dreb || p.stats?.dreb || 0;
+    const rebText = `${rawOrb.toFixed(1)} ORB / ${rawDrb.toFixed(1)} DRB`;
+
+    // 🧠 3. PILAR PLAY
+    let playmakingPct = 50;
+    if (hasTracking) {
+        const passQualityPct = pct.PassQuality || pct.Playmaking || 50;
+        playmakingPct = ((pct.Playmaking || 50) * 0.35) + ((pct.AstPtsCreated || 50) * 0.20) + 
+                        ((pct.AstPct || 50) * 0.15) + ((pct.PotentialAst || 50) * 0.15) + 
+                        (passQualityPct * 0.10) + ((pct.BallSecurity || 50) * 0.05);
+    } else {
+        playmakingPct = ((pct.Playmaking || 50) * 0.70) + ((pct.AstPct || 50) * 0.25) + ((pct.BallSecurity || 50) * 0.05);
+    }
+    const rawAst = p.per36Stats?.apg || p.stats?.apg || 0;
+    const rawAstTo = p.adv?.astTo || 1;
+    const plyText = `${rawAst.toFixed(1)} AST (${rawAstTo.toFixed(1)} A/T)`;
+
+    // 🛡️ 4. PILAR MUTABLE
+    const rawStl = p.per36Stats?.spg || p.stats?.spg || 0;
+    const rawBlk = p.per36Stats?.bpg || p.stats?.bpg || 0;
+    const stocksPct = pct.Stocks || 50; 
+    const stocksGrade = getGrade(stocksPct);
+
+    let pillar4Label = ""; let pillar4Grade = "F"; let pillar4Pct = 50; let pillar4Text = "";
+
+    if (hasTracking) {
+        const teamImpact = pct.DefRtg || 50;
+        const shotDefense = pct.ShotDefense || ((pct.PerimeterD || 50) * 0.5 + (pct.InteriorD || 50) * 0.5); 
+        const contestedShots = pct.Contested || 50;
+        const disruption = ((pct.Deflections || 50) * 0.6) + (stocksPct * 0.4);
+        const pureHustle = ((pct.LooseBalls || 50) * 0.6) + ((pct.ChargesDrawn || 50) * 0.4);
+        
+        pillar4Pct = (teamImpact * 0.40) + (shotDefense * 0.35) + (contestedShots * 0.10) + (disruption * 0.10) + (pureHustle * 0.05);
+        pillar4Grade = getGrade(pillar4Pct);
+        pillar4Label = "DEF";
+        const defRtgRaw = Math.round(p.adv?.defRating || 115);
+        const deflectionsRaw = (p.per36Stats?.deflections || p.stats?.deflections || 0).toFixed(1);
+        pillar4Text = `${defRtgRaw} DRTG / ${deflectionsRaw} DEFL`; 
+    } else {
+        pillar4Pct = stocksPct; 
+        pillar4Grade = stocksGrade; 
+        pillar4Label = "STOCKS";
+        pillar4Text = `${rawStl.toFixed(1)} STL / ${rawBlk.toFixed(1)} BLK`;
+    }
+
+    // --- CÁLCULO OVR: 100% Z-SCORES ---
+    const rawTS = p.adv?.ts || 55;
+    const rawUSG = p.adv?.usg || 15;
+    const rawBPM = p.adv?.bpm || -2.0;
+    const rawPER = p.adv?.per || 15;
+
+    const ctx = leagueContext || { avgTS: 55, stdTS: 4.5, avgUSG: 20, stdUSG: 6.0, avgBPM: -1.5, stdBPM: 3.5, avgPER: 15, stdPER: 4.5 };
+
+    const zTS = Math.max(-3, Math.min(3.5, (rawTS - (ctx.avgTS || 55)) / (ctx.stdTS || 4.5)));
+    const zUSG = Math.max(-3, Math.min(3.5, (rawUSG - (ctx.avgUSG || 20)) / (ctx.stdUSG || 6.0)));
+    const zBPM = Math.max(-3, Math.min(3.5, (rawBPM - (ctx.avgBPM || -1.5)) / (ctx.stdBPM || 3.5)));
+    const zPER = Math.max(-3, Math.min(3.5, (rawPER - (ctx.avgPER || 15)) / (ctx.stdPER || 4.5)));
+
+    // 1. IMPACTO BASE: BPM domina (80%), PER se minimiza (20%) para hundir a los infla-rebotes.
+    const baseImpact = (zBPM * 4.5) + (zPER * 1.5); 
+
+    // 2. BONUS HELIOCÉNTRICO: Premia asumir carga (Iverson), multiplica si eres eficiente (Harden).
+    const usgBonus = Math.max(0, zUSG) * 1.5;
+    const efficiencyMultiplier = (zUSG > 0 && zTS > 0) ? (zUSG * zTS * 1.0) : 0;
+    const creationBonus = usgBonus + efficiencyMultiplier;
+
+    // 3. BONUS DEFENSIVO: Empujón moderado a especialistas (Gobert)
+    const defenseBonus = (pillar4Pct > 75) ? ((pillar4Pct - 75) * 0.15) : 0;
+
+    let rawOvr = 73 + (baseImpact * volumeModifier) + creationBonus + defenseBonus;
+
+    // --- PENALIZACIÓN DE PARTIDOS JUGADOS ---
+    const gp = p.stats?.gp || 0;
+    const reliability = Math.max(0.1, Math.min(1, gp / 65)); 
+    let availabilityPenalty = 0;
+    if (gp < 65 && gp > 0) {
+        availabilityPenalty = gp >= 50 ? 0 : (50 - gp) * 0.15;
+    }
+
+    let finalOVR = Math.round(rawOvr - availabilityPenalty);
+
+    // 🛑 EL VETO DE LEYENDA
+    let vetoMessage = "";
+    if (finalOVR >= 97) {
+        if (pillar4Pct < 35) { 
+            finalOVR = Math.min(finalOVR, 96);
+            vetoMessage = "Veto Defensivo";
+        }
+        if (zTS < -0.5) { 
+            finalOVR = Math.min(finalOVR, 96);
+            vetoMessage = "Veto Eficiencia";
+        }
+    }
+
+    // 📉 CASTIGO AL CHUPÓN ABSOLUTO
+    if (zTS < -1.5 && zUSG > 1.5) finalOVR -= 2; 
+
+    // 🚀 RED DE SEGURIDAD (Se aplica AL FINAL para que Trae Young no baje a 71)
+    const actualPts = p.stats?.ppg || 0;
+    const scoringFloor = Math.round(68 + (actualPts * 0.55)); 
+    if (finalOVR < scoringFloor) {
+        finalOVR = scoringFloor;
+    }
+
+    // Límite final estricto
+    finalOVR = Math.max(65, Math.min(99, finalOVR));
+
+    let tier = "Bronze"; let color = "#cd7f32"; 
+    if (finalOVR >= 95) { tier = "Diamond"; color = "#b9f2ff"; }
+    else if (finalOVR >= 90) { tier = "Amethyst"; color = "#9966cc"; }
+    else if (finalOVR >= 85) { tier = "Gold"; color = "#ffd700"; }
+    else if (finalOVR >= 78) { tier = "Silver"; color = "#c0c0c0"; }
+
+    return { 
+        ovr: finalOVR, 
+        tier, 
+        color, 
+        reliability,
+        veto: vetoMessage,
+        pillars: {
+            sco: { grade: getGrade(scoringPct), pct: Math.max(5, Math.round(scoringPct)), raw: scoringText, label: "SCORE" },
+            reb: { grade: getGrade(reboundingPct), pct: Math.max(5, Math.round(reboundingPct)), raw: rebText, label: "REB" },
+            ply: { grade: getGrade(playmakingPct), pct: Math.max(5, Math.round(playmakingPct)), raw: plyText, label: "PLAY" },
+            def: { grade: pillar4Grade, pct: Math.max(5, Math.round(pillar4Pct)), raw: pillar4Text, label: pillar4Label }
+        }
+    };
+};
+
+// 🚀 FÓRMULA DE EQUIPOS
+const calculateTeam2KRating = (t: any, roster: any[]) => {
+    const netRtg = t.netRtg !== undefined ? t.netRtg : (t.adv?.netRtg || 0);
+    const offRtg = t.offRtg !== undefined ? t.offRtg : (t.adv?.offRtg || 115);
+    const defRtg = t.defRtg !== undefined ? t.defRtg : (t.adv?.defRating || 115);
+
+    const statOff = Math.max(60, Math.min(99, Math.round(80 + ((offRtg - 115) * 1.6)))); 
+    const statDef = Math.max(60, Math.min(99, Math.round(80 + ((115 - defRtg) * 1.6))));
+    const statOvr = Math.max(60, Math.min(99, Math.round(80 + (netRtg * 1.6))));
+
+    if (!roster || roster.length === 0) {
+        return { ovr: statOvr, off: statOff, def: statDef, tier: statOvr >= 92 ? "S" : (statOvr >= 85 ? "A" : "B"), color: "#ef4444", xNetRtg: netRtg.toFixed(1) };
+    }
+
+    let totalImpactWeight = 0;
+    let weightedOvrSum = 0;
+    let weightedOffSum = 0;
+    let weightedDefSum = 0;
+    let xBPM_sum = 0;
+    let starPowerBonus = 0;
+    let topPlayerOvr = 0;
+
+    const rotation = [...roster]
+        .sort((a, b) => (b.stats?.mpg || 0) - (a.stats?.mpg || 0))
+        .slice(0, 10);
+
+    rotation.forEach(p => {
+        const mpg = p.stats?.mpg || 0;
+        if (mpg === 0) return;
+
+        const pie = p.adv?.pie || 10;     
+        const per = p.adv?.per || 15;     
+        const ws48 = p.adv?.ws48 || 0.100; 
+        const bpm = p.adv?.bpm || -2.0;    
+
+        const impactScore = (
+            (Math.max(0, pie) / 10) * 0.25 + 
+            (Math.max(0, per) / 15) * 0.25 + 
+            (Math.max(0, ws48) / 0.100) * 0.25 + 
+            (Math.max(0.1, 1 + (bpm * 0.1))) * 0.25
+        );
+
+        const weight = mpg * impactScore;
+        totalImpactWeight += weight;
+
+        const pOvr = p.rating?.ovr || 75;
+        const pOff = p.rating?.off || 75;
+        const pDef = ((p.rating?.defense || 75) * 0.7 + (p.rating?.rebounding || 75) * 0.3);
+
+        weightedOvrSum += pOvr * weight;
+        weightedOffSum += pOff * weight;
+        weightedDefSum += pDef * weight;
+
+        xBPM_sum += bpm * (mpg / 240) * 5;
+
+        if (pOvr > topPlayerOvr) topPlayerOvr = pOvr;
+
+        const ceilingRaiser = Math.pow(Math.max(0, bpm), 1.5) * (mpg / 48) * 0.20;
+        starPowerBonus += ceilingRaiser;
+    });
+
+    const rosterOffRaw = totalImpactWeight > 0 ? weightedOffSum / totalImpactWeight : statOff;
+    const rosterDefRaw = totalImpactWeight > 0 ? weightedDefSum / totalImpactWeight : statDef;
+    
+    const rosterPenalty = Math.min(0, (topPlayerOvr - 89) * 0.6);
+
+    const xOvr = 78 + (xBPM_sum * 1.5) + starPowerBonus + rosterPenalty;
+
+    const winPctRaw = t.winPct || 0;
+    const winPctDecimal = winPctRaw > 1 ? (winPctRaw / 100) : winPctRaw;
+    const winGravityOvr = 57 + (winPctDecimal * 45); 
+
+    const finalOff = Math.max(65, Math.min(99, Math.round((rosterOffRaw * 0.4) + (statOff * 0.6))));
+    const finalDef = Math.max(65, Math.min(99, Math.round((rosterDefRaw * 0.4) + (statDef * 0.6))));
+    
+    let finalOvr = Math.max(65, Math.min(99, Math.round((xOvr * 0.40) + (statOvr * 0.40) + (winGravityOvr * 0.20))));
+
+    const minRating = Math.min(finalOff, finalDef);
+    if (finalOvr >= 99 && minRating < 95) finalOvr = 98;
+    if (finalOvr >= 96 && minRating < 85) finalOvr = 95;
+
+    let tier = "C"; let color = "#ef4444"; 
+    if (finalOvr >= 92) { tier = "S"; color = "#8b5cf6"; } 
+    else if (finalOvr >= 85) { tier = "A"; color = "#10b981"; } 
+    else if (finalOvr >= 78) { tier = "B"; color = "#f59e0b"; }
+
+    return { ovr: finalOvr, off: finalOff, def: finalDef, tier, color, xNetRtg: xBPM_sum.toFixed(1) };
 };
 
 class NBAService implements SportService<NBAPlayer, NBATeam> {
@@ -270,7 +567,6 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
                     chargesDrawn: getStat(row, h, "CHARGES_DRAWN"),
                     looseBalls: getStat(row, h, "LOOSE_BALLS_RECOVERED"),
                     boxOuts: getStat(row, h, "BOX_OUTS"),
-                    // 🚀 AÑADIDO: Extracción de Screen Assists desde la API
                     screenAssists: getStat(row, h, "SCREEN_AST") || getStat(row, h, "SCREEN_ASSISTS")
                   });
                 });
@@ -391,7 +687,7 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
                 boxOuts: (hasHustle ? hData.boxOuts : dreb * 0.5) * per36, 
                 looseBalls: (hasHustle ? hData.looseBalls : spg * 0.5) * per36,
                 chargesDrawn: (hasHustle ? hData.chargesDrawn : 0) * per36,
-                screenAssists: (hasHustle ? hData.screenAssists : oreb * 0.5) * per36, // Proxy Tradicional: OReb
+                screenAssists: (hasHustle ? hData.screenAssists : oreb * 0.5) * per36,
                 potentialAst: (hasTracking ? passData.potentialAst : ast * 1.8) * per36, 
                 passesMade: (hasTracking ? passData.passesMade : ast * 6.0) * per36,
                 secondaryAst: (hasTracking ? passData.secondaryAst : ast * 0.2) * per36, 
@@ -434,6 +730,7 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
         });
 
         const leagueAvgTS = (totalLeagueFGA > 0 || totalLeagueFTA > 0) ? parsePct(totalLeaguePTS / (2 * (totalLeagueFGA + 0.44 * totalLeagueFTA))) : 55.0;
+        const leagueContext = calculateLeagueContext(parsedPlayersRaw);
 
         const qualifiedPlayers = parsedPlayersRaw.filter((p: any) => p.stats.gp >= 10 && p.stats.mpg >= 15);
         
@@ -492,6 +789,10 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
         const allFgmUast = qualifiedPlayers.map((p: any) => p.scoring.pctFgmUast).sort((a,b)=>a-b);
         const allPtsFb = qualifiedPlayers.map((p: any) => p.per36Stats.ptsFb).sort((a,b)=>a-b);
 
+        // 🚀 NUEVOS ARRAYS PARA DATA TRACKING AVANZADA
+        const allStocks = qualifiedPlayers.map((p: any) => p.per36Stats.spg + p.per36Stats.bpg).sort((a,b)=>a-b);
+        const allPassQuality = qualifiedPlayers.map((p: any) => p.per36Stats.potentialAst > 0 ? (p.per36Stats.apg / p.per36Stats.potentialAst) : 0).sort((a,b)=>a-b);
+
         const calcWS48 = (p: any) => {
             const perWS = (p.adv.per || 15) - 15;
             const tsWS = ((p.adv.ts || 55) - 55) * 0.1;
@@ -543,9 +844,9 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
                     finishing = Math.round((this.calcPercentile(p.per36Stats.paintFGM, allPaintFGM) * 3.5 + this.calcPercentile(p.adv.ftaRate, allFtaRate) * 1.5 + pFG2Pct * 0.5) / 5.5); 
                     midRange = Math.round((this.calcPercentile(p.per36Stats.midRangeFGM, allMidRangeFGM) * 4.0 + this.calcPercentile(p.stats.ftPct, allFtPct) * 1.0) / 5.0); 
                 } else {
-                    perimeterD = Math.round((this.calcPercentile(115 - (p.adv.defRating || 115), allDefRtgInv) * 2.5 + pSPG * 1.5 + pBPM * 1.0) / 5.0); 
+                    perimeterD = Math.round((pSPG * 6.0 + this.calcPercentile(115 - (p.adv.defRating || 115), allDefRtgInv) * 2.5 + pBPM * 1.5) / 10.0); 
                     interiorD = Math.round((this.calcPercentile(115 - (p.adv.defRating || 115), allDefRtgInv) * 2.0 + pBPG * 4.0 + this.calcPercentile(p.stats.mpg > 0 ? p.stats.bpg / p.stats.mpg : 0, allBlkPct) * 1.5 + pDReb * 0.5) / 8.0); 
-                    globalDef = Math.round((this.calcPercentile(115 - (p.adv.defRating || 115), allDefRtgInv) * 4.0 + pBPM * 1.5 + Math.max(pSPG, pBPG) * 1.0) / 6.5);
+                    globalDef = Math.round((this.calcPercentile(115 - (p.adv.defRating || 115), allDefRtgInv) * 3.0 + Math.max(pSPG, pBPG) * 4.0 + pBPM * 3.0) / 10.0);
                     finishing = Math.round((this.calcPercentile(p.per36Stats.paintFGM, allPaintFGM) * 3.5 + this.calcPercentile(p.adv.ftaRate, allFtaRate) * 1.5 + pFG2Pct * 0.5) / 5.5); 
                     midRange = Math.round((this.calcPercentile(p.per36Stats.twoPA, allTwoPA) * 4.0 + this.calcPercentile(p.stats.ftPct, allFtPct) * 1.0) / 5.0);
                 }
@@ -578,7 +879,7 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
             const ballMovement = Math.round((pPasses + pSecAst) / 2.0);
             const playmakingLoad = Math.round((pAstPct + pUSG) / 2.0);
 
-            return {
+            const basePlayerWithPercentiles = {
                 ...p,
                 percentiles: {
                     Scoring: pPPG, 
@@ -603,6 +904,7 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
                     PIE: pPIE,
                     USG: pUSG, 
                     EFG: this.calcPercentile(p.stats.fgPct, allFgPct), 
+                    FtPct: this.calcPercentile(p.stats.ftPct, allFtPct),
 
                     ScoringIndex: Math.min(100, Math.max(0, scoringIndex)),
                     PlayCreation: Math.min(100, Math.max(0, playCreation)),
@@ -627,8 +929,20 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
                     
                     FtaRate: this.calcPercentile(p.adv.ftaRate, allFtaRate),
                     ThreePA: this.calcPercentile(p.per36Stats.fg3a, all3PA),
-                    FastBreak: this.calcPercentile(p.per36Stats.ptsFb, allPtsFb)
+                    FastBreak: this.calcPercentile(p.per36Stats.ptsFb, allPtsFb),
+
+                    // 🚀 DATA TRACKING AVANZADA 
+                    Stocks: this.calcPercentile(p.per36Stats.spg + p.per36Stats.bpg, allStocks),
+                    PassQuality: this.calcPercentile(p.per36Stats.potentialAst > 0 ? (p.per36Stats.apg / p.per36Stats.potentialAst) : 0, allPassQuality),
+                    ShotDefense: this.calcPercentile(100 - p.tracking.dfgPct, allDFGInv),
+                    ContestedReb: pDReb, 
+                    RebConversion: pDReb 
                 }
+            };
+            
+            return {
+                ...basePlayerWithPercentiles,
+                rating: calculatePlayer2KRating(basePlayerWithPercentiles, leagueContext, season)
             };
         });
 
@@ -737,7 +1051,7 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
         const paramsMisc = paramsTeamBase.replace("MeasureType=Base", "MeasureType=Misc"); 
         const paramsScoring = paramsTeamBase.replace("MeasureType=Base", "MeasureType=Scoring"); 
         
-        const paramsClutch = `?AheadBehind=Ahead%20or%20Behind&ClutchTime=Last%205%20Minutes&DateFrom=&DateTo=&Direction=DESC&GameScope=&GameSegment=&LastNGames=0&LeagueID=00&Location=&MeasureType=Base&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PaceAdjust=N&PerMode=PerGame&Period=0&PlayerExperience=&PlayerPosition=&PlusMinus=N&PointDiff=5&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&StarterBench=&TeamID=0&VsConference=&VsDivision=`;
+        const paramsClutch = `?AheadBehind=Ahead%20or%20Behind&ClutchTime=Last%205%20Minutes&DateFrom=&DateTo=&Direction=DESC&GameScope=&GameSegment=&LastNGames=0&LeagueID=00&Location=&MeasureType=Base&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PaceAdjust=N&PerMode=PerGame&Period=0&PlayerExperience=&PlayerPosition=&PlusMinus=N&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&StarterBench=&TeamID=0&VsConference=&VsDivision=`;
         const urlClutchBase = `/leaguedashteamclutch${paramsClutch}`;
         const urlClutchAdv = `/leaguedashteamclutch${paramsClutch.replace("MeasureType=Base", "MeasureType=Advanced")}`;
         
@@ -1090,53 +1404,65 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
         const allPct3pt = parsedTeams.map((t:any) => t.pctPts3pt || 0).sort((a:number,b:number)=>a-b);
         const allFgmAst = parsedTeams.map((t:any) => t.pctFgmAst || 0).sort((a:number,b:number)=>a-b);
 
-        parsedTeams = parsedTeams.map((t:any) => ({
-            ...t,
-            percentiles: {
-                Offense: this.calcPercentile(t.offRtg || 115, allOffRtg),
-                Defense: this.calcPercentile(115 - (t.defRtg || 115), allDefRtgInv),
-                NetRating: this.calcPercentile(t.netRtg || 0, allNetRtg),
-                Pace: this.calcPercentile(t.pace || 100, allPace),
-                Efficiency: this.calcPercentile(t.tsPct || 55, allTsPct),
-                Rebounding: this.calcPercentile(t.rebPct || 50, allRebPct),
-                
-                Points: this.calcPercentile(t.ppg, allPPG),
-                RawReb: this.calcPercentile(t.reb, allRawReb),
-                FgPct: this.calcPercentile(t.fgPct, allFgPct),
-                ThreePct: this.calcPercentile(t.threePct, all3pPct),
-                FtPct: this.calcPercentile(t.ftPct, allFtPct),
-                
-                Playmaking: this.calcPercentile(t.apg, allAPG),
-                BallSecurity: this.calcPercentile(t.astTo, allAstTo),
-                OffReb: this.calcPercentile(t.orebPct, allOrebPct),
-                
-                Steals: this.calcPercentile(t.spg, allSPG),
-                Blocks: this.calcPercentile(t.bpg, allBPG),
-                DefReb: this.calcPercentile(t.drebPct, allDrebPct),
-                InteriorDef: this.calcPercentile(100 - (t.opp?.opp2ptPct || 50), allOpp2pInv),
-                PerimDefense: this.calcPercentile(100 - (t.opp?.opp3ptPct || 35), allOpp3pInv),
-                TransitionDef: this.calcPercentile(100 - (t.opp?.oppPtsFb || 15), allOppPtsFbInv),
-                TurnoversForced: this.calcPercentile(t.opp?.oppTov || 13, allOppTov),
+        // OBTENER ROSTER 
+        const allPlayersThisSeason = await this.fetchAllOfficialPlayers(season).catch(() => []);
 
-                FastBreak: this.calcPercentile(t.ptsFb, allPtsFb),
-                SecondChance: this.calcPercentile(t.pts2ndChance, allPts2nd),
-                PtsOffTov: this.calcPercentile(t.ptsOffTov, allPtsOffTov),
-                Hustle: this.calcPercentile(t.looseBalls, allLooseBalls),
-                BoxOuts: this.calcPercentile(t.boxOuts, allBoxOuts), 
-                TurnoverAvoidance: this.calcPercentile(100 - (t.tovPct || 15), allTovPctInv),
-                FtaRate: this.calcPercentile(t.ftaRate, allFtaRate),
-                ShotProfile: this.calcPercentile(t.pctPts3pt, allPct3pt),
-                BallMovement: this.calcPercentile(t.pctFgmAst, allFgmAst)
-            },
-            zScores: {
-                Offense: zScore(t.offRtg || 115, allOffRtg),
-                Defense: zScore(115 - (t.defRtg || 115), allDefRtgInv),
-                NetRating: zScore(t.netRtg || 0, allNetRtg),
-                Pace: zScore(t.pace || 100, allPace),
-                Efficiency: zScore(t.tsPct || 55, allTsPct),
-                Rebounding: zScore(t.rebPct || 50, allRebPct)
-            }
-        }));
+        parsedTeams = parsedTeams.map((t:any) => {
+            const baseTeamWithPercentiles = {
+                ...t,
+                percentiles: {
+                    Offense: this.calcPercentile(t.offRtg || 115, allOffRtg),
+                    Defense: this.calcPercentile(115 - (t.defRtg || 115), allDefRtgInv),
+                    NetRating: this.calcPercentile(t.netRtg || 0, allNetRtg),
+                    Pace: this.calcPercentile(t.pace || 100, allPace),
+                    Efficiency: this.calcPercentile(t.tsPct || 55, allTsPct),
+                    Rebounding: this.calcPercentile(t.rebPct || 50, allRebPct),
+                    
+                    Points: this.calcPercentile(t.ppg, allPPG),
+                    RawReb: this.calcPercentile(t.reb, allRawReb),
+                    FgPct: this.calcPercentile(t.fgPct, allFgPct),
+                    ThreePct: this.calcPercentile(t.threePct, all3pPct),
+                    FtPct: this.calcPercentile(t.ftPct, allFtPct),
+                    
+                    Playmaking: this.calcPercentile(t.apg, allAPG),
+                    BallSecurity: this.calcPercentile(t.astTo, allAstTo),
+                    OffReb: this.calcPercentile(t.orebPct, allOrebPct),
+                    
+                    Steals: this.calcPercentile(t.spg, allSPG),
+                    Blocks: this.calcPercentile(t.bpg, allBPG),
+                    DefReb: this.calcPercentile(t.drebPct, allDrebPct),
+                    InteriorDef: this.calcPercentile(100 - (t.opp?.opp2ptPct || 50), allOpp2pInv),
+                    PerimDefense: this.calcPercentile(100 - (t.opp?.opp3ptPct || 35), allOpp3pInv),
+                    TransitionDef: this.calcPercentile(100 - (t.opp?.oppPtsFb || 15), allOppPtsFbInv),
+                    TurnoversForced: this.calcPercentile(t.opp?.oppTov || 13, allOppTov),
+
+                    FastBreak: this.calcPercentile(t.ptsFb, allPtsFb),
+                    SecondChance: this.calcPercentile(t.pts2ndChance, allPts2nd),
+                    PtsOffTov: this.calcPercentile(t.ptsOffTov, allPtsOffTov),
+                    Hustle: this.calcPercentile(t.looseBalls, allLooseBalls),
+                    BoxOuts: this.calcPercentile(t.boxOuts, allBoxOuts), 
+                    TurnoverAvoidance: this.calcPercentile(100 - (t.tovPct || 15), allTovPctInv),
+                    FtaRate: this.calcPercentile(t.ftaRate, allFtaRate),
+                    ShotProfile: this.calcPercentile(t.pctPts3pt, allPct3pt),
+                    BallMovement: this.calcPercentile(t.pctFgmAst, allFgmAst)
+                },
+                zScores: {
+                    Offense: zScore(t.offRtg || 115, allOffRtg),
+                    Defense: zScore(115 - (t.defRtg || 115), allDefRtgInv),
+                    NetRating: zScore(t.netRtg || 0, allNetRtg),
+                    Pace: zScore(t.pace || 100, allPace),
+                    Efficiency: zScore(t.tsPct || 55, allTsPct),
+                    Rebounding: zScore(t.rebPct || 50, allRebPct)
+                }
+            };
+            
+            const teamRoster = allPlayersThisSeason.filter(p => p.teamId === t.abbreviation || String(p.teamId) === String(t.id));
+
+            return {
+                ...baseTeamWithPercentiles,
+                rating: calculateTeam2KRating(baseTeamWithPercentiles, teamRoster)
+            };
+        });
 
         this.historicalTeamsCache.set(season, parsedTeams);
         if (season === "2025-26") this.teamsCache = parsedTeams;
@@ -1157,7 +1483,7 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
     try {
         const rookieUrl = `/leaguedashplayerstats?College=&Conference=&Country=&DateFrom=&DateTo=&Division=&DraftPick=&DraftYear=&GameScope=&GameSegment=&Height=&LastNGames=0&LeagueID=00&Location=&MeasureType=Base&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PaceAdjust=N&PerMode=Totals&Period=0&PlayerExperience=Rookie&PlayerPosition=&PlusMinus=N&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&StarterBench=&TeamID=0&TwoWay=0&VsConference=&VsDivision=&Weight=`;
         
-        const paramsClutch = `?AheadBehind=Ahead%20or%20Behind&ClutchTime=Last%205%20Minutes&DateFrom=&DateTo=&Direction=DESC&GameScope=&GameSegment=&LastNGames=0&LeagueID=00&Location=&MeasureType=Base&Month=0&OpponentTeamID=0&Outcome=&PaceAdjust=N&PerMode=Totals&Period=0&PlayerExperience=&PlayerPosition=&PlusMinus=N&PointDiff=5&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&Sort=PTS&StarterBench=&TeamID=0&TwoWay=0&VsConference=&VsDivision=`;
+        const paramsClutch = `?AheadBehind=Ahead%20or%20Behind&ClutchTime=Last%205%20Minutes&DateFrom=&DateTo=&Direction=DESC&GameScope=&GameSegment=&LastNGames=0&LeagueID=00&Location=&MeasureType=Base&Month=0&OpponentTeamID=0&Outcome=&PaceAdjust=N&PerMode=Totals&Period=0&PlayerExperience=&PlayerPosition=&PlusMinus=N&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&Sort=PTS&StarterBench=&TeamID=0&TwoWay=0&VsConference=&VsDivision=`;
         const clutchUrlBase = `/leaguedashplayerclutch${paramsClutch}`;
         const clutchUrlAdv = `/leaguedashplayerclutch${paramsClutch.replace("MeasureType=Base", "MeasureType=Advanced")}`;
         
@@ -1293,9 +1619,9 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
     }
   }
 
-  async getTeamSchedule(teamId: string): Promise<any[]> { 
+  async getTeamSchedule(teamId: string, season: string = "2025-26"): Promise<any[]> { 
     try {
-        const data = await fetchSafeJSON(`/leaguegamefinder?TeamID=${teamId}&PlayerOrTeam=T&Season=2025-26&SeasonType=Regular%20Season`);
+        const data = await fetchSafeJSON(`/leaguegamefinder?TeamID=${teamId}&PlayerOrTeam=T&Season=${season}&SeasonType=Regular%20Season`);
         if (!data || !data.resultSets || data.resultSets.length === 0) return [];
         const headers = data.resultSets[0].headers;
         
@@ -1327,9 +1653,9 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
     } catch(e) { return []; }
   }
   
-  async getTeamLineups(teamId: string): Promise<any[]> { 
+  async getTeamLineups(teamId: string, season: string = "2025-26"): Promise<any[]> { 
     try {
-        const data = await fetchSafeJSON(`/leaguedashlineups?GroupQuantity=5&LastNGames=0&LeagueID=00&MeasureType=Advanced&Month=0&OpponentTeamID=0&PaceAdjust=N&PerMode=PerGame&Period=0&PlusMinus=N&Rank=N&Season=2025-26&SeasonType=Regular%20Season&TeamID=${teamId}`);
+        const data = await fetchSafeJSON(`/leaguedashlineups?GroupQuantity=5&LastNGames=0&LeagueID=00&MeasureType=Advanced&Month=0&OpponentTeamID=0&PaceAdjust=N&PerMode=PerGame&Period=0&PlusMinus=N&Rank=N&Season=${season}&SeasonType=Regular%20Season&TeamID=${teamId}`);
         if (!data || !data.resultSets || data.resultSets.length === 0) return [];
         const headers = data.resultSets[0].headers;
         
@@ -1347,11 +1673,11 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
     } catch(e) { return []; }
   }
   
-  async getTeamRosterAndCoaches(teamId: string): Promise<any> { 
+  async getTeamRosterAndCoaches(teamId: string, season: string = "2025-26"): Promise<any> { 
     try {
         if (!teamId || isNaN(Number(teamId))) return { players: [], coaches: [] };
 
-        const data = await fetchSafeJSON(`/commonteamroster?LeagueID=00&Season=2025-26&TeamID=${teamId}`);
+        const data = await fetchSafeJSON(`/commonteamroster?LeagueID=00&Season=${season}&TeamID=${teamId}`);
         if (!data || !data.resultSets || data.resultSets.length < 1) return { players: [], coaches: [] };
 
         const pHeaders = data.resultSets[0].headers;
@@ -1546,9 +1872,9 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
     return [];
   }
 
-  async getTeamDetails(teamId: string): Promise<any> { 
+  async getTeamDetails(teamId: string, season: string = "2025-26"): Promise<any> { 
     try {
-      const teams = await this.fetchAllOfficialTeams();
+      const teams = await this.fetchAllOfficialTeams(season);
       return teams.find(t => String(t.id) === String(teamId)) || null; 
     } catch (e) {
       return null;

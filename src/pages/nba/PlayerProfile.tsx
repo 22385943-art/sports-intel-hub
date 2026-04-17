@@ -1,14 +1,21 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useSearchParams } from "react-router-dom";
 import { useState, useEffect, useMemo } from "react";
 import { useSport } from "@/contexts/SportContext";
 import { nbaService } from "@/services/sportServiceFactory";
-import { ArrowLeft, Loader2, Activity, Target, Zap, Shield, Crown, BarChart3, TrendingUp, Star, Trophy, Award, Users } from "lucide-react";
+import { ArrowLeft, Loader2, Activity, Target, Zap, Shield, Crown, BarChart3, TrendingUp, Star, Trophy, Award, Users, Hexagon, CalendarDays, ShieldAlert, Brain, Crosshair } from "lucide-react";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import type { NBAPlayer } from "@/data/nba/mockData";
 import { useFavorites } from "@/hooks/useFavorites"; 
 import ShotChart from "@/components/ShotChart";
+import { Badge } from "@/components/ui/badge";
 
-// 🎨 PALETA DE COLORES
+// 🚀 Generador automático de temporadas
+const SEASONS = Array.from({ length: 30 }, (_, i) => {
+  const startYear = 2025 - i;
+  const nextYear = String(startYear + 1).slice(-2);
+  return `${startYear}-${nextYear}`;
+});
+
 const TEAM_COLORS: Record<string, string> = {
   "ATL": "#E03A3E", "BOS": "#007A33", "BKN": "#FFFFFF", "CHA": "#00788C", 
   "CHI": "#CE1141", "CLE": "#860038", "DAL": "#00A3E0", 
@@ -52,9 +59,69 @@ const getAwardIcon = (title: string) => {
   return <Award className="h-7 w-7 text-slate-400" />;
 };
 
+// 🧠 ARCHETYPE ENGINE (100% ERA-RELATIVE)
+const getArchetype = (p: any) => {
+  const pct = p.percentiles || {};
+  
+  const isHighVolume = (pct.USG || 50) >= 85;
+  const isEfficient = (pct.Efficiency || 50) >= 80;
+  const isEliteDefender = (pct.Defense || 50) >= 85;
+  const isShooter = (pct.Shooting || 50) >= 80 && (pct.Scoring || 50) >= 60;
+  const isSlasher = (pct.Finishing || 50) >= 85 && (pct.FtaRate || 50) >= 75 && (pct.Shooting || 50) <= 60;
+  const isUnicorn = (pct.Blocks || 50) >= 85 && (pct.ThreePA || 50) >= 70 && (pct.Rebounding || 50) >= 75;
+  
+  const isSuperstar = (pct.Impact || 50) >= 95 && (pct.Scoring || 50) >= 90;
+  const isElitePlaymaker = (pct.Playmaking || 50) >= 85 || (pct.AstPct || 50) >= 85;
+  const isEliteRebounder = (pct.Rebounding || 50) >= 85;
+
+  if (isSuperstar) {
+    if (isUnicorn) return { label: "Two-Way Unicorn", icon: Crown, color: "text-emerald-400 bg-emerald-400/10 border-emerald-400/30" };
+    if (isElitePlaymaker) return { label: "Offensive Hub", icon: Crown, color: "text-amber-400 bg-amber-400/10 border-amber-400/30" };
+    if (isSlasher && isEliteDefender) return { label: "Two-Way Force", icon: Crown, color: "text-amber-400 bg-amber-400/10 border-amber-400/30" };
+    if (isShooter && isEfficient) return { label: "3-Level Scorer", icon: Crown, color: "text-amber-400 bg-amber-400/10 border-amber-400/30" };
+    return { label: "Generational", icon: Crown, color: "text-amber-400 bg-amber-400/10 border-amber-400/30" };
+  }
+
+  if (isUnicorn) return { label: "Two-Way Unicorn", icon: ShieldAlert, color: "text-emerald-400 bg-emerald-400/10 border-emerald-400/30" };
+  
+  if (isElitePlaymaker) {
+    if (isEliteDefender) return { label: "Two-Way Playmaker", icon: Brain, color: "text-purple-400 bg-purple-400/10 border-purple-400/30" };
+    return { label: "Floor General", icon: Brain, color: "text-purple-400 bg-purple-400/10 border-purple-400/30" };
+  }
+  
+  if (isEliteRebounder) {
+    if (isShooter) return { label: "Stretch Big", icon: Target, color: "text-teal-400 bg-teal-400/10 border-teal-400/30" };
+    if ((pct.Blocks || 50) >= 80 || isEliteDefender) return { label: "Paint Beast", icon: ShieldAlert, color: "text-rose-400 bg-rose-400/10 border-rose-400/30" };
+    if (isElitePlaymaker) return { label: "Playmaking Big", icon: Brain, color: "text-purple-400 bg-purple-400/10 border-purple-400/30" };
+    return { label: "Glass Cleaner", icon: Activity, color: "text-blue-400 bg-blue-400/10 border-blue-400/30" };
+  }
+
+  if (isSlasher && (pct.Scoring || 50) >= 75) return { label: "Fearless Slasher", icon: Zap, color: "text-rose-500 bg-rose-500/10 border-rose-500/30" };
+  
+  if (isShooter && (pct.Scoring || 50) >= 75) {
+    if (isHighVolume) return { label: "Shot Creator", icon: Zap, color: "text-cyan-400 bg-cyan-400/10 border-cyan-400/30" };
+    return { label: "Sharpshooter", icon: Crosshair, color: "text-emerald-400 bg-emerald-400/10 border-emerald-400/30" };
+  }
+  
+  if (isShooter && isEliteDefender && !isHighVolume) return { label: "3-and-D Wing", icon: Target, color: "text-emerald-500 bg-emerald-500/10 border-emerald-500/30" };
+  
+  if (isEliteDefender && !isHighVolume) return { label: "Lockdown Defender", icon: ShieldAlert, color: "text-red-500 bg-red-500/10 border-red-500/30" };
+  
+  if (isShooter && !isHighVolume) return { label: "Catch & Shoot", icon: Crosshair, color: "text-teal-400 bg-teal-400/10 border-teal-400/30" };
+  
+  if ((pct.Scoring || 50) >= 65 && isHighVolume && !isEfficient) return { label: "Microwave Scorer", icon: Zap, color: "text-orange-400 bg-orange-400/10 border-orange-400/30" };
+  
+  if ((pct.Scoring || 50) >= 50 && (pct.Rebounding || 50) >= 50 && (pct.Playmaking || 50) >= 50) return { label: "Connective Glue", icon: Activity, color: "text-blue-300 bg-blue-300/10 border-blue-300/30" };
+  
+  return { label: "Rotation Player", icon: Activity, color: "text-slate-400 bg-white/5 border-white/10" };
+};
+
 export default function NBAPlayerProfile() {
   const { id } = useParams();
   const { sport } = useSport();
+  
+  const [searchParams, setSearchParams] = useSearchParams();
+  const season = searchParams.get("season") || "2025-26";
   
   const [player, setPlayer] = useState<NBAPlayer | null>(null);
   const [allPlayers, setAllPlayers] = useState<NBAPlayer[]>([]);
@@ -81,8 +148,8 @@ export default function NBAPlayerProfile() {
     setIsBaseLoading(true);
 
     Promise.all([
-      nbaService.fetchAllOfficialPlayers(),
-      nbaService.fetchAllOfficialTeams()
+      nbaService.fetchAllOfficialPlayers(season),
+      nbaService.fetchAllOfficialTeams(season)
     ]).then(([players, teams]) => {
       setAllPlayers(players);
       setAllTeams(teams); 
@@ -100,15 +167,12 @@ export default function NBAPlayerProfile() {
         
         let onOffFetch = Promise.resolve(null);
         if (numericTeamId && numericTeamId !== "FA") {
-          onOffFetch = fetch(`/nba-api/teamplayeronoffdetails?DateFrom=&DateTo=&GameSegment=&LastNGames=0&LeagueID=00&Location=&MeasureType=Advanced&Month=0&OpponentTeamID=0&Outcome=&PaceAdjust=N&PerMode=PerGame&Period=0&PlusMinus=N&Rank=N&Season=2025-26&SeasonSegment=&SeasonType=Regular%20Season&TeamID=${numericTeamId}&VsConference=&VsDivision=`).then(res => res.json()).catch(() => null);
+          onOffFetch = fetch(`/nba-api/teamplayeronoffdetails?DateFrom=&DateTo=&GameSegment=&LastNGames=0&LeagueID=00&Location=&MeasureType=Advanced&Month=0&OpponentTeamID=0&Outcome=&PaceAdjust=N&PerMode=PerGame&Period=0&PlusMinus=N&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&TeamID=${numericTeamId}&VsConference=&VsDivision=`).then(res => res.json()).catch(() => null);
         }
 
         const awardsFetch = fetch(`/nba-api/playerawards?PlayerID=${id}`).then(res => res.json()).catch(() => null);
-        
-        // 🚀 FIX: Forzamos expresamente la temporada actual para el Shot Chart
-        const shotsFetch = nbaService.getPlayerShotChart(id, "2025-26"); 
-        
-        const gameLogFetch = nbaService.getPlayerGameLog(id);
+        const shotsFetch = nbaService.getPlayerShotChart(id, season); 
+        const gameLogFetch = nbaService.getPlayerGameLog(id, season);
 
         Promise.all([bioFetch, onOffFetch, awardsFetch, shotsFetch, gameLogFetch]).then(([bioData, onOffData, awardsData, shotData, logData]) => {
           if (bioData) {
@@ -165,7 +229,11 @@ export default function NBAPlayerProfile() {
         setIsBaseLoading(false);
       }
     });
-  }, [id]);
+  }, [id, season]);
+
+  const handleSeasonChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSearchParams({ season: e.target.value });
+  };
 
   const getRank = (statKey: keyof NBAPlayer['stats']) => {
     if (!allPlayers.length || !player) return null;
@@ -216,7 +284,7 @@ export default function NBAPlayerProfile() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[70vh] animate-in fade-in space-y-4">
         <Loader2 className="h-12 w-12 animate-spin text-cyan-500" />
-        <p className="text-slate-500 font-bold text-xs uppercase tracking-widest">Retrieving Player Dossier...</p>
+        <p className="text-slate-500 font-bold text-xs uppercase tracking-widest">Retrieving {season} Player Dossier...</p>
       </div>
     );
   }
@@ -225,8 +293,23 @@ export default function NBAPlayerProfile() {
 
   const s = player.stats;
   const a = player.adv || { ts: 0, usg: 0, pie: 0, per: 15 };
+  
+  // Generamos el arquetipo de forma dinámica en base a percentiles
+  const archetype = getArchetype(player);
+  
+  // 🚀 FALLBACK PARA LOS 4 PILARES EN EL PERFIL
+  const rating = (player as any).rating || { 
+      ovr: 75, tier: "Bronze", color: "#cd7f32",
+      pillars: {
+          sco: { grade: "-", pct: 0, raw: "-", label: "SCORE" },
+          reb: { grade: "-", pct: 0, raw: "-", label: "REB" },
+          ply: { grade: "-", pct: 0, raw: "-", label: "PLAY" },
+          def: { grade: "-", pct: 0, raw: "-", label: "STOCKS" } // Clave adaptada a def
+      }
+  };
+
   const logoUrl = nbaService.getTeamLogoUrl(player.teamId);
-  const themeColor = TEAM_COLORS[player.teamId] || "#4279f5"; 
+  const themeColor = TEAM_COLORS[player.teamId] || rating.color; 
 
   const fName = bio?.firstName || player.name.split(" ")[0];
   const lName = bio?.lastName || player.name.split(" ").slice(1).join(" ");
@@ -242,8 +325,8 @@ export default function NBAPlayerProfile() {
     <div className="space-y-8 pb-16 animate-in fade-in duration-500 max-w-5xl mx-auto px-4">
       
       <div>
-        <Link to={`/${sport}/players`} className="group inline-flex items-center gap-2 text-[10px] font-black text-slate-500 hover:text-white transition-all uppercase tracking-[0.2em] w-max">
-          <ArrowLeft className="h-3.5 w-3.5 group-hover:-translate-x-1 transition-transform" /> Back to Roster
+        <Link to={`/${sport}/players?season=${season}`} className="group inline-flex items-center gap-2 text-[10px] font-black text-slate-500 hover:text-white transition-all uppercase tracking-[0.2em] w-max">
+          <ArrowLeft className="h-3.5 w-3.5 group-hover:-translate-x-1 transition-transform" /> Back to {season} Roster
         </Link>
       </div>
 
@@ -265,19 +348,44 @@ export default function NBAPlayerProfile() {
             />
           </div>
 
-          <div className="w-full md:w-7/12 p-8 md:p-12 flex flex-col justify-center bg-[#1a1a1a]/70 backdrop-blur-md">
-            <div className="mb-4">
+          <div className="w-full md:w-7/12 p-8 md:p-12 flex flex-col justify-center bg-[#1a1a1a]/70 backdrop-blur-md relative">
+            
+            {/* 🚀 OVR RATING EN EL PERFIL */}
+            <div className="absolute top-8 right-8 flex flex-col items-center">
+                <div className="relative flex items-center justify-center w-24 h-24 hover:scale-105 transition-transform">
+                  <Hexagon className="absolute inset-0 w-full h-full drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]" style={{ color: rating.color, fill: `${rating.color}20`, strokeWidth: 1.5 }} />
+                  <div className="flex flex-col items-center justify-center relative z-10 mt-1">
+                    <span className="text-4xl font-black font-mono text-white tracking-tighter leading-none">{rating.ovr}</span>
+                    <span className="text-[9px] font-black uppercase tracking-widest mt-1" style={{ color: rating.color }}>OVR</span>
+                  </div>
+                </div>
+            </div>
+
+            <div className="mb-4 pr-24">
               <h2 className="text-[#a0a0a0] text-xl md:text-2xl font-light uppercase tracking-widest leading-none mb-1">{fName}</h2>
               <h1 className="text-white text-4xl md:text-5xl font-bold uppercase tracking-tight leading-none">{lName}</h1>
             </div>
 
-            <div className="flex items-center gap-3 mb-8">
+            <div className="flex flex-wrap items-center gap-3 mb-8">
               <div className="h-6 w-6 bg-white rounded-full flex items-center justify-center p-1 shadow-[0_0_15px_rgba(255,255,255,0.1)]">
                 <img src={logoUrl} alt={player.teamId} className="w-full h-full object-contain" />
               </div>
               <span className="text-sm font-bold text-[#d0d0d0]">{player.teamName}</span>
               <span className="text-[#666] font-black mb-1">•</span>
               <span className="text-sm font-bold text-[#d0d0d0]">{position} {jersey}</span>
+              
+              {/* 🚀 TIER BADGE */}
+              <Badge className="ml-2 font-black uppercase tracking-widest text-[9px] border px-2 py-0.5" style={{ backgroundColor: `${rating.color}20`, color: rating.color, borderColor: `${rating.color}50` }}>
+                 {rating.tier} TIER
+              </Badge>
+
+              {/* 🚀 ARCHETYPE BADGE */}
+              {archetype && (
+                <Badge className={`ml-1 font-black uppercase tracking-widest text-[9px] border px-2 py-0.5 flex items-center gap-1 ${archetype.color}`}>
+                  <archetype.icon className="h-3 w-3" />
+                  {archetype.label}
+                </Badge>
+              )}
             </div>
 
             <div className="space-y-3 mb-8">
@@ -294,9 +402,21 @@ export default function NBAPlayerProfile() {
                 </span>
               </div>
               <div className="grid grid-cols-[100px_1fr] items-center">
-                <span className="text-xs font-bold text-[#777] uppercase tracking-wider">College</span>
+                <span className="text-xs font-bold text-[#777] uppercase tracking-wider">Season</span>
                 <span className="text-sm font-bold text-white flex items-center gap-2">
-                  {isDeepDataLoading ? <Loader2 className="h-3 w-3 animate-spin text-[#777]" /> : bio?.school || "-"}
+                   {/* 🚀 SELECTOR DE TEMPORADA EN EL PERFIL */}
+                   <div className="relative inline-flex">
+                      <CalendarDays className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-white/50" />
+                      <select
+                        value={season}
+                        onChange={handleSeasonChange}
+                        className="bg-[#111] border border-white/10 text-white text-[10px] font-black uppercase tracking-widest rounded-full py-1.5 pl-7 pr-6 outline-none cursor-pointer hover:border-white/20 transition-colors appearance-none shadow-lg"
+                      >
+                        {SEASONS.map(s => (
+                          <option key={s} value={s}>{s}</option>
+                        ))}
+                      </select>
+                    </div>
                 </span>
               </div>
             </div>
@@ -304,7 +424,7 @@ export default function NBAPlayerProfile() {
             <button 
               onClick={() => toggleFavorite({
                 id: player.id, type: 'player', name: player.name, 
-                subtitle: player.teamId, imageUrl: player.imageUrl, url: `/nba/players/${player.id}`
+                subtitle: player.teamId, imageUrl: player.imageUrl, url: `/nba/players/${player.id}?season=${season}`
               })}
               className="w-40 font-bold py-2.5 rounded-full transition-all shadow-[0_0_15px_rgba(0,0,0,0.3)] hover:brightness-110 hover:scale-105 flex items-center justify-center gap-2"
               style={{ 
@@ -322,7 +442,7 @@ export default function NBAPlayerProfile() {
 
         <div className="bg-[#121212] border-t border-[#2a2a2a] relative z-10">
           <div className="bg-black py-1.5 border-b border-[#2a2a2a] text-center">
-            <h3 className="text-[10px] font-bold uppercase tracking-widest text-white">2025-26 Regular Season Stats</h3>
+            <h3 className="text-[10px] font-bold uppercase tracking-widest text-white">{season} Regular Season Stats</h3>
           </div>
           <div className="grid grid-cols-4 py-4 md:py-5 px-4 divide-x divide-[#2a2a2a]">
             <div className="flex flex-col items-center">
@@ -347,6 +467,33 @@ export default function NBAPlayerProfile() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* 🚀 LOS 4 PILARES EN EL PERFIL */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {[
+            { id: "sco", title: rating.pillars?.sco?.label || "SCORE", p: rating.pillars?.sco },
+            { id: "reb", title: rating.pillars?.reb?.label || "REB", p: rating.pillars?.reb },
+            { id: "ply", title: rating.pillars?.ply?.label || "PLAY", p: rating.pillars?.ply },
+            { id: "def", title: rating.pillars?.def?.label || "STOCKS", p: rating.pillars?.def }, // Dinámico (DEF o STOCKS)
+        ].map((attr, i) => (
+            <div key={i} className="bg-[#1a1a1a] border border-white/5 rounded-2xl p-4 flex flex-col items-center justify-center shadow-lg relative overflow-hidden group">
+                <div className="absolute inset-0 opacity-[0.03] bg-gradient-to-t from-transparent to-current" style={{ color: rating.color }} />
+                
+                <div className="flex justify-between w-full items-end relative z-10 mb-2">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-[#888]">{attr.title}</span>
+                    <span className="text-[10px] font-bold text-[#666]">{attr.p?.raw}</span>
+                </div>
+                
+                <span className="text-4xl font-black font-mono text-white relative z-10 leading-none my-1" style={{ color: ['S', 'A+', 'A'].includes(attr.p?.grade) ? '#10b981' : 'white' }}>
+                    {attr.p?.grade}
+                </span>
+
+                <div className="w-full h-1.5 bg-black rounded-full mt-3 relative z-10 overflow-hidden">
+                    <div className="h-full rounded-full transition-all duration-1000" style={{ width: `${Math.max(5, attr.p?.pct || 0)}%`, backgroundColor: rating.color }} />
+                </div>
+            </div>
+        ))}
       </div>
 
       {/* 🚀 TABS SECUNDARIAS */}
@@ -497,7 +644,6 @@ export default function NBAPlayerProfile() {
           </div>
         )}
 
-        {/* 🚀 TAB 5: CONTEXT SPLITS (Fraud Detector FIX) */}
         {activeTab === "splits" && (
           <div className="space-y-6">
             <h3 className="text-lg font-black uppercase tracking-[0.2em] text-white flex items-center gap-3 mb-6">
@@ -526,19 +672,18 @@ export default function NBAPlayerProfile() {
               const home = gameLog.filter(g => g.isHome);
               const away = gameLog.filter(g => !g.isHome);
               
-              // 🚀 LÓGICA DE CONTENDERS CORREGIDA: Cruzamos con la lista oficial de equipos
               const contenders = gameLog.filter(g => {
                 const oppTeam = allTeams.find(t => t.abbreviation.toLowerCase() === g.opponent.toLowerCase());
                 if (!oppTeam) return false;
-                const winPct = oppTeam.wins / (oppTeam.wins + oppTeam.losses);
-                return winPct >= 0.500;
+                const oppWinPct = oppTeam.wins / (oppTeam.wins + oppTeam.losses);
+                return oppWinPct >= 0.500;
               });
               
               const lottery = gameLog.filter(g => {
                 const oppTeam = allTeams.find(t => t.abbreviation.toLowerCase() === g.opponent.toLowerCase());
                 if (!oppTeam) return false;
-                const winPct = oppTeam.wins / (oppTeam.wins + oppTeam.losses);
-                return winPct < 0.500;
+                const oppWinPct = oppTeam.wins / (oppTeam.wins + oppTeam.losses);
+                return oppWinPct < 0.500;
               });
 
               const renderSplitCard = (titleA: string, dataA: any, titleB: string, dataB: any, colorA: string, colorB: string) => (

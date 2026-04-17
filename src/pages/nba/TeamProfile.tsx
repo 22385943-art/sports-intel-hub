@@ -1,16 +1,23 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useSearchParams } from "react-router-dom";
 import { useState, useEffect, useMemo } from "react";
 import { useSport } from "@/contexts/SportContext";
 import { nbaService } from "@/services/sportServiceFactory";
 import { 
   ArrowLeft, Trophy, Shield, Activity, Loader2, Zap, Target, BarChart3, Gauge, 
-  Building2, Briefcase, Crown, History, AlertCircle, Users, UserCheck, Star, Calendar
+  Building2, Briefcase, Crown, History, AlertCircle, Users, UserCheck, Star, Calendar, Hexagon, CalendarDays
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip as RechartsTooltip } from "recharts";
 import type { NBAPlayer } from "@/data/nba/mockData";
 import { useFavorites } from "@/hooks/useFavorites"; 
+
+// 🚀 Generador automático de temporadas
+const SEASONS = Array.from({ length: 30 }, (_, i) => {
+  const startYear = 2025 - i;
+  const nextYear = String(startYear + 1).slice(-2);
+  return `${startYear}-${nextYear}`;
+});
 
 const ENRICHED_DATA: Record<string, any> = {
   "Sam Presti": { img: "https://upload.wikimedia.org/wikipedia/commons/6/69/Sam_Presti.jpg" },
@@ -51,6 +58,11 @@ const TEAM_COLORS: Record<string, string> = {
 export default function NBATeamProfile() {
   const { id } = useParams();
   const { sport } = useSport();
+  
+  // 🚀 URL Search Params para leer y escribir el año
+  const [searchParams, setSearchParams] = useSearchParams();
+  const season = searchParams.get("season") || "2025-26";
+
   const [team, setTeam] = useState<any>(null);
   const [allTeams, setAllTeams] = useState<any[]>([]);
   const [allLeaguePlayers, setAllLeaguePlayers] = useState<NBAPlayer[]>([]);
@@ -77,8 +89,8 @@ export default function NBATeamProfile() {
     setIsBaseLoading(true);
     
     Promise.all([
-      nbaService.fetchAllOfficialTeams(),
-      nbaService.fetchAllOfficialPlayers()
+      nbaService.fetchAllOfficialTeams(season),
+      nbaService.fetchAllOfficialPlayers(season)
     ]).then(([teams, players]) => {
       setAllTeams(teams);
       setAllLeaguePlayers(players);
@@ -90,10 +102,10 @@ export default function NBATeamProfile() {
         setIsBaseLoading(false); 
         setIsDeepDataLoading(true);
         Promise.all([
-          nbaService.getTeamLineups(foundTeam.id),
-          nbaService.getTeamDetails(foundTeam.id),
-          nbaService.getTeamRosterAndCoaches(foundTeam.id),
-          nbaService.getTeamSchedule(foundTeam.id)
+          nbaService.getTeamLineups(foundTeam.id, season),
+          nbaService.getTeamDetails(foundTeam.id, season),
+          nbaService.getTeamRosterAndCoaches(foundTeam.id, season),
+          nbaService.getTeamSchedule(foundTeam.id, season)
         ]).then(([lineups, details, bioData, sched]) => {
           setRealLineups(lineups || []);
           setTeamDetails(details || null);
@@ -106,7 +118,11 @@ export default function NBATeamProfile() {
         setIsBaseLoading(false);
       }
     });
-  }, [id]);
+  }, [id, season]); // 🚀 Re-fetch when season changes
+
+  const handleSeasonChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSearchParams({ season: e.target.value });
+  };
 
   const sortedCoaches = useMemo(() => {
     const getRank = (c: any) => {
@@ -147,8 +163,6 @@ export default function NBATeamProfile() {
     ];
   }, [team, allTeams]);
 
-  // 🚀 BLINDAJE DE TITANIO PARA NOMBRES EN LINEUPS
-// 🚀 EXTRACTOR INTELIGENTE DE NOMBRES (Arregla a Donovan/Davion Mitchell)
   const parseLineupPlayers = (groupName: string) => {
     if (!groupName) return [];
     const names = groupName.split(" - ");
@@ -159,14 +173,12 @@ export default function NBATeamProfile() {
       const lastName = parts.length > 1 ? parts.slice(1).join(" ") : cleanName;
       const firstInitial = parts[0]?.[0] || "";
 
-      // Buscamos al jugador por Apellido + Inicial, PERO DANDO PRIORIDAD AL EQUIPO ACTUAL
       let match = allLeaguePlayers.find(p => 
         p?.name?.includes(lastName) && 
         p?.name?.startsWith(firstInitial) && 
         (p?.teamId === team?.abbreviation || String(p?.teamId) === String(team?.id))
       );
 
-      // Si por lo que sea no lo encuentra en su equipo (ej: traspaso reciente), busca en toda la liga
       if (!match) {
         match = allLeaguePlayers.find(p => p?.name?.includes(lastName) && p?.name?.startsWith(firstInitial));
       }
@@ -179,7 +191,7 @@ export default function NBATeamProfile() {
   if (isBaseLoading) return (
     <div className="flex flex-col items-center justify-center min-h-[70vh] animate-in fade-in space-y-4">
       <Loader2 className="h-12 w-12 animate-spin text-emerald-400" />
-      <p className="text-slate-500 font-bold text-xs uppercase tracking-widest">Accessing NBA Central Database...</p>
+      <p className="text-slate-500 font-bold text-xs uppercase tracking-widest">Retrieving {season} Franchise Records...</p>
     </div>
   );
 
@@ -188,12 +200,13 @@ export default function NBATeamProfile() {
   const winPct = ((team.wins / ((team.wins + team.losses) || 1)) * 100).toFixed(1);
   const isWinning = team.wins >= team.losses;
   const themeColor = TEAM_COLORS[team.abbreviation] || "#4279f5"; 
+  const rating = team.rating || { ovr: 75, off: 75, def: 75, color: "#888" }; 
 
   return (
     <div className="space-y-6 pb-16 animate-in fade-in duration-500 min-h-screen">
       
-      <Link to={`/${sport}/teams`} className="group inline-flex items-center gap-2 text-[10px] font-black text-slate-500 hover:text-emerald-400 transition-all uppercase tracking-[0.2em] w-max px-2">
-        <ArrowLeft className="h-3.5 w-3.5 group-hover:-translate-x-1 transition-transform" /> Back to Standings
+      <Link to={`/${sport}/teams?season=${season}`} className="group inline-flex items-center gap-2 text-[10px] font-black text-slate-500 hover:text-emerald-400 transition-all uppercase tracking-[0.2em] w-max px-2">
+        <ArrowLeft className="h-3.5 w-3.5 group-hover:-translate-x-1 transition-transform" /> Back to {season} Standings
       </Link>
 
       <div className="relative overflow-hidden rounded-[2.5rem] border border-white/[0.06] bg-[#0a0f18] shadow-2xl">
@@ -210,7 +223,7 @@ export default function NBATeamProfile() {
               <div className="flex flex-col md:flex-row md:items-center gap-4">
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center justify-center md:justify-start gap-2 font-black text-[10px] tracking-[0.25em] uppercase" style={{ color: themeColor }}>
-                    <Trophy className="h-3.5 w-3.5" /> Season 2025-26
+                    <Trophy className="h-3.5 w-3.5" /> Historical Archive
                   </div>
                   <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white leading-none">{team.name}</h1>
                 </div>
@@ -218,14 +231,30 @@ export default function NBATeamProfile() {
               
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 pt-2">
                 <Badge className="bg-white/[0.06] text-slate-300 font-black px-4 py-1.5 text-[10px] tracking-[0.15em] border border-white/[0.08]">{team.conference} Conf</Badge>
-                <span className="text-slate-500 font-mono font-bold text-sm bg-black/40 px-4 py-1.5 rounded-full border border-white/5">{team.abbreviation}</span>
                 
+                <Badge className="bg-black/60 border-white/10 text-white font-mono px-3 py-1.5 text-[10px] font-black">OFF <span style={{ color: rating.color }} className="ml-1 text-xs">{rating.off}</span></Badge>
+                <Badge className="bg-black/60 border-white/10 text-white font-mono px-3 py-1.5 text-[10px] font-black">DEF <span style={{ color: rating.color }} className="ml-1 text-xs">{rating.def}</span></Badge>
+
+                {/* 🚀 SELECTOR DE TEMPORADA EN EL PERFIL */}
+                <div className="relative inline-flex">
+                  <CalendarDays className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-white/50" />
+                  <select
+                    value={season}
+                    onChange={handleSeasonChange}
+                    className="bg-[#111] border border-white/10 text-white text-[10px] font-black uppercase tracking-widest rounded-full py-1.5 pl-9 pr-6 outline-none cursor-pointer hover:border-white/20 transition-colors appearance-none shadow-lg"
+                  >
+                    {SEASONS.map(s => (
+                      <option key={s} value={s}>{s} Season</option>
+                    ))}
+                  </select>
+                </div>
+
                 <button 
                   onClick={() => toggleFavorite({
                     id: team.id, type: 'team', name: team.name, 
                     subtitle: `${team.wins}W - ${team.losses}L`, imageUrl: nbaService.getTeamLogoUrl(team.abbreviation), url: `/nba/teams/${team.abbreviation}`
                   })}
-                  className="px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest transition-all border shadow-lg flex items-center gap-2"
+                  className="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border shadow-lg flex items-center gap-2"
                   style={{ backgroundColor: isFav ? '#111' : themeColor, color: isFav ? themeColor : '#fff', borderColor: isFav ? themeColor : 'transparent' }}
                 >
                   <Star className={`w-3.5 h-3.5 ${isFav ? 'fill-current' : ''}`} />
@@ -251,15 +280,25 @@ export default function NBATeamProfile() {
           </div>
 
           <div className="flex flex-col items-center lg:items-end gap-5">
-            <div className="text-center lg:text-right">
-              <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.3em] mb-2">Official Record</p>
-              <p className="text-6xl md:text-7xl font-black font-mono tracking-tighter text-white leading-none">
-                {team.wins}<span className="text-slate-700 mx-2">-</span>{team.losses}
-              </p>
+            <div className="flex items-center gap-6">
+                <div className="relative flex items-center justify-center w-24 h-24 md:w-28 md:h-28 hover:scale-105 transition-transform">
+                  <Hexagon className="absolute inset-0 w-full h-full drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]" style={{ color: rating.color, fill: `${rating.color}20`, strokeWidth: 1.5 }} />
+                  <div className="flex flex-col items-center justify-center relative z-10 mt-1">
+                    <span className="text-4xl md:text-5xl font-black font-mono text-white tracking-tighter leading-none">{rating.ovr}</span>
+                    <span className="text-[9px] font-black uppercase tracking-widest mt-1" style={{ color: rating.color }}>OVR</span>
+                  </div>
+                </div>
+
+                <div className="text-center lg:text-right border-l border-white/10 pl-6">
+                  <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.3em] mb-2">Record</p>
+                  <p className="text-5xl md:text-6xl font-black font-mono tracking-tighter text-white leading-none">
+                    {team.wins}<span className="text-slate-700 mx-2">-</span>{team.losses}
+                  </p>
+                  <Badge className={`mt-3 px-4 py-1.5 text-[10px] font-black tracking-widest border-none shadow-lg ${isWinning ? 'bg-emerald-500/15 text-emerald-400' : 'bg-rose-500/15 text-rose-400'}`}>
+                    WIN {winPct}%
+                  </Badge>
+                </div>
             </div>
-            <Badge className={`px-6 py-2 text-xs font-black tracking-widest border-none shadow-lg ${isWinning ? 'bg-emerald-500/15 text-emerald-400' : 'bg-rose-500/15 text-rose-400'}`}>
-              WIN {winPct}%
-            </Badge>
           </div>
         </div>
 
@@ -318,11 +357,10 @@ export default function NBATeamProfile() {
                   </div>
                   <div className="divide-y divide-white/[0.03]">
                     {bioRoster.map((p, i) => (
-                      <Link key={i} to={`/${sport}/players/${p.id}`} className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-white/[0.03] transition-colors group items-center">
+                      <Link key={i} to={`/${sport}/players/${p.id}?season=${season}`} className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-white/[0.03] transition-colors group items-center">
                         <div className="col-span-4 flex items-center gap-4">
                           <Avatar className="h-12 w-12 border border-white/[0.08] shadow-lg group-hover:border-emerald-400 transition-colors bg-white">
                             <AvatarImage src={p.imageUrl} className="object-cover" />
-                            {/* 🚀 BLINDAJE EN ROSTER AVATAR */}
                             <AvatarFallback className="bg-slate-800 text-[10px] font-bold text-slate-500">
                               {(p.name || "UN").substring(0, 2).toUpperCase()}
                             </AvatarFallback>
@@ -406,7 +444,7 @@ export default function NBATeamProfile() {
               <div>
                 <div className="flex items-center gap-3 mb-8 border-b border-white/10 pb-6">
                   <Calendar className="h-6 w-6 text-blue-400" />
-                  <h2 className="text-2xl font-black uppercase tracking-[0.2em] text-white italic">2025-26 Game Log</h2>
+                  <h2 className="text-2xl font-black uppercase tracking-[0.2em] text-white italic">{season} Game Log</h2>
                 </div>
                 
                 {schedule.length > 0 ? (
@@ -414,7 +452,6 @@ export default function NBATeamProfile() {
                     {schedule.map((g, i) => {
                       const isWin = g.wl === 'W';
                       const opponent = g.opponent || "UNK";
-                      // 🚀 BUSCAMOS EL ID REAL DEL EQUIPO RIVAL PARA QUE NO FALLE EL LOGO
                       const oppTeam = allTeams.find(t => t.abbreviation === opponent);
                       const oppId = oppTeam ? oppTeam.id : "0";
                       
@@ -438,7 +475,7 @@ export default function NBATeamProfile() {
                               homeId: homeId, 
                               awayScore: awayScore, 
                               homeScore: homeScore,
-                              status: "final" // Fuerza que el boxscore no muestre tiempos en directo
+                              status: "final" 
                             } 
                           }}
                           className="bg-[#111] border border-white/5 rounded-xl p-4 flex items-center justify-between hover:bg-white/5 transition-colors group"
@@ -528,10 +565,9 @@ export default function NBATeamProfile() {
                                 <span className="text-xs font-mono font-black text-slate-600">{i + 1}</span>
                                 <div className="flex gap-4">
                                   {players.map((p: any, j: number) => (
-                                    <Link key={j} to={p.id !== "0" ? `/${sport}/players/${p.id}` : "#"} className="flex flex-col items-center group/avatar w-16 cursor-pointer">
+                                    <Link key={j} to={p.id !== "0" ? `/${sport}/players/${p.id}?season=${season}` : "#"} className="flex flex-col items-center group/avatar w-16 cursor-pointer">
                                       <Avatar className="h-16 w-16 border-2 border-[#0a0f18] shadow-xl group-hover/avatar:scale-110 group-hover/avatar:border-cyan-400 transition-all bg-white mb-2">
                                         <AvatarImage src={p.imageUrl} className="object-cover" />
-                                        {/* 🚀 BLINDAJE EXTREMO EN LINEUP AVATAR */}
                                         <AvatarFallback className="bg-slate-800 text-xs font-bold text-slate-500">
                                           {(p.name || "UN").substring(0, 2).toUpperCase()}
                                         </AvatarFallback>
