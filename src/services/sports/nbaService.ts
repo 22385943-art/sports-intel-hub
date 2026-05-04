@@ -67,11 +67,13 @@ export const calculateLeagueContext = (players: any[]) => {
     const avgUSG = getAvg('usg'); const stdUSG = getStd('usg', avgUSG) || 6.0;
     const avgPER = getAvg('per'); const stdPER = getStd('per', avgPER) || 4.5;
     const avgBPM = getAvg('bpm'); const stdBPM = getStd('bpm', avgBPM) || 3.5;
+    const avgVORP = getAvg('vorp'); const stdVORP = getStd('vorp', avgVORP) || 1.0;
+    const avgPIE = getAvg('pie'); const stdPIE = getStd('pie', avgPIE) || 3.0;
 
-    return { avgTS, stdTS, avgUSG, stdUSG, avgPER, stdPER, avgBPM, stdBPM };
+    return { avgTS, stdTS, avgUSG, stdUSG, avgPER, stdPER, avgBPM, stdBPM, avgVORP, stdVORP, avgPIE, stdPIE };
 };
 
-// 🚀 DATA SCIENCE: EL MOTOR DEFINITIVO (BPM Core + Safety Floor)
+// 🚀 DATA SCIENCE: EL MOTOR DEFINITIVO
 export const calculatePlayer2KRating = (p: any, leagueContext?: any, seasonStr?: string) => {
     if (!p || !p.percentiles) {
         return { 
@@ -100,7 +102,6 @@ export const calculatePlayer2KRating = (p: any, leagueContext?: any, seasonStr?:
         return "F";
     };
 
-    // 🏀 1. PILAR SCORE
     let effectiveEfficiency = pct.Efficiency || 50;
     if ((pct.Scoring || 50) < 75) {
         effectiveEfficiency = Math.min(effectiveEfficiency, (pct.Scoring || 50) + 10);
@@ -110,7 +111,6 @@ export const calculatePlayer2KRating = (p: any, leagueContext?: any, seasonStr?:
     const rawTs = p.adv?.ts || 50;
     const scoringText = `${rawPts.toFixed(1)} PTS (${rawTs.toFixed(1)}%)`;
 
-    // 🚀 LA BARRERA TEMPORAL
     let hasTracking = false;
     const playerSeason = seasonStr || p.season || leagueContext?.season;
     if (playerSeason) {
@@ -122,7 +122,6 @@ export const calculatePlayer2KRating = (p: any, leagueContext?: any, seasonStr?:
         hasTracking = rawDefl > 0.1 || rawCont > 0.1;
     }
 
-    // 👐 2. PILAR REB
     let reboundingPct = 50;
     if (hasTracking) {
         const contestedRebPct = pct.ContestedReb || pct.Rebounding || 50; 
@@ -132,11 +131,16 @@ export const calculatePlayer2KRating = (p: any, leagueContext?: any, seasonStr?:
     } else {
         reboundingPct = ((pct.Rebounding || 50) * 0.40) + ((pct.OReb || 50) * 0.35) + ((pct.DReb || 50) * 0.25);
     }
+
+    // Respeto Histórico al Volumen de Rebotes (Override manual)
+    const actualRpg = p.stats?.rpg || 0;
+    if (actualRpg >= 13.5) reboundingPct = Math.max(reboundingPct, 95); 
+    else if (actualRpg >= 11.5) reboundingPct = Math.max(reboundingPct, 85);
+
     const rawOrb = p.per36Stats?.oreb || p.stats?.oreb || 0;
     const rawDrb = p.per36Stats?.dreb || p.stats?.dreb || 0;
     const rebText = `${rawOrb.toFixed(1)} ORB / ${rawDrb.toFixed(1)} DRB`;
 
-    // 🧠 3. PILAR PLAY
     let playmakingPct = 50;
     if (hasTracking) {
         const passQualityPct = pct.PassQuality || pct.Playmaking || 50;
@@ -150,7 +154,6 @@ export const calculatePlayer2KRating = (p: any, leagueContext?: any, seasonStr?:
     const rawAstTo = p.adv?.astTo || 1;
     const plyText = `${rawAst.toFixed(1)} AST (${rawAstTo.toFixed(1)} A/T)`;
 
-    // 🛡️ 4. PILAR MUTABLE
     const rawStl = p.per36Stats?.spg || p.stats?.spg || 0;
     const rawBlk = p.per36Stats?.bpg || p.stats?.bpg || 0;
     const stocksPct = pct.Stocks || 50; 
@@ -165,46 +168,76 @@ export const calculatePlayer2KRating = (p: any, leagueContext?: any, seasonStr?:
         const disruption = ((pct.Deflections || 50) * 0.6) + (stocksPct * 0.4);
         const pureHustle = ((pct.LooseBalls || 50) * 0.6) + ((pct.ChargesDrawn || 50) * 0.4);
         
-        pillar4Pct = (teamImpact * 0.40) + (shotDefense * 0.35) + (contestedShots * 0.10) + (disruption * 0.10) + (pureHustle * 0.05);
-        pillar4Grade = getGrade(pillar4Pct);
-        pillar4Label = "DEF";
-        const defRtgRaw = Math.round(p.adv?.defRating || 115);
-        const deflectionsRaw = (p.per36Stats?.deflections || p.stats?.deflections || 0).toFixed(1);
-        pillar4Text = `${defRtgRaw} DRTG / ${deflectionsRaw} DEFL`; 
+        if (p.adv?.isRealBRef && p.adv?.dbpm !== undefined) {
+             let dbpmScore = 50 + (p.adv.dbpm * 15);
+             dbpmScore = Math.max(5, Math.min(99, dbpmScore));
+             pillar4Pct = (dbpmScore * 0.30) + (teamImpact * 0.25) + (shotDefense * 0.20) + (contestedShots * 0.10) + (disruption * 0.10) + (pureHustle * 0.05);
+             pillar4Grade = getGrade(pillar4Pct);
+             pillar4Label = "DEFENSE";
+             const sign = p.adv.dbpm > 0 ? '+' : '';
+             pillar4Text = `DBPM: ${sign}${p.adv.dbpm.toFixed(1)} / ${rawStl.toFixed(1)}s ${rawBlk.toFixed(1)}b`;
+        } else {
+             pillar4Pct = (teamImpact * 0.40) + (shotDefense * 0.35) + (contestedShots * 0.10) + (disruption * 0.10) + (pureHustle * 0.05);
+             pillar4Grade = getGrade(pillar4Pct);
+             pillar4Label = "DEF";
+             const defRtgRaw = Math.round(p.adv?.defRating || 115);
+             const deflectionsRaw = (p.per36Stats?.deflections || p.stats?.deflections || 0).toFixed(1);
+             pillar4Text = `${defRtgRaw} DRTG / ${deflectionsRaw} DEFL`; 
+        }
     } else {
-        pillar4Pct = stocksPct; 
-        pillar4Grade = stocksGrade; 
-        pillar4Label = "STOCKS";
-        pillar4Text = `${rawStl.toFixed(1)} STL / ${rawBlk.toFixed(1)} BLK`;
+        if (p.adv?.isRealBRef && p.adv?.dbpm !== undefined) {
+            let dbpmScore = 50 + (p.adv.dbpm * 15);
+            dbpmScore = Math.max(5, Math.min(99, dbpmScore));
+            const teamImpact = pct.DefRtg || 50;
+            
+            pillar4Pct = (dbpmScore * 0.60) + (teamImpact * 0.25) + (stocksPct * 0.15);
+            pillar4Grade = getGrade(pillar4Pct);
+            pillar4Label = "DEFENSE"; 
+            const sign = p.adv.dbpm > 0 ? '+' : '';
+            pillar4Text = `DBPM: ${sign}${p.adv.dbpm.toFixed(1)} / ${rawStl.toFixed(1)}s ${rawBlk.toFixed(1)}b`;
+        } else {
+            pillar4Pct = stocksPct; 
+            pillar4Grade = stocksGrade; 
+            pillar4Label = "STOCKS";
+            pillar4Text = `${rawStl.toFixed(1)} STL / ${rawBlk.toFixed(1)} BLK`;
+        }
     }
 
-    // --- CÁLCULO OVR: 100% Z-SCORES ---
     const rawTS = p.adv?.ts || 55;
     const rawUSG = p.adv?.usg || 15;
-    const rawBPM = p.adv?.bpm || -2.0;
     const rawPER = p.adv?.per || 15;
+    const rawBPM = p.adv?.bpm || -2.0;
+    const rawVORP = p.adv?.vorp || 0.0;
+    const rawPIE = p.adv?.pie || 10.0;
 
-    const ctx = leagueContext || { avgTS: 55, stdTS: 4.5, avgUSG: 20, stdUSG: 6.0, avgBPM: -1.5, stdBPM: 3.5, avgPER: 15, stdPER: 4.5 };
+    const ctx = leagueContext || { avgTS: 55, stdTS: 4.5, avgUSG: 20, stdUSG: 6.0, avgBPM: -1.5, stdBPM: 3.5, avgPER: 15, stdPER: 4.5, avgVORP: 0.5, stdVORP: 1.5, avgPIE: 10, stdPIE: 3.0 };
 
     const zTS = Math.max(-3, Math.min(3.5, (rawTS - (ctx.avgTS || 55)) / (ctx.stdTS || 4.5)));
     const zUSG = Math.max(-3, Math.min(3.5, (rawUSG - (ctx.avgUSG || 20)) / (ctx.stdUSG || 6.0)));
-    const zBPM = Math.max(-3, Math.min(3.5, (rawBPM - (ctx.avgBPM || -1.5)) / (ctx.stdBPM || 3.5)));
     const zPER = Math.max(-3, Math.min(3.5, (rawPER - (ctx.avgPER || 15)) / (ctx.stdPER || 4.5)));
+    const zVORP = Math.max(-3, Math.min(3.5, (rawVORP - (ctx.avgVORP || 0.5)) / (ctx.stdVORP || 1.5)));
+    const zPIE = Math.max(-3, Math.min(3.5, (rawPIE - (ctx.avgPIE || 10)) / (ctx.stdPIE || 3.0)));
 
-    // 1. IMPACTO BASE: BPM domina (80%), PER se minimiza (20%) para hundir a los infla-rebotes.
-    const baseImpact = (zBPM * 4.5) + (zPER * 1.5); 
+    let zBPM_Ponderado = Math.max(-3, Math.min(3.5, (rawBPM - (ctx.avgBPM || -1.5)) / (ctx.stdBPM || 3.5)));
+    if (p.adv?.isRealBRef && p.adv?.obpm !== undefined && p.adv?.dbpm !== undefined) {
+         const zOBPM = Math.max(-3, Math.min(3.5, p.adv.obpm / 2.0)); 
+         const zDBPM = Math.max(-3, Math.min(3.5, p.adv.dbpm / 2.0));
+         zBPM_Ponderado = (zOBPM * 0.65) + (zDBPM * 0.35);
+    }
 
-    // 2. BONUS HELIOCÉNTRICO: Premia asumir carga (Iverson), multiplica si eres eficiente (Harden).
+    const baseImpact = (zBPM_Ponderado * 2.4) + (zVORP * 1.2) + (zPER * 1.2) + (zPIE * 1.2); 
+    
     const usgBonus = Math.max(0, zUSG) * 1.5;
     const efficiencyMultiplier = (zUSG > 0 && zTS > 0) ? (zUSG * zTS * 1.0) : 0;
     const creationBonus = usgBonus + efficiencyMultiplier;
-
-    // 3. BONUS DEFENSIVO: Empujón moderado a especialistas (Gobert)
-    const defenseBonus = (pillar4Pct > 75) ? ((pillar4Pct - 75) * 0.15) : 0;
+    
+    let defenseBonus = 0;
+    if (!p.adv?.isRealBRef || p.adv?.dbpm === undefined) {
+       defenseBonus = (pillar4Pct > 75) ? ((pillar4Pct - 75) * 0.15) : 0;
+    }
 
     let rawOvr = 73 + (baseImpact * volumeModifier) + creationBonus + defenseBonus;
 
-    // --- PENALIZACIÓN DE PARTIDOS JUGADOS ---
     const gp = p.stats?.gp || 0;
     const reliability = Math.max(0.1, Math.min(1, gp / 65)); 
     let availabilityPenalty = 0;
@@ -214,7 +247,6 @@ export const calculatePlayer2KRating = (p: any, leagueContext?: any, seasonStr?:
 
     let finalOVR = Math.round(rawOvr - availabilityPenalty);
 
-    // 🛑 EL VETO DE LEYENDA
     let vetoMessage = "";
     if (finalOVR >= 97) {
         if (pillar4Pct < 35) { 
@@ -227,17 +259,15 @@ export const calculatePlayer2KRating = (p: any, leagueContext?: any, seasonStr?:
         }
     }
 
-    // 📉 CASTIGO AL CHUPÓN ABSOLUTO
     if (zTS < -1.5 && zUSG > 1.5) finalOVR -= 2; 
 
-    // 🚀 RED DE SEGURIDAD (Se aplica AL FINAL para que Trae Young no baje a 71)
+    // Suelo de Anotación blindado al final
     const actualPts = p.stats?.ppg || 0;
     const scoringFloor = Math.round(68 + (actualPts * 0.55)); 
     if (finalOVR < scoringFloor) {
         finalOVR = scoringFloor;
     }
 
-    // Límite final estricto
     finalOVR = Math.max(65, Math.min(99, finalOVR));
 
     let tier = "Bronze"; let color = "#cd7f32"; 
@@ -261,7 +291,6 @@ export const calculatePlayer2KRating = (p: any, leagueContext?: any, seasonStr?:
     };
 };
 
-// 🚀 FÓRMULA DE EQUIPOS
 const calculateTeam2KRating = (t: any, roster: any[]) => {
     const netRtg = t.netRtg !== undefined ? t.netRtg : (t.adv?.netRtg || 0);
     const offRtg = t.offRtg !== undefined ? t.offRtg : (t.adv?.offRtg || 115);
@@ -492,6 +521,26 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
             hasTracking ? fetchSafeJSON(urlPassing).catch(() => null) : Promise.resolve(null),
             hasTracking ? fetchSafeJSON(urlDefending).catch(() => null) : Promise.resolve(null)
         ]);
+
+        // 🚀 INGESTA DE BALONCESTO-REFERENCE
+        let bRefMap = new Map();
+        try {
+            const urlBref = `/data/bref_advanced_${season}.json`;
+            const bRefResponse = await fetch(urlBref);
+            if (bRefResponse.ok) {
+                const bRefData = await bRefResponse.json();
+                if (Array.isArray(bRefData)) {
+                    bRefData.forEach((p: any) => {
+                        const normName = p.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+                        if (!bRefMap.has(normName)) { 
+                            bRefMap.set(normName, p);
+                        }
+                    });
+                }
+            }
+        } catch (e) {
+            console.log(`[Info] No se encontró el JSON local de B-Ref para ${season}. Usando proxy calculada.`);
+        }
 
         const headersBase = dataBase.resultSets[0].headers;
         const rowsBase = dataBase.resultSets[0].rowSet;
@@ -725,6 +774,21 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
           };
           
           const advancedMetrics = this.computeAllAdvanced(p as any);
+          
+          // 🚀 FUSIÓN MAESTRA CON DBPM y OBPM
+          const normName = p.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+          const bRefStats = bRefMap.get(normName);
+          
+          if (bRefStats) {
+              advancedMetrics.per = bRefStats.per !== undefined && !isNaN(bRefStats.per) ? bRefStats.per : advancedMetrics.per;
+              advancedMetrics.bpm = bRefStats.bpm !== undefined && !isNaN(bRefStats.bpm) ? bRefStats.bpm : advancedMetrics.bpm;
+              advancedMetrics.obpm = bRefStats.obpm !== undefined ? bRefStats.obpm : advancedMetrics.obpm;
+              advancedMetrics.dbpm = bRefStats.dbpm !== undefined ? bRefStats.dbpm : advancedMetrics.dbpm;
+              advancedMetrics.vorp = bRefStats.vorp !== undefined && !isNaN(bRefStats.vorp) ? bRefStats.vorp : advancedMetrics.vorp;
+              advancedMetrics.ws48 = bRefStats.ws48 !== undefined && !isNaN(bRefStats.ws48) ? bRefStats.ws48 : advancedMetrics.ws48;
+              advancedMetrics.isRealBRef = true;
+          }
+
           p.adv = { ...p.adv, ...advancedMetrics };
           return p;
         });
@@ -789,11 +853,11 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
         const allFgmUast = qualifiedPlayers.map((p: any) => p.scoring.pctFgmUast).sort((a,b)=>a-b);
         const allPtsFb = qualifiedPlayers.map((p: any) => p.per36Stats.ptsFb).sort((a,b)=>a-b);
 
-        // 🚀 NUEVOS ARRAYS PARA DATA TRACKING AVANZADA
         const allStocks = qualifiedPlayers.map((p: any) => p.per36Stats.spg + p.per36Stats.bpg).sort((a,b)=>a-b);
         const allPassQuality = qualifiedPlayers.map((p: any) => p.per36Stats.potentialAst > 0 ? (p.per36Stats.apg / p.per36Stats.potentialAst) : 0).sort((a,b)=>a-b);
 
         const calcWS48 = (p: any) => {
+            if (p.adv.isRealBRef && p.adv.ws48 !== undefined) return p.adv.ws48; 
             const perWS = (p.adv.per || 15) - 15;
             const tsWS = ((p.adv.ts || 55) - 55) * 0.1;
             return Math.max(0, 0.100 + (perWS * 0.01) + tsWS);
@@ -931,7 +995,6 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
                     ThreePA: this.calcPercentile(p.per36Stats.fg3a, all3PA),
                     FastBreak: this.calcPercentile(p.per36Stats.ptsFb, allPtsFb),
 
-                    // 🚀 DATA TRACKING AVANZADA 
                     Stocks: this.calcPercentile(p.per36Stats.spg + p.per36Stats.bpg, allStocks),
                     PassQuality: this.calcPercentile(p.per36Stats.potentialAst > 0 ? (p.per36Stats.apg / p.per36Stats.potentialAst) : 0, allPassQuality),
                     ShotDefense: this.calcPercentile(100 - p.tracking.dfgPct, allDFGInv),
@@ -965,15 +1028,19 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
     const s = player.stats || {};
     const a = player.adv || {};
     const min = s.mpg || 1;
+    
     const missedFG = (s.fga || 0) - (s.fgm || 0);
     const missedFT = (s.fta || 0) - (s.ftm || 0);
-    
     const perBase = (s.ppg || 0) + (s.rpg || 0) + (s.apg || 0) + (s.spg || 0) + (s.bpg || 0) - missedFG - missedFT - (s.topg || 0);
     const perRaw = perBase * (30 / min);
     const per = isNaN(perRaw) || !isFinite(perRaw) ? 0 : perRaw;
 
-    const base_efficiency = (s.ppg || 0) + (s.rpg || 0) + (s.apg || 0) + ((s.spg || 0) * 2) + ((s.bpg || 0) * 2) - missedFG - missedFT - ((s.topg || 0) * 2);
-    let bpmRaw = (base_efficiency / 2.5) - 6;
+    const pts = s.ppg || 0; const reb = s.rpg || 0; const ast = s.apg || 0;
+    const stl = s.spg || 0; const blk = s.bpg || 0; const fga = s.fga || 0;
+    const fta = s.fta || 0; const tov = s.topg || 0;
+    
+    const impact_score = (pts * 1.0) + (reb * 0.4) + (ast * 1.5) + (stl * 2.5) + (blk * 2.0) - (fga * 1.1) - (fta * 0.45) - (tov * 2.5);
+    let bpmRaw = ((impact_score * (36 / min)) * 0.25) - 2.0;
     if (bpmRaw < -10) bpmRaw = -10;
     const bpm = isNaN(bpmRaw) || !isFinite(bpmRaw) ? 0 : bpmRaw;
     
@@ -1051,7 +1118,7 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
         const paramsMisc = paramsTeamBase.replace("MeasureType=Base", "MeasureType=Misc"); 
         const paramsScoring = paramsTeamBase.replace("MeasureType=Base", "MeasureType=Scoring"); 
         
-        const paramsClutch = `?AheadBehind=Ahead%20or%20Behind&ClutchTime=Last%205%20Minutes&DateFrom=&DateTo=&Direction=DESC&GameScope=&GameSegment=&LastNGames=0&LeagueID=00&Location=&MeasureType=Base&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PaceAdjust=N&PerMode=PerGame&Period=0&PlayerExperience=&PlayerPosition=&PlusMinus=N&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&StarterBench=&TeamID=0&VsConference=&VsDivision=`;
+        const paramsClutch = `?AheadBehind=Ahead%20or%20Behind&ClutchTime=Last%205%20Minutes&DateFrom=&DateTo=&Direction=DESC&GameScope=&GameSegment=&LastNGames=0&LeagueID=00&Location=&MeasureType=Base&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PaceAdjust=N&PerMode=PerGame&Period=0&PlusMinus=N&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&StarterBench=&TeamID=0&VsConference=&VsDivision=`;
         const urlClutchBase = `/leaguedashteamclutch${paramsClutch}`;
         const urlClutchAdv = `/leaguedashteamclutch${paramsClutch.replace("MeasureType=Base", "MeasureType=Advanced")}`;
         
@@ -1404,7 +1471,6 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
         const allPct3pt = parsedTeams.map((t:any) => t.pctPts3pt || 0).sort((a:number,b:number)=>a-b);
         const allFgmAst = parsedTeams.map((t:any) => t.pctFgmAst || 0).sort((a:number,b:number)=>a-b);
 
-        // OBTENER ROSTER 
         const allPlayersThisSeason = await this.fetchAllOfficialPlayers(season).catch(() => []);
 
         parsedTeams = parsedTeams.map((t:any) => {
@@ -1417,17 +1483,14 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
                     Pace: this.calcPercentile(t.pace || 100, allPace),
                     Efficiency: this.calcPercentile(t.tsPct || 55, allTsPct),
                     Rebounding: this.calcPercentile(t.rebPct || 50, allRebPct),
-                    
                     Points: this.calcPercentile(t.ppg, allPPG),
                     RawReb: this.calcPercentile(t.reb, allRawReb),
                     FgPct: this.calcPercentile(t.fgPct, allFgPct),
                     ThreePct: this.calcPercentile(t.threePct, all3pPct),
                     FtPct: this.calcPercentile(t.ftPct, allFtPct),
-                    
                     Playmaking: this.calcPercentile(t.apg, allAPG),
                     BallSecurity: this.calcPercentile(t.astTo, allAstTo),
                     OffReb: this.calcPercentile(t.orebPct, allOrebPct),
-                    
                     Steals: this.calcPercentile(t.spg, allSPG),
                     Blocks: this.calcPercentile(t.bpg, allBPG),
                     DefReb: this.calcPercentile(t.drebPct, allDrebPct),
@@ -1435,7 +1498,6 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
                     PerimDefense: this.calcPercentile(100 - (t.opp?.opp3ptPct || 35), allOpp3pInv),
                     TransitionDef: this.calcPercentile(100 - (t.opp?.oppPtsFb || 15), allOppPtsFbInv),
                     TurnoversForced: this.calcPercentile(t.opp?.oppTov || 13, allOppTov),
-
                     FastBreak: this.calcPercentile(t.ptsFb, allPtsFb),
                     SecondChance: this.calcPercentile(t.pts2ndChance, allPts2nd),
                     PtsOffTov: this.calcPercentile(t.ptsOffTov, allPtsOffTov),
