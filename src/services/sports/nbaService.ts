@@ -472,6 +472,29 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
 
     const promise = (async () => {
       try {
+        // ┌─────────────────────────────────────────────────────────────────────┐
+        // │  [NUEVO] Lee el JSON pre-computado por el pipeline antes de llamar  │
+        // │  a la NBA API. Si falla silenciosamente, el flujo original continúa. │
+        // └─────────────────────────────────────────────────────────────────────┘
+        if (season === '2025-26') {
+          try {
+            const staticRes = await fetch('/data/nba_players_current.json');
+            if (staticRes.ok) {
+              const json = await staticRes.json();
+              const players: any[] = json.players ?? json; // soporta ambos formatos de salida del pipeline
+              if (Array.isArray(players) && players.length > 100) {
+                console.log(`[NBAService] ✅ ${players.length} jugadores desde JSON estático`);
+                this.historicalPlayersCache.set(season, players as unknown as NBAPlayer[]);
+                this.playersCache = players as unknown as NBAPlayer[];
+                return JSON.parse(JSON.stringify(players)) as unknown as NBAPlayer[];
+              }
+            }
+          } catch {
+            console.warn('[NBAService] ⚠️ JSON estático no disponible, usando NBA API en vivo...');
+          }
+        }
+        // ── [FIN NUEVO] ──────────────────────────────────────────────────────────
+
         const startYear = parseInt(season.split('-')[0]);
         const hasTracking = startYear >= 2013;
         const hasHustle = startYear >= 2015;
@@ -1112,6 +1135,29 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
 
     const promise = (async () => {
       try {
+        // ┌─────────────────────────────────────────────────────────────────────┐
+        // │  [NUEVO] Lee el JSON pre-computado por el pipeline antes de llamar  │
+        // │  a la NBA API. Si falla silenciosamente, el flujo original continúa. │
+        // └─────────────────────────────────────────────────────────────────────┘
+        if (season === '2025-26') {
+          try {
+            const staticRes = await fetch('/data/nba_teams_current.json');
+            if (staticRes.ok) {
+              const json = await staticRes.json();
+              const teams: any[] = json.teams ?? json; // soporta ambos formatos de salida del pipeline
+              if (Array.isArray(teams) && teams.length >= 30) {
+                console.log(`[NBAService] ✅ ${teams.length} equipos desde JSON estático`);
+                this.historicalTeamsCache.set(season, teams);
+                this.teamsCache = teams;
+                return JSON.parse(JSON.stringify(teams));
+              }
+            }
+          } catch {
+            console.warn('[NBAService] ⚠️ JSON estático de equipos no disponible, usando NBA API en vivo...');
+          }
+        }
+        // ── [FIN NUEVO] ──────────────────────────────────────────────────────────
+
         const paramsTeamBase = `?Conference=&DateFrom=&DateTo=&Division=&GameScope=&GameSegment=&LastNGames=0&LeagueID=00&Location=&MeasureType=Base&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PaceAdjust=N&PerMode=PerGame&Period=0&PlusMinus=N&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&TeamID=0&TwoWay=0&VsConference=&VsDivision=`;
         const paramsAdv = paramsTeamBase.replace("MeasureType=Base", "MeasureType=Advanced");
         const paramsOpp = paramsTeamBase.replace("MeasureType=Base", "MeasureType=Opponent");

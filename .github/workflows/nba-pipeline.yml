@@ -1,0 +1,165 @@
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║  SPORTS INTEL HUB — NBA Data Pipeline                           ║
+# ║  .github/workflows/nba-pipeline.yml                             ║
+# ║                                                                  ║
+# ║  Ejecuta fetchNBADataPipeline.mjs cada 6 horas en GitHub        ║
+# ║  Actions (GRATIS en repositorios públicos).                     ║
+# ║                                                                  ║
+# ║  Outputs generados:                                              ║
+# ║    public/data/nba_players_current.json                         ║
+# ║    public/data/nba_teams_current.json                           ║
+# ║                                                                  ║
+# ║  Trigger manual: GitHub → Actions → Run workflow                ║
+# ╚══════════════════════════════════════════════════════════════════╝
+
+name: NBA Data Pipeline
+
+on:
+  # ── Ejecución automática cada 6 horas ─────────────────────────────
+  schedule:
+    - cron: '0 0,6,12,18 * * *'   # 00:00 · 06:00 · 12:00 · 18:00 UTC
+
+  # ── Trigger manual desde la UI de GitHub ──────────────────────────
+  workflow_dispatch:
+    inputs:
+      season:
+        description: 'Temporada NBA (ej: 2025-26)'
+        required: false
+        default: '2025-26'
+        type: string
+      force_commit:
+        description: 'Hacer commit aunque no haya cambios'
+        required: false
+        default: false
+        type: boolean
+
+  # ── Re-ejecutar si se toca el propio script (útil en desarrollo) ──
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/fetchNBADataPipeline.mjs'
+      - '.github/workflows/nba-pipeline.yml'
+
+# Evitar ejecuciones concurrentes (sólo una a la vez)
+concurrency:
+  group: nba-pipeline
+  cancel-in-progress: false
+
+jobs:
+  update-nba-data:
+    name: Fetch & Update NBA Data
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    # Permisos para que el workflow pueda hacer push al repo
+    permissions:
+      contents: write
+
+    steps:
+      # ── 1. Checkout ────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Token con permisos de escritura para poder hacer push
+          token: ${{ secrets.GITHUB_TOKEN }}
+          # Traer todo el historial para que el commit funcione bien
+          fetch-depth: 1
+
+      # ── 2. Configurar Node.js ──────────────────────────────────────
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          # Caché de npm para acelerar instalaciones sucesivas
+          cache: 'npm'
+
+      # ── 3. Instalar dependencias ───────────────────────────────────
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+        # --prefer-offline usa la caché cuando es posible (más rápido)
+
+      # ── 4. Ejecutar el pipeline ────────────────────────────────────
+      - name: Run NBA Data Pipeline
+        id: pipeline
+        run: |
+          SEASON="${{ github.event.inputs.season || '2025-26' }}"
+          echo "🏀 Ejecutando pipeline para temporada: $SEASON"
+          node scripts/fetchNBADataPipeline.mjs "$SEASON"
+        env:
+          NODE_ENV: production
+          # Hacer que node muestre stack traces completos en errores
+          NODE_OPTIONS: '--stack-trace-limit=30'
+
+      # ── 5. Verificar si los datos cambiaron ────────────────────────
+      - name: Check for data changes
+        id: check_changes
+        run: |
+          git diff --quiet \
+            public/data/nba_players_current.json \
+            public/data/nba_teams_current.json \
+            public/data/nba_players_current_raw.json \
+            public/data/nba_teams_current_raw.json \
+            2>/dev/null || echo "changed=true" >> $GITHUB_OUTPUT
+
+          # Mostrar resumen de lo que cambió (útil en los logs)
+          if git diff --stat public/data/nba_players_current.json 2>/dev/null | grep -q "changed"; then
+            echo "📊 nba_players_current.json actualizado"
+          fi
+          if git diff --stat public/data/nba_teams_current.json 2>/dev/null | grep -q "changed"; then
+            echo "🏆 nba_teams_current.json actualizado"
+          fi
+
+      # ── 6. Hacer commit y push si hay cambios ─────────────────────
+      - name: Commit and push updated data
+        # Ejecutar si: (hay cambios) O (el usuario pidió force_commit)
+        if: |
+          steps.check_changes.outputs.changed == 'true' ||
+          github.event.inputs.force_commit == 'true'
+        run: |
+          # Configurar identidad del bot de GitHub Actions
+          git config --local user.name  "github-actions[bot]"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Añadir sólo los archivos de datos (no queremos commit de node_modules, etc.)
+          git add \
+            public/data/nba_players_current.json \
+            public/data/nba_teams_current.json \
+            public/data/nba_players_current_raw.json \
+            public/data/nba_teams_current_raw.json
+
+          # Timestamp en UTC para el mensaje de commit
+          TIMESTAMP=$(date -u '+%Y-%m-%d %H:%M UTC')
+          SEASON="${{ github.event.inputs.season || '2025-26' }}"
+
+          git commit -m "chore(data): update NBA data ${SEASON} [${TIMESTAMP}] [skip ci]"
+          # [skip ci] evita que este commit dispare otro workflow → bucle infinito
+
+          git push
+
+          echo "✅ Datos NBA actualizados y pusheados correctamente."
+
+      # ── 7. Notificar si no hubo cambios ───────────────────────────
+      - name: No changes detected
+        if: |
+          steps.check_changes.outputs.changed != 'true' &&
+          github.event.inputs.force_commit != 'true'
+        run: |
+          echo "ℹ️  Los datos no cambiaron desde la última ejecución. No se hizo commit."
+          echo "    Esto es normal fuera de temporada o si la NBA API devolvió los mismos datos."
+
+      # ── 8. Resumen en la UI de GitHub ─────────────────────────────
+      - name: Write job summary
+        if: always()
+        run: |
+          echo "## 🏀 NBA Data Pipeline Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Campo | Valor |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          echo "| Temporada | ${{ github.event.inputs.season || '2025-26' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Timestamp | $(date -u '+%Y-%m-%d %H:%M UTC') |" >> $GITHUB_STEP_SUMMARY
+          echo "| Cambios detectados | ${{ steps.check_changes.outputs.changed || 'false' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Trigger | ${{ github.event_name }} |" >> $GITHUB_STEP_SUMMARY
+          if [ -f "public/data/nba_players_current.json" ]; then
+            PLAYER_COUNT=$(node -e "const d=require('./public/data/nba_players_current.json'); console.log((d.players||d).length)")
+            echo "| Jugadores en JSON | ${PLAYER_COUNT} |" >> $GITHUB_STEP_SUMMARY
+          fi
