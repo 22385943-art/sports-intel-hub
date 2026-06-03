@@ -1,7 +1,7 @@
 {
   "metadata": {
     "season": "2025-26",
-    "generatedAt": "2026-06-02T23:30:07.936Z",
+    "generatedAt": "2026-06-03T16:27:32.424Z",
     "playerCount": 582,
     "teamCount": 30,
     "source": "nba-stats-api + basketball-reference"
@@ -580,7 +580,7 @@
         "FastBreak": 12,
         "SecondChance": 20,
         "PtsOffTov": 30,
-        "Hustle": 12,
+        "Hustle": 13,
         "BoxOuts": 22,
         "TurnoverAvoidance": 5,
         "FtaRate": 58,
@@ -1902,7 +1902,7 @@
       "pctPtsOffTov": 16.9,
       "pctPtsPitp": 39.3,
       "boxOuts": 5.65,
-      "looseBalls": 4.96,
+      "looseBalls": 4.98,
       "imageUrl": "https://a.espncdn.com/i/teamlogos/nba/500/gs.png",
       "opp": {
         "oppFgPct": 48,
@@ -2372,7 +2372,7 @@
         "SecondChance": 5,
         "PtsOffTov": 5,
         "Hustle": 25,
-        "BoxOuts": 67,
+        "BoxOuts": 65,
         "TurnoverAvoidance": 55,
         "FtaRate": 35,
         "ShotProfile": 58,
@@ -3494,7 +3494,7 @@
       "pctPtsOffTov": 15.5,
       "pctPtsPitp": 42.6,
       "boxOuts": 5.49,
-      "looseBalls": 4.3,
+      "looseBalls": 4.32,
       "imageUrl": "https://a.espncdn.com/i/teamlogos/nba/500/min.png",
       "opp": {
         "oppFgPct": 46.2,
@@ -4488,8 +4488,8 @@
       "ptsPaint": 50.2,
       "pctPtsOffTov": 16.4,
       "pctPtsPitp": 43.3,
-      "boxOuts": 4.72,
-      "looseBalls": 4.77,
+      "boxOuts": 4.76,
+      "looseBalls": 4.78,
       "imageUrl": "https://a.espncdn.com/i/teamlogos/nba/500/phi.png",
       "opp": {
         "oppFgPct": 46.7,
@@ -5682,7 +5682,7 @@
       "ptsPaint": 52.8,
       "pctPtsOffTov": 15.3,
       "pctPtsPitp": 44.9,
-      "boxOuts": 6.13,
+      "boxOuts": 6.15,
       "looseBalls": 4,
       "imageUrl": "https://a.espncdn.com/i/teamlogos/nba/500/utah.png",
       "opp": {
@@ -5755,7 +5755,7 @@
         "SecondChance": 38,
         "PtsOffTov": 48,
         "Hustle": 28,
-        "BoxOuts": 67,
+        "BoxOuts": 68,
         "TurnoverAvoidance": 28,
         "FtaRate": 68,
         "ShotProfile": 32,
@@ -5882,7 +5882,7 @@
       "pctPtsOffTov": 14.2,
       "pctPtsPitp": 42.2,
       "boxOuts": 4.89,
-      "looseBalls": 3.84,
+      "looseBalls": 3.83,
       "imageUrl": "https://a.espncdn.com/i/teamlogos/nba/500/wsh.png",
       "opp": {
         "oppFgPct": 48.8,
@@ -5953,7 +5953,7 @@
         "FastBreak": 45,
         "SecondChance": 57,
         "PtsOffTov": 23,
-        "Hustle": 15,
+        "Hustle": 13,
         "BoxOuts": 12,
         "TurnoverAvoidance": 22,
         "FtaRate": 15,
