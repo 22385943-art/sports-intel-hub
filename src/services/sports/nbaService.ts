@@ -401,11 +401,18 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
   }
 
   getTeamLogoUrl(abbreviation: string): string {
-    if (!abbreviation || abbreviation === "0" || abbreviation === "FA") return "";
-    const espnMap: Record<string, string> = { 'UTA': 'utah', 'NOP': 'no', 'GSW': 'gs', 'SAS': 'sa', 'NYK': 'ny', 'WAS': 'wsh' };
+    // ✅ Guarda contra '???', abreviaturas vacías y valores inválidos
+    if (!abbreviation || abbreviation === '0' || abbreviation === '???' || 
+        abbreviation === 'FA' || abbreviation.trim().length < 2) return '';
+    
+    // ✅ ESPN_MAP completo y correcto
+    const ESPN_MAP: Record<string, string> = { 
+      'NOP': 'no', 'GSW': 'gs', 'SAS': 'sa', 'NYK': 'ny', 'WAS': 'wsh', 'UTA': 'utah',
+      'LAL': 'lal', 'LAC': 'lac', 'OKC': 'okc'
+    };
+    
     const cleanAbbr = abbreviation.toUpperCase();
-    const finalAbbr = espnMap[cleanAbbr] || cleanAbbr.toLowerCase();
-    return `https://a.espncdn.com/i/teamlogos/nba/500/${finalAbbr}.png`;
+    return `https://a.espncdn.com/i/teamlogos/nba/500/${ESPN_MAP[cleanAbbr] || cleanAbbr.toLowerCase()}.png`;
   }
 
   getAllPlayers(): NBAPlayer[] {
@@ -1429,7 +1436,7 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
           };
 
           return {
-            id: tId, name: name, abbreviation: staticTeam?.abbreviation || name.substring(0, 3).toUpperCase(),
+            id: tId, name: name, abbreviation: staticTeam?.abbreviation || getString(row, headersBase, "TEAM_ABBREVIATION", "") || name.substring(0, 3).toUpperCase(),
             conference: staticTeam?.conference || "Unknown",
             wins: wins, losses: losses, winPct: winPct,
             min: getStat(row, headersBase, "MIN"),
@@ -1584,7 +1591,7 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
     return promise.then(data => JSON.parse(JSON.stringify(data)));
   }
 
-  async fetchAwardAuxData(season: string = "2025-26", prevSeason: string = "2024-25") {
+async fetchAwardAuxData(season: string = "2025-26", prevSeason: string = "2024-25") {
     const cacheKey = `clutch-${season}`;
     if (this.clutchCache.has(cacheKey)) return this.clutchCache.get(cacheKey);
 
@@ -1597,20 +1604,31 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
         
         const benchUrl = `/leaguedashplayerstats?College=&Conference=&Country=&DateFrom=&DateTo=&Division=&DraftPick=&DraftYear=&GameScope=&GameSegment=&Height=&LastNGames=0&LeagueID=00&Location=&MeasureType=Base&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PaceAdjust=N&PerMode=Totals&Period=0&PlayerExperience=&PlayerPosition=&PlusMinus=N&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&StarterBench=Bench&TeamID=0&TwoWay=0&VsConference=&VsDivision=&Weight=`;
         
-        const [resRookies, prevPlayers, prevTeams] = await Promise.all([
-            fetchSafeJSON(rookieUrl).catch(() => null),
+        // 🚀 NUEVO: Promise.allSettled para que un error 500 no mate a los demás
+        const [rookiesSettled, prevPlayersSettled, prevTeamsSettled] = await Promise.allSettled([
+            fetchSafeJSON(rookieUrl),
             this.fetchAllOfficialPlayers(prevSeason),
             this.fetchAllOfficialTeams(prevSeason)
         ]);
 
+        const resRookies = rookiesSettled.status === 'fulfilled' ? rookiesSettled.value : null;
+        const prevPlayers = prevPlayersSettled.status === 'fulfilled' ? prevPlayersSettled.value : [];
+        const prevTeams = prevTeamsSettled.status === 'fulfilled' ? prevTeamsSettled.value : [];
+
         await new Promise(resolve => setTimeout(resolve, 800));
 
-        const [resBench, resClutchBase, resClutchAdv] = await Promise.all([
-            fetchSafeJSON(benchUrl).catch(() => null),
-            fetchSafeJSON(clutchUrlBase).catch(() => null),
-            fetchSafeJSON(clutchUrlAdv).catch(() => null)
+        // 🚀 NUEVO: Promise.allSettled para el Clutch y Banquillo
+        const [benchSettled, clutchBaseSettled, clutchAdvSettled] = await Promise.allSettled([
+            fetchSafeJSON(benchUrl),
+            fetchSafeJSON(clutchUrlBase),
+            fetchSafeJSON(clutchUrlAdv)
         ]);
 
+        const resBench = benchSettled.status === 'fulfilled' ? benchSettled.value : null;
+        const resClutchBase = clutchBaseSettled.status === 'fulfilled' ? clutchBaseSettled.value : null;
+        const resClutchAdv = clutchAdvSettled.status === 'fulfilled' ? clutchAdvSettled.value : null;
+
+        // ─── A PARTIR DE AQUÍ ES EXACTAMENTE TU CÓDIGO MATEMÁTICO ORIGINAL ───
         const prevPlayersMap = new Map<string, any>();
         if (prevPlayers && Array.isArray(prevPlayers)) {
             prevPlayers.forEach((p: any) => prevPlayersMap.set(p.id, p));

@@ -15,41 +15,75 @@ export default function NBADashboard() {
   const [players, setPlayers] = useState<any[]>([]);
   const [teams, setTeams] = useState<any[]>([]);
   const [liveGames, setLiveGames] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true); // ✅ RESTAURADO
+  const [dataError, setDataError] = useState<string | null>(null); // ✅ NUEVO
   const [activeTab, setActiveTab] = useState<"leaders" | "efficiency" | "playmaking" | "advanced" | "defense" | "teams">("leaders");
   const tickerRef = useRef<HTMLDivElement>(null);
 
   const { settings } = useSettings();
 
   useEffect(() => {
-    Promise.all([
-      nbaService.fetchAllOfficialPlayers(),
-      nbaService.fetchAllOfficialTeams()
-    ]).then(([playerData, teamData]) => {
-      const maxGP = Math.max(...playerData.map(p => p.stats?.gp || 0));
-      const requiredGP = Math.floor(maxGP * 0.7);
+    let isMounted = true;
+    
+    // Red de seguridad: 15 s máximo antes de salir del estado de carga
+    const safetyTimer = setTimeout(() => {
+      if (isMounted) {
+        setIsLoading(false);
+        setDataError('La carga tardó demasiado. Refresca la página.');
+      }
+    }, 15_000);
 
+    Promise.allSettled([
+      nbaService.fetchAllOfficialPlayers(),
+      nbaService.fetchAllOfficialTeams(),
+    ]).then(([playerResult, teamResult]) => {
+      if (!isMounted) return;
+      clearTimeout(safetyTimer);
+      
+      const playerData: any[] = playerResult.status === 'fulfilled' ? playerResult.value : [];
+      const teamData: any[]   = teamResult.status  === 'fulfilled' ? teamResult.value  : [];
+      
+      if (playerResult.status === 'rejected')
+        console.warn('[Dashboard] Players failed:', playerResult.reason);
+      if (teamResult.status === 'rejected')
+        console.warn('[Dashboard] Teams failed:', teamResult.reason);
+        
+      if (playerData.length === 0 && teamData.length === 0) {
+        setDataError('No se pudieron cargar los datos. Comprueba tu conexión.');
+        setIsLoading(false);
+        return;
+      }
+      
+      const maxGP      = Math.max(...playerData.map(p => p.stats?.gp || 0));
+      const requiredGP = Math.floor(maxGP * 0.7);
+      
       const playersWithAdv = playerData.map(p => {
-        const adv = nbaService.computeAllAdvanced(p);
-        const meetsMins = (p.stats?.mpg || 0) >= 20;
-        const meetsGP = (p.stats?.gp || 0) >= requiredGP;
-        const mpg = p.stats?.mpg || 1;
+        const adv         = nbaService.computeAllAdvanced(p);
+        const meetsMins   = (p.stats?.mpg || 0) >= 20;
+        const meetsGP     = (p.stats?.gp  || 0) >= requiredGP;
+        const mpg         = p.stats?.mpg || 1;
         const dash = {
           stocks36: (((p.stats?.spg || 0) + (p.stats?.bpg || 0)) / mpg) * 36,
-          stl36: ((p.stats?.spg || 0) / mpg) * 36,
-          blk36: ((p.stats?.bpg || 0) / mpg) * 36,
+          stl36:    ((p.stats?.spg || 0) / mpg) * 36,
+          blk36:    ((p.stats?.bpg || 0) / mpg) * 36,
         };
         return { ...p, adv, dash, qualifiesGeneral: meetsMins && meetsGP };
       });
-
+      
       setPlayers(playersWithAdv);
       setTeams(teamData);
       setIsLoading(false);
     });
 
-    nbaService.fetchLiveGames().then(games => {
-      if (games) setLiveGames(games);
-    });
+    // Live games: independiente, fallo silencioso aceptable
+    nbaService.fetchLiveGames()
+      .then(games => { if (isMounted && games) setLiveGames(games); })
+      .catch(() => { /* sin datos en vivo, no es crítico */ });
+
+    return () => {
+      isMounted = false;
+      clearTimeout(safetyTimer);
+    };
   }, []);
 
   const scrollTicker = (direction: 'left' | 'right') => {
@@ -59,6 +93,7 @@ export default function NBADashboard() {
     }
   };
 
+  // ✅ PANTALLA DE CARGA (RESTAURADA)
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[80vh] space-y-6 relative overflow-hidden">
@@ -68,6 +103,21 @@ export default function NBADashboard() {
         <div className="relative w-32 h-32 flex items-center justify-center">
           <Database className="h-8 w-8 text-cyan-400 animate-pulse relative z-10 drop-shadow-[0_0_10px_rgba(34,211,238,0.8)]" />
         </div>
+      </div>
+    );
+  }
+
+  // ✅ PANTALLA DE ERROR (NUEVA)
+  if (dataError) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[80vh] gap-4">
+        <div className="text-rose-400 font-black text-sm uppercase tracking-widest">{dataError}</div>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-6 py-3 bg-white/[0.05] border border-white/10 rounded-xl text-xs font-black uppercase tracking-widest text-white/60 hover:text-cyan-400 hover:border-cyan-400/30 transition-all"
+        >
+          Reintentar
+        </button>
       </div>
     );
   }
@@ -370,7 +420,6 @@ export default function NBADashboard() {
             {activeTab === "teams" && (
               <>
                 <LeaderboardPanel title="Net Rating" icon={TrendingUp} data={getTopTeams("netRtg")} metric="netRtg" type="team" linkType="ranking" colorClass="cyan" glowClass="group-hover:shadow-[0_0_20px_rgba(34,211,238,0.3)]" />
-                {/* 🚀 ARREGLO DE SOURCE AQUI */}
                 <LeaderboardPanel title="Clutch Net Rtg" icon={Flame} data={getTopTeams("clutchNetRtg", "clutch")} metric="clutchNetRtg" source="clutch" type="team" linkType="ranking" colorClass="rose" glowClass="group-hover:shadow-[0_0_20px_rgba(244,63,94,0.3)]" />
                 <LeaderboardPanel title="Opponent FG%" icon={ShieldAlert} data={getTopTeams("oppFgPct", "opp", true)} metric="oppFgPct" source="opp" type="team" linkType="ranking" colorClass="emerald" glowClass="group-hover:shadow-[0_0_20px_rgba(52,211,153,0.3)]" format="percent" />
                 <LeaderboardPanel title="AST to TO Ratio" icon={Brain} data={getTopTeams("astTo")} metric="astTo" type="team" linkType="ranking" colorClass="purple" glowClass="group-hover:shadow-[0_0_20px_rgba(168,85,247,0.3)]" />

@@ -31,7 +31,16 @@ export default function NBAAwardsTracker() {
 
     const loadData = async () => {
       try {
-        const [pData, tData, aux] = await Promise.all([
+        const EMPTY_AUX = {
+            rookies: new Set(),
+            clutchStats: new Map(),
+            benchStats: new Map(),
+            prevPlayers: new Map(),
+            prevTeams: new Map()
+        };
+
+        // Promise.allSettled: Un fallo no arrastra a los demás
+        const [pResult, tResult, auxResult] = await Promise.allSettled([
           nbaService.fetchAllOfficialPlayers(),
           nbaService.fetchAllOfficialTeams(),
           nbaService.fetchAwardAuxData()
@@ -39,9 +48,19 @@ export default function NBAAwardsTracker() {
         
         if (!isMounted) return;
 
+        const pData = pResult.status === 'fulfilled' ? pResult.value : [];
+        const tData = tResult.status === 'fulfilled' ? tResult.value : [];
+        const aux = auxResult.status === 'fulfilled' && auxResult.value ? auxResult.value : EMPTY_AUX;
+
+        if (pResult.status === 'rejected') console.warn('[AwardsTracker] Players load failed:', pResult.reason);
+        if (tResult.status === 'rejected') console.warn('[AwardsTracker] Teams load failed:', tResult.reason);
+        if (auxResult.status === 'rejected') console.warn('[AwardsTracker] Aux load failed:', auxResult.reason);
+
         setPlayers(pData || []);
         setTeams(tData || []);
-        setAuxData(aux || { rookies: new Set(), clutchStats: new Map(), benchStats: new Map(), prevPlayers: new Map(), prevTeams: new Map() });
+        setAuxData(aux);
+
+        // Opcional: si tuvieras un setError definido arriba, aquí podrías avisar si pData y tData están vacíos.
 
         const initialCoaches: Record<string, any> = {};
         (tData || []).forEach(t => {
@@ -51,6 +70,7 @@ export default function NBAAwardsTracker() {
         
         setLoading(false); 
 
+        // Carga secuencial de entrenadores
         if (tData && tData.length > 0) {
             for (let i = 0; i < tData.length; i += 2) {
                 if (!isMounted) break;
@@ -71,8 +91,8 @@ export default function NBAAwardsTracker() {
                 await new Promise(res => setTimeout(res, 1000)); 
             }
         }
-      } catch (error) {
-        console.error("AwardsTracker Load Error:", error);
+      } catch (err) {
+        console.error("AwardsTracker Load Error:", err);
         if (isMounted) setLoading(false);
       }
     };

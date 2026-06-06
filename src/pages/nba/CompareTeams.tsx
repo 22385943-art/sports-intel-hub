@@ -127,12 +127,34 @@ const TeamCombobox = ({ value, onChange, season, onSeasonChange, themeColor }: a
                   {isLoading ? (
                     <div className="flex flex-col items-center justify-center py-16 gap-4"><Loader2 className="animate-spin w-8 h-8" style={{ color: tColor }} /><span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 font-mono text-center px-4">Decrypting Archives</span></div>
                   ) : (
-                    filtered.map((t, i) => (
-                      <motion.div key={t.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: Math.min(i * 0.02, 0.3) }} onClick={() => { onChange(t.id, t); setOpen(false); setSearch(""); }} className="p-4 flex items-center gap-4 cursor-pointer transition-colors duration-200 mx-2 my-1 rounded-xl border-l-2 border-transparent" style={{ backgroundColor: value === t.id ? hexToRgba(tColor, 0.1) : 'transparent', borderLeftColor: value === t.id ? tColor : 'transparent' }}>
-                        <Avatar className="h-11 w-11 border border-white/[0.1] bg-[#030712] shadow-lg"><AvatarImage src={t.imageUrl} className="object-contain p-1" /><AvatarFallback>{t.abbreviation}</AvatarFallback></Avatar>
-                        <div className="flex flex-col"><span className="text-sm font-black tracking-tight text-foreground">{t.name}</span><span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.25em] font-mono">{t.conference}</span></div>
-                      </motion.div>
-                    ))
+                    // ✅ AQUI APLICAMOS EL FIX D DE CLAUDE (Contenedor general animado)
+                    <motion.div
+                      key={search}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.12 }}
+                    >
+                      {filtered.map((t) => (
+                        <div
+                          key={t.id}
+                          onClick={() => { onChange(t.id, t); setOpen(false); setSearch(""); }}
+                          className="p-4 flex items-center gap-4 cursor-pointer transition-colors duration-200 mx-2 my-1 rounded-xl border-l-2 border-transparent"
+                          style={{
+                            backgroundColor: value === t.id ? hexToRgba(tColor, 0.1) : 'transparent',
+                            borderLeftColor: value === t.id ? tColor : 'transparent',
+                          }}
+                        >
+                          <Avatar className="h-11 w-11 border border-white/[0.1] bg-[#030712] shadow-lg">
+                            <AvatarImage src={t.imageUrl} className="object-contain p-1" />
+                            <AvatarFallback>{t.abbreviation}</AvatarFallback>
+                          </Avatar>
+                          <div className="flex flex-col">
+                            <span className="text-sm font-black tracking-tight text-foreground">{t.name}</span>
+                            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.25em] font-mono">{t.conference}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </motion.div>
                   )}
                 </div>
               </motion.div>
