@@ -1,7 +1,7 @@
 {
   "metadata": {
     "season": "2025-26",
-    "generatedAt": "2026-06-10T20:23:20.743Z",
+    "generatedAt": "2026-06-11T10:14:57.995Z",
     "playerCount": 582,
     "teamCount": 30,
     "source": "nba-stats-api + basketball-reference"
@@ -3693,7 +3693,7 @@
       "pctPtsOffTov": 15.6,
       "pctPtsPitp": 50,
       "boxOuts": 5.8,
-      "looseBalls": 4.12,
+      "looseBalls": 4.13,
       "imageUrl": "https://a.espncdn.com/i/teamlogos/nba/500/no.png",
       "opp": {
         "oppFgPct": 47.7,
