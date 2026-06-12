@@ -116,6 +116,17 @@ const getArchetype = (p: any) => {
   return { label: "Rotation Player", icon: Activity, color: "text-slate-400 bg-white/5 border-white/10" };
 };
 
+// 🚀 Helper para renderizar filas de datos elegantes sin ocupar espacio
+const StatRow = ({ label, val, highlight = false, valueColor = "" }: { label: string, val: string | number, highlight?: boolean, valueColor?: string }) => (
+  <div className="flex justify-between items-center py-2.5 border-b border-white/[0.03] last:border-0 group">
+    <span className="text-[10px] font-black uppercase tracking-widest text-[#666] group-hover:text-[#999] transition-colors">{label}</span>
+    <span className={`text-[12px] md:text-sm font-mono font-black ${valueColor ? valueColor : (highlight ? 'text-white' : 'text-[#aaa]')}`}>{val}</span>
+  </div>
+);
+
+// Helper para poner el % sin fallos
+const fPct = (val: string | number) => val !== "-" ? `${val}%` : "-";
+
 export default function NBAPlayerProfile() {
   const { id } = useParams();
   const { sport } = useSport();
@@ -127,6 +138,7 @@ export default function NBAPlayerProfile() {
   const [allPlayers, setAllPlayers] = useState<NBAPlayer[]>([]);
   const [allTeams, setAllTeams] = useState<any[]>([]);
   const [bio, setBio] = useState<any>(null);
+  const [careerStats, setCareerStats] = useState<any>(null);
   const [onOffSwing, setOnOffSwing] = useState<number | null>(null); 
   const [accolades, setAccolades] = useState<any[]>([]); 
   const [shots, setShots] = useState<any[]>([]); 
@@ -134,7 +146,10 @@ export default function NBAPlayerProfile() {
   
   const [isBaseLoading, setIsBaseLoading] = useState(true);
   const [isDeepDataLoading, setIsDeepDataLoading] = useState(true);
+  
   const [activeTab, setActiveTab] = useState<"stats" | "analytics" | "shotchart" | "accolades" | "splits">("stats");
+  const [statsView, setStatsView] = useState<"season" | "career">("season");
+  const [boxScoreSubTab, setBoxScoreSubTab] = useState<"overview" | "scoring" | "playmaking" | "defense">("overview");
 
   const { toggleFavorite, isFavorite } = useFavorites();
   const isFav = player ? isFavorite(player.id, 'player') : false;
@@ -164,7 +179,8 @@ export default function NBAPlayerProfile() {
         const numericTeamId = teams.find(t => t.abbreviation === foundPlayer.teamId)?.id;
 
         const bioFetch = fetch(`/nba-api/commonplayerinfo?PlayerID=${id}`).then(res => res.json()).catch(() => null);
-        
+        const careerFetch = fetch(`/nba-api/playercareerstats?PerMode=PerGame&PlayerID=${id}`).then(res => res.json()).catch(() => null);
+
         let onOffFetch = Promise.resolve(null);
         if (numericTeamId && numericTeamId !== "FA") {
           onOffFetch = fetch(`/nba-api/teamplayeronoffdetails?DateFrom=&DateTo=&GameSegment=&LastNGames=0&LeagueID=00&Location=&MeasureType=Advanced&Month=0&OpponentTeamID=0&Outcome=&PaceAdjust=N&PerMode=PerGame&Period=0&PlusMinus=N&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&TeamID=${numericTeamId}&VsConference=&VsDivision=`).then(res => res.json()).catch(() => null);
@@ -174,7 +190,7 @@ export default function NBAPlayerProfile() {
         const shotsFetch = nbaService.getPlayerShotChart(id, season); 
         const gameLogFetch = nbaService.getPlayerGameLog(id, season);
 
-        Promise.all([bioFetch, onOffFetch, awardsFetch, shotsFetch, gameLogFetch]).then(([bioData, onOffData, awardsData, shotData, logData]) => {
+        Promise.all([bioFetch, onOffFetch, awardsFetch, shotsFetch, gameLogFetch, careerFetch]).then(([bioData, onOffData, awardsData, shotData, logData, careerData]) => {
           if (bioData) {
             try {
               const info = bioData.resultSets[0];
@@ -187,6 +203,30 @@ export default function NBAPlayerProfile() {
                 school: row[h.indexOf('SCHOOL')] || row[h.indexOf('COUNTRY')],
                 jersey: row[h.indexOf('JERSEY')], pos: row[h.indexOf('POSITION')]
               });
+            } catch (e) { console.error(e); }
+          }
+
+          if (careerData) {
+            try {
+              const careerSet = careerData.resultSets.find((rs:any) => rs.name === "CareerTotalsRegularSeason");
+              if (careerSet && careerSet.rowSet.length > 0) {
+                const h = careerSet.headers;
+                const r = careerSet.rowSet[0];
+                setCareerStats({
+                  gp: r[h.indexOf('GP')], mpg: r[h.indexOf('MIN')],
+                  ppg: r[h.indexOf('PTS')], rpg: r[h.indexOf('REB')],
+                  apg: r[h.indexOf('AST')], spg: r[h.indexOf('STL')],
+                  bpg: r[h.indexOf('BLK')], topg: r[h.indexOf('TOV')],
+                  fgPct: r[h.indexOf('FG_PCT')] * 100,
+                  threePct: r[h.indexOf('FG3_PCT')] * 100,
+                  ftPct: r[h.indexOf('FT_PCT')] * 100,
+                  fgm: r[h.indexOf('FGM')], fga: r[h.indexOf('FGA')],
+                  fg3m: r[h.indexOf('FG3M')], fg3a: r[h.indexOf('FG3A')],
+                  ftm: r[h.indexOf('FTM')], fta: r[h.indexOf('FTA')],
+                  oreb: r[h.indexOf('OREB')], dreb: r[h.indexOf('DREB')],
+                  pf: r[h.indexOf('PF')]
+                });
+              }
             } catch (e) { console.error(e); }
           }
 
@@ -293,23 +333,28 @@ export default function NBAPlayerProfile() {
 
   const s = player.stats;
   const a = player.adv || { ts: 0, usg: 0, pie: 0, per: 15 };
-  
-  // Generamos el arquetipo de forma dinámica en base a percentiles
   const archetype = getArchetype(player);
   
-  // 🚀 FALLBACK PARA LOS 4 PILARES EN EL PERFIL
   const rating = (player as any).rating || { 
       ovr: 75, tier: "Bronze", color: "#cd7f32",
       pillars: {
           sco: { grade: "-", pct: 0, raw: "-", label: "SCORE" },
           reb: { grade: "-", pct: 0, raw: "-", label: "REB" },
           ply: { grade: "-", pct: 0, raw: "-", label: "PLAY" },
-          def: { grade: "-", pct: 0, raw: "-", label: "STOCKS" } // Clave adaptada a def
+          def: { grade: "-", pct: 0, raw: "-", label: "STOCKS" }
       }
   };
 
-  const logoUrl = nbaService.getTeamLogoUrl(player.teamId);
-  const themeColor = TEAM_COLORS[player.teamId] || rating.color; 
+  const actualTeam = allTeams.find(t => 
+    String(t.id) === String(player.teamId) || 
+    t.abbreviation === player.teamId || 
+    t.name === player.teamName
+  );
+  const displayTeamName = actualTeam ? actualTeam.name : player.teamName;
+  const teamAbbr = actualTeam ? actualTeam.abbreviation : player.teamId;
+
+  const logoUrl = actualTeam ? nbaService.getTeamLogoUrl(actualTeam.abbreviation) : nbaService.getTeamLogoUrl(player.teamId);
+  const themeColor = TEAM_COLORS[teamAbbr] || rating.color; 
 
   const fName = bio?.firstName || player.name.split(" ")[0];
   const lName = bio?.lastName || player.name.split(" ").slice(1).join(" ");
@@ -320,6 +365,62 @@ export default function NBAPlayerProfile() {
   const netRtg = (player.stats as any).netRtg || 0;
   const oRtg = (dRtg + netRtg).toFixed(1);
   const swingDisplay = onOffSwing !== null ? (onOffSwing > 0 ? `+${onOffSwing.toFixed(1)}` : onOffSwing.toFixed(1)) : "N/A";
+
+  const teamGames = actualTeam ? ((actualTeam.wins || 0) + (actualTeam.losses || 0)) : 82;
+  const maxGames = teamGames > 0 ? teamGames : 82; 
+  const gp = s.gp || 0;
+  const availabilityPct = gp / maxGames;
+
+  let durability;
+  if (gp === 0) {
+    durability = { label: "INACTIVE / DNP", dot: "⚫", color: "text-slate-400 border-slate-400/30 bg-slate-400/10" };
+  } else if (availabilityPct < 0.40) {
+    durability = { label: "LIMITED ROLE", dot: "🟡", color: "text-amber-400 border-amber-400/30 bg-amber-400/10" };
+  } else {
+    durability = { label: "ACTIVE", dot: "🟢", color: "text-emerald-400 border-emerald-400/30 bg-emerald-400/10" };
+  }
+
+  // 🚀 CONSTRUCCIÓN DEL OBJETO DE DATOS
+  const actStats = statsView === "season" ? s : (careerStats || {});
+  const actAdv = statsView === "season" ? a : {};
+  
+  const getS = (key: string, dec = 1) => actStats[key] !== undefined ? Number(actStats[key]).toFixed(dec) : "-";
+  const getA = (key: string, dec = 1) => actAdv[key] !== undefined ? Number(actAdv[key]).toFixed(dec) : "-";
+
+  const uiData = {
+    // Basic
+    min: getS('mpg'), pts: getS('ppg'), reb: getS('rpg'), ast: getS('apg'), 
+    stl: getS('spg'), blk: getS('bpg'), tov: getS('topg'),
+    fgp: getS('fgPct'), fg3p: getS('threePct'), ftp: getS('ftPct'),
+    plusMinus: actStats.plusMinus ? (actStats.plusMinus > 0 ? `+${getS('plusMinus')}` : getS('plusMinus')) : "-",
+    pf: getS('pf'),
+    
+    // Scoring & Shooting (Splits)
+    fgm: getS('fgm'), fga: getS('fga'),
+    fg3m: getS('fg3m'), fg3a: getS('fg3a'),
+    ftm: getS('ftm'), fta: getS('fta'),
+    // Advanced Scoring 
+    ts: getA('ts'), efg: getA('efg'),
+    ftr: getA('ftr', 3), usg: getA('usg'),
+    
+    // Playmaking & Glass
+    astTov: actStats.topg ? (Number(actStats.apg) / Number(actStats.topg)).toFixed(2) : "-",
+    oreb: getS('oreb'), dreb: getS('dreb'),
+    astPct: getA('astPct'),
+    
+    // Defense
+    defRtg: getA('defRtg'),
+    stlPct: getA('stlPct'),
+    blkPct: getA('blkPct'),
+    drbPct: getA('drbPct'),
+    dws: getA('dws'),
+    
+    // 🚧 TRACKING PLACEHOLDERS
+    p2m: "-", p2a: "-", p2pct: "-",
+    ptsAst: "-", passes: "-", secAst: "-", rimAst: "-", fg3Ast: "-", passToAstPct: "-", 
+    fgAllowed: "-", contested: "-", contested3: "-", charges: "-", looseBalls: "-", deflections: "-",
+    pctAst2: "-", pctAst3: "-", pctUast: "-"
+  };
 
   return (
     <div className="space-y-8 pb-16 animate-in fade-in duration-500 max-w-5xl mx-auto px-4">
@@ -349,8 +450,6 @@ export default function NBAPlayerProfile() {
           </div>
 
           <div className="w-full md:w-7/12 p-8 md:p-12 flex flex-col justify-center bg-[#1a1a1a]/70 backdrop-blur-md relative">
-            
-            {/* 🚀 OVR RATING EN EL PERFIL */}
             <div className="absolute top-8 right-8 flex flex-col items-center">
                 <div className="relative flex items-center justify-center w-24 h-24 hover:scale-105 transition-transform">
                   <Hexagon className="absolute inset-0 w-full h-full drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]" style={{ color: rating.color, fill: `${rating.color}20`, strokeWidth: 1.5 }} />
@@ -366,20 +465,18 @@ export default function NBAPlayerProfile() {
               <h1 className="text-white text-4xl md:text-5xl font-bold uppercase tracking-tight leading-none">{lName}</h1>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3 mb-8">
+            <div className="flex flex-wrap items-center gap-2 mb-8">
               <div className="h-6 w-6 bg-white rounded-full flex items-center justify-center p-1 shadow-[0_0_15px_rgba(255,255,255,0.1)]">
-                <img src={logoUrl} alt={player.teamId} className="w-full h-full object-contain" />
+                <img src={logoUrl} alt={teamAbbr} className="w-full h-full object-contain" />
               </div>
-              <span className="text-sm font-bold text-[#d0d0d0]">{player.teamName}</span>
-              <span className="text-[#666] font-black mb-1">•</span>
+              <span className="text-sm font-bold text-[#d0d0d0] ml-1">{displayTeamName}</span>
+              <span className="text-[#666] font-black mx-1">•</span>
               <span className="text-sm font-bold text-[#d0d0d0]">{position} {jersey}</span>
               
-              {/* 🚀 TIER BADGE */}
               <Badge className="ml-2 font-black uppercase tracking-widest text-[9px] border px-2 py-0.5" style={{ backgroundColor: `${rating.color}20`, color: rating.color, borderColor: `${rating.color}50` }}>
                  {rating.tier} TIER
               </Badge>
 
-              {/* 🚀 ARCHETYPE BADGE */}
               {archetype && (
                 <Badge className={`ml-1 font-black uppercase tracking-widest text-[9px] border px-2 py-0.5 flex items-center gap-1 ${archetype.color}`}>
                   <archetype.icon className="h-3 w-3" />
@@ -403,8 +500,7 @@ export default function NBAPlayerProfile() {
               </div>
               <div className="grid grid-cols-[100px_1fr] items-center">
                 <span className="text-xs font-bold text-[#777] uppercase tracking-wider">Season</span>
-                <span className="text-sm font-bold text-white flex items-center gap-2">
-                   {/* 🚀 SELECTOR DE TEMPORADA EN EL PERFIL */}
+                <span className="text-sm font-bold text-white flex items-center gap-3">
                    <div className="relative inline-flex">
                       <CalendarDays className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-white/50" />
                       <select
@@ -417,6 +513,9 @@ export default function NBAPlayerProfile() {
                         ))}
                       </select>
                     </div>
+                    <Badge className={`font-black uppercase tracking-widest text-[9px] border px-2 py-1 flex items-center gap-1.5 shadow-sm ${durability.color}`}>
+                       <span>{durability.dot}</span> {durability.label}
+                    </Badge>
                 </span>
               </div>
             </div>
@@ -424,7 +523,7 @@ export default function NBAPlayerProfile() {
             <button 
               onClick={() => toggleFavorite({
                 id: player.id, type: 'player', name: player.name, 
-                subtitle: player.teamId, imageUrl: player.imageUrl, url: `/nba/players/${player.id}?season=${season}`
+                subtitle: teamAbbr, imageUrl: player.imageUrl, url: `/nba/players/${player.id}?season=${season}`
               })}
               className="w-40 font-bold py-2.5 rounded-full transition-all shadow-[0_0_15px_rgba(0,0,0,0.3)] hover:brightness-110 hover:scale-105 flex items-center justify-center gap-2"
               style={{ 
@@ -436,7 +535,6 @@ export default function NBAPlayerProfile() {
               <Star className={`w-4 h-4 ${isFav ? 'fill-current' : ''}`} />
               {isFav ? 'Following' : 'Follow'}
             </button>
-
           </div>
         </div>
 
@@ -447,35 +545,34 @@ export default function NBAPlayerProfile() {
           <div className="grid grid-cols-4 py-4 md:py-5 px-4 divide-x divide-[#2a2a2a]">
             <div className="flex flex-col items-center">
               <span className="text-[10px] font-bold text-[#888] uppercase tracking-widest mb-1">PTS</span>
-              <span className="text-2xl md:text-3xl font-bold text-white leading-none">{s.ppg.toFixed(1)}</span>
+              <span className="text-2xl md:text-3xl font-bold text-white leading-none">{s.ppg?.toFixed(1)}</span>
               <span className="text-[8px] font-black uppercase tracking-widest mt-1.5" style={{ color: themeColor }}>{getRank("ppg")}</span>
             </div>
             <div className="flex flex-col items-center">
               <span className="text-[10px] font-bold text-[#888] uppercase tracking-widest mb-1">REB</span>
-              <span className="text-2xl md:text-3xl font-bold text-white leading-none">{s.rpg.toFixed(1)}</span>
+              <span className="text-2xl md:text-3xl font-bold text-white leading-none">{s.rpg?.toFixed(1)}</span>
               <span className="text-[8px] font-black uppercase tracking-widest mt-1.5" style={{ color: themeColor }}>{getRank("rpg")}</span>
             </div>
             <div className="flex flex-col items-center">
               <span className="text-[10px] font-bold text-[#888] uppercase tracking-widest mb-1">AST</span>
-              <span className="text-2xl md:text-3xl font-bold text-white leading-none">{s.apg.toFixed(1)}</span>
+              <span className="text-2xl md:text-3xl font-bold text-white leading-none">{s.apg?.toFixed(1)}</span>
               <span className="text-[8px] font-black uppercase tracking-widest mt-1.5" style={{ color: themeColor }}>{getRank("apg")}</span>
             </div>
             <div className="flex flex-col items-center">
               <span className="text-[10px] font-bold text-[#888] uppercase tracking-widest mb-1">FG%</span>
-              <span className="text-2xl md:text-3xl font-bold text-white leading-none">{s.fgPct.toFixed(1)}</span>
+              <span className="text-2xl md:text-3xl font-bold text-white leading-none">{s.fgPct?.toFixed(1)}</span>
               <span className="text-[8px] font-black uppercase tracking-widest mt-1.5" style={{ color: themeColor }}>{getRank("fgPct")}</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 🚀 LOS 4 PILARES EN EL PERFIL */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
             { id: "sco", title: rating.pillars?.sco?.label || "SCORE", p: rating.pillars?.sco },
             { id: "reb", title: rating.pillars?.reb?.label || "REB", p: rating.pillars?.reb },
             { id: "ply", title: rating.pillars?.ply?.label || "PLAY", p: rating.pillars?.ply },
-            { id: "def", title: rating.pillars?.def?.label || "STOCKS", p: rating.pillars?.def }, // Dinámico (DEF o STOCKS)
+            { id: "def", title: rating.pillars?.def?.label || "STOCKS", p: rating.pillars?.def },
         ].map((attr, i) => (
             <div key={i} className="bg-[#1a1a1a] border border-white/5 rounded-2xl p-4 flex flex-col items-center justify-center shadow-lg relative overflow-hidden group">
                 <div className="absolute inset-0 opacity-[0.03] bg-gradient-to-t from-transparent to-current" style={{ color: rating.color }} />
@@ -496,10 +593,9 @@ export default function NBAPlayerProfile() {
         ))}
       </div>
 
-      {/* 🚀 TABS SECUNDARIAS */}
       <div className="flex flex-wrap justify-center lg:justify-start items-center gap-2 bg-[#0a0f18] p-2 rounded-2xl border border-white/5 w-fit mx-auto lg:mx-0 mt-8 shadow-xl">
         <button onClick={() => setActiveTab("stats")} className={`px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === "stats" ? 'text-white' : 'text-slate-500 hover:text-white'}`} style={{ backgroundColor: activeTab === "stats" ? `${themeColor}30` : 'transparent', borderColor: activeTab === "stats" ? `${themeColor}50` : 'transparent', borderWidth: '1px' }}>
-          <BarChart3 className="h-4 w-4" style={{ color: activeTab === "stats" ? themeColor : '' }} /> Box Score
+          <BarChart3 className="h-4 w-4" style={{ color: activeTab === "stats" ? themeColor : '' }} /> Data Terminal
         </button>
         <button onClick={() => setActiveTab("analytics")} className={`px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === "analytics" ? 'text-white' : 'text-slate-500 hover:text-white'}`} style={{ backgroundColor: activeTab === "analytics" ? `${themeColor}30` : 'transparent', borderColor: activeTab === "analytics" ? `${themeColor}50` : 'transparent', borderWidth: '1px' }}>
           <Activity className="h-4 w-4" style={{ color: activeTab === "analytics" ? themeColor : '' }} /> Analytics
@@ -517,25 +613,168 @@ export default function NBAPlayerProfile() {
 
       <div className="animate-in slide-in-from-bottom-4 duration-500 relative z-10">
         
+        {/* 🚀 TERMINAL DE DATOS AVANZADO (GM LEVEL) */}
         {activeTab === "stats" && (
-          <div className="bg-[#1a1a1a] border border-white/5 rounded-[2rem] p-8 shadow-2xl">
-            <h3 className="text-lg font-black uppercase tracking-[0.2em] text-white flex items-center gap-3 mb-8">
-              <BarChart3 className="h-5 w-5" style={{ color: themeColor }} /> Regular Season Totals & Averages
-            </h3>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
-              {[
-                { label: "MIN", val: s.mpg }, { label: "PTS", val: s.ppg.toFixed(1) }, { label: "REB", val: s.rpg.toFixed(1) }, { label: "AST", val: s.apg.toFixed(1) }, { label: "STL", val: s.spg },
-                { label: "BLK", val: s.bpg }, { label: "TOV", val: s.topg }, { label: "FG%", val: s.fgPct, suf: "%" }, { label: "3PT%", val: s.threePct, suf: "%" }, { label: "FT%", val: s.ftPct, suf: "%" },
-              ].map((stat, i) => (
-                <div key={i} className="flex flex-col bg-[#111] border border-white/5 p-4 rounded-2xl items-center text-center hover:border-white/10 transition-colors shadow-inner">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-[#777] mb-2">{stat.label}</span>
-                  <span className="text-2xl font-mono font-bold text-white">{stat.val}{stat.suf}</span>
-                </div>
-              ))}
+          <div className="bg-[#1a1a1a] border border-white/5 rounded-[2rem] p-6 shadow-2xl transition-all duration-500">
+            
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4 border-b border-white/5 pb-6">
+              <h3 className="text-[12px] md:text-[14px] font-black uppercase tracking-[0.2em] text-white flex items-center gap-3">
+                <BarChart3 className="h-4 w-4" style={{ color: themeColor }} /> 
+                {statsView === "season" ? `${season} Profile` : 'Career Profile'}
+                <span className="text-[#888] text-[10px] tracking-widest ml-1">
+                  ({statsView === "season" ? (s.gp || 0) : (careerStats?.gp || 0)} GP)
+                </span>
+              </h3>
+
+              <div className="flex bg-black/40 p-1 rounded-xl border border-white/10 shadow-inner">
+                <button onClick={() => setStatsView("season")} className={`px-6 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${statsView === "season" ? 'bg-white/10 text-white shadow-md' : 'text-slate-500 hover:text-white'}`}>Season</button>
+                <button onClick={() => setStatsView("career")} className={`px-6 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${statsView === "career" ? 'bg-white/10 text-white shadow-md' : 'text-slate-500 hover:text-white'}`}>Career</button>
+              </div>
             </div>
+
+            <div className="flex flex-wrap gap-2 mb-6">
+               {[
+                 { id: "overview", label: "Overview", icon: <BarChart3 className="w-3 h-3" /> },
+                 { id: "scoring", label: "Scoring", icon: <Target className="w-3 h-3" /> },
+                 { id: "playmaking", label: "Playmaking", icon: <Brain className="w-3 h-3" /> },
+                 { id: "defense", label: "Defense & Hustle", icon: <Shield className="w-3 h-3" /> }
+               ].map(tab => (
+                 <button key={tab.id} onClick={() => setBoxScoreSubTab(tab.id as any)}
+                   className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-1.5 ${boxScoreSubTab === tab.id ? 'text-white shadow-md' : 'text-slate-500 hover:text-white bg-[#111] border border-white/5'}`}
+                   style={{ backgroundColor: boxScoreSubTab === tab.id ? `${themeColor}40` : '', border: boxScoreSubTab === tab.id ? `1px solid ${themeColor}` : '' }}
+                 >
+                   {tab.icon} {tab.label}
+                 </button>
+               ))}
+            </div>
+
+            {/* TAB: OVERVIEW (Unificada en una sola fila premium) */}
+            {boxScoreSubTab === "overview" && (
+                <div className="bg-[#111] p-5 md:p-6 rounded-2xl border border-white/5 shadow-inner animate-in fade-in slide-in-from-bottom-2 duration-300">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-1">
+                        <div className="flex flex-col">
+                            <StatRow label="Minutes (MIN)" val={uiData.min} />
+                            <StatRow label="Points (PTS)" val={uiData.pts} highlight />
+                            <StatRow label="Rebounds (REB)" val={uiData.reb} highlight />
+                            <StatRow label="Assists (AST)" val={uiData.ast} highlight />
+                        </div>
+                        <div className="flex flex-col">
+                            <StatRow label="Field Goal %" val={fPct(uiData.fgp)} />
+                            <StatRow label="3-Point %" val={fPct(uiData.fg3p)} />
+                            <StatRow label="Free Throw %" val={fPct(uiData.ftp)} />
+                            <StatRow label="Plus / Minus (+/-)" val={uiData.plusMinus} valueColor={uiData.plusMinus.includes('+') ? 'text-emerald-400' : (uiData.plusMinus.includes('-') && uiData.plusMinus !== '-' ? 'text-rose-400' : 'text-[#999]')} />
+                        </div>
+                        <div className="flex flex-col">
+                            <StatRow label="Steals (STL)" val={uiData.stl} />
+                            <StatRow label="Blocks (BLK)" val={uiData.blk} />
+                            <StatRow label="Turnovers (TOV)" val={uiData.tov} />
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* TAB: SCORING */}
+            {boxScoreSubTab === "scoring" && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                  <div className="bg-[#111] p-5 rounded-2xl border border-white/5 shadow-inner">
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#888] mb-4 flex items-center gap-2"><Target className="w-3 h-3 text-rose-400"/> Volume & Splits</h4>
+                    <StatRow label="Points Per Game" val={uiData.pts} highlight />
+                    <StatRow label="Usage Rate (USG%)" val={fPct(uiData.usg)} highlight />
+                    <StatRow label="Free Throw Rate (FTr)" val={uiData.ftr} />
+                    <StatRow label="2PT FGM / FGA" val={`${uiData.p2m} - ${uiData.p2a}`} />
+                    <StatRow label="2PT FG%" val={fPct(uiData.p2pct)} />
+                    <StatRow label="3PT FGM / FGA" val={`${uiData.fg3m} - ${uiData.fg3a}`} />
+                    <StatRow label="3PT FG%" val={fPct(uiData.fg3p)} />
+                    <StatRow label="FTM / FTA" val={`${uiData.ftm} - ${uiData.fta}`} />
+                    <StatRow label="Free Throw %" val={fPct(uiData.ftp)} />
+                  </div>
+                  <div className="bg-[#111] p-5 rounded-2xl border border-white/5 shadow-inner">
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#888] mb-4 flex items-center gap-2"><Activity className="w-3 h-3 text-cyan-400"/> Advanced Efficiency</h4>
+                    <StatRow label="True Shooting (TS%)" val={fPct(uiData.ts)} highlight />
+                    <StatRow label="Effective FG (eFG%)" val={fPct(uiData.efg)} />
+                    <div className="mt-6 pt-4 border-t border-white/5">
+                        <span className="text-[9px] font-black uppercase tracking-widest text-[#555] block mb-2">Shot Distances</span>
+                        <div className="text-center text-[#777] text-[10px] font-bold py-2 bg-white/5 rounded-lg">Awaiting Tracking Data...</div>
+                    </div>
+                  </div>
+                  <div className="bg-[#111] p-5 rounded-2xl border border-white/5 shadow-inner">
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#888] mb-4 flex items-center gap-2"><Zap className="w-3 h-3 text-amber-400"/> Shot Creation</h4>
+                    <StatRow label="% 2PT Assisted" val={fPct(uiData.pctAst2)} />
+                    <StatRow label="% 3PT Assisted" val={fPct(uiData.pctAst3)} />
+                    <StatRow label="% Total Unassisted" val={fPct(uiData.pctUast)} highlight />
+                    <div className="mt-4 p-3 bg-black/50 border border-white/5 rounded-xl text-center">
+                        <span className="block text-[8px] font-black uppercase tracking-widest text-slate-500 mb-1">Scoring Archetype Status</span>
+                        <span className="text-xs font-bold text-amber-400">{uiData.usg !== "-" && Number(uiData.usg) > 25 ? "High Volume Scorer" : "Role / System Scorer"}</span>
+                    </div>
+                  </div>
+                </div>
+            )}
+
+            {/* TAB: PLAYMAKING */}
+            {boxScoreSubTab === "playmaking" && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                  <div className="bg-[#111] p-5 rounded-2xl border border-white/5 shadow-inner">
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#888] mb-4 flex items-center gap-2"><Brain className="w-3 h-3 text-purple-400"/> Core Distribution</h4>
+                    <StatRow label="Assists (AST)" val={uiData.ast} highlight />
+                    <StatRow label="Turnovers (TOV)" val={uiData.tov} />
+                    <StatRow label="AST / TO Ratio" val={uiData.astTov} highlight />
+                    <StatRow label="Assist % (AST%)" val={fPct(uiData.astPct)} />
+                  </div>
+                  <div className="bg-[#111] p-5 rounded-2xl border border-white/5 shadow-inner">
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#888] mb-4 flex items-center gap-2"><Target className="w-3 h-3 text-cyan-400"/> Value Created (Tracking)</h4>
+                    <StatRow label="PTS Created by AST" val={uiData.ptsAst} highlight />
+                    <StatRow label="Potential Assists" val={uiData.passes} />
+                    <StatRow label="Secondary Assists" val={uiData.secAst} />
+                    <StatRow label="Rim Assists" val={uiData.rimAst} />
+                    <StatRow label="3PT Assists" val={uiData.fg3Ast} />
+                  </div>
+                  <div className="bg-[#111] p-5 rounded-2xl border border-white/5 shadow-inner">
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#888] mb-4 flex items-center gap-2"><Activity className="w-3 h-3 text-blue-400"/> Flow Metrics</h4>
+                    <StatRow label="Total Passes Made" val={uiData.passes} />
+                    <StatRow label="Pass to Assist %" val={fPct(uiData.passToAstPct)} />
+                    <div className="mt-8 p-3 bg-black/50 border border-white/5 rounded-xl text-center">
+                        <span className="block text-[8px] font-black uppercase tracking-widest text-slate-500 mb-1">Playmaking Role</span>
+                        <span className="text-xs font-bold text-purple-400">{uiData.astPct !== "-" && Number(uiData.astPct) > 20 ? "Primary Facilitator" : "Connector / Finisher"}</span>
+                    </div>
+                  </div>
+                </div>
+            )}
+
+            {/* TAB: DEFENSE & HUSTLE */}
+            {boxScoreSubTab === "defense" && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                  <div className="bg-[#111] p-5 rounded-2xl border border-white/5 shadow-inner">
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#888] mb-4 flex items-center gap-2"><Shield className="w-3 h-3 text-emerald-400"/> Impact Metrics</h4>
+                    <StatRow label="Defensive Rating" val={uiData.defRtg} highlight />
+                    <StatRow label="Defensive Win Shares" val={uiData.dws} />
+                    <StatRow label="Steal % (STL%)" val={fPct(uiData.stlPct)} />
+                    <StatRow label="Block % (BLK%)" val={fPct(uiData.blkPct)} />
+                    <StatRow label="Def Rebound % (DRB%)" val={fPct(uiData.drbPct)} />
+                    <StatRow label="Personal Fouls (PF)" val={uiData.pf} />
+                    <StatRow label="Plus / Minus (+/-)" val={uiData.plusMinus} valueColor={uiData.plusMinus.includes('+') ? 'text-emerald-400' : (uiData.plusMinus.includes('-') && uiData.plusMinus !== '-' ? 'text-rose-400' : 'text-[#999]')} />
+                  </div>
+                  <div className="bg-[#111] p-5 rounded-2xl border border-white/5 shadow-inner">
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#888] mb-4 flex items-center gap-2"><Target className="w-3 h-3 text-rose-400"/> Shot Defense</h4>
+                    <StatRow label="Steals (STL)" val={uiData.stl} highlight />
+                    <StatRow label="Blocks (BLK)" val={uiData.blk} highlight />
+                    <StatRow label="FG% Allowed" val={fPct(uiData.fgAllowed)} />
+                    <StatRow label="Contested Shots" val={uiData.contested} />
+                    <StatRow label="Contested 3PT" val={uiData.contested3} />
+                  </div>
+                  <div className="bg-[#111] p-5 rounded-2xl border border-white/5 shadow-inner">
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#888] mb-4 flex items-center gap-2"><Activity className="w-3 h-3 text-amber-400"/> Hustle & Effort</h4>
+                    <StatRow label="Defensive Rebounds" val={uiData.dreb} highlight />
+                    <StatRow label="Deflections" val={uiData.deflections} />
+                    <StatRow label="Loose Balls Recovered" val={uiData.looseBalls} />
+                    <StatRow label="Charges Drawn" val={uiData.charges} />
+                  </div>
+                </div>
+            )}
           </div>
         )}
 
+        {/* ... (El resto de pestañas Analytics, ShotChart, Accolades, Splits siguen igual) ... */}
+        
         {activeTab === "analytics" && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="bg-[#1a1a1a] border border-white/5 rounded-[2rem] p-6 shadow-2xl relative overflow-hidden">
