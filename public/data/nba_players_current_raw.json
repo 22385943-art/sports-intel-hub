@@ -273,9 +273,9 @@
       "ptsFb": 1.3608247422680413,
       "twoPA": 0.9896907216494855,
       "deflections": 1.7443298969072165,
-      "contestedShots": 4.8,
+      "contestedShots": 4.824742268041237,
       "contested3pt": 2.1154639175257732,
-      "contested2pt": 2.6969072164948455,
+      "contested2pt": 2.709278350515464,
       "boxOuts": 0.5690721649484537,
       "looseBalls": 0.5814432989690722,
       "chargesDrawn": 0.04948453608247423,
@@ -314,9 +314,9 @@
     },
     "hustle": {
       "deflections": 1.41,
-      "contestedShots": 3.88,
+      "contestedShots": 3.9,
       "contested3pt": 1.71,
-      "contested2pt": 2.18,
+      "contested2pt": 2.19,
       "chargesDrawn": 0.04,
       "looseBalls": 0.47,
       "boxOuts": 0.46,
@@ -366,7 +366,7 @@
       "OffRtg": 50,
       "DefRtg": 25,
       "NetRtg": 35,
-      "Contested": 38,
+      "Contested": 39,
       "Deflections": 15,
       "PER": 55,
       "WinPct": 36,
@@ -1291,7 +1291,7 @@
       "ShotDefense": 81,
       "ContestedReb": 36,
       "RebConversion": 36,
-      "LooseBalls": 70,
+      "LooseBalls": 69,
       "ChargesDrawn": 87
     },
     "rating": {
@@ -2845,7 +2845,7 @@
       "ShotDefense": 83,
       "ContestedReb": 83,
       "RebConversion": 83,
-      "LooseBalls": 60,
+      "LooseBalls": 59,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -3381,13 +3381,13 @@
       "ptsFb": 3.0508474576271185,
       "twoPA": 9.152542372881356,
       "deflections": 0,
-      "contestedShots": 6.101694915254237,
-      "contested3pt": 6.101694915254237,
+      "contestedShots": 4.088135593220339,
+      "contested3pt": 4.088135593220339,
       "contested2pt": 0,
-      "boxOuts": 3.0508474576271185,
+      "boxOuts": 2.013559322033898,
       "looseBalls": 0,
       "chargesDrawn": 0,
-      "screenAssists": 0,
+      "screenAssists": 2.013559322033898,
       "potentialAst": 6.101694915254237,
       "passesMade": 38.440677966101696,
       "secondaryAst": 0,
@@ -3422,13 +3422,13 @@
     },
     "hustle": {
       "deflections": 0,
-      "contestedShots": 1,
-      "contested3pt": 1,
+      "contestedShots": 0.67,
+      "contested3pt": 0.67,
       "contested2pt": 0,
       "chargesDrawn": 0,
       "looseBalls": 0,
-      "boxOuts": 0.5,
-      "screenAssists": 0
+      "boxOuts": 0.33,
+      "screenAssists": 0.33
     },
     "misc": {
       "ptsOffTov": 0,
@@ -3467,14 +3467,14 @@
       "Efficiency": 7,
       "Impact": 0,
       "Shooting": 3,
-      "Defense": 53,
+      "Defense": 51,
       "OReb": 69,
       "DReb": 17,
       "AstPct": 69,
       "OffRtg": 96,
       "DefRtg": 98,
       "NetRtg": 99,
-      "Contested": 62,
+      "Contested": 23,
       "Deflections": 0,
       "PER": 0,
       "WinPct": 94,
@@ -3488,7 +3488,7 @@
       "PlayCreation": 76,
       "PerimeterD": 59,
       "InteriorD": 43,
-      "Hustle": 9,
+      "Hustle": 16,
       "OverallImpact": 25,
       "SystemicImpact": 25,
       "Finishing": 44,
@@ -3544,7 +3544,7 @@
         },
         "def": {
           "grade": "C",
-          "pct": 49,
+          "pct": 45,
           "raw": "DBPM: -3.8 / 0.0s 0.0b",
           "label": "DEFENSE"
         }
@@ -3606,7 +3606,7 @@
       "contestedShots": 12.414705882352942,
       "contested3pt": 2.7794117647058822,
       "contested2pt": 9.62205882352941,
-      "boxOuts": 1.7602941176470588,
+      "boxOuts": 1.7338235294117648,
       "looseBalls": 0.6088235294117648,
       "chargesDrawn": 0,
       "screenAssists": 4.738235294117647,
@@ -3649,7 +3649,7 @@
       "contested2pt": 7.27,
       "chargesDrawn": 0,
       "looseBalls": 0.46,
-      "boxOuts": 1.33,
+      "boxOuts": 1.31,
       "screenAssists": 3.58
     },
     "misc": {
@@ -4001,7 +4001,7 @@
     "teamId": "WAS",
     "teamName": "Free Agent",
     "position": "NBA",
-    "age": 26,
+    "age": 27,
     "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1631214.png",
     "gameLog": [],
     "stats": {
@@ -4269,11 +4269,11 @@
       "ptsFb": 0.8648648648648649,
       "twoPA": 14.91891891891892,
       "deflections": 2.4972972972972975,
-      "contestedShots": 9.362162162162162,
+      "contestedShots": 9.383783783783784,
       "contested3pt": 2.9837837837837835,
-      "contested2pt": 6.378378378378379,
+      "contested2pt": 6.4,
       "boxOuts": 1.8162162162162163,
-      "looseBalls": 0.7783783783783784,
+      "looseBalls": 0.7891891891891892,
       "chargesDrawn": 0.08648648648648649,
       "screenAssists": 2.421621621621622,
       "potentialAst": 11.891891891891893,
@@ -4310,11 +4310,11 @@
     },
     "hustle": {
       "deflections": 2.31,
-      "contestedShots": 8.66,
+      "contestedShots": 8.68,
       "contested3pt": 2.76,
-      "contested2pt": 5.9,
+      "contested2pt": 5.92,
       "chargesDrawn": 0.08,
-      "looseBalls": 0.72,
+      "looseBalls": 0.73,
       "boxOuts": 1.68,
       "screenAssists": 2.24
     },
@@ -4399,7 +4399,7 @@
       "ShotDefense": 17,
       "ContestedReb": 80,
       "RebConversion": 80,
-      "LooseBalls": 77,
+      "LooseBalls": 78,
       "ChargesDrawn": 83
     },
     "rating": {
@@ -4585,7 +4585,7 @@
       "DefRtg": 95,
       "NetRtg": 1,
       "Contested": 99,
-      "Deflections": 12,
+      "Deflections": 11,
       "PER": 10,
       "WinPct": 88,
       "WS48": 35,
@@ -4596,7 +4596,7 @@
       "FtPct": 23,
       "ScoringIndex": 13,
       "PlayCreation": 38,
-      "PerimeterD": 60,
+      "PerimeterD": 59,
       "InteriorD": 80,
       "Hustle": 23,
       "OverallImpact": 16,
@@ -4627,7 +4627,7 @@
     "rating": {
       "ovr": 69,
       "off": 60,
-      "def": 87,
+      "def": 86,
       "rebounding": 83,
       "tier": "Bronze",
       "color": "#cd7f32",
@@ -4843,7 +4843,7 @@
       "ShotDefense": 86,
       "ContestedReb": 54,
       "RebConversion": 54,
-      "LooseBalls": 81,
+      "LooseBalls": 82,
       "ChargesDrawn": 46
     },
     "rating": {
@@ -4889,7 +4889,7 @@
     "teamId": "PHX",
     "teamName": "Free Agent",
     "position": "NBA",
-    "age": 28,
+    "age": 29,
     "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1629599.png",
     "gameLog": [],
     "stats": {
@@ -5028,7 +5028,7 @@
       "OffRtg": 11,
       "DefRtg": 84,
       "NetRtg": 42,
-      "Contested": 22,
+      "Contested": 23,
       "Deflections": 46,
       "PER": 12,
       "WinPct": 39,
@@ -6175,7 +6175,7 @@
       "ShotDefense": 69,
       "ContestedReb": 33,
       "RebConversion": 33,
-      "LooseBalls": 62,
+      "LooseBalls": 61,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -6596,7 +6596,7 @@
       "PlayCreation": 68,
       "PerimeterD": 61,
       "InteriorD": 64,
-      "Hustle": 60,
+      "Hustle": 61,
       "OverallImpact": 47,
       "SystemicImpact": 47,
       "Finishing": 59,
@@ -6619,7 +6619,7 @@
       "ShotDefense": 29,
       "ContestedReb": 35,
       "RebConversion": 35,
-      "LooseBalls": 31,
+      "LooseBalls": 32,
       "ChargesDrawn": 76
     },
     "rating": {
@@ -7706,7 +7706,7 @@
       "PlayCreation": 13,
       "PerimeterD": 61,
       "InteriorD": 81,
-      "Hustle": 47,
+      "Hustle": 46,
       "OverallImpact": 38,
       "SystemicImpact": 38,
       "Finishing": 47,
@@ -7729,7 +7729,7 @@
       "ShotDefense": 100,
       "ContestedReb": 89,
       "RebConversion": 89,
-      "LooseBalls": 91,
+      "LooseBalls": 90,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -7825,7 +7825,7 @@
       "contested3pt": 4.073684210526316,
       "contested2pt": 6.568421052631579,
       "boxOuts": 1.6736842105263159,
-      "looseBalls": 0.9157894736842105,
+      "looseBalls": 0.8210526315789474,
       "chargesDrawn": 0,
       "screenAssists": 1.9263157894736842,
       "potentialAst": 3.789473684210526,
@@ -7866,7 +7866,7 @@
       "contested3pt": 1.29,
       "contested2pt": 2.08,
       "chargesDrawn": 0,
-      "looseBalls": 0.29,
+      "looseBalls": 0.26,
       "boxOuts": 0.53,
       "screenAssists": 0.61
     },
@@ -7928,7 +7928,7 @@
       "PlayCreation": 10,
       "PerimeterD": 50,
       "InteriorD": 58,
-      "Hustle": 43,
+      "Hustle": 41,
       "OverallImpact": 34,
       "SystemicImpact": 34,
       "Finishing": 66,
@@ -7951,7 +7951,7 @@
       "ShotDefense": 57,
       "ContestedReb": 37,
       "RebConversion": 37,
-      "LooseBalls": 88,
+      "LooseBalls": 82,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -8049,7 +8049,7 @@
       "boxOuts": 0.4015384615384615,
       "looseBalls": 1.163076923076923,
       "chargesDrawn": 0.04153846153846154,
-      "screenAssists": 0.6784615384615384,
+      "screenAssists": 0.7061538461538461,
       "potentialAst": 7.06153846153846,
       "passesMade": 39.87692307692308,
       "secondaryAst": 0.41538461538461535,
@@ -8090,7 +8090,7 @@
       "chargesDrawn": 0.03,
       "looseBalls": 0.84,
       "boxOuts": 0.29,
-      "screenAssists": 0.49
+      "screenAssists": 0.51
     },
     "misc": {
       "ptsOffTov": 2.2,
@@ -8268,7 +8268,7 @@
       "contestedShots": 3.1304347826086953,
       "contested3pt": 1.4295652173913045,
       "contested2pt": 1.700869565217391,
-      "boxOuts": 0.20869565217391306,
+      "boxOuts": 0.2504347826086956,
       "looseBalls": 0.8139130434782609,
       "chargesDrawn": 0.3026086956521739,
       "screenAssists": 0.3234782608695652,
@@ -8311,7 +8311,7 @@
       "contested2pt": 1.63,
       "chargesDrawn": 0.29,
       "looseBalls": 0.78,
-      "boxOuts": 0.2,
+      "boxOuts": 0.24,
       "screenAssists": 0.31
     },
     "misc": {
@@ -8709,10 +8709,10 @@
       "ptsFb": 2.6666666666666665,
       "twoPA": 11.333333333333334,
       "deflections": 2.677777777777778,
-      "contestedShots": 7.6000000000000005,
-      "contested3pt": 3.0333333333333337,
+      "contestedShots": 7.577777777777778,
+      "contested3pt": 3.011111111111111,
       "contested2pt": 4.566666666666667,
-      "boxOuts": 2.4222222222222225,
+      "boxOuts": 2.4333333333333336,
       "looseBalls": 0.5777777777777778,
       "chargesDrawn": 0.03333333333333333,
       "screenAssists": 1.2888888888888888,
@@ -8750,12 +8750,12 @@
     },
     "hustle": {
       "deflections": 2.41,
-      "contestedShots": 6.84,
-      "contested3pt": 2.73,
+      "contestedShots": 6.82,
+      "contested3pt": 2.71,
       "contested2pt": 4.11,
       "chargesDrawn": 0.03,
       "looseBalls": 0.52,
-      "boxOuts": 2.18,
+      "boxOuts": 2.19,
       "screenAssists": 1.16
     },
     "misc": {
@@ -8935,7 +8935,7 @@
       "contested3pt": 1.9548387096774191,
       "contested2pt": 2.4,
       "boxOuts": 0.6,
-      "looseBalls": 0.6580645161290323,
+      "looseBalls": 0.6774193548387096,
       "chargesDrawn": 0.13548387096774195,
       "screenAssists": 0.5032258064516129,
       "potentialAst": 5.419354838709677,
@@ -8976,7 +8976,7 @@
       "contested3pt": 1.01,
       "contested2pt": 1.24,
       "chargesDrawn": 0.07,
-      "looseBalls": 0.34,
+      "looseBalls": 0.35,
       "boxOuts": 0.31,
       "screenAssists": 0.26
     },
@@ -9024,7 +9024,7 @@
       "OffRtg": 77,
       "DefRtg": 87,
       "NetRtg": 87,
-      "Contested": 29,
+      "Contested": 30,
       "Deflections": 55,
       "PER": 23,
       "WinPct": 90,
@@ -9038,7 +9038,7 @@
       "PlayCreation": 37,
       "PerimeterD": 57,
       "InteriorD": 44,
-      "Hustle": 61,
+      "Hustle": 63,
       "OverallImpact": 52,
       "SystemicImpact": 52,
       "Finishing": 25,
@@ -9061,7 +9061,7 @@
       "ShotDefense": 81,
       "ContestedReb": 69,
       "RebConversion": 69,
-      "LooseBalls": 56,
+      "LooseBalls": 62,
       "ChargesDrawn": 90
     },
     "rating": {
@@ -9283,7 +9283,7 @@
       "ShotDefense": 8,
       "ContestedReb": 9,
       "RebConversion": 9,
-      "LooseBalls": 78,
+      "LooseBalls": 77,
       "ChargesDrawn": 60
     },
     "rating": {
@@ -9551,7 +9551,7 @@
     "teamId": "LAC",
     "teamName": "Free Agent",
     "position": "NBA",
-    "age": 23,
+    "age": 24,
     "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1631097.png",
     "gameLog": [],
     "stats": {
@@ -10929,9 +10929,9 @@
       "ptsFb": 1.0413223140495869,
       "twoPA": 10.115702479338843,
       "deflections": 2.4396694214876034,
-      "contestedShots": 7.854545454545455,
+      "contestedShots": 7.839669421487604,
       "contested3pt": 3.8231404958677686,
-      "contested2pt": 4.046280991735538,
+      "contested2pt": 4.016528925619835,
       "boxOuts": 1.9338842975206614,
       "looseBalls": 0.5950413223140497,
       "chargesDrawn": 0.014876033057851241,
@@ -10970,9 +10970,9 @@
     },
     "hustle": {
       "deflections": 1.64,
-      "contestedShots": 5.28,
+      "contestedShots": 5.27,
       "contested3pt": 2.57,
-      "contested2pt": 2.72,
+      "contested2pt": 2.7,
       "chargesDrawn": 0.01,
       "looseBalls": 0.4,
       "boxOuts": 1.3,
@@ -11281,7 +11281,7 @@
       "ShotDefense": 59,
       "ContestedReb": 89,
       "RebConversion": 89,
-      "LooseBalls": 61,
+      "LooseBalls": 60,
       "ChargesDrawn": 100
     },
     "rating": {
@@ -11503,7 +11503,7 @@
       "ShotDefense": 22,
       "ContestedReb": 46,
       "RebConversion": 46,
-      "LooseBalls": 22,
+      "LooseBalls": 21,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -12042,7 +12042,7 @@
       "contestedShots": 15.76551724137931,
       "contested3pt": 4.406896551724138,
       "contested2pt": 11.358620689655172,
-      "boxOuts": 1.7999999999999998,
+      "boxOuts": 1.893103448275862,
       "looseBalls": 0.15517241379310345,
       "chargesDrawn": 0,
       "screenAssists": 2.7,
@@ -12085,7 +12085,7 @@
       "contested2pt": 3.66,
       "chargesDrawn": 0,
       "looseBalls": 0.05,
-      "boxOuts": 0.58,
+      "boxOuts": 0.61,
       "screenAssists": 0.87
     },
     "misc": {
@@ -12927,9 +12927,9 @@
       "ptsFb": 3.089108910891089,
       "twoPA": 9.386138613861387,
       "deflections": 2.376237623762376,
-      "contestedShots": 5.0613861386138606,
+      "contestedShots": 5.085148514851485,
       "contested3pt": 1.972277227722772,
-      "contested2pt": 3.089108910891089,
+      "contested2pt": 3.112871287128713,
       "boxOuts": 0.2613861386138614,
       "looseBalls": 0.6178217821782178,
       "chargesDrawn": 0.03564356435643564,
@@ -12968,9 +12968,9 @@
     },
     "hustle": {
       "deflections": 2,
-      "contestedShots": 4.26,
+      "contestedShots": 4.28,
       "contested3pt": 1.66,
-      "contested2pt": 2.6,
+      "contested2pt": 2.62,
       "chargesDrawn": 0.03,
       "looseBalls": 0.52,
       "boxOuts": 0.22,
@@ -13020,7 +13020,7 @@
       "OffRtg": 94,
       "DefRtg": 71,
       "NetRtg": 90,
-      "Contested": 45,
+      "Contested": 46,
       "Deflections": 45,
       "PER": 72,
       "WinPct": 78,
@@ -13090,7 +13090,7 @@
         },
         "def": {
           "grade": "B",
-          "pct": 60,
+          "pct": 61,
           "raw": "DBPM: -0.1 / 1.2s 0.8b",
           "label": "DEFENSE"
         }
@@ -14036,7 +14036,7 @@
       "fg3a": 2.4827586206896552,
       "ptsFb": 1.2413793103448276,
       "twoPA": 4.965517241379311,
-      "deflections": 3.1034482758620694,
+      "deflections": 3.227586206896552,
       "contestedShots": 6.993103448275862,
       "contested3pt": 2.8551724137931034,
       "contested2pt": 4.137931034482759,
@@ -14077,7 +14077,7 @@
       "rTS": -13.1
     },
     "hustle": {
-      "deflections": 0.75,
+      "deflections": 0.78,
       "contestedShots": 1.69,
       "contested3pt": 0.69,
       "contested2pt": 1,
@@ -14131,7 +14131,7 @@
       "DefRtg": 41,
       "NetRtg": 2,
       "Contested": 72,
-      "Deflections": 72,
+      "Deflections": 76,
       "PER": 2,
       "WinPct": 92,
       "WS48": 39,
@@ -14144,7 +14144,7 @@
       "PlayCreation": 27,
       "PerimeterD": 54,
       "InteriorD": 53,
-      "Hustle": 44,
+      "Hustle": 46,
       "OverallImpact": 7,
       "SystemicImpact": 7,
       "Finishing": 23,
@@ -14200,7 +14200,7 @@
         },
         "def": {
           "grade": "C",
-          "pct": 47,
+          "pct": 48,
           "raw": "DBPM: +1.0 / 1.2s 0.4b",
           "label": "DEFENSE"
         }
@@ -14353,7 +14353,7 @@
       "DefRtg": 35,
       "NetRtg": 46,
       "Contested": 17,
-      "Deflections": 82,
+      "Deflections": 83,
       "PER": 16,
       "WinPct": 83,
       "WS48": 32,
@@ -14364,7 +14364,7 @@
       "FtPct": 38,
       "ScoringIndex": 20,
       "PlayCreation": 44,
-      "PerimeterD": 51,
+      "PerimeterD": 52,
       "InteriorD": 34,
       "Hustle": 46,
       "OverallImpact": 25,
@@ -15590,14 +15590,14 @@
       "fg3a": 8.093959731543624,
       "ptsFb": 2.7785234899328857,
       "twoPA": 10.268456375838927,
-      "deflections": 1.836241610738255,
-      "contestedShots": 5.267114093959732,
-      "contested3pt": 2.669798657718121,
+      "deflections": 1.8241610738255034,
+      "contestedShots": 5.255033557046979,
+      "contested3pt": 2.6577181208053693,
       "contested2pt": 2.597315436241611,
       "boxOuts": 0.24161073825503357,
       "looseBalls": 0.6644295302013423,
       "chargesDrawn": 0,
-      "screenAssists": 0.4348993288590604,
+      "screenAssists": 0.4228187919463087,
       "potentialAst": 9.181208053691275,
       "passesMade": 44.939597315436245,
       "secondaryAst": 0.6040268456375839,
@@ -15631,14 +15631,14 @@
       "rTS": -1.6
     },
     "hustle": {
-      "deflections": 1.52,
-      "contestedShots": 4.36,
-      "contested3pt": 2.21,
+      "deflections": 1.51,
+      "contestedShots": 4.35,
+      "contested3pt": 2.2,
       "contested2pt": 2.15,
       "chargesDrawn": 0,
       "looseBalls": 0.55,
       "boxOuts": 0.2,
-      "screenAssists": 0.36
+      "screenAssists": 0.35
     },
     "misc": {
       "ptsOffTov": 2.7,
@@ -15698,7 +15698,7 @@
       "PlayCreation": 70,
       "PerimeterD": 50,
       "InteriorD": 61,
-      "Hustle": 32,
+      "Hustle": 31,
       "OverallImpact": 59,
       "SystemicImpact": 59,
       "Finishing": 51,
@@ -15721,7 +15721,7 @@
       "ShotDefense": 66,
       "ContestedReb": 15,
       "RebConversion": 15,
-      "LooseBalls": 58,
+      "LooseBalls": 57,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -16922,7 +16922,7 @@
       "fg3a": 6.80672268907563,
       "ptsFb": 1.6638655462184875,
       "twoPA": 4.840336134453782,
-      "deflections": 2.420168067226891,
+      "deflections": 2.435294117647059,
       "contestedShots": 3.0705882352941174,
       "contested3pt": 1.9210084033613446,
       "contested2pt": 1.149579831932773,
@@ -16963,7 +16963,7 @@
       "rTS": 6.7
     },
     "hustle": {
-      "deflections": 1.6,
+      "deflections": 1.61,
       "contestedShots": 2.03,
       "contested3pt": 1.27,
       "contested2pt": 0.76,
@@ -17017,7 +17017,7 @@
       "DefRtg": 28,
       "NetRtg": 35,
       "Contested": 6,
-      "Deflections": 48,
+      "Deflections": 49,
       "PER": 76,
       "WinPct": 26,
       "WS48": 83,
@@ -17030,7 +17030,7 @@
       "PlayCreation": 95,
       "PerimeterD": 38,
       "InteriorD": 30,
-      "Hustle": 50,
+      "Hustle": 51,
       "OverallImpact": 68,
       "SystemicImpact": 68,
       "Finishing": 25,
@@ -17696,7 +17696,7 @@
       "PlayCreation": 33,
       "PerimeterD": 41,
       "InteriorD": 47,
-      "Hustle": 50,
+      "Hustle": 49,
       "OverallImpact": 49,
       "SystemicImpact": 49,
       "Finishing": 31,
@@ -17719,7 +17719,7 @@
       "ShotDefense": 54,
       "ContestedReb": 28,
       "RebConversion": 28,
-      "LooseBalls": 39,
+      "LooseBalls": 38,
       "ChargesDrawn": 86
     },
     "rating": {
@@ -18033,8 +18033,8 @@
       "ptsFb": 2.0625,
       "twoPA": 6.5625,
       "deflections": 3.3,
-      "contestedShots": 5.94375,
-      "contested3pt": 2.5875,
+      "contestedShots": 5.98125,
+      "contested3pt": 2.625,
       "contested2pt": 3.35625,
       "boxOuts": 0.48750000000000004,
       "looseBalls": 0.84375,
@@ -18074,8 +18074,8 @@
     },
     "hustle": {
       "deflections": 1.76,
-      "contestedShots": 3.17,
-      "contested3pt": 1.38,
+      "contestedShots": 3.19,
+      "contested3pt": 1.4,
       "contested2pt": 1.79,
       "chargesDrawn": 0,
       "looseBalls": 0.45,
@@ -18126,7 +18126,7 @@
       "OffRtg": 15,
       "DefRtg": 93,
       "NetRtg": 55,
-      "Contested": 60,
+      "Contested": 61,
       "Deflections": 78,
       "PER": 17,
       "WinPct": 93,
@@ -18163,7 +18163,7 @@
       "ShotDefense": 80,
       "ContestedReb": 15,
       "RebConversion": 15,
-      "LooseBalls": 82,
+      "LooseBalls": 83,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -18254,14 +18254,14 @@
       "fg3a": 6.8869565217391315,
       "ptsFb": 1.8782608695652174,
       "twoPA": 4.695652173913044,
-      "deflections": 2.1913043478260867,
+      "deflections": 2.222608695652174,
       "contestedShots": 8.577391304347827,
       "contested3pt": 3.3182608695652176,
       "contested2pt": 5.259130434782609,
       "boxOuts": 0.8139130434782609,
       "looseBalls": 0.7200000000000001,
       "chargesDrawn": 0.06260869565217392,
-      "screenAssists": 0.9391304347826087,
+      "screenAssists": 1.0017391304347827,
       "potentialAst": 4.069565217391305,
       "passesMade": 30.05217391304348,
       "secondaryAst": 0.3130434782608696,
@@ -18295,14 +18295,14 @@
       "rTS": -5.6
     },
     "hustle": {
-      "deflections": 0.7,
+      "deflections": 0.71,
       "contestedShots": 2.74,
       "contested3pt": 1.06,
       "contested2pt": 1.68,
       "chargesDrawn": 0.02,
       "looseBalls": 0.23,
       "boxOuts": 0.26,
-      "screenAssists": 0.3
+      "screenAssists": 0.32
     },
     "misc": {
       "ptsOffTov": 0.6,
@@ -18349,7 +18349,7 @@
       "DefRtg": 90,
       "NetRtg": 55,
       "Contested": 82,
-      "Deflections": 33,
+      "Deflections": 34,
       "PER": 11,
       "WinPct": 98,
       "WS48": 34,
@@ -18360,7 +18360,7 @@
       "FtPct": 23,
       "ScoringIndex": 20,
       "PlayCreation": 17,
-      "PerimeterD": 59,
+      "PerimeterD": 60,
       "InteriorD": 84,
       "Hustle": 57,
       "OverallImpact": 25,
@@ -18385,7 +18385,7 @@
       "ShotDefense": 91,
       "ContestedReb": 79,
       "RebConversion": 79,
-      "LooseBalls": 69,
+      "LooseBalls": 68,
       "ChargesDrawn": 77
     },
     "rating": {
@@ -18584,7 +18584,7 @@
       "PlayCreation": 49,
       "PerimeterD": 83,
       "InteriorD": 60,
-      "Hustle": 70,
+      "Hustle": 69,
       "OverallImpact": 55,
       "SystemicImpact": 55,
       "Finishing": 35,
@@ -18875,7 +18875,7 @@
     "teamId": "BKN",
     "teamName": "Free Agent",
     "position": "NBA",
-    "age": 23,
+    "age": 24,
     "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1643052.png",
     "gameLog": [],
     "stats": {
@@ -19028,7 +19028,7 @@
       "PlayCreation": 57,
       "PerimeterD": 48,
       "InteriorD": 52,
-      "Hustle": 76,
+      "Hustle": 75,
       "OverallImpact": 48,
       "SystemicImpact": 48,
       "Finishing": 59,
@@ -19051,7 +19051,7 @@
       "ShotDefense": 95,
       "ContestedReb": 58,
       "RebConversion": 58,
-      "LooseBalls": 89,
+      "LooseBalls": 88,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -19146,7 +19146,7 @@
       "contestedShots": 9.753846153846155,
       "contested3pt": 1.7846153846153845,
       "contested2pt": 7.938461538461539,
-      "boxOuts": 2.0615384615384618,
+      "boxOuts": 2.307692307692308,
       "looseBalls": 0.5230769230769231,
       "chargesDrawn": 0,
       "screenAssists": 1.7846153846153845,
@@ -19189,7 +19189,7 @@
       "contested2pt": 2.58,
       "chargesDrawn": 0,
       "looseBalls": 0.17,
-      "boxOuts": 0.67,
+      "boxOuts": 0.75,
       "screenAssists": 0.58
     },
     "misc": {
@@ -19250,7 +19250,7 @@
       "PlayCreation": 9,
       "PerimeterD": 26,
       "InteriorD": 62,
-      "Hustle": 30,
+      "Hustle": 31,
       "OverallImpact": 67,
       "SystemicImpact": 67,
       "Finishing": 84,
@@ -21049,7 +21049,7 @@
       "ShotDefense": 45,
       "ContestedReb": 38,
       "RebConversion": 38,
-      "LooseBalls": 16,
+      "LooseBalls": 15,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -21715,7 +21715,7 @@
       "ShotDefense": 99,
       "ContestedReb": 89,
       "RebConversion": 89,
-      "LooseBalls": 96,
+      "LooseBalls": 97,
       "ChargesDrawn": 56
     },
     "rating": {
@@ -21810,7 +21810,7 @@
       "contestedShots": 4.9824,
       "contested3pt": 2.16,
       "contested2pt": 2.8224,
-      "boxOuts": 0.576,
+      "boxOuts": 0.6048,
       "looseBalls": 0.6335999999999999,
       "chargesDrawn": 0.216,
       "screenAssists": 0.41759999999999997,
@@ -21853,7 +21853,7 @@
       "contested2pt": 1.96,
       "chargesDrawn": 0.15,
       "looseBalls": 0.44,
-      "boxOuts": 0.4,
+      "boxOuts": 0.42,
       "screenAssists": 0.29
     },
     "misc": {
@@ -22381,7 +22381,7 @@
       "ShotDefense": 14,
       "ContestedReb": 13,
       "RebConversion": 13,
-      "LooseBalls": 53,
+      "LooseBalls": 54,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -22916,14 +22916,14 @@
       "fg3a": 0,
       "ptsFb": 0,
       "twoPA": 8.830188679245284,
-      "deflections": 6.7924528301886795,
-      "contestedShots": 13.584905660377359,
-      "contested3pt": 6.7924528301886795,
-      "contested2pt": 6.7924528301886795,
-      "boxOuts": 3.3962264150943398,
+      "deflections": 4.550943396226415,
+      "contestedShots": 9.033962264150944,
+      "contested3pt": 4.550943396226415,
+      "contested2pt": 4.550943396226415,
+      "boxOuts": 2.2415094339622645,
       "looseBalls": 0,
       "chargesDrawn": 0,
-      "screenAssists": 10.18867924528302,
+      "screenAssists": 9.033962264150944,
       "potentialAst": 3.3962264150943398,
       "passesMade": 39.39622641509434,
       "secondaryAst": 0,
@@ -22957,14 +22957,14 @@
       "rTS": -12.2
     },
     "hustle": {
-      "deflections": 1,
-      "contestedShots": 2,
-      "contested3pt": 1,
-      "contested2pt": 1,
+      "deflections": 0.67,
+      "contestedShots": 1.33,
+      "contested3pt": 0.67,
+      "contested2pt": 0.67,
       "chargesDrawn": 0,
       "looseBalls": 0,
-      "boxOuts": 0.5,
-      "screenAssists": 1.5
+      "boxOuts": 0.33,
+      "screenAssists": 1.33
     },
     "misc": {
       "ptsOffTov": 0,
@@ -23003,15 +23003,15 @@
       "Efficiency": 1,
       "Impact": 0,
       "Shooting": 3,
-      "Defense": 97,
+      "Defense": 96,
       "OReb": 89,
       "DReb": 99,
       "AstPct": 2,
       "OffRtg": 77,
       "DefRtg": 99,
       "NetRtg": 98,
-      "Contested": 98,
-      "Deflections": 100,
+      "Contested": 84,
+      "Deflections": 94,
       "PER": 2,
       "WinPct": 94,
       "WS48": 4,
@@ -23022,9 +23022,9 @@
       "FtPct": 0,
       "ScoringIndex": 2,
       "PlayCreation": 8,
-      "PerimeterD": 83,
-      "InteriorD": 56,
-      "Hustle": 57,
+      "PerimeterD": 82,
+      "InteriorD": 55,
+      "Hustle": 54,
       "OverallImpact": 39,
       "SystemicImpact": 39,
       "Finishing": 45,
@@ -23053,7 +23053,7 @@
     "rating": {
       "ovr": 69,
       "off": 60,
-      "def": 78,
+      "def": 77,
       "rebounding": 92,
       "tier": "Bronze",
       "color": "#cd7f32",
@@ -23080,7 +23080,7 @@
         },
         "def": {
           "grade": "B",
-          "pct": 72,
+          "pct": 70,
           "raw": "DBPM: -1.5 / 2.0s 0.0b",
           "label": "DEFENSE"
         }
@@ -23143,7 +23143,7 @@
       "contested3pt": 1.8442105263157893,
       "contested2pt": 1.4652631578947366,
       "boxOuts": 0.3789473684210526,
-      "looseBalls": 1.0863157894736841,
+      "looseBalls": 1.111578947368421,
       "chargesDrawn": 0.1894736842105263,
       "screenAssists": 0.4547368421052631,
       "potentialAst": 9.978947368421052,
@@ -23184,7 +23184,7 @@
       "contested3pt": 1.46,
       "contested2pt": 1.16,
       "chargesDrawn": 0.15,
-      "looseBalls": 0.86,
+      "looseBalls": 0.88,
       "boxOuts": 0.3,
       "screenAssists": 0.36
     },
@@ -23809,7 +23809,7 @@
       "contested3pt": 3.4495522388059703,
       "contested2pt": 3.857910447761194,
       "boxOuts": 0.39761194029850744,
-      "looseBalls": 0.8597014925373134,
+      "looseBalls": 0.8489552238805971,
       "chargesDrawn": 0,
       "screenAssists": 0.46208955223880593,
       "potentialAst": 8.597014925373134,
@@ -23850,7 +23850,7 @@
       "contested3pt": 3.21,
       "contested2pt": 3.59,
       "chargesDrawn": 0,
-      "looseBalls": 0.8,
+      "looseBalls": 0.79,
       "boxOuts": 0.37,
       "screenAssists": 0.43
     },
@@ -23912,7 +23912,7 @@
       "PlayCreation": 75,
       "PerimeterD": 53,
       "InteriorD": 61,
-      "Hustle": 51,
+      "Hustle": 50,
       "OverallImpact": 66,
       "SystemicImpact": 66,
       "Finishing": 75,
@@ -23935,7 +23935,7 @@
       "ShotDefense": 66,
       "ContestedReb": 75,
       "RebConversion": 75,
-      "LooseBalls": 85,
+      "LooseBalls": 84,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -24471,11 +24471,11 @@
       "ptsFb": 1.2067039106145252,
       "twoPA": 5.027932960893855,
       "deflections": 4.505027932960894,
-      "contestedShots": 5.5709497206703915,
-      "contested3pt": 2.111731843575419,
+      "contestedShots": 5.550837988826816,
+      "contested3pt": 2.0715083798882685,
       "contested2pt": 3.4793296089385475,
       "boxOuts": 0.36201117318435755,
-      "looseBalls": 0.8446927374301676,
+      "looseBalls": 0.8044692737430168,
       "chargesDrawn": 0,
       "screenAssists": 0.4223463687150838,
       "potentialAst": 12.46927374301676,
@@ -24512,11 +24512,11 @@
     },
     "hustle": {
       "deflections": 2.24,
-      "contestedShots": 2.77,
-      "contested3pt": 1.05,
+      "contestedShots": 2.76,
+      "contested3pt": 1.03,
       "contested2pt": 1.73,
       "chargesDrawn": 0,
-      "looseBalls": 0.42,
+      "looseBalls": 0.4,
       "boxOuts": 0.18,
       "screenAssists": 0.21
     },
@@ -24564,7 +24564,7 @@
       "OffRtg": 77,
       "DefRtg": 69,
       "NetRtg": 77,
-      "Contested": 54,
+      "Contested": 52,
       "Deflections": 93,
       "PER": 44,
       "WinPct": 86,
@@ -24576,7 +24576,7 @@
       "FtPct": 6,
       "ScoringIndex": 6,
       "PlayCreation": 82,
-      "PerimeterD": 65,
+      "PerimeterD": 64,
       "InteriorD": 75,
       "Hustle": 68,
       "OverallImpact": 62,
@@ -24601,13 +24601,13 @@
       "ShotDefense": 60,
       "ContestedReb": 46,
       "RebConversion": 46,
-      "LooseBalls": 83,
+      "LooseBalls": 80,
       "ChargesDrawn": 23
     },
     "rating": {
       "ovr": 74,
       "off": 60,
-      "def": 67,
+      "def": 66,
       "rebounding": 60,
       "tier": "Bronze",
       "color": "#cd7f32",
@@ -25675,7 +25675,7 @@
       "DefRtg": 4,
       "NetRtg": 10,
       "Contested": 43,
-      "Deflections": 37,
+      "Deflections": 36,
       "PER": 15,
       "WinPct": 21,
       "WS48": 19,
@@ -25711,7 +25711,7 @@
       "ShotDefense": 27,
       "ContestedReb": 8,
       "RebConversion": 8,
-      "LooseBalls": 14,
+      "LooseBalls": 13,
       "ChargesDrawn": 65
     },
     "rating": {
@@ -26784,7 +26784,7 @@
       "OffRtg": 51,
       "DefRtg": 95,
       "NetRtg": 85,
-      "Contested": 39,
+      "Contested": 38,
       "Deflections": 75,
       "PER": 41,
       "WinPct": 94,
@@ -26798,7 +26798,7 @@
       "PlayCreation": 89,
       "PerimeterD": 68,
       "InteriorD": 54,
-      "Hustle": 63,
+      "Hustle": 62,
       "OverallImpact": 57,
       "SystemicImpact": 57,
       "Finishing": 38,
@@ -26821,7 +26821,7 @@
       "ShotDefense": 35,
       "ContestedReb": 11,
       "RebConversion": 11,
-      "LooseBalls": 95,
+      "LooseBalls": 94,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -27908,7 +27908,7 @@
       "PlayCreation": 94,
       "PerimeterD": 44,
       "InteriorD": 35,
-      "Hustle": 37,
+      "Hustle": 36,
       "OverallImpact": 66,
       "SystemicImpact": 66,
       "Finishing": 58,
@@ -27931,7 +27931,7 @@
       "ShotDefense": 51,
       "ContestedReb": 4,
       "RebConversion": 4,
-      "LooseBalls": 26,
+      "LooseBalls": 25,
       "ChargesDrawn": 70
     },
     "rating": {
@@ -28597,7 +28597,7 @@
       "ShotDefense": 45,
       "ContestedReb": 9,
       "RebConversion": 9,
-      "LooseBalls": 40,
+      "LooseBalls": 39,
       "ChargesDrawn": 91
     },
     "rating": {
@@ -28915,7 +28915,7 @@
       "contested3pt": 2.229677419354839,
       "contested2pt": 1.8232258064516131,
       "boxOuts": 0.11612903225806454,
-      "looseBalls": 0.6503225806451614,
+      "looseBalls": 0.6270967741935485,
       "chargesDrawn": 0.03483870967741936,
       "screenAssists": 0.24387096774193548,
       "potentialAst": 13.122580645161293,
@@ -28956,7 +28956,7 @@
       "contested3pt": 1.92,
       "contested2pt": 1.57,
       "chargesDrawn": 0.03,
-      "looseBalls": 0.56,
+      "looseBalls": 0.54,
       "boxOuts": 0.1,
       "screenAssists": 0.21
     },
@@ -29018,7 +29018,7 @@
       "PlayCreation": 91,
       "PerimeterD": 67,
       "InteriorD": 51,
-      "Hustle": 57,
+      "Hustle": 56,
       "OverallImpact": 82,
       "SystemicImpact": 82,
       "Finishing": 71,
@@ -29041,7 +29041,7 @@
       "ShotDefense": 71,
       "ContestedReb": 34,
       "RebConversion": 34,
-      "LooseBalls": 52,
+      "LooseBalls": 47,
       "ChargesDrawn": 61
     },
     "rating": {
@@ -30151,7 +30151,7 @@
       "ShotDefense": 9,
       "ContestedReb": 12,
       "RebConversion": 12,
-      "LooseBalls": 39,
+      "LooseBalls": 38,
       "ChargesDrawn": 75
     },
     "rating": {
@@ -30247,9 +30247,9 @@
       "contested3pt": 2.2116591928251124,
       "contested2pt": 5.601793721973094,
       "boxOuts": 1.4852017937219733,
-      "looseBalls": 0.5488789237668161,
+      "looseBalls": 0.5165919282511211,
       "chargesDrawn": 0,
-      "screenAssists": 1.2914798206278029,
+      "screenAssists": 1.3076233183856503,
       "potentialAst": 4.0358744394618835,
       "passesMade": 36.6457399103139,
       "secondaryAst": 0.48430493273542596,
@@ -30288,9 +30288,9 @@
       "contested3pt": 1.37,
       "contested2pt": 3.47,
       "chargesDrawn": 0,
-      "looseBalls": 0.34,
+      "looseBalls": 0.32,
       "boxOuts": 0.92,
-      "screenAssists": 0.8
+      "screenAssists": 0.81
     },
     "misc": {
       "ptsOffTov": 0.7,
@@ -30350,7 +30350,7 @@
       "PlayCreation": 21,
       "PerimeterD": 59,
       "InteriorD": 64,
-      "Hustle": 52,
+      "Hustle": 51,
       "OverallImpact": 45,
       "SystemicImpact": 45,
       "Finishing": 27,
@@ -30373,7 +30373,7 @@
       "ShotDefense": 84,
       "ContestedReb": 69,
       "RebConversion": 69,
-      "LooseBalls": 32,
+      "LooseBalls": 27,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -30406,7 +30406,7 @@
         },
         "def": {
           "grade": "B",
-          "pct": 71,
+          "pct": 70,
           "raw": "DBPM: +1.0 / 1.1s 0.6b",
           "label": "DEFENSE"
         }
@@ -30465,13 +30465,13 @@
       "ptsFb": 1.1911764705882353,
       "twoPA": 10.98529411764706,
       "deflections": 1.4558823529411766,
-      "contestedShots": 10.508823529411766,
-      "contested3pt": 2.726470588235294,
+      "contestedShots": 10.495588235294116,
+      "contested3pt": 2.7,
       "contested2pt": 7.795588235294117,
       "boxOuts": 1.2705882352941176,
       "looseBalls": 0.6220588235294117,
       "chargesDrawn": 0,
-      "screenAssists": 4.910294117647059,
+      "screenAssists": 4.923529411764706,
       "potentialAst": 2.1176470588235294,
       "passesMade": 34.80882352941177,
       "secondaryAst": 0.2647058823529412,
@@ -30506,13 +30506,13 @@
     },
     "hustle": {
       "deflections": 1.1,
-      "contestedShots": 7.94,
-      "contested3pt": 2.06,
+      "contestedShots": 7.93,
+      "contested3pt": 2.04,
       "contested2pt": 5.89,
       "chargesDrawn": 0,
       "looseBalls": 0.47,
       "boxOuts": 0.96,
-      "screenAssists": 3.71
+      "screenAssists": 3.72
     },
     "misc": {
       "ptsOffTov": 2.1,
@@ -30570,7 +30570,7 @@
       "FtPct": 10,
       "ScoringIndex": 64,
       "PlayCreation": 1,
-      "PerimeterD": 37,
+      "PerimeterD": 36,
       "InteriorD": 61,
       "Hustle": 33,
       "OverallImpact": 62,
@@ -31135,7 +31135,7 @@
       "contested3pt": 1.6809917355371902,
       "contested2pt": 1.7107438016528926,
       "boxOuts": 0.28264462809917357,
-      "looseBalls": 0.6099173553719008,
+      "looseBalls": 0.5950413223140497,
       "chargesDrawn": 0.14876033057851243,
       "screenAssists": 0.43140495867768597,
       "potentialAst": 11.603305785123968,
@@ -31176,7 +31176,7 @@
       "contested3pt": 1.13,
       "contested2pt": 1.15,
       "chargesDrawn": 0.1,
-      "looseBalls": 0.41,
+      "looseBalls": 0.4,
       "boxOuts": 0.19,
       "screenAssists": 0.29
     },
@@ -31238,7 +31238,7 @@
       "PlayCreation": 92,
       "PerimeterD": 36,
       "InteriorD": 32,
-      "Hustle": 51,
+      "Hustle": 50,
       "OverallImpact": 34,
       "SystemicImpact": 34,
       "Finishing": 38,
@@ -31261,7 +31261,7 @@
       "ShotDefense": 47,
       "ContestedReb": 22,
       "RebConversion": 22,
-      "LooseBalls": 43,
+      "LooseBalls": 41,
       "ChargesDrawn": 92
     },
     "rating": {
@@ -31904,7 +31904,7 @@
       "PlayCreation": 8,
       "PerimeterD": 48,
       "InteriorD": 60,
-      "Hustle": 46,
+      "Hustle": 47,
       "OverallImpact": 45,
       "SystemicImpact": 45,
       "Finishing": 53,
@@ -31927,7 +31927,7 @@
       "ShotDefense": 92,
       "ContestedReb": 13,
       "RebConversion": 13,
-      "LooseBalls": 33,
+      "LooseBalls": 34,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -32023,9 +32023,9 @@
       "contested3pt": 3.167155425219941,
       "contested2pt": 4.444574780058651,
       "boxOuts": 0.22170087976539588,
-      "looseBalls": 0.6545454545454545,
+      "looseBalls": 0.6756598240469208,
       "chargesDrawn": 0.10557184750733138,
-      "screenAssists": 0.3800586510263929,
+      "screenAssists": 0.40117302052785925,
       "potentialAst": 9.92375366568915,
       "passesMade": 61.548387096774185,
       "secondaryAst": 0.6334310850439883,
@@ -32064,9 +32064,9 @@
       "contested3pt": 3,
       "contested2pt": 4.21,
       "chargesDrawn": 0.1,
-      "looseBalls": 0.62,
+      "looseBalls": 0.64,
       "boxOuts": 0.21,
-      "screenAssists": 0.36
+      "screenAssists": 0.38
     },
     "misc": {
       "ptsOffTov": 2.1,
@@ -32126,7 +32126,7 @@
       "PlayCreation": 79,
       "PerimeterD": 68,
       "InteriorD": 80,
-      "Hustle": 58,
+      "Hustle": 60,
       "OverallImpact": 79,
       "SystemicImpact": 79,
       "Finishing": 30,
@@ -32149,7 +32149,7 @@
       "ShotDefense": 93,
       "ContestedReb": 26,
       "RebConversion": 26,
-      "LooseBalls": 54,
+      "LooseBalls": 61,
       "ChargesDrawn": 86
     },
     "rating": {
@@ -32245,9 +32245,9 @@
       "contested3pt": 2.571428571428571,
       "contested2pt": 2.507142857142857,
       "boxOuts": 0.41785714285714287,
-      "looseBalls": 0.7821428571428571,
+      "looseBalls": 0.7928571428571428,
       "chargesDrawn": 0.02142857142857143,
-      "screenAssists": 0.3964285714285714,
+      "screenAssists": 0.40714285714285714,
       "potentialAst": 7.821428571428571,
       "passesMade": 41.67857142857142,
       "secondaryAst": 0.6428571428571428,
@@ -32286,9 +32286,9 @@
       "contested3pt": 2.4,
       "contested2pt": 2.34,
       "chargesDrawn": 0.02,
-      "looseBalls": 0.73,
+      "looseBalls": 0.74,
       "boxOuts": 0.39,
-      "screenAssists": 0.37
+      "screenAssists": 0.38
     },
     "misc": {
       "ptsOffTov": 3,
@@ -32348,7 +32348,7 @@
       "PlayCreation": 67,
       "PerimeterD": 53,
       "InteriorD": 57,
-      "Hustle": 46,
+      "Hustle": 47,
       "OverallImpact": 69,
       "SystemicImpact": 69,
       "Finishing": 62,
@@ -32371,7 +32371,7 @@
       "ShotDefense": 94,
       "ContestedReb": 19,
       "RebConversion": 19,
-      "LooseBalls": 78,
+      "LooseBalls": 79,
       "ChargesDrawn": 53
     },
     "rating": {
@@ -32593,7 +32593,7 @@
       "ShotDefense": 77,
       "ContestedReb": 23,
       "RebConversion": 23,
-      "LooseBalls": 79,
+      "LooseBalls": 78,
       "ChargesDrawn": 57
     },
     "rating": {
@@ -32815,7 +32815,7 @@
       "ShotDefense": 4,
       "ContestedReb": 51,
       "RebConversion": 51,
-      "LooseBalls": 78,
+      "LooseBalls": 77,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -33236,7 +33236,7 @@
       "PlayCreation": 22,
       "PerimeterD": 44,
       "InteriorD": 25,
-      "Hustle": 46,
+      "Hustle": 45,
       "OverallImpact": 39,
       "SystemicImpact": 39,
       "Finishing": 55,
@@ -33259,7 +33259,7 @@
       "ShotDefense": 59,
       "ContestedReb": 24,
       "RebConversion": 24,
-      "LooseBalls": 40,
+      "LooseBalls": 39,
       "ChargesDrawn": 54
     },
     "rating": {
@@ -33801,7 +33801,7 @@
       "boxOuts": 0.5294117647058822,
       "looseBalls": 0.9529411764705882,
       "chargesDrawn": 0,
-      "screenAssists": 1.3008403361344538,
+      "screenAssists": 1.2857142857142856,
       "potentialAst": 2.722689075630252,
       "passesMade": 30.403361344537817,
       "secondaryAst": 0.45378151260504196,
@@ -33842,7 +33842,7 @@
       "chargesDrawn": 0,
       "looseBalls": 0.63,
       "boxOuts": 0.35,
-      "screenAssists": 0.86
+      "screenAssists": 0.85
     },
     "misc": {
       "ptsOffTov": 1.5,
@@ -33902,7 +33902,7 @@
       "PlayCreation": 7,
       "PerimeterD": 61,
       "InteriorD": 66,
-      "Hustle": 60,
+      "Hustle": 61,
       "OverallImpact": 40,
       "SystemicImpact": 40,
       "Finishing": 59,
@@ -34369,7 +34369,7 @@
       "ShotDefense": 49,
       "ContestedReb": 44,
       "RebConversion": 44,
-      "LooseBalls": 64,
+      "LooseBalls": 63,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -35701,7 +35701,7 @@
       "ShotDefense": 17,
       "ContestedReb": 75,
       "RebConversion": 75,
-      "LooseBalls": 10,
+      "LooseBalls": 11,
       "ChargesDrawn": 73
     },
     "rating": {
@@ -36145,7 +36145,7 @@
       "ShotDefense": 34,
       "ContestedReb": 34,
       "RebConversion": 34,
-      "LooseBalls": 37,
+      "LooseBalls": 36,
       "ChargesDrawn": 95
     },
     "rating": {
@@ -36903,13 +36903,13 @@
       "ptsFb": 0.75,
       "twoPA": 3.75,
       "deflections": 3.675,
-      "contestedShots": 10.35,
+      "contestedShots": 10.3,
       "contested3pt": 2.125,
-      "contested2pt": 8.225,
+      "contested2pt": 8.175,
       "boxOuts": 2.8499999999999996,
       "looseBalls": 1.05,
       "chargesDrawn": 0.2,
-      "screenAssists": 5.8999999999999995,
+      "screenAssists": 5.925000000000001,
       "potentialAst": 4.5,
       "passesMade": 36,
       "secondaryAst": 0.25,
@@ -36944,13 +36944,13 @@
     },
     "hustle": {
       "deflections": 1.47,
-      "contestedShots": 4.14,
+      "contestedShots": 4.12,
       "contested3pt": 0.85,
-      "contested2pt": 3.29,
+      "contested2pt": 3.27,
       "chargesDrawn": 0.08,
       "looseBalls": 0.42,
       "boxOuts": 1.14,
-      "screenAssists": 2.36
+      "screenAssists": 2.37
     },
     "misc": {
       "ptsOffTov": 0.6,
@@ -37346,12 +37346,12 @@
       "fg3a": 4.141592920353982,
       "ptsFb": 3.5044247787610616,
       "twoPA": 10.991150442477876,
-      "deflections": 2.150442477876106,
+      "deflections": 2.1663716814159293,
       "contestedShots": 4.619469026548672,
       "contested3pt": 1.4973451327433627,
       "contested2pt": 3.1221238938053095,
       "boxOuts": 0.1592920353982301,
-      "looseBalls": 0.9716814159292034,
+      "looseBalls": 0.9876106194690264,
       "chargesDrawn": 0,
       "screenAssists": 0.27079646017699116,
       "potentialAst": 11.469026548672565,
@@ -37387,12 +37387,12 @@
       "rTS": -0.8
     },
     "hustle": {
-      "deflections": 1.35,
+      "deflections": 1.36,
       "contestedShots": 2.9,
       "contested3pt": 0.94,
       "contested2pt": 1.96,
       "chargesDrawn": 0,
-      "looseBalls": 0.61,
+      "looseBalls": 0.62,
       "boxOuts": 0.1,
       "screenAssists": 0.17
     },
@@ -37569,13 +37569,13 @@
       "ptsFb": 2.2771084337349397,
       "twoPA": 9.433734939759034,
       "deflections": 4.510843373493976,
-      "contestedShots": 5.931325301204819,
-      "contested3pt": 2.710843373493976,
+      "contestedShots": 5.953012048192771,
+      "contested3pt": 2.7216867469879515,
       "contested2pt": 3.220481927710843,
       "boxOuts": 0.4012048192771084,
-      "looseBalls": 1.116867469879518,
+      "looseBalls": 1.0951807228915662,
       "chargesDrawn": 0.043373493975903614,
-      "screenAssists": 2.0493975903614454,
+      "screenAssists": 2.0710843373493972,
       "potentialAst": 10.409638554216867,
       "passesMade": 54.542168674698786,
       "secondaryAst": 0.7590361445783131,
@@ -37610,13 +37610,13 @@
     },
     "hustle": {
       "deflections": 4.16,
-      "contestedShots": 5.47,
-      "contested3pt": 2.5,
+      "contestedShots": 5.49,
+      "contested3pt": 2.51,
       "contested2pt": 2.97,
       "chargesDrawn": 0.04,
-      "looseBalls": 1.03,
+      "looseBalls": 1.01,
       "boxOuts": 0.37,
-      "screenAssists": 1.89
+      "screenAssists": 1.91
     },
     "misc": {
       "ptsOffTov": 2,
@@ -37662,7 +37662,7 @@
       "OffRtg": 79,
       "DefRtg": 77,
       "NetRtg": 83,
-      "Contested": 60,
+      "Contested": 61,
       "Deflections": 94,
       "PER": 60,
       "WinPct": 68,
@@ -37676,7 +37676,7 @@
       "PlayCreation": 83,
       "PerimeterD": 72,
       "InteriorD": 49,
-      "Hustle": 86,
+      "Hustle": 85,
       "OverallImpact": 69,
       "SystemicImpact": 69,
       "Finishing": 71,
@@ -37699,7 +37699,7 @@
       "ShotDefense": 61,
       "ContestedReb": 58,
       "RebConversion": 58,
-      "LooseBalls": 97,
+      "LooseBalls": 96,
       "ChargesDrawn": 67
     },
     "rating": {
@@ -37794,7 +37794,7 @@
       "contestedShots": 9.161194029850746,
       "contested3pt": 3.653731343283582,
       "contested2pt": 5.507462686567163,
-      "boxOuts": 2.06865671641791,
+      "boxOuts": 2.2029850746268655,
       "looseBalls": 0.48358208955223875,
       "chargesDrawn": 0.13432835820895522,
       "screenAssists": 1.1014925373134328,
@@ -37837,7 +37837,7 @@
       "contested2pt": 2.05,
       "chargesDrawn": 0.05,
       "looseBalls": 0.18,
-      "boxOuts": 0.77,
+      "boxOuts": 0.82,
       "screenAssists": 0.41
     },
     "misc": {
@@ -38411,7 +38411,7 @@
     "teamId": "SAS",
     "teamName": "Free Agent",
     "position": "NBA",
-    "age": 25,
+    "age": 26,
     "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1641801.png",
     "gameLog": [],
     "stats": {
@@ -39230,7 +39230,7 @@
       "PlayCreation": 45,
       "PerimeterD": 63,
       "InteriorD": 68,
-      "Hustle": 50,
+      "Hustle": 49,
       "OverallImpact": 16,
       "SystemicImpact": 16,
       "Finishing": 22,
@@ -39253,7 +39253,7 @@
       "ShotDefense": 76,
       "ContestedReb": 10,
       "RebConversion": 10,
-      "LooseBalls": 5,
+      "LooseBalls": 4,
       "ChargesDrawn": 94
     },
     "rating": {
@@ -39299,7 +39299,7 @@
     "teamId": "CLE",
     "teamName": "Free Agent",
     "position": "NBA",
-    "age": 24,
+    "age": 25,
     "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1630596.png",
     "gameLog": [],
     "stats": {
@@ -39345,9 +39345,9 @@
       "ptsFb": 1.5799373040752351,
       "twoPA": 11.285266457680251,
       "deflections": 2.053918495297806,
-      "contestedShots": 11.63510971786834,
+      "contestedShots": 11.64639498432602,
       "contested3pt": 3.57742946708464,
-      "contested2pt": 8.057680250783699,
+      "contested2pt": 8.06896551724138,
       "boxOuts": 1.7717868338557996,
       "looseBalls": 0.5755485893416928,
       "chargesDrawn": 0,
@@ -39386,9 +39386,9 @@
     },
     "hustle": {
       "deflections": 1.82,
-      "contestedShots": 10.31,
+      "contestedShots": 10.32,
       "contested3pt": 3.17,
-      "contested2pt": 7.14,
+      "contested2pt": 7.15,
       "chargesDrawn": 0,
       "looseBalls": 0.51,
       "boxOuts": 1.57,
@@ -39674,7 +39674,7 @@
       "PlayCreation": 63,
       "PerimeterD": 57,
       "InteriorD": 43,
-      "Hustle": 54,
+      "Hustle": 53,
       "OverallImpact": 82,
       "SystemicImpact": 82,
       "Finishing": 78,
@@ -39697,7 +39697,7 @@
       "ShotDefense": 44,
       "ContestedReb": 56,
       "RebConversion": 56,
-      "LooseBalls": 61,
+      "LooseBalls": 60,
       "ChargesDrawn": 61
     },
     "rating": {
@@ -39919,7 +39919,7 @@
       "ShotDefense": 24,
       "ContestedReb": 74,
       "RebConversion": 74,
-      "LooseBalls": 39,
+      "LooseBalls": 38,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -39952,7 +39952,7 @@
         },
         "def": {
           "grade": "D",
-          "pct": 31,
+          "pct": 30,
           "raw": "118 DRTG / 2.1 DEFL",
           "label": "DEF"
         }
@@ -40898,7 +40898,7 @@
       "fg3a": 3.9230769230769234,
       "ptsFb": 2.5384615384615388,
       "twoPA": 9.230769230769232,
-      "deflections": 4.753846153846155,
+      "deflections": 4.846153846153847,
       "contestedShots": 4.430769230769231,
       "contested3pt": 1.9153846153846155,
       "contested2pt": 2.492307692307693,
@@ -40939,7 +40939,7 @@
       "rTS": 5
     },
     "hustle": {
-      "deflections": 2.06,
+      "deflections": 2.1,
       "contestedShots": 1.92,
       "contested3pt": 0.83,
       "contested2pt": 1.08,
@@ -40993,7 +40993,7 @@
       "DefRtg": 52,
       "NetRtg": 41,
       "Contested": 30,
-      "Deflections": 95,
+      "Deflections": 96,
       "PER": 82,
       "WinPct": 41,
       "WS48": 83,
@@ -41006,7 +41006,7 @@
       "PlayCreation": 60,
       "PerimeterD": 59,
       "InteriorD": 51,
-      "Hustle": 78,
+      "Hustle": 79,
       "OverallImpact": 69,
       "SystemicImpact": 69,
       "Finishing": 82,
@@ -41569,9 +41569,9 @@
       "contested3pt": 3.292105263157895,
       "contested2pt": 7.578947368421054,
       "boxOuts": 3.292105263157895,
-      "looseBalls": 0.6631578947368423,
+      "looseBalls": 0.6394736842105264,
       "chargesDrawn": 0.04736842105263159,
-      "screenAssists": 4.002631578947368,
+      "screenAssists": 4.026315789473685,
       "potentialAst": 4.2631578947368425,
       "passesMade": 39.31578947368422,
       "secondaryAst": 0,
@@ -41610,9 +41610,9 @@
       "contested3pt": 1.39,
       "contested2pt": 3.2,
       "chargesDrawn": 0.02,
-      "looseBalls": 0.28,
+      "looseBalls": 0.27,
       "boxOuts": 1.39,
-      "screenAssists": 1.69
+      "screenAssists": 1.7
     },
     "misc": {
       "ptsOffTov": 1.1,
@@ -41672,7 +41672,7 @@
       "PlayCreation": 45,
       "PerimeterD": 68,
       "InteriorD": 74,
-      "Hustle": 71,
+      "Hustle": 69,
       "OverallImpact": 80,
       "SystemicImpact": 80,
       "Finishing": 76,
@@ -41695,7 +41695,7 @@
       "ShotDefense": 52,
       "ContestedReb": 86,
       "RebConversion": 86,
-      "LooseBalls": 58,
+      "LooseBalls": 50,
       "ChargesDrawn": 69
     },
     "rating": {
@@ -41894,7 +41894,7 @@
       "PlayCreation": 6,
       "PerimeterD": 67,
       "InteriorD": 51,
-      "Hustle": 82,
+      "Hustle": 81,
       "OverallImpact": 30,
       "SystemicImpact": 30,
       "Finishing": 42,
@@ -41917,7 +41917,7 @@
       "ShotDefense": 41,
       "ContestedReb": 30,
       "RebConversion": 30,
-      "LooseBalls": 91,
+      "LooseBalls": 90,
       "ChargesDrawn": 90
     },
     "rating": {
@@ -42237,7 +42237,7 @@
       "boxOuts": 2.1636363636363636,
       "looseBalls": 0.7090909090909091,
       "chargesDrawn": 0.2545454545454546,
-      "screenAssists": 1.6727272727272728,
+      "screenAssists": 1.709090909090909,
       "potentialAst": 5.454545454545454,
       "passesMade": 36.18181818181818,
       "secondaryAst": 0.5454545454545454,
@@ -42278,7 +42278,7 @@
       "chargesDrawn": 0.14,
       "looseBalls": 0.39,
       "boxOuts": 1.19,
-      "screenAssists": 0.92
+      "screenAssists": 0.94
     },
     "misc": {
       "ptsOffTov": 0.8,
@@ -42583,7 +42583,7 @@
       "ShotDefense": 28,
       "ContestedReb": 11,
       "RebConversion": 11,
-      "LooseBalls": 58,
+      "LooseBalls": 57,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -42901,7 +42901,7 @@
       "contested3pt": 3.213658536585366,
       "contested2pt": 5.057560975609756,
       "boxOuts": 1.0360975609756098,
-      "looseBalls": 0.5795121951219513,
+      "looseBalls": 0.5443902439024391,
       "chargesDrawn": 0.10536585365853658,
       "screenAssists": 0.38634146341463416,
       "potentialAst": 7.902439024390244,
@@ -42942,7 +42942,7 @@
       "contested3pt": 1.83,
       "contested2pt": 2.88,
       "chargesDrawn": 0.06,
-      "looseBalls": 0.33,
+      "looseBalls": 0.31,
       "boxOuts": 0.59,
       "screenAssists": 0.22
     },
@@ -43004,7 +43004,7 @@
       "PlayCreation": 61,
       "PerimeterD": 68,
       "InteriorD": 57,
-      "Hustle": 59,
+      "Hustle": 58,
       "OverallImpact": 51,
       "SystemicImpact": 51,
       "Finishing": 58,
@@ -43027,7 +43027,7 @@
       "ShotDefense": 20,
       "ContestedReb": 61,
       "RebConversion": 61,
-      "LooseBalls": 37,
+      "LooseBalls": 32,
       "ChargesDrawn": 85
     },
     "rating": {
@@ -43122,10 +43122,10 @@
       "contestedShots": 4.772093023255814,
       "contested3pt": 2.1767441860465118,
       "contested2pt": 2.5953488372093023,
-      "boxOuts": 0.9069767441860466,
+      "boxOuts": 0.9209302325581395,
       "looseBalls": 0.5581395348837209,
       "chargesDrawn": 0.05581395348837209,
-      "screenAssists": 0.9488372093023256,
+      "screenAssists": 0.9627906976744186,
       "potentialAst": 4.465116279069767,
       "passesMade": 30.837209302325583,
       "secondaryAst": 0.27906976744186046,
@@ -43165,8 +43165,8 @@
       "contested2pt": 1.86,
       "chargesDrawn": 0.04,
       "looseBalls": 0.4,
-      "boxOuts": 0.65,
-      "screenAssists": 0.68
+      "boxOuts": 0.66,
+      "screenAssists": 0.69
     },
     "misc": {
       "ptsOffTov": 1.2,
@@ -45071,7 +45071,7 @@
     "teamId": "TOR",
     "teamName": "Free Agent",
     "position": "NBA",
-    "age": 26,
+    "age": 27,
     "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1630193.png",
     "gameLog": [],
     "stats": {
@@ -45224,7 +45224,7 @@
       "PlayCreation": 86,
       "PerimeterD": 55,
       "InteriorD": 37,
-      "Hustle": 40,
+      "Hustle": 41,
       "OverallImpact": 75,
       "SystemicImpact": 75,
       "Finishing": 43,
@@ -45247,7 +45247,7 @@
       "ShotDefense": 77,
       "ContestedReb": 40,
       "RebConversion": 40,
-      "LooseBalls": 29,
+      "LooseBalls": 30,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -45877,7 +45877,7 @@
       "DefRtg": 3,
       "NetRtg": 4,
       "Contested": 16,
-      "Deflections": 53,
+      "Deflections": 52,
       "PER": 53,
       "WinPct": 18,
       "WS48": 24,
@@ -45946,7 +45946,7 @@
         },
         "def": {
           "grade": "F",
-          "pct": 18,
+          "pct": 17,
           "raw": "DBPM: -1.8 / 1.5s 0.4b",
           "label": "DEFENSE"
         }
@@ -47467,7 +47467,7 @@
       "ShotDefense": 88,
       "ContestedReb": 68,
       "RebConversion": 68,
-      "LooseBalls": 22,
+      "LooseBalls": 21,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -47666,7 +47666,7 @@
       "PlayCreation": 35,
       "PerimeterD": 29,
       "InteriorD": 52,
-      "Hustle": 26,
+      "Hustle": 25,
       "OverallImpact": 65,
       "SystemicImpact": 65,
       "Finishing": 83,
@@ -47689,7 +47689,7 @@
       "ShotDefense": 75,
       "ContestedReb": 94,
       "RebConversion": 94,
-      "LooseBalls": 24,
+      "LooseBalls": 23,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -47911,7 +47911,7 @@
       "ShotDefense": 98,
       "ContestedReb": 64,
       "RebConversion": 64,
-      "LooseBalls": 79,
+      "LooseBalls": 78,
       "ChargesDrawn": 97
     },
     "rating": {
@@ -48133,7 +48133,7 @@
       "ShotDefense": 21,
       "ContestedReb": 32,
       "RebConversion": 32,
-      "LooseBalls": 66,
+      "LooseBalls": 65,
       "ChargesDrawn": 89
     },
     "rating": {
@@ -48450,7 +48450,7 @@
       "contestedShots": 6.287179487179486,
       "contested3pt": 2.112820512820513,
       "contested2pt": 4.1641025641025635,
-      "boxOuts": 0.7282051282051281,
+      "boxOuts": 0.7487179487179486,
       "looseBalls": 0.482051282051282,
       "chargesDrawn": 0,
       "screenAssists": 0.44102564102564096,
@@ -48493,7 +48493,7 @@
       "contested2pt": 4.06,
       "chargesDrawn": 0,
       "looseBalls": 0.47,
-      "boxOuts": 0.71,
+      "boxOuts": 0.73,
       "screenAssists": 0.43
     },
     "misc": {
@@ -49687,7 +49687,7 @@
       "ShotDefense": 81,
       "ContestedReb": 31,
       "RebConversion": 31,
-      "LooseBalls": 73,
+      "LooseBalls": 72,
       "ChargesDrawn": 47
     },
     "rating": {
@@ -50353,7 +50353,7 @@
       "ShotDefense": 19,
       "ContestedReb": 0,
       "RebConversion": 0,
-      "LooseBalls": 96,
+      "LooseBalls": 97,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -50888,10 +50888,10 @@
       "fg3a": 4.302788844621514,
       "ptsFb": 2.0079681274900394,
       "twoPA": 4.876494023904383,
-      "deflections": 4.474900398406374,
-      "contestedShots": 5.564940239043824,
+      "deflections": 4.489243027888445,
+      "contestedShots": 5.579282868525896,
       "contested3pt": 2.337848605577689,
-      "contested2pt": 3.212749003984064,
+      "contested2pt": 3.2414342629482067,
       "boxOuts": 0.745816733067729,
       "looseBalls": 0.7745019920318724,
       "chargesDrawn": 0.028685258964143423,
@@ -50929,10 +50929,10 @@
       "rTS": -1.1
     },
     "hustle": {
-      "deflections": 3.12,
-      "contestedShots": 3.88,
+      "deflections": 3.13,
+      "contestedShots": 3.89,
       "contested3pt": 1.63,
-      "contested2pt": 2.24,
+      "contested2pt": 2.26,
       "chargesDrawn": 0.02,
       "looseBalls": 0.54,
       "boxOuts": 0.52,
@@ -50982,7 +50982,7 @@
       "OffRtg": 75,
       "DefRtg": 26,
       "NetRtg": 51,
-      "Contested": 53,
+      "Contested": 54,
       "Deflections": 92,
       "PER": 27,
       "WinPct": 81,
@@ -51337,7 +51337,7 @@
       "contested3pt": 1.9748571428571426,
       "contested2pt": 1.1417142857142857,
       "boxOuts": 0.2057142857142857,
-      "looseBalls": 0.5657142857142857,
+      "looseBalls": 0.5554285714285714,
       "chargesDrawn": 0.40114285714285713,
       "screenAssists": 0.42171428571428565,
       "potentialAst": 12.034285714285712,
@@ -51378,7 +51378,7 @@
       "contested3pt": 1.92,
       "contested2pt": 1.11,
       "chargesDrawn": 0.39,
-      "looseBalls": 0.55,
+      "looseBalls": 0.54,
       "boxOuts": 0.2,
       "screenAssists": 0.41
     },
@@ -51463,7 +51463,7 @@
       "ShotDefense": 41,
       "ContestedReb": 14,
       "RebConversion": 14,
-      "LooseBalls": 34,
+      "LooseBalls": 33,
       "ChargesDrawn": 99
     },
     "rating": {
@@ -51559,9 +51559,9 @@
       "contested3pt": 3.4340425531914893,
       "contested2pt": 7.582978723404256,
       "boxOuts": 3.0638297872340425,
-      "looseBalls": 1.021276595744681,
+      "looseBalls": 1.0595744680851065,
       "chargesDrawn": 0,
-      "screenAssists": 3.3574468085106384,
+      "screenAssists": 3.395744680851064,
       "potentialAst": 4.340425531914894,
       "passesMade": 42.12765957446809,
       "secondaryAst": 0.25531914893617025,
@@ -51600,9 +51600,9 @@
       "contested3pt": 2.69,
       "contested2pt": 5.94,
       "chargesDrawn": 0,
-      "looseBalls": 0.8,
+      "looseBalls": 0.83,
       "boxOuts": 2.4,
-      "screenAssists": 2.63
+      "screenAssists": 2.66
     },
     "misc": {
       "ptsOffTov": 2.7,
@@ -51662,7 +51662,7 @@
       "PlayCreation": 31,
       "PerimeterD": 62,
       "InteriorD": 69,
-      "Hustle": 53,
+      "Hustle": 54,
       "OverallImpact": 97,
       "SystemicImpact": 97,
       "Finishing": 85,
@@ -51685,7 +51685,7 @@
       "ShotDefense": 66,
       "ContestedReb": 94,
       "RebConversion": 94,
-      "LooseBalls": 94,
+      "LooseBalls": 95,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -52002,7 +52002,7 @@
       "contestedShots": 4.868181818181818,
       "contested3pt": 2.0045454545454544,
       "contested2pt": 2.8738636363636365,
-      "boxOuts": 0.6647727272727273,
+      "boxOuts": 0.6852272727272728,
       "looseBalls": 0.45,
       "chargesDrawn": 0.03068181818181818,
       "screenAssists": 0.6545454545454545,
@@ -52045,7 +52045,7 @@
       "contested2pt": 2.81,
       "chargesDrawn": 0.03,
       "looseBalls": 0.44,
-      "boxOuts": 0.65,
+      "boxOuts": 0.67,
       "screenAssists": 0.64
     },
     "misc": {
@@ -52092,7 +52092,7 @@
       "OffRtg": 72,
       "DefRtg": 63,
       "NetRtg": 69,
-      "Contested": 40,
+      "Contested": 41,
       "Deflections": 50,
       "PER": 91,
       "WinPct": 69,
@@ -52135,7 +52135,7 @@
     "rating": {
       "ovr": 85,
       "off": 82,
-      "def": 61,
+      "def": 62,
       "rebounding": 82,
       "tier": "Gold",
       "color": "#ffd700",
@@ -52328,7 +52328,7 @@
       "PlayCreation": 75,
       "PerimeterD": 46,
       "InteriorD": 44,
-      "Hustle": 30,
+      "Hustle": 29,
       "OverallImpact": 30,
       "SystemicImpact": 30,
       "Finishing": 22,
@@ -52351,7 +52351,7 @@
       "ShotDefense": 97,
       "ContestedReb": 47,
       "RebConversion": 47,
-      "LooseBalls": 37,
+      "LooseBalls": 36,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -52443,9 +52443,9 @@
       "ptsFb": 1.3556485355648538,
       "twoPA": 4.217573221757323,
       "deflections": 3.8259414225941426,
-      "contestedShots": 9.037656903765692,
+      "contestedShots": 9.158158995815901,
       "contested3pt": 2.892050209205021,
-      "contested2pt": 6.14560669456067,
+      "contested2pt": 6.251046025104603,
       "boxOuts": 0.4669456066945607,
       "looseBalls": 0.22594142259414227,
       "chargesDrawn": 0.12050209205020922,
@@ -52484,9 +52484,9 @@
     },
     "hustle": {
       "deflections": 2.54,
-      "contestedShots": 6,
+      "contestedShots": 6.08,
       "contested3pt": 1.92,
-      "contested2pt": 4.08,
+      "contested2pt": 4.15,
       "chargesDrawn": 0.08,
       "looseBalls": 0.15,
       "boxOuts": 0.31,
@@ -52886,12 +52886,12 @@
       "fg3a": 8.217391304347826,
       "ptsFb": 2.8695652173913047,
       "twoPA": 6.652173913043479,
-      "deflections": 4.369565217391305,
+      "deflections": 4.395652173913044,
       "contestedShots": 4.121739130434783,
       "contested3pt": 1.8521739130434782,
       "contested2pt": 2.2695652173913046,
       "boxOuts": 0.32608695652173914,
-      "looseBalls": 0.9652173913043478,
+      "looseBalls": 1.0043478260869565,
       "chargesDrawn": 0.14347826086956522,
       "screenAssists": 0.30000000000000004,
       "potentialAst": 11.08695652173913,
@@ -52927,12 +52927,12 @@
       "rTS": -2.1
     },
     "hustle": {
-      "deflections": 3.35,
+      "deflections": 3.37,
       "contestedShots": 3.16,
       "contested3pt": 1.42,
       "contested2pt": 1.74,
       "chargesDrawn": 0.11,
-      "looseBalls": 0.74,
+      "looseBalls": 0.77,
       "boxOuts": 0.25,
       "screenAssists": 0.23
     },
@@ -53017,7 +53017,7 @@
       "ShotDefense": 31,
       "ContestedReb": 45,
       "RebConversion": 45,
-      "LooseBalls": 91,
+      "LooseBalls": 92,
       "ChargesDrawn": 92
     },
     "rating": {
@@ -53424,7 +53424,7 @@
       "OffRtg": 3,
       "DefRtg": 32,
       "NetRtg": 10,
-      "Contested": 35,
+      "Contested": 36,
       "Deflections": 39,
       "PER": 5,
       "WinPct": 4,
@@ -53461,7 +53461,7 @@
       "ShotDefense": 5,
       "ContestedReb": 44,
       "RebConversion": 44,
-      "LooseBalls": 34,
+      "LooseBalls": 35,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -53556,10 +53556,10 @@
       "contestedShots": 8.062809917355372,
       "contested3pt": 3.391735537190083,
       "contested2pt": 4.67107438016529,
-      "boxOuts": 0.8628099173553719,
+      "boxOuts": 0.922314049586777,
       "looseBalls": 0.1785123966942149,
       "chargesDrawn": 0,
-      "screenAssists": 0.5950413223140497,
+      "screenAssists": 0.7735537190082645,
       "potentialAst": 2.9752066115702482,
       "passesMade": 27.371900826446282,
       "secondaryAst": 0.29752066115702486,
@@ -53599,8 +53599,8 @@
       "contested2pt": 1.57,
       "chargesDrawn": 0,
       "looseBalls": 0.06,
-      "boxOuts": 0.29,
-      "screenAssists": 0.2
+      "boxOuts": 0.31,
+      "screenAssists": 0.26
     },
     "misc": {
       "ptsOffTov": 1.4,
@@ -53660,7 +53660,7 @@
       "PlayCreation": 16,
       "PerimeterD": 54,
       "InteriorD": 51,
-      "Hustle": 39,
+      "Hustle": 40,
       "OverallImpact": 44,
       "SystemicImpact": 44,
       "Finishing": 46,
@@ -54885,11 +54885,11 @@
       "ptsFb": 2.4466019417475726,
       "twoPA": 4.718446601941747,
       "deflections": 4.491262135922329,
-      "contestedShots": 6.745631067961164,
+      "contestedShots": 6.7805825242718445,
       "contested3pt": 2.6388349514563103,
-      "contested2pt": 4.106796116504854,
+      "contested2pt": 4.141747572815534,
       "boxOuts": 0.3844660194174757,
-      "looseBalls": 0.5766990291262136,
+      "looseBalls": 0.6116504854368932,
       "chargesDrawn": 0.13980582524271845,
       "screenAssists": 0.5067961165048543,
       "potentialAst": 3.8446601941747574,
@@ -54926,11 +54926,11 @@
     },
     "hustle": {
       "deflections": 2.57,
-      "contestedShots": 3.86,
+      "contestedShots": 3.88,
       "contested3pt": 1.51,
-      "contested2pt": 2.35,
+      "contested2pt": 2.37,
       "chargesDrawn": 0.08,
-      "looseBalls": 0.33,
+      "looseBalls": 0.35,
       "boxOuts": 0.22,
       "screenAssists": 0.29
     },
@@ -54992,7 +54992,7 @@
       "PlayCreation": 21,
       "PerimeterD": 56,
       "InteriorD": 55,
-      "Hustle": 69,
+      "Hustle": 71,
       "OverallImpact": 20,
       "SystemicImpact": 20,
       "Finishing": 45,
@@ -55015,7 +55015,7 @@
       "ShotDefense": 12,
       "ContestedReb": 64,
       "RebConversion": 64,
-      "LooseBalls": 36,
+      "LooseBalls": 43,
       "ChargesDrawn": 92
     },
     "rating": {
@@ -55048,7 +55048,7 @@
         },
         "def": {
           "grade": "C",
-          "pct": 41,
+          "pct": 42,
           "raw": "DBPM: -0.5 / 1.9s 0.9b",
           "label": "DEFENSE"
         }
@@ -55550,7 +55550,7 @@
       "fg3a": 7.907514450867051,
       "ptsFb": 2.497109826589595,
       "twoPA": 7.075144508670521,
-      "deflections": 2.143352601156069,
+      "deflections": 2.184971098265896,
       "contestedShots": 4.806936416184971,
       "contested3pt": 2.2890173410404624,
       "contested2pt": 2.5179190751445084,
@@ -55591,7 +55591,7 @@
       "rTS": -3.1
     },
     "hustle": {
-      "deflections": 1.03,
+      "deflections": 1.05,
       "contestedShots": 2.31,
       "contested3pt": 1.1,
       "contested2pt": 1.21,
@@ -55645,7 +55645,7 @@
       "DefRtg": 88,
       "NetRtg": 77,
       "Contested": 38,
-      "Deflections": 32,
+      "Deflections": 33,
       "PER": 23,
       "WinPct": 89,
       "WS48": 27,
@@ -55656,7 +55656,7 @@
       "FtPct": 84,
       "ScoringIndex": 48,
       "PlayCreation": 36,
-      "PerimeterD": 57,
+      "PerimeterD": 58,
       "InteriorD": 47,
       "Hustle": 58,
       "OverallImpact": 37,
@@ -55995,10 +55995,10 @@
       "ptsFb": 1.2485549132947975,
       "twoPA": 4.578034682080925,
       "deflections": 3.3919075144508666,
-      "contestedShots": 4.494797687861271,
+      "contestedShots": 4.515606936416185,
       "contested3pt": 1.3942196531791908,
-      "contested2pt": 3.100578034682081,
-      "boxOuts": 0.7699421965317919,
+      "contested2pt": 3.142196531791907,
+      "boxOuts": 0.7907514450867051,
       "looseBalls": 1.061271676300578,
       "chargesDrawn": 0,
       "screenAssists": 1.4774566473988437,
@@ -56036,12 +56036,12 @@
     },
     "hustle": {
       "deflections": 1.63,
-      "contestedShots": 2.16,
+      "contestedShots": 2.17,
       "contested3pt": 0.67,
-      "contested2pt": 1.49,
+      "contested2pt": 1.51,
       "chargesDrawn": 0,
       "looseBalls": 0.51,
-      "boxOuts": 0.37,
+      "boxOuts": 0.38,
       "screenAssists": 0.71
     },
     "misc": {
@@ -56661,8 +56661,8 @@
       "ptsFb": 3.207920792079208,
       "twoPA": 6.237623762376238,
       "deflections": 3.510891089108911,
-      "contestedShots": 5.114851485148515,
-      "contested3pt": 3.2792079207920795,
+      "contestedShots": 5.061386138613861,
+      "contested3pt": 3.243564356435644,
       "contested2pt": 1.8356435643564357,
       "boxOuts": 0.2316831683168317,
       "looseBalls": 0.6594059405940594,
@@ -56702,8 +56702,8 @@
     },
     "hustle": {
       "deflections": 1.97,
-      "contestedShots": 2.87,
-      "contested3pt": 1.84,
+      "contestedShots": 2.84,
+      "contested3pt": 1.82,
       "contested2pt": 1.03,
       "chargesDrawn": 0,
       "looseBalls": 0.37,
@@ -56754,7 +56754,7 @@
       "OffRtg": 39,
       "DefRtg": 20,
       "NetRtg": 26,
-      "Contested": 47,
+      "Contested": 45,
       "Deflections": 82,
       "PER": 66,
       "WinPct": 25,
@@ -56791,7 +56791,7 @@
       "ShotDefense": 75,
       "ContestedReb": 40,
       "RebConversion": 40,
-      "LooseBalls": 57,
+      "LooseBalls": 56,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -57333,7 +57333,7 @@
       "boxOuts": 1.4360655737704917,
       "looseBalls": 0.47213114754098356,
       "chargesDrawn": 0.03934426229508197,
-      "screenAssists": 4.229508196721311,
+      "screenAssists": 4.268852459016394,
       "potentialAst": 2.7540983606557377,
       "passesMade": 28.721311475409834,
       "secondaryAst": 0.19672131147540983,
@@ -57374,7 +57374,7 @@
       "chargesDrawn": 0.02,
       "looseBalls": 0.24,
       "boxOuts": 0.73,
-      "screenAssists": 2.15
+      "screenAssists": 2.17
     },
     "misc": {
       "ptsOffTov": 1.1,
@@ -57679,7 +57679,7 @@
       "ShotDefense": 69,
       "ContestedReb": 68,
       "RebConversion": 68,
-      "LooseBalls": 15,
+      "LooseBalls": 14,
       "ChargesDrawn": 53
     },
     "rating": {
@@ -57771,8 +57771,8 @@
       "ptsFb": 3.7674418604651168,
       "twoPA": 16.74418604651163,
       "deflections": 1.8837209302325584,
-      "contestedShots": 4.876744186046512,
-      "contested3pt": 3.0034883720930234,
+      "contestedShots": 4.866279069767443,
+      "contested3pt": 2.9930232558139536,
       "contested2pt": 1.8732558139534885,
       "boxOuts": 0.7534883720930233,
       "looseBalls": 0.858139534883721,
@@ -57812,8 +57812,8 @@
     },
     "hustle": {
       "deflections": 1.8,
-      "contestedShots": 4.66,
-      "contested3pt": 2.87,
+      "contestedShots": 4.65,
+      "contested3pt": 2.86,
       "contested2pt": 1.79,
       "chargesDrawn": 0.01,
       "looseBalls": 0.82,
@@ -57864,7 +57864,7 @@
       "OffRtg": 93,
       "DefRtg": 57,
       "NetRtg": 85,
-      "Contested": 41,
+      "Contested": 40,
       "Deflections": 20,
       "PER": 96,
       "WinPct": 84,
@@ -57878,7 +57878,7 @@
       "PlayCreation": 81,
       "PerimeterD": 50,
       "InteriorD": 47,
-      "Hustle": 46,
+      "Hustle": 47,
       "OverallImpact": 92,
       "SystemicImpact": 92,
       "Finishing": 78,
@@ -57901,7 +57901,7 @@
       "ShotDefense": 97,
       "ContestedReb": 78,
       "RebConversion": 78,
-      "LooseBalls": 84,
+      "LooseBalls": 85,
       "ChargesDrawn": 46
     },
     "rating": {
@@ -58345,7 +58345,7 @@
       "ShotDefense": 51,
       "ContestedReb": 20,
       "RebConversion": 20,
-      "LooseBalls": 60,
+      "LooseBalls": 59,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -58789,7 +58789,7 @@
       "ShotDefense": 89,
       "ContestedReb": 49,
       "RebConversion": 49,
-      "LooseBalls": 60,
+      "LooseBalls": 59,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -59107,7 +59107,7 @@
       "contested3pt": 1.998773006134969,
       "contested2pt": 1.1705521472392637,
       "boxOuts": 0.6184049079754601,
-      "looseBalls": 0.2760736196319018,
+      "looseBalls": 0.34233128834355825,
       "chargesDrawn": 0,
       "screenAssists": 0.6957055214723925,
       "potentialAst": 11.153374233128833,
@@ -59148,7 +59148,7 @@
       "contested3pt": 1.81,
       "contested2pt": 1.06,
       "chargesDrawn": 0,
-      "looseBalls": 0.25,
+      "looseBalls": 0.31,
       "boxOuts": 0.56,
       "screenAssists": 0.63
     },
@@ -59197,7 +59197,7 @@
       "DefRtg": 80,
       "NetRtg": 93,
       "Contested": 7,
-      "Deflections": 38,
+      "Deflections": 37,
       "PER": 90,
       "WinPct": 99,
       "WS48": 83,
@@ -59210,7 +59210,7 @@
       "PlayCreation": 83,
       "PerimeterD": 59,
       "InteriorD": 36,
-      "Hustle": 28,
+      "Hustle": 29,
       "OverallImpact": 94,
       "SystemicImpact": 94,
       "Finishing": 54,
@@ -59233,7 +59233,7 @@
       "ShotDefense": 99,
       "ContestedReb": 99,
       "RebConversion": 99,
-      "LooseBalls": 4,
+      "LooseBalls": 6,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -60661,7 +60661,7 @@
       "contested3pt": 1.8,
       "contested2pt": 4.085714285714285,
       "boxOuts": 0.5714285714285715,
-      "looseBalls": 0.6285714285714286,
+      "looseBalls": 0.6857142857142857,
       "chargesDrawn": 0,
       "screenAssists": 0.2285714285714286,
       "potentialAst": 4.571428571428572,
@@ -60702,7 +60702,7 @@
       "contested3pt": 0.63,
       "contested2pt": 1.43,
       "chargesDrawn": 0,
-      "looseBalls": 0.22,
+      "looseBalls": 0.24,
       "boxOuts": 0.2,
       "screenAssists": 0.08
     },
@@ -60764,7 +60764,7 @@
       "PlayCreation": 24,
       "PerimeterD": 25,
       "InteriorD": 52,
-      "Hustle": 28,
+      "Hustle": 33,
       "OverallImpact": 23,
       "SystemicImpact": 23,
       "Finishing": 32,
@@ -60787,7 +60787,7 @@
       "ShotDefense": 33,
       "ContestedReb": 24,
       "RebConversion": 24,
-      "LooseBalls": 47,
+      "LooseBalls": 63,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -60882,8 +60882,8 @@
       "contestedShots": 4.719512195121951,
       "contested3pt": 2.8975609756097565,
       "contested2pt": 1.8219512195121952,
-      "boxOuts": 0.4609756097560976,
-      "looseBalls": 0.5707317073170732,
+      "boxOuts": 0.5048780487804879,
+      "looseBalls": 0.6146341463414635,
       "chargesDrawn": 0,
       "screenAssists": 0.1975609756097561,
       "potentialAst": 6.365853658536586,
@@ -60924,8 +60924,8 @@
       "contested3pt": 1.32,
       "contested2pt": 0.83,
       "chargesDrawn": 0,
-      "looseBalls": 0.26,
-      "boxOuts": 0.21,
+      "looseBalls": 0.28,
+      "boxOuts": 0.23,
       "screenAssists": 0.09
     },
     "misc": {
@@ -60986,7 +60986,7 @@
       "PlayCreation": 52,
       "PerimeterD": 57,
       "InteriorD": 47,
-      "Hustle": 50,
+      "Hustle": 53,
       "OverallImpact": 25,
       "SystemicImpact": 25,
       "Finishing": 17,
@@ -61009,7 +61009,7 @@
       "ShotDefense": 75,
       "ContestedReb": 17,
       "RebConversion": 17,
-      "LooseBalls": 35,
+      "LooseBalls": 44,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -62656,8 +62656,8 @@
       "twoPA": 2.03076923076923,
       "deflections": 1.5692307692307692,
       "contestedShots": 5.686153846153847,
-      "contested3pt": 2.4184615384615387,
-      "contested2pt": 3.267692307692308,
+      "contested3pt": 2.270769230769231,
+      "contested2pt": 3.4153846153846157,
       "boxOuts": 0.27692307692307694,
       "looseBalls": 0.5723076923076923,
       "chargesDrawn": 0,
@@ -62697,8 +62697,8 @@
     "hustle": {
       "deflections": 0.85,
       "contestedShots": 3.08,
-      "contested3pt": 1.31,
-      "contested2pt": 1.77,
+      "contested3pt": 1.23,
+      "contested2pt": 1.85,
       "chargesDrawn": 0,
       "looseBalls": 0.31,
       "boxOuts": 0.15,
@@ -62760,7 +62760,7 @@
       "FtPct": 81,
       "ScoringIndex": 56,
       "PlayCreation": 3,
-      "PerimeterD": 46,
+      "PerimeterD": 45,
       "InteriorD": 62,
       "Hustle": 27,
       "OverallImpact": 27,
@@ -64117,7 +64117,7 @@
       "ShotDefense": 98,
       "ContestedReb": 78,
       "RebConversion": 78,
-      "LooseBalls": 4,
+      "LooseBalls": 3,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -64209,9 +64209,9 @@
       "ptsFb": 2.805194805194805,
       "twoPA": 10.12987012987013,
       "deflections": 2.898701298701299,
-      "contestedShots": 5.797402597402598,
+      "contestedShots": 5.75064935064935,
       "contested3pt": 2.212987012987013,
-      "contested2pt": 3.5999999999999996,
+      "contested2pt": 3.5532467532467527,
       "boxOuts": 0.6857142857142856,
       "looseBalls": 0.6545454545454544,
       "chargesDrawn": 0.04675324675324675,
@@ -64250,9 +64250,9 @@
     },
     "hustle": {
       "deflections": 1.86,
-      "contestedShots": 3.72,
+      "contestedShots": 3.69,
       "contested3pt": 1.42,
-      "contested2pt": 2.31,
+      "contested2pt": 2.28,
       "chargesDrawn": 0.03,
       "looseBalls": 0.42,
       "boxOuts": 0.44,
@@ -64783,7 +64783,7 @@
       "ShotDefense": 20,
       "ContestedReb": 1,
       "RebConversion": 1,
-      "LooseBalls": 51,
+      "LooseBalls": 52,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -64878,7 +64878,7 @@
       "contestedShots": 3.5200000000000005,
       "contested3pt": 1.584,
       "contested2pt": 1.936,
-      "boxOuts": 0.784,
+      "boxOuts": 0.752,
       "looseBalls": 1.008,
       "chargesDrawn": 0.016,
       "screenAssists": 0.46399999999999997,
@@ -64921,7 +64921,7 @@
       "contested2pt": 1.21,
       "chargesDrawn": 0.01,
       "looseBalls": 0.63,
-      "boxOuts": 0.49,
+      "boxOuts": 0.47,
       "screenAssists": 0.29
     },
     "misc": {
@@ -65005,7 +65005,7 @@
       "ShotDefense": 43,
       "ContestedReb": 55,
       "RebConversion": 55,
-      "LooseBalls": 93,
+      "LooseBalls": 92,
       "ChargesDrawn": 52
     },
     "rating": {
@@ -65322,7 +65322,7 @@
       "contestedShots": 5.625,
       "contested3pt": 2.19375,
       "contested2pt": 3.43125,
-      "boxOuts": 0.33749999999999997,
+      "boxOuts": 0.5625,
       "looseBalls": 0.5625,
       "chargesDrawn": 0,
       "screenAssists": 1.6312499999999999,
@@ -65365,7 +65365,7 @@
       "contested2pt": 0.61,
       "chargesDrawn": 0,
       "looseBalls": 0.1,
-      "boxOuts": 0.06,
+      "boxOuts": 0.1,
       "screenAssists": 0.29
     },
     "misc": {
@@ -65426,7 +65426,7 @@
       "PlayCreation": 73,
       "PerimeterD": 66,
       "InteriorD": 42,
-      "Hustle": 61,
+      "Hustle": 62,
       "OverallImpact": 36,
       "SystemicImpact": 36,
       "Finishing": 25,
@@ -65671,7 +65671,7 @@
       "ShotDefense": 54,
       "ContestedReb": 29,
       "RebConversion": 29,
-      "LooseBalls": 25,
+      "LooseBalls": 24,
       "ChargesDrawn": 58
     },
     "rating": {
@@ -65717,7 +65717,7 @@
     "teamId": "NOP",
     "teamName": "Free Agent",
     "position": "NBA",
-    "age": 26,
+    "age": 27,
     "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1629673.png",
     "gameLog": [],
     "stats": {
@@ -66078,7 +66078,7 @@
       "OffRtg": 85,
       "DefRtg": 60,
       "NetRtg": 78,
-      "Contested": 61,
+      "Contested": 60,
       "Deflections": 84,
       "PER": 39,
       "WinPct": 87,
@@ -66121,7 +66121,7 @@
     "rating": {
       "ovr": 72,
       "off": 60,
-      "def": 71,
+      "def": 70,
       "rebounding": 73,
       "tier": "Bronze",
       "color": "#cd7f32",
@@ -66148,7 +66148,7 @@
         },
         "def": {
           "grade": "B",
-          "pct": 70,
+          "pct": 69,
           "raw": "DBPM: +1.6 / 1.4s 1.0b",
           "label": "DEFENSE"
         }
@@ -66781,7 +66781,7 @@
       "ShotDefense": 99,
       "ContestedReb": 3,
       "RebConversion": 3,
-      "LooseBalls": 92,
+      "LooseBalls": 91,
       "ChargesDrawn": 68
     },
     "rating": {
@@ -66877,9 +66877,9 @@
       "contested3pt": 3.6,
       "contested2pt": 2.7059602649006624,
       "boxOuts": 0.5364238410596027,
-      "looseBalls": 0.9894039735099338,
+      "looseBalls": 1.0132450331125828,
       "chargesDrawn": 0.05960264900662252,
-      "screenAssists": 0.9894039735099338,
+      "screenAssists": 1.0251655629139074,
       "potentialAst": 9.417218543046358,
       "passesMade": 54.2384105960265,
       "secondaryAst": 0.5960264900662252,
@@ -66918,9 +66918,9 @@
       "contested3pt": 3.02,
       "contested2pt": 2.27,
       "chargesDrawn": 0.05,
-      "looseBalls": 0.83,
+      "looseBalls": 0.85,
       "boxOuts": 0.45,
-      "screenAssists": 0.83
+      "screenAssists": 0.86
     },
     "misc": {
       "ptsOffTov": 2.3,
@@ -67003,7 +67003,7 @@
       "ShotDefense": 33,
       "ContestedReb": 88,
       "RebConversion": 88,
-      "LooseBalls": 92,
+      "LooseBalls": 93,
       "ChargesDrawn": 75
     },
     "rating": {
@@ -67189,7 +67189,7 @@
       "DefRtg": 68,
       "NetRtg": 50,
       "Contested": 72,
-      "Deflections": 96,
+      "Deflections": 95,
       "PER": 65,
       "WinPct": 43,
       "WS48": 78,
@@ -67983,9 +67983,9 @@
       "ptsFb": 2.4782608695652173,
       "twoPA": 2.8695652173913047,
       "deflections": 1.9695652173913043,
-      "contestedShots": 5.165217391304348,
+      "contestedShots": 5.1521739130434785,
       "contested3pt": 1.9304347826086956,
-      "contested2pt": 3.247826086956522,
+      "contested2pt": 3.234782608695652,
       "boxOuts": 0.7434782608695651,
       "looseBalls": 0.6782608695652175,
       "chargesDrawn": 0,
@@ -68024,9 +68024,9 @@
     },
     "hustle": {
       "deflections": 1.51,
-      "contestedShots": 3.96,
+      "contestedShots": 3.95,
       "contested3pt": 1.48,
-      "contested2pt": 2.49,
+      "contested2pt": 2.48,
       "chargesDrawn": 0,
       "looseBalls": 0.52,
       "boxOuts": 0.57,
@@ -68113,7 +68113,7 @@
       "ShotDefense": 41,
       "ContestedReb": 81,
       "RebConversion": 81,
-      "LooseBalls": 63,
+      "LooseBalls": 62,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -68557,7 +68557,7 @@
       "ShotDefense": 17,
       "ContestedReb": 89,
       "RebConversion": 89,
-      "LooseBalls": 69,
+      "LooseBalls": 68,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -68964,7 +68964,7 @@
       "OffRtg": 81,
       "DefRtg": 56,
       "NetRtg": 75,
-      "Contested": 46,
+      "Contested": 47,
       "Deflections": 41,
       "PER": 83,
       "WinPct": 71,
@@ -69092,7 +69092,7 @@
       "fg3a": 4.32,
       "ptsFb": 2.16,
       "twoPA": 7.740000000000001,
-      "deflections": 3.456,
+      "deflections": 3.492,
       "contestedShots": 6.354,
       "contested3pt": 2.556,
       "contested2pt": 3.798,
@@ -69133,7 +69133,7 @@
       "rTS": 0.7
     },
     "hustle": {
-      "deflections": 1.92,
+      "deflections": 1.94,
       "contestedShots": 3.53,
       "contested3pt": 1.42,
       "contested2pt": 2.11,
@@ -70431,7 +70431,7 @@
       "boxOuts": 2.7058064516129035,
       "looseBalls": 0.6503225806451614,
       "chargesDrawn": 0.03483870967741936,
-      "screenAssists": 2.101935483870968,
+      "screenAssists": 2.1367741935483875,
       "potentialAst": 5.225806451612904,
       "passesMade": 37.39354838709678,
       "secondaryAst": 0.34838709677419355,
@@ -70472,7 +70472,7 @@
       "chargesDrawn": 0.03,
       "looseBalls": 0.56,
       "boxOuts": 2.33,
-      "screenAssists": 1.81
+      "screenAssists": 1.84
     },
     "misc": {
       "ptsOffTov": 2.9,
@@ -70555,7 +70555,7 @@
       "ShotDefense": 49,
       "ContestedReb": 99,
       "RebConversion": 99,
-      "LooseBalls": 52,
+      "LooseBalls": 53,
       "ChargesDrawn": 61
     },
     "rating": {
@@ -70868,10 +70868,10 @@
       "fg3a": 5.865168539325842,
       "ptsFb": 1.8202247191011236,
       "twoPA": 3.2359550561797756,
-      "deflections": 3.539325842696629,
-      "contestedShots": 6.391011235955057,
+      "deflections": 3.498876404494382,
+      "contestedShots": 6.3505617977528095,
       "contested3pt": 3.1348314606741576,
-      "contested2pt": 3.256179775280899,
+      "contested2pt": 3.215730337078652,
       "boxOuts": 0.4449438202247191,
       "looseBalls": 0.9505617977528089,
       "chargesDrawn": 0.12134831460674157,
@@ -70909,10 +70909,10 @@
       "rTS": 3.2
     },
     "hustle": {
-      "deflections": 1.75,
-      "contestedShots": 3.16,
+      "deflections": 1.73,
+      "contestedShots": 3.14,
       "contested3pt": 1.55,
-      "contested2pt": 1.61,
+      "contested2pt": 1.59,
       "chargesDrawn": 0.06,
       "looseBalls": 0.47,
       "boxOuts": 0.22,
@@ -70963,7 +70963,7 @@
       "DefRtg": 59,
       "NetRtg": 67,
       "Contested": 66,
-      "Deflections": 83,
+      "Deflections": 81,
       "PER": 27,
       "WinPct": 53,
       "WS48": 60,
@@ -70976,7 +70976,7 @@
       "PlayCreation": 71,
       "PerimeterD": 61,
       "InteriorD": 40,
-      "Hustle": 77,
+      "Hustle": 76,
       "OverallImpact": 41,
       "SystemicImpact": 41,
       "Finishing": 19,
@@ -70999,7 +70999,7 @@
       "ShotDefense": 52,
       "ContestedReb": 31,
       "RebConversion": 31,
-      "LooseBalls": 90,
+      "LooseBalls": 89,
       "ChargesDrawn": 88
     },
     "rating": {
@@ -71317,7 +71317,7 @@
       "contested3pt": 4.348514851485149,
       "contested2pt": 3.314851485148515,
       "boxOuts": 0.9623762376237625,
-      "looseBalls": 1.1405940594059407,
+      "looseBalls": 1.0336633663366337,
       "chargesDrawn": 0,
       "screenAssists": 0.5346534653465347,
       "potentialAst": 13.544554455445544,
@@ -71358,7 +71358,7 @@
       "contested3pt": 1.22,
       "contested2pt": 0.93,
       "chargesDrawn": 0,
-      "looseBalls": 0.32,
+      "looseBalls": 0.29,
       "boxOuts": 0.27,
       "screenAssists": 0.15
     },
@@ -71420,7 +71420,7 @@
       "PlayCreation": 86,
       "PerimeterD": 73,
       "InteriorD": 56,
-      "Hustle": 73,
+      "Hustle": 72,
       "OverallImpact": 18,
       "SystemicImpact": 18,
       "Finishing": 22,
@@ -71443,7 +71443,7 @@
       "ShotDefense": 41,
       "ContestedReb": 28,
       "RebConversion": 28,
-      "LooseBalls": 98,
+      "LooseBalls": 94,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -71665,7 +71665,7 @@
       "ShotDefense": 7,
       "ContestedReb": 50,
       "RebConversion": 50,
-      "LooseBalls": 41,
+      "LooseBalls": 40,
       "ChargesDrawn": 65
     },
     "rating": {
@@ -72423,10 +72423,10 @@
       "ptsFb": 2.4,
       "twoPA": 6.9714285714285715,
       "deflections": 4.845714285714286,
-      "contestedShots": 4.045714285714285,
-      "contested3pt": 1.9428571428571426,
+      "contestedShots": 4.022857142857142,
+      "contested3pt": 1.92,
       "contested2pt": 2.1028571428571428,
-      "boxOuts": 0.41142857142857137,
+      "boxOuts": 0.4342857142857143,
       "looseBalls": 0.64,
       "chargesDrawn": 0,
       "screenAssists": 0.29714285714285715,
@@ -72464,12 +72464,12 @@
     },
     "hustle": {
       "deflections": 4.24,
-      "contestedShots": 3.54,
-      "contested3pt": 1.7,
+      "contestedShots": 3.52,
+      "contested3pt": 1.68,
       "contested2pt": 1.84,
       "chargesDrawn": 0,
       "looseBalls": 0.56,
-      "boxOuts": 0.36,
+      "boxOuts": 0.38,
       "screenAssists": 0.26
     },
     "misc": {
@@ -72516,7 +72516,7 @@
       "OffRtg": 71,
       "DefRtg": 22,
       "NetRtg": 43,
-      "Contested": 23,
+      "Contested": 22,
       "Deflections": 96,
       "PER": 37,
       "WinPct": 56,
@@ -72586,7 +72586,7 @@
         },
         "def": {
           "grade": "C",
-          "pct": 43,
+          "pct": 42,
           "raw": "DBPM: -0.1 / 1.6s 0.6b",
           "label": "DEFENSE"
         }
@@ -72775,7 +72775,7 @@
       "ShotDefense": 41,
       "ContestedReb": 20,
       "RebConversion": 20,
-      "LooseBalls": 44,
+      "LooseBalls": 43,
       "ChargesDrawn": 84
     },
     "rating": {
@@ -72808,7 +72808,7 @@
         },
         "def": {
           "grade": "F",
-          "pct": 20,
+          "pct": 19,
           "raw": "DBPM: -3.1 / 1.1s 0.2b",
           "label": "DEFENSE"
         }
@@ -72974,7 +72974,7 @@
       "PlayCreation": 48,
       "PerimeterD": 68,
       "InteriorD": 43,
-      "Hustle": 66,
+      "Hustle": 65,
       "OverallImpact": 57,
       "SystemicImpact": 57,
       "Finishing": 44,
@@ -72997,7 +72997,7 @@
       "ShotDefense": 7,
       "ContestedReb": 69,
       "RebConversion": 69,
-      "LooseBalls": 23,
+      "LooseBalls": 22,
       "ChargesDrawn": 97
     },
     "rating": {
@@ -73311,11 +73311,11 @@
       "ptsFb": 2.282926829268293,
       "twoPA": 3.1609756097560973,
       "deflections": 4.864390243902439,
-      "contestedShots": 5.162926829268293,
-      "contested3pt": 2.7921951219512198,
+      "contestedShots": 5.145365853658537,
+      "contested3pt": 2.7570731707317075,
       "contested2pt": 2.3882926829268296,
       "boxOuts": 0.10536585365853658,
-      "looseBalls": 0.72,
+      "looseBalls": 0.702439024390244,
       "chargesDrawn": 0,
       "screenAssists": 0.5970731707317074,
       "potentialAst": 3.5121951219512195,
@@ -73352,11 +73352,11 @@
     },
     "hustle": {
       "deflections": 2.77,
-      "contestedShots": 2.94,
-      "contested3pt": 1.59,
+      "contestedShots": 2.93,
+      "contested3pt": 1.57,
       "contested2pt": 1.36,
       "chargesDrawn": 0,
-      "looseBalls": 0.41,
+      "looseBalls": 0.4,
       "boxOuts": 0.06,
       "screenAssists": 0.34
     },
@@ -73404,7 +73404,7 @@
       "OffRtg": 31,
       "DefRtg": 32,
       "NetRtg": 28,
-      "Contested": 49,
+      "Contested": 48,
       "Deflections": 97,
       "PER": 16,
       "WinPct": 39,
@@ -73418,7 +73418,7 @@
       "PlayCreation": 6,
       "PerimeterD": 59,
       "InteriorD": 58,
-      "Hustle": 66,
+      "Hustle": 65,
       "OverallImpact": 25,
       "SystemicImpact": 25,
       "Finishing": 27,
@@ -73441,7 +73441,7 @@
       "ShotDefense": 59,
       "ContestedReb": 2,
       "RebConversion": 2,
-      "LooseBalls": 68,
+      "LooseBalls": 66,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -73474,7 +73474,7 @@
         },
         "def": {
           "grade": "C",
-          "pct": 58,
+          "pct": 57,
           "raw": "DBPM: +1.3 / 2.1s 1.1b",
           "label": "DEFENSE"
         }
@@ -73977,10 +73977,10 @@
       "ptsFb": 2.5714285714285716,
       "twoPA": 11.670329670329672,
       "deflections": 1.5230769230769232,
-      "contestedShots": 5.716483516483517,
-      "contested3pt": 2.6901098901098903,
+      "contestedShots": 5.7263736263736265,
+      "contested3pt": 2.7,
       "contested2pt": 3.0263736263736267,
-      "boxOuts": 0.3065934065934066,
+      "boxOuts": 0.3164835164835165,
       "looseBalls": 0.5241758241758242,
       "chargesDrawn": 0,
       "screenAssists": 0.454945054945055,
@@ -74018,12 +74018,12 @@
     },
     "hustle": {
       "deflections": 1.54,
-      "contestedShots": 5.78,
-      "contested3pt": 2.72,
+      "contestedShots": 5.79,
+      "contested3pt": 2.73,
       "contested2pt": 3.06,
       "chargesDrawn": 0,
       "looseBalls": 0.53,
-      "boxOuts": 0.31,
+      "boxOuts": 0.32,
       "screenAssists": 0.46
     },
     "misc": {
@@ -74084,7 +74084,7 @@
       "PlayCreation": 72,
       "PerimeterD": 46,
       "InteriorD": 63,
-      "Hustle": 21,
+      "Hustle": 22,
       "OverallImpact": 91,
       "SystemicImpact": 91,
       "Finishing": 60,
@@ -74107,7 +74107,7 @@
       "ShotDefense": 97,
       "ContestedReb": 60,
       "RebConversion": 60,
-      "LooseBalls": 28,
+      "LooseBalls": 29,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -74140,7 +74140,7 @@
         },
         "def": {
           "grade": "C",
-          "pct": 59,
+          "pct": 60,
           "raw": "DBPM: +0.1 / 0.8s 0.9b",
           "label": "DEFENSE"
         }
@@ -74203,7 +74203,7 @@
       "contested3pt": 2.7840000000000003,
       "contested2pt": 3.2,
       "boxOuts": 0.528,
-      "looseBalls": 0.41600000000000004,
+      "looseBalls": 0.44800000000000006,
       "chargesDrawn": 0.016,
       "screenAssists": 0.512,
       "potentialAst": 6.88,
@@ -74244,7 +74244,7 @@
       "contested3pt": 1.74,
       "contested2pt": 2,
       "chargesDrawn": 0.01,
-      "looseBalls": 0.26,
+      "looseBalls": 0.28,
       "boxOuts": 0.33,
       "screenAssists": 0.32
     },
@@ -74306,7 +74306,7 @@
       "PlayCreation": 61,
       "PerimeterD": 65,
       "InteriorD": 71,
-      "Hustle": 43,
+      "Hustle": 44,
       "OverallImpact": 50,
       "SystemicImpact": 50,
       "Finishing": 55,
@@ -74329,7 +74329,7 @@
       "ShotDefense": 71,
       "ContestedReb": 59,
       "RebConversion": 59,
-      "LooseBalls": 13,
+      "LooseBalls": 16,
       "ChargesDrawn": 52
     },
     "rating": {
@@ -75217,7 +75217,7 @@
       "ShotDefense": 16,
       "ContestedReb": 93,
       "RebConversion": 93,
-      "LooseBalls": 20,
+      "LooseBalls": 19,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -75534,10 +75534,10 @@
       "contestedShots": 15.411235955056181,
       "contested3pt": 4.044943820224719,
       "contested2pt": 11.366292134831461,
-      "boxOuts": 2.346067415730337,
+      "boxOuts": 2.4269662921348316,
       "looseBalls": 0.36404494382022473,
       "chargesDrawn": 0,
-      "screenAssists": 4.247191011235955,
+      "screenAssists": 4.328089887640449,
       "potentialAst": 1.2134831460674158,
       "passesMade": 33.57303370786517,
       "secondaryAst": 0,
@@ -75577,8 +75577,8 @@
       "contested2pt": 2.81,
       "chargesDrawn": 0,
       "looseBalls": 0.09,
-      "boxOuts": 0.58,
-      "screenAssists": 1.05
+      "boxOuts": 0.6,
+      "screenAssists": 1.07
     },
     "misc": {
       "ptsOffTov": 0.4,
@@ -75752,7 +75752,7 @@
       "fg3a": 4.7368421052631575,
       "ptsFb": 1.1052631578947367,
       "twoPA": 8.842105263157894,
-      "deflections": 2.4947368421052634,
+      "deflections": 2.5263157894736845,
       "contestedShots": 3.9157894736842107,
       "contested3pt": 2.005263157894737,
       "contested2pt": 1.9105263157894736,
@@ -75793,7 +75793,7 @@
       "rTS": -4.9
     },
     "hustle": {
-      "deflections": 1.58,
+      "deflections": 1.6,
       "contestedShots": 2.48,
       "contested3pt": 1.27,
       "contested2pt": 1.21,
@@ -75847,7 +75847,7 @@
       "DefRtg": 7,
       "NetRtg": 8,
       "Contested": 20,
-      "Deflections": 52,
+      "Deflections": 53,
       "PER": 17,
       "WinPct": 22,
       "WS48": 7,
@@ -75858,9 +75858,9 @@
       "FtPct": 88,
       "ScoringIndex": 38,
       "PlayCreation": 65,
-      "PerimeterD": 33,
+      "PerimeterD": 34,
       "InteriorD": 16,
-      "Hustle": 52,
+      "Hustle": 53,
       "OverallImpact": 14,
       "SystemicImpact": 14,
       "Finishing": 23,
@@ -75883,7 +75883,7 @@
       "ShotDefense": 62,
       "ContestedReb": 53,
       "RebConversion": 53,
-      "LooseBalls": 30,
+      "LooseBalls": 31,
       "ChargesDrawn": 89
     },
     "rating": {
@@ -76105,7 +76105,7 @@
       "ShotDefense": 35,
       "ContestedReb": 51,
       "RebConversion": 51,
-      "LooseBalls": 54,
+      "LooseBalls": 55,
       "ChargesDrawn": 84
     },
     "rating": {
@@ -76304,7 +76304,7 @@
       "PlayCreation": 25,
       "PerimeterD": 42,
       "InteriorD": 53,
-      "Hustle": 12,
+      "Hustle": 13,
       "OverallImpact": 27,
       "SystemicImpact": 27,
       "Finishing": 16,
@@ -76327,7 +76327,7 @@
       "ShotDefense": 88,
       "ContestedReb": 14,
       "RebConversion": 14,
-      "LooseBalls": 10,
+      "LooseBalls": 11,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -76512,7 +76512,7 @@
       "OffRtg": 14,
       "DefRtg": 13,
       "NetRtg": 11,
-      "Contested": 52,
+      "Contested": 53,
       "Deflections": 25,
       "PER": 28,
       "WinPct": 20,
@@ -76968,7 +76968,7 @@
       "FtPct": 67,
       "ScoringIndex": 35,
       "PlayCreation": 40,
-      "PerimeterD": 52,
+      "PerimeterD": 53,
       "InteriorD": 41,
       "Hustle": 60,
       "OverallImpact": 23,
@@ -76993,7 +76993,7 @@
       "ShotDefense": 57,
       "ContestedReb": 22,
       "RebConversion": 22,
-      "LooseBalls": 72,
+      "LooseBalls": 71,
       "ChargesDrawn": 62
     },
     "rating": {
@@ -77310,7 +77310,7 @@
       "contestedShots": 6.148571428571428,
       "contested3pt": 1.9885714285714284,
       "contested2pt": 4.16,
-      "boxOuts": 0.5028571428571428,
+      "boxOuts": 0.5257142857142857,
       "looseBalls": 0.7771428571428571,
       "chargesDrawn": 0.045714285714285714,
       "screenAssists": 0.5257142857142857,
@@ -77353,7 +77353,7 @@
       "contested2pt": 3.64,
       "chargesDrawn": 0.04,
       "looseBalls": 0.68,
-      "boxOuts": 0.44,
+      "boxOuts": 0.46,
       "screenAssists": 0.46
     },
     "misc": {
@@ -77977,7 +77977,7 @@
       "contested3pt": 3.615,
       "contested2pt": 10.545,
       "boxOuts": 1.965,
-      "looseBalls": 0.46499999999999997,
+      "looseBalls": 0.51,
       "chargesDrawn": 0,
       "screenAssists": 2.16,
       "potentialAst": 5.550000000000001,
@@ -78018,7 +78018,7 @@
       "contested3pt": 2.41,
       "contested2pt": 7.03,
       "chargesDrawn": 0,
-      "looseBalls": 0.31,
+      "looseBalls": 0.34,
       "boxOuts": 1.31,
       "screenAssists": 1.44
     },
@@ -78080,7 +78080,7 @@
       "PlayCreation": 57,
       "PerimeterD": 57,
       "InteriorD": 71,
-      "Hustle": 33,
+      "Hustle": 35,
       "OverallImpact": 79,
       "SystemicImpact": 79,
       "Finishing": 59,
@@ -78103,7 +78103,7 @@
       "ShotDefense": 76,
       "ContestedReb": 77,
       "RebConversion": 77,
-      "LooseBalls": 19,
+      "LooseBalls": 26,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -78524,7 +78524,7 @@
       "PlayCreation": 58,
       "PerimeterD": 46,
       "InteriorD": 48,
-      "Hustle": 59,
+      "Hustle": 58,
       "OverallImpact": 47,
       "SystemicImpact": 47,
       "Finishing": 68,
@@ -78547,7 +78547,7 @@
       "ShotDefense": 13,
       "ContestedReb": 93,
       "RebConversion": 93,
-      "LooseBalls": 38,
+      "LooseBalls": 37,
       "ChargesDrawn": 76
     },
     "rating": {
@@ -79530,7 +79530,7 @@
       "contestedShots": 2.532857142857143,
       "contested3pt": 1.1314285714285715,
       "contested2pt": 1.4014285714285717,
-      "boxOuts": 0.4114285714285715,
+      "boxOuts": 0.4242857142857143,
       "looseBalls": 0.7457142857142857,
       "chargesDrawn": 0,
       "screenAssists": 0.4114285714285715,
@@ -79573,7 +79573,7 @@
       "contested2pt": 1.09,
       "chargesDrawn": 0,
       "looseBalls": 0.58,
-      "boxOuts": 0.32,
+      "boxOuts": 0.33,
       "screenAssists": 0.32
     },
     "misc": {
@@ -79879,7 +79879,7 @@
       "ShotDefense": 23,
       "ContestedReb": 87,
       "RebConversion": 87,
-      "LooseBalls": 66,
+      "LooseBalls": 65,
       "ChargesDrawn": 99
     },
     "rating": {
@@ -79977,7 +79977,7 @@
       "boxOuts": 0.6260869565217392,
       "looseBalls": 0.2817391304347826,
       "chargesDrawn": 0.06260869565217392,
-      "screenAssists": 0.6260869565217392,
+      "screenAssists": 0.5947826086956522,
       "potentialAst": 4.069565217391305,
       "passesMade": 30.208695652173915,
       "secondaryAst": 0.3130434782608696,
@@ -80018,7 +80018,7 @@
       "chargesDrawn": 0.04,
       "looseBalls": 0.18,
       "boxOuts": 0.4,
-      "screenAssists": 0.4
+      "screenAssists": 0.38
     },
     "misc": {
       "ptsOffTov": 1.5,
@@ -80101,7 +80101,7 @@
       "ShotDefense": 47,
       "ContestedReb": 1,
       "RebConversion": 1,
-      "LooseBalls": 4,
+      "LooseBalls": 3,
       "ChargesDrawn": 77
     },
     "rating": {
@@ -80193,9 +80193,9 @@
       "ptsFb": 1.40625,
       "twoPA": 4.78125,
       "deflections": 4.359375,
-      "contestedShots": 4.6125,
+      "contestedShots": 4.528125,
       "contested3pt": 1.8,
-      "contested2pt": 2.8125,
+      "contested2pt": 2.728125,
       "boxOuts": 1.265625,
       "looseBalls": 0.6749999999999999,
       "chargesDrawn": 0.253125,
@@ -80234,9 +80234,9 @@
     },
     "hustle": {
       "deflections": 1.55,
-      "contestedShots": 1.64,
+      "contestedShots": 1.61,
       "contested3pt": 0.64,
-      "contested2pt": 1,
+      "contested2pt": 0.97,
       "chargesDrawn": 0.09,
       "looseBalls": 0.24,
       "boxOuts": 0.45,
@@ -80286,7 +80286,7 @@
       "OffRtg": 12,
       "DefRtg": 73,
       "NetRtg": 39,
-      "Contested": 34,
+      "Contested": 33,
       "Deflections": 91,
       "PER": 8,
       "WinPct": 91,
@@ -80859,8 +80859,8 @@
       "ptsFb": 6.180722891566265,
       "twoPA": 12.144578313253012,
       "deflections": 1.9734939759036143,
-      "contestedShots": 2.6783132530120484,
-      "contested3pt": 1.2686746987951805,
+      "contestedShots": 2.689156626506024,
+      "contested3pt": 1.2795180722891566,
       "contested2pt": 1.4096385542168675,
       "boxOuts": 0.4662650602409638,
       "looseBalls": 0.6506024096385542,
@@ -80900,8 +80900,8 @@
     },
     "hustle": {
       "deflections": 1.82,
-      "contestedShots": 2.47,
-      "contested3pt": 1.17,
+      "contestedShots": 2.48,
+      "contested3pt": 1.18,
       "contested2pt": 1.3,
       "chargesDrawn": 0,
       "looseBalls": 0.6,
@@ -81433,7 +81433,7 @@
       "ShotDefense": 57,
       "ContestedReb": 81,
       "RebConversion": 81,
-      "LooseBalls": 80,
+      "LooseBalls": 81,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -83078,12 +83078,12 @@
       "fg3a": 5.190697674418605,
       "ptsFb": 1.8418604651162793,
       "twoPA": 4.3534883720930235,
-      "deflections": 2.26046511627907,
+      "deflections": 2.2772093023255815,
       "contestedShots": 3.70046511627907,
       "contested3pt": 1.7413953488372094,
       "contested2pt": 1.9590697674418605,
       "boxOuts": 0.31813953488372093,
-      "looseBalls": 0.3851162790697675,
+      "looseBalls": 0.36837209302325585,
       "chargesDrawn": 0,
       "screenAssists": 0.8204651162790698,
       "potentialAst": 6.362790697674419,
@@ -83119,12 +83119,12 @@
       "rTS": 10.7
     },
     "hustle": {
-      "deflections": 1.35,
+      "deflections": 1.36,
       "contestedShots": 2.21,
       "contested3pt": 1.04,
       "contested2pt": 1.17,
       "chargesDrawn": 0,
-      "looseBalls": 0.23,
+      "looseBalls": 0.22,
       "boxOuts": 0.19,
       "screenAssists": 0.49
     },
@@ -83173,7 +83173,7 @@
       "DefRtg": 49,
       "NetRtg": 54,
       "Contested": 15,
-      "Deflections": 36,
+      "Deflections": 38,
       "PER": 42,
       "WinPct": 67,
       "WS48": 72,
@@ -83209,7 +83209,7 @@
       "ShotDefense": 23,
       "ContestedReb": 21,
       "RebConversion": 21,
-      "LooseBalls": 11,
+      "LooseBalls": 9,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -83305,7 +83305,7 @@
       "contested3pt": 3.5828571428571423,
       "contested2pt": 12.857142857142856,
       "boxOuts": 2.365714285714285,
-      "looseBalls": 0.2742857142857143,
+      "looseBalls": 0.30857142857142855,
       "chargesDrawn": 0.10285714285714284,
       "screenAssists": 5.982857142857143,
       "potentialAst": 4.8,
@@ -83346,7 +83346,7 @@
       "contested3pt": 2.09,
       "contested2pt": 7.5,
       "chargesDrawn": 0.06,
-      "looseBalls": 0.16,
+      "looseBalls": 0.18,
       "boxOuts": 1.38,
       "screenAssists": 3.49
     },
@@ -83431,7 +83431,7 @@
       "ShotDefense": 76,
       "ContestedReb": 76,
       "RebConversion": 76,
-      "LooseBalls": 3,
+      "LooseBalls": 4,
       "ChargesDrawn": 84
     },
     "rating": {
@@ -83852,7 +83852,7 @@
       "PlayCreation": 30,
       "PerimeterD": 46,
       "InteriorD": 53,
-      "Hustle": 54,
+      "Hustle": 55,
       "OverallImpact": 9,
       "SystemicImpact": 9,
       "Finishing": 60,
@@ -83875,7 +83875,7 @@
       "ShotDefense": 4,
       "ContestedReb": 1,
       "RebConversion": 1,
-      "LooseBalls": 50,
+      "LooseBalls": 51,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -84411,9 +84411,9 @@
       "ptsFb": 0.972972972972973,
       "twoPA": 7.45945945945946,
       "deflections": 3.6972972972972973,
-      "contestedShots": 8.854054054054055,
+      "contestedShots": 8.983783783783784,
       "contested3pt": 2.9513513513513514,
-      "contested2pt": 5.902702702702703,
+      "contested2pt": 6.032432432432433,
       "boxOuts": 1.4594594594594597,
       "looseBalls": 0.745945945945946,
       "chargesDrawn": 0,
@@ -84452,9 +84452,9 @@
     },
     "hustle": {
       "deflections": 1.14,
-      "contestedShots": 2.73,
+      "contestedShots": 2.77,
       "contested3pt": 0.91,
-      "contested2pt": 1.82,
+      "contested2pt": 1.86,
       "chargesDrawn": 0,
       "looseBalls": 0.23,
       "boxOuts": 0.45,
@@ -85076,12 +85076,12 @@
       "fg3a": 8.399999999999999,
       "ptsFb": 3,
       "twoPA": 5.700000000000001,
-      "deflections": 3.84,
-      "contestedShots": 4.0200000000000005,
-      "contested3pt": 2.2800000000000002,
-      "contested2pt": 1.77,
+      "deflections": 3.69,
+      "contestedShots": 3.9000000000000004,
+      "contested3pt": 2.19,
+      "contested2pt": 1.71,
       "boxOuts": 0.30000000000000004,
-      "looseBalls": 0.51,
+      "looseBalls": 0.6000000000000001,
       "chargesDrawn": 0,
       "screenAssists": 0.21000000000000002,
       "potentialAst": 9.600000000000001,
@@ -85117,12 +85117,12 @@
       "rTS": -4.9
     },
     "hustle": {
-      "deflections": 1.28,
-      "contestedShots": 1.34,
-      "contested3pt": 0.76,
-      "contested2pt": 0.59,
+      "deflections": 1.23,
+      "contestedShots": 1.3,
+      "contested3pt": 0.73,
+      "contested2pt": 0.57,
       "chargesDrawn": 0,
-      "looseBalls": 0.17,
+      "looseBalls": 0.2,
       "boxOuts": 0.1,
       "screenAssists": 0.07
     },
@@ -85170,8 +85170,8 @@
       "OffRtg": 78,
       "DefRtg": 99,
       "NetRtg": 98,
-      "Contested": 22,
-      "Deflections": 87,
+      "Contested": 19,
+      "Deflections": 85,
       "PER": 19,
       "WinPct": 93,
       "WS48": 42,
@@ -85182,9 +85182,9 @@
       "FtPct": 72,
       "ScoringIndex": 35,
       "PlayCreation": 80,
-      "PerimeterD": 73,
+      "PerimeterD": 72,
       "InteriorD": 52,
-      "Hustle": 47,
+      "Hustle": 51,
       "OverallImpact": 43,
       "SystemicImpact": 43,
       "Finishing": 21,
@@ -85207,7 +85207,7 @@
       "ShotDefense": 98,
       "ContestedReb": 4,
       "RebConversion": 4,
-      "LooseBalls": 26,
+      "LooseBalls": 42,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -85302,8 +85302,8 @@
       "contestedShots": 3.9284210526315784,
       "contested3pt": 2.3873684210526314,
       "contested2pt": 1.5536842105263158,
-      "boxOuts": 0.8336842105263158,
-      "looseBalls": 0.7326315789473683,
+      "boxOuts": 0.8589473684210527,
+      "looseBalls": 0.7578947368421052,
       "chargesDrawn": 0.40421052631578946,
       "screenAssists": 0.7578947368421052,
       "potentialAst": 5.936842105263158,
@@ -85344,8 +85344,8 @@
       "contested3pt": 1.89,
       "contested2pt": 1.23,
       "chargesDrawn": 0.32,
-      "looseBalls": 0.58,
-      "boxOuts": 0.66,
+      "looseBalls": 0.6,
+      "boxOuts": 0.68,
       "screenAssists": 0.6
     },
     "misc": {
@@ -85393,7 +85393,7 @@
       "DefRtg": 77,
       "NetRtg": 86,
       "Contested": 20,
-      "Deflections": 81,
+      "Deflections": 82,
       "PER": 11,
       "WinPct": 84,
       "WS48": 24,
@@ -85404,9 +85404,9 @@
       "FtPct": 65,
       "ScoringIndex": 17,
       "PlayCreation": 52,
-      "PerimeterD": 67,
+      "PerimeterD": 68,
       "InteriorD": 53,
-      "Hustle": 79,
+      "Hustle": 81,
       "OverallImpact": 32,
       "SystemicImpact": 32,
       "Finishing": 21,
@@ -85429,7 +85429,7 @@
       "ShotDefense": 92,
       "ContestedReb": 9,
       "RebConversion": 9,
-      "LooseBalls": 71,
+      "LooseBalls": 74,
       "ChargesDrawn": 100
     },
     "rating": {
@@ -85743,8 +85743,8 @@
       "ptsFb": 2.8983050847457625,
       "twoPA": 11.135593220338983,
       "deflections": 3.5542372881355933,
-      "contestedShots": 12.813559322033898,
-      "contested3pt": 3.920338983050847,
+      "contestedShots": 12.783050847457627,
+      "contested3pt": 3.8898305084745757,
       "contested2pt": 8.89322033898305,
       "boxOuts": 2.028813559322034,
       "looseBalls": 0.6406779661016949,
@@ -85784,8 +85784,8 @@
     },
     "hustle": {
       "deflections": 2.33,
-      "contestedShots": 8.4,
-      "contested3pt": 2.57,
+      "contestedShots": 8.38,
+      "contested3pt": 2.55,
       "contested2pt": 5.83,
       "chargesDrawn": 0,
       "looseBalls": 0.42,
@@ -86317,7 +86317,7 @@
       "ShotDefense": 65,
       "ContestedReb": 82,
       "RebConversion": 82,
-      "LooseBalls": 59,
+      "LooseBalls": 58,
       "ChargesDrawn": 95
     },
     "rating": {
@@ -87074,7 +87074,7 @@
       "fg3a": 7.175257731958763,
       "ptsFb": 3.0927835051546393,
       "twoPA": 4.4536082474226815,
-      "deflections": 1.2371134020618557,
+      "deflections": 1.2494845360824742,
       "contestedShots": 5.9876288659793815,
       "contested3pt": 2.2144329896907218,
       "contested2pt": 3.7731958762886597,
@@ -87115,7 +87115,7 @@
       "rTS": 1.9
     },
     "hustle": {
-      "deflections": 1,
+      "deflections": 1.01,
       "contestedShots": 4.84,
       "contested3pt": 1.79,
       "contested2pt": 3.05,
@@ -87391,7 +87391,7 @@
       "DefRtg": 99,
       "NetRtg": 20,
       "Contested": 92,
-      "Deflections": 33,
+      "Deflections": 32,
       "PER": 0,
       "WinPct": 92,
       "WS48": 1,
@@ -87519,10 +87519,10 @@
       "ptsFb": 2.25,
       "twoPA": 3.0000000000000013,
       "deflections": 1.125,
-      "contestedShots": 4.755,
-      "contested3pt": 2.505,
+      "contestedShots": 4.62,
+      "contested3pt": 2.37,
       "contested2pt": 2.25,
-      "boxOuts": 0.63,
+      "boxOuts": 0.495,
       "looseBalls": 0.255,
       "chargesDrawn": 0.12,
       "screenAssists": 1.5,
@@ -87560,12 +87560,12 @@
     },
     "hustle": {
       "deflections": 0.75,
-      "contestedShots": 3.17,
-      "contested3pt": 1.67,
+      "contestedShots": 3.08,
+      "contested3pt": 1.58,
       "contested2pt": 1.5,
       "chargesDrawn": 0.08,
       "looseBalls": 0.17,
-      "boxOuts": 0.42,
+      "boxOuts": 0.33,
       "screenAssists": 1
     },
     "misc": {
@@ -87612,7 +87612,7 @@
       "OffRtg": 84,
       "DefRtg": 21,
       "NetRtg": 53,
-      "Contested": 36,
+      "Contested": 35,
       "Deflections": 2,
       "PER": 33,
       "WinPct": 94,
@@ -87624,9 +87624,9 @@
       "FtPct": 45,
       "ScoringIndex": 58,
       "PlayCreation": 40,
-      "PerimeterD": 30,
+      "PerimeterD": 29,
       "InteriorD": 26,
-      "Hustle": 28,
+      "Hustle": 27,
       "OverallImpact": 41,
       "SystemicImpact": 41,
       "Finishing": 27,
@@ -87741,8 +87741,8 @@
       "ptsFb": 0.33644859813084116,
       "twoPA": 3.700934579439253,
       "deflections": 2.119626168224299,
-      "contestedShots": 11.60747663551402,
-      "contested3pt": 3.196261682242991,
+      "contestedShots": 11.708411214953273,
+      "contested3pt": 3.2971962616822434,
       "contested2pt": 8.41121495327103,
       "boxOuts": 2.355140186915888,
       "looseBalls": 0.5046728971962617,
@@ -87782,8 +87782,8 @@
     },
     "hustle": {
       "deflections": 0.63,
-      "contestedShots": 3.45,
-      "contested3pt": 0.95,
+      "contestedShots": 3.48,
+      "contested3pt": 0.98,
       "contested2pt": 2.5,
       "chargesDrawn": 0.03,
       "looseBalls": 0.15,
@@ -87834,7 +87834,7 @@
       "OffRtg": 53,
       "DefRtg": 80,
       "NetRtg": 68,
-      "Contested": 95,
+      "Contested": 96,
       "Deflections": 31,
       "PER": 3,
       "WinPct": 42,
@@ -87846,9 +87846,9 @@
       "FtPct": 3,
       "ScoringIndex": 2,
       "PlayCreation": 12,
-      "PerimeterD": 63,
+      "PerimeterD": 64,
       "InteriorD": 69,
-      "Hustle": 49,
+      "Hustle": 48,
       "OverallImpact": 21,
       "SystemicImpact": 21,
       "Finishing": 33,
@@ -87871,7 +87871,7 @@
       "ShotDefense": 39,
       "ContestedReb": 34,
       "RebConversion": 34,
-      "LooseBalls": 25,
+      "LooseBalls": 24,
       "ChargesDrawn": 84
     },
     "rating": {
@@ -88635,7 +88635,7 @@
       "boxOuts": 0.7421538461538463,
       "looseBalls": 0.6646153846153846,
       "chargesDrawn": 0,
-      "screenAssists": 0.7643076923076922,
+      "screenAssists": 0.7864615384615384,
       "potentialAst": 5.538461538461538,
       "passesMade": 38.99076923076924,
       "secondaryAst": 0.3323076923076923,
@@ -88676,7 +88676,7 @@
       "chargesDrawn": 0,
       "looseBalls": 0.6,
       "boxOuts": 0.67,
-      "screenAssists": 0.69
+      "screenAssists": 0.71
     },
     "misc": {
       "ptsOffTov": 3.5,
@@ -88759,7 +88759,7 @@
       "ShotDefense": 6,
       "ContestedReb": 80,
       "RebConversion": 80,
-      "LooseBalls": 59,
+      "LooseBalls": 58,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -88854,7 +88854,7 @@
       "contestedShots": 5.817073170731708,
       "contested3pt": 2.0634146341463415,
       "contested2pt": 3.753658536585366,
-      "boxOuts": 0.5597560975609757,
+      "boxOuts": 0.5817073170731708,
       "looseBalls": 0.526829268292683,
       "chargesDrawn": 0.010975609756097562,
       "screenAssists": 0.30731707317073176,
@@ -88897,7 +88897,7 @@
       "contested2pt": 3.42,
       "chargesDrawn": 0.01,
       "looseBalls": 0.48,
-      "boxOuts": 0.51,
+      "boxOuts": 0.53,
       "screenAssists": 0.28
     },
     "misc": {
@@ -88958,7 +88958,7 @@
       "PlayCreation": 60,
       "PerimeterD": 55,
       "InteriorD": 62,
-      "Hustle": 41,
+      "Hustle": 42,
       "OverallImpact": 71,
       "SystemicImpact": 71,
       "Finishing": 49,
@@ -89180,7 +89180,7 @@
       "PlayCreation": 77,
       "PerimeterD": 51,
       "InteriorD": 58,
-      "Hustle": 53,
+      "Hustle": 52,
       "OverallImpact": 26,
       "SystemicImpact": 26,
       "Finishing": 14,
@@ -89203,7 +89203,7 @@
       "ShotDefense": 43,
       "ContestedReb": 8,
       "RebConversion": 8,
-      "LooseBalls": 72,
+      "LooseBalls": 71,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -89869,7 +89869,7 @@
       "ShotDefense": 78,
       "ContestedReb": 6,
       "RebConversion": 6,
-      "LooseBalls": 61,
+      "LooseBalls": 60,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -89964,10 +89964,10 @@
       "contestedShots": 7.9346938775510205,
       "contested3pt": 2.993877551020408,
       "contested2pt": 4.922448979591836,
-      "boxOuts": 4.867346938775509,
+      "boxOuts": 4.830612244897958,
       "looseBalls": 0.973469387755102,
       "chargesDrawn": 0,
-      "screenAssists": 4.444897959183673,
+      "screenAssists": 4.463265306122449,
       "potentialAst": 2.387755102040816,
       "passesMade": 26.999999999999996,
       "secondaryAst": 0.36734693877551017,
@@ -90007,8 +90007,8 @@
       "contested2pt": 2.68,
       "chargesDrawn": 0,
       "looseBalls": 0.53,
-      "boxOuts": 2.65,
-      "screenAssists": 2.42
+      "boxOuts": 2.63,
+      "screenAssists": 2.43
     },
     "misc": {
       "ptsOffTov": 0.9,
@@ -90091,7 +90091,7 @@
       "ShotDefense": 86,
       "ContestedReb": 94,
       "RebConversion": 94,
-      "LooseBalls": 91,
+      "LooseBalls": 90,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -90757,7 +90757,7 @@
       "ShotDefense": 99,
       "ContestedReb": 23,
       "RebConversion": 23,
-      "LooseBalls": 59,
+      "LooseBalls": 58,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -90979,7 +90979,7 @@
       "ShotDefense": 3,
       "ContestedReb": 89,
       "RebConversion": 89,
-      "LooseBalls": 95,
+      "LooseBalls": 94,
       "ChargesDrawn": 100
     },
     "rating": {
@@ -91074,7 +91074,7 @@
       "contestedShots": 5.126848249027238,
       "contested3pt": 1.807003891050584,
       "contested2pt": 3.3198443579766543,
-      "boxOuts": 0.6583657587548638,
+      "boxOuts": 0.6863813229571984,
       "looseBalls": 1.0225680933852141,
       "chargesDrawn": 0.07003891050583659,
       "screenAssists": 0.26614785992217904,
@@ -91117,7 +91117,7 @@
       "contested2pt": 2.37,
       "chargesDrawn": 0.05,
       "looseBalls": 0.73,
-      "boxOuts": 0.47,
+      "boxOuts": 0.49,
       "screenAssists": 0.19
     },
     "misc": {
@@ -91622,7 +91622,7 @@
       "PlayCreation": 14,
       "PerimeterD": 74,
       "InteriorD": 68,
-      "Hustle": 84,
+      "Hustle": 83,
       "OverallImpact": 37,
       "SystemicImpact": 37,
       "Finishing": 41,
@@ -91645,7 +91645,7 @@
       "ShotDefense": 89,
       "ContestedReb": 72,
       "RebConversion": 72,
-      "LooseBalls": 77,
+      "LooseBalls": 76,
       "ChargesDrawn": 79
     },
     "rating": {
@@ -91740,7 +91740,7 @@
       "contestedShots": 13.571223021582734,
       "contested3pt": 3.159712230215827,
       "contested2pt": 10.437410071942447,
-      "boxOuts": 3.57410071942446,
+      "boxOuts": 3.651798561151079,
       "looseBalls": 1.1136690647482013,
       "chargesDrawn": 0,
       "screenAssists": 4.81726618705036,
@@ -91783,7 +91783,7 @@
       "contested2pt": 4.03,
       "chargesDrawn": 0,
       "looseBalls": 0.43,
-      "boxOuts": 1.38,
+      "boxOuts": 1.41,
       "screenAssists": 1.86
     },
     "misc": {
@@ -91867,7 +91867,7 @@
       "ShotDefense": 68,
       "ContestedReb": 94,
       "RebConversion": 94,
-      "LooseBalls": 96,
+      "LooseBalls": 97,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -92187,7 +92187,7 @@
       "boxOuts": 1.8334572490706322,
       "looseBalls": 0.42825278810408923,
       "chargesDrawn": 0,
-      "screenAssists": 2.3018587360594798,
+      "screenAssists": 2.275092936802974,
       "potentialAst": 2.944237918215614,
       "passesMade": 26.89962825278811,
       "secondaryAst": 0.2676579925650558,
@@ -92228,7 +92228,7 @@
       "chargesDrawn": 0,
       "looseBalls": 0.32,
       "boxOuts": 1.37,
-      "screenAssists": 1.72
+      "screenAssists": 1.7
     },
     "misc": {
       "ptsOffTov": 1.6,
@@ -92510,7 +92510,7 @@
       "PlayCreation": 56,
       "PerimeterD": 73,
       "InteriorD": 74,
-      "Hustle": 73,
+      "Hustle": 72,
       "OverallImpact": 66,
       "SystemicImpact": 66,
       "Finishing": 43,
@@ -92533,13 +92533,13 @@
       "ShotDefense": 83,
       "ContestedReb": 87,
       "RebConversion": 87,
-      "LooseBalls": 92,
+      "LooseBalls": 91,
       "ChargesDrawn": 23
     },
     "rating": {
       "ovr": 72,
       "off": 60,
-      "def": 84,
+      "def": 83,
       "rebounding": 85,
       "tier": "Bronze",
       "color": "#cd7f32",
@@ -93643,7 +93643,7 @@
       "ShotDefense": 59,
       "ContestedReb": 86,
       "RebConversion": 86,
-      "LooseBalls": 62,
+      "LooseBalls": 61,
       "ChargesDrawn": 78
     },
     "rating": {
@@ -94400,14 +94400,14 @@
       "fg3a": 8.352,
       "ptsFb": 1.152,
       "twoPA": 7.200000000000001,
-      "deflections": 1.2096,
-      "contestedShots": 4.5504,
-      "contested3pt": 2.7647999999999997,
-      "contested2pt": 1.8144,
+      "deflections": 1.152,
+      "contestedShots": 4.4928,
+      "contested3pt": 2.6496,
+      "contested2pt": 1.8432,
       "boxOuts": 0,
-      "looseBalls": 0.8351999999999999,
+      "looseBalls": 0.8064,
       "chargesDrawn": 0,
-      "screenAssists": 0.6048,
+      "screenAssists": 0.576,
       "potentialAst": 5.76,
       "passesMade": 45.792,
       "secondaryAst": 0.576,
@@ -94441,14 +94441,14 @@
       "rTS": -3
     },
     "hustle": {
-      "deflections": 0.42,
-      "contestedShots": 1.58,
-      "contested3pt": 0.96,
-      "contested2pt": 0.63,
+      "deflections": 0.4,
+      "contestedShots": 1.56,
+      "contested3pt": 0.92,
+      "contested2pt": 0.64,
       "chargesDrawn": 0,
-      "looseBalls": 0.29,
+      "looseBalls": 0.28,
       "boxOuts": 0,
-      "screenAssists": 0.21
+      "screenAssists": 0.2
     },
     "misc": {
       "ptsOffTov": 1.4,
@@ -94494,8 +94494,8 @@
       "OffRtg": 31,
       "DefRtg": 68,
       "NetRtg": 46,
-      "Contested": 33,
-      "Deflections": 3,
+      "Contested": 32,
+      "Deflections": 2,
       "PER": 12,
       "WinPct": 47,
       "WS48": 9,
@@ -94506,9 +94506,9 @@
       "FtPct": 28,
       "ScoringIndex": 52,
       "PlayCreation": 42,
-      "PerimeterD": 49,
+      "PerimeterD": 48,
       "InteriorD": 44,
-      "Hustle": 34,
+      "Hustle": 33,
       "OverallImpact": 19,
       "SystemicImpact": 19,
       "Finishing": 32,
@@ -94531,7 +94531,7 @@
       "ShotDefense": 19,
       "ContestedReb": 1,
       "RebConversion": 1,
-      "LooseBalls": 82,
+      "LooseBalls": 80,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -94622,12 +94622,12 @@
       "fg3a": 8.730538922155688,
       "ptsFb": 4.311377245508982,
       "twoPA": 7.760479041916169,
-      "deflections": 3.7293413173652694,
+      "deflections": 3.7401197604790424,
       "contestedShots": 3.578443113772455,
       "contested3pt": 1.131736526946108,
       "contested2pt": 2.4467065868263473,
       "boxOuts": 0.5281437125748503,
-      "looseBalls": 0.7760479041916167,
+      "looseBalls": 0.7976047904191617,
       "chargesDrawn": 0.053892215568862284,
       "screenAssists": 0.5497005988023953,
       "potentialAst": 7.3293413173652695,
@@ -94663,12 +94663,12 @@
       "rTS": 2.8
     },
     "hustle": {
-      "deflections": 3.46,
+      "deflections": 3.47,
       "contestedShots": 3.32,
       "contested3pt": 1.05,
       "contested2pt": 2.27,
       "chargesDrawn": 0.05,
-      "looseBalls": 0.72,
+      "looseBalls": 0.74,
       "boxOuts": 0.49,
       "screenAssists": 0.51
     },
@@ -94730,7 +94730,7 @@
       "PlayCreation": 58,
       "PerimeterD": 55,
       "InteriorD": 56,
-      "Hustle": 75,
+      "Hustle": 76,
       "OverallImpact": 69,
       "SystemicImpact": 69,
       "Finishing": 49,
@@ -94753,7 +94753,7 @@
       "ShotDefense": 12,
       "ContestedReb": 15,
       "RebConversion": 15,
-      "LooseBalls": 77,
+      "LooseBalls": 80,
       "ChargesDrawn": 73
     },
     "rating": {
@@ -95295,7 +95295,7 @@
       "boxOuts": 2.3379310344827586,
       "looseBalls": 0.6,
       "chargesDrawn": 0.020689655172413796,
-      "screenAssists": 3.496551724137931,
+      "screenAssists": 3.5172413793103448,
       "potentialAst": 18.206896551724142,
       "passesMade": 75.51724137931035,
       "secondaryAst": 1.0344827586206897,
@@ -95336,7 +95336,7 @@
       "chargesDrawn": 0.02,
       "looseBalls": 0.58,
       "boxOuts": 2.26,
-      "screenAssists": 3.38
+      "screenAssists": 3.4
     },
     "misc": {
       "ptsOffTov": 2.6,
@@ -95419,7 +95419,7 @@
       "ShotDefense": 15,
       "ContestedReb": 99,
       "RebConversion": 99,
-      "LooseBalls": 42,
+      "LooseBalls": 41,
       "ChargesDrawn": 53
     },
     "rating": {
@@ -95955,8 +95955,8 @@
       "ptsFb": 0.5070422535211269,
       "twoPA": 10.521126760563382,
       "deflections": 1.787323943661972,
-      "contestedShots": 9.963380281690142,
-      "contested3pt": 3.3338028169014087,
+      "contestedShots": 9.938028169014085,
+      "contested3pt": 3.3084507042253524,
       "contested2pt": 6.629577464788733,
       "boxOuts": 2.5098591549295777,
       "looseBalls": 0.3422535211267606,
@@ -95996,8 +95996,8 @@
     },
     "hustle": {
       "deflections": 1.41,
-      "contestedShots": 7.86,
-      "contested3pt": 2.63,
+      "contestedShots": 7.84,
+      "contested3pt": 2.61,
       "contested2pt": 5.23,
       "chargesDrawn": 0.02,
       "looseBalls": 0.27,
@@ -96307,7 +96307,7 @@
       "ShotDefense": 27,
       "ContestedReb": 45,
       "RebConversion": 45,
-      "LooseBalls": 24,
+      "LooseBalls": 23,
       "ChargesDrawn": 93
     },
     "rating": {
@@ -96842,14 +96842,14 @@
       "fg3a": 4.5,
       "ptsFb": 1.40625,
       "twoPA": 5.062499999999999,
-      "deflections": 3.375,
-      "contestedShots": 7.593750000000001,
-      "contested3pt": 2.475,
-      "contested2pt": 5.11875,
-      "boxOuts": 1.2375,
-      "looseBalls": 1.18125,
+      "deflections": 3.3187499999999996,
+      "contestedShots": 7.396875,
+      "contested3pt": 2.41875,
+      "contested2pt": 4.95,
+      "boxOuts": 1.265625,
+      "looseBalls": 1.153125,
       "chargesDrawn": 0,
-      "screenAssists": 1.125,
+      "screenAssists": 1.096875,
       "potentialAst": 6.187500000000001,
       "passesMade": 47.25,
       "secondaryAst": 0.28125,
@@ -96883,14 +96883,14 @@
       "rTS": -7.6
     },
     "hustle": {
-      "deflections": 1.2,
-      "contestedShots": 2.7,
-      "contested3pt": 0.88,
-      "contested2pt": 1.82,
+      "deflections": 1.18,
+      "contestedShots": 2.63,
+      "contested3pt": 0.86,
+      "contested2pt": 1.76,
       "chargesDrawn": 0,
-      "looseBalls": 0.42,
-      "boxOuts": 0.44,
-      "screenAssists": 0.4
+      "looseBalls": 0.41,
+      "boxOuts": 0.45,
+      "screenAssists": 0.39
     },
     "misc": {
       "ptsOffTov": 0.6,
@@ -96936,8 +96936,8 @@
       "OffRtg": 29,
       "DefRtg": 53,
       "NetRtg": 38,
-      "Contested": 76,
-      "Deflections": 79,
+      "Contested": 75,
+      "Deflections": 78,
       "PER": 20,
       "WinPct": 48,
       "WS48": 31,
@@ -96948,8 +96948,8 @@
       "FtPct": 16,
       "ScoringIndex": 8,
       "PlayCreation": 47,
-      "PerimeterD": 58,
-      "InteriorD": 63,
+      "PerimeterD": 57,
+      "InteriorD": 62,
       "Hustle": 73,
       "OverallImpact": 28,
       "SystemicImpact": 28,
@@ -96973,7 +96973,7 @@
       "ShotDefense": 38,
       "ContestedReb": 71,
       "RebConversion": 71,
-      "LooseBalls": 99,
+      "LooseBalls": 98,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -97158,7 +97158,7 @@
       "OffRtg": 12,
       "DefRtg": 14,
       "NetRtg": 11,
-      "Contested": 61,
+      "Contested": 60,
       "Deflections": 37,
       "PER": 2,
       "WinPct": 15,
@@ -97195,7 +97195,7 @@
       "ShotDefense": 25,
       "ContestedReb": 4,
       "RebConversion": 4,
-      "LooseBalls": 38,
+      "LooseBalls": 37,
       "ChargesDrawn": 58
     },
     "rating": {
@@ -97616,7 +97616,7 @@
       "PlayCreation": 44,
       "PerimeterD": 48,
       "InteriorD": 33,
-      "Hustle": 52,
+      "Hustle": 51,
       "OverallImpact": 70,
       "SystemicImpact": 70,
       "Finishing": 67,
@@ -98282,7 +98282,7 @@
       "PlayCreation": 8,
       "PerimeterD": 63,
       "InteriorD": 73,
-      "Hustle": 41,
+      "Hustle": 40,
       "OverallImpact": 15,
       "SystemicImpact": 15,
       "Finishing": 47,
@@ -98305,7 +98305,7 @@
       "ShotDefense": 68,
       "ContestedReb": 25,
       "RebConversion": 25,
-      "LooseBalls": 21,
+      "LooseBalls": 20,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -98400,7 +98400,7 @@
       "contestedShots": 13.481632653061222,
       "contested3pt": 3.6734693877551017,
       "contested2pt": 9.80816326530612,
-      "boxOuts": 3.6734693877551017,
+      "boxOuts": 2.461224489795918,
       "looseBalls": 0,
       "chargesDrawn": 0,
       "screenAssists": 6.13469387755102,
@@ -98443,7 +98443,7 @@
       "contested2pt": 2.67,
       "chargesDrawn": 0,
       "looseBalls": 0,
-      "boxOuts": 1,
+      "boxOuts": 0.67,
       "screenAssists": 1.67
     },
     "misc": {
@@ -98504,7 +98504,7 @@
       "PlayCreation": 62,
       "PerimeterD": 75,
       "InteriorD": 81,
-      "Hustle": 38,
+      "Hustle": 37,
       "OverallImpact": 76,
       "SystemicImpact": 76,
       "Finishing": 44,
@@ -98623,9 +98623,9 @@
       "contested3pt": 2.574193548387097,
       "contested2pt": 5.341935483870967,
       "boxOuts": 1.5096774193548386,
-      "looseBalls": 0.9096774193548386,
+      "looseBalls": 0.9870967741935484,
       "chargesDrawn": 0.038709677419354833,
-      "screenAssists": 2.6516129032258062,
+      "screenAssists": 2.690322580645161,
       "potentialAst": 3.290322580645161,
       "passesMade": 32.70967741935483,
       "secondaryAst": 0.1935483870967742,
@@ -98664,9 +98664,9 @@
       "contested3pt": 1.33,
       "contested2pt": 2.76,
       "chargesDrawn": 0.02,
-      "looseBalls": 0.47,
+      "looseBalls": 0.51,
       "boxOuts": 0.78,
-      "screenAssists": 1.37
+      "screenAssists": 1.39
     },
     "misc": {
       "ptsOffTov": 2,
@@ -98726,7 +98726,7 @@
       "PlayCreation": 12,
       "PerimeterD": 43,
       "InteriorD": 30,
-      "Hustle": 70,
+      "Hustle": 71,
       "OverallImpact": 50,
       "SystemicImpact": 50,
       "Finishing": 69,
@@ -98749,7 +98749,7 @@
       "ShotDefense": 10,
       "ContestedReb": 55,
       "RebConversion": 55,
-      "LooseBalls": 88,
+      "LooseBalls": 91,
       "ChargesDrawn": 64
     },
     "rating": {
@@ -98795,7 +98795,7 @@
     "teamId": "GSW",
     "teamName": "Free Agent",
     "position": "NBA",
-    "age": 27,
+    "age": 28,
     "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1630209.png",
     "gameLog": [],
     "stats": {
@@ -99066,7 +99066,7 @@
       "contestedShots": 8.883870967741936,
       "contested3pt": 2.7290322580645165,
       "contested2pt": 6.15483870967742,
-      "boxOuts": 1.5561290322580648,
+      "boxOuts": 1.5793548387096776,
       "looseBalls": 0.9058064516129033,
       "chargesDrawn": 0.03483870967741936,
       "screenAssists": 2.4967741935483874,
@@ -99109,7 +99109,7 @@
       "contested2pt": 5.3,
       "chargesDrawn": 0.03,
       "looseBalls": 0.78,
-      "boxOuts": 1.34,
+      "boxOuts": 1.36,
       "screenAssists": 2.15
     },
     "misc": {
@@ -100267,7 +100267,7 @@
       "DefRtg": 42,
       "NetRtg": 20,
       "Contested": 77,
-      "Deflections": 33,
+      "Deflections": 32,
       "PER": 39,
       "WinPct": 22,
       "WS48": 21,
@@ -100747,7 +100747,7 @@
       "ShotDefense": 29,
       "ContestedReb": 78,
       "RebConversion": 78,
-      "LooseBalls": 92,
+      "LooseBalls": 91,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -100838,14 +100838,14 @@
       "fg3a": 3.9423631123919307,
       "ptsFb": 3.112391930835735,
       "twoPA": 12.657060518731988,
-      "deflections": 1.2864553314121037,
-      "contestedShots": 6.453025936599423,
-      "contested3pt": 2.5936599423631126,
+      "deflections": 1.2657060518731988,
+      "contestedShots": 6.473775216138328,
+      "contested3pt": 2.604034582132565,
       "contested2pt": 3.8593659942363114,
-      "boxOuts": 0.6224783861671469,
+      "boxOuts": 0.6328530259365994,
       "looseBalls": 0.5187319884726225,
       "chargesDrawn": 0,
-      "screenAssists": 0.9959654178674351,
+      "screenAssists": 0.9752161383285302,
       "potentialAst": 9.440922190201729,
       "passesMade": 52.288184438040346,
       "secondaryAst": 0.7262247838616714,
@@ -100879,14 +100879,14 @@
       "rTS": -1.6
     },
     "hustle": {
-      "deflections": 1.24,
-      "contestedShots": 6.22,
-      "contested3pt": 2.5,
+      "deflections": 1.22,
+      "contestedShots": 6.24,
+      "contested3pt": 2.51,
       "contested2pt": 3.72,
       "chargesDrawn": 0,
       "looseBalls": 0.5,
-      "boxOuts": 0.6,
-      "screenAssists": 0.96
+      "boxOuts": 0.61,
+      "screenAssists": 0.94
     },
     "misc": {
       "ptsOffTov": 3.5,
@@ -102392,11 +102392,11 @@
       "fg3a": 1.553956834532374,
       "ptsFb": 1.8129496402877696,
       "twoPA": 11.913669064748202,
-      "deflections": 5.024460431654676,
-      "contestedShots": 12.61294964028777,
+      "deflections": 5.0503597122302155,
+      "contestedShots": 12.587050359712231,
       "contested3pt": 3.6258992805755392,
-      "contested2pt": 9.012949640287768,
-      "boxOuts": 1.9424460431654675,
+      "contested2pt": 8.96115107913669,
+      "boxOuts": 1.9683453237410071,
       "looseBalls": 1.2431654676258992,
       "chargesDrawn": 0.051798561151079135,
       "screenAssists": 4.325179856115107,
@@ -102433,13 +102433,13 @@
       "rTS": 6.8
     },
     "hustle": {
-      "deflections": 1.94,
-      "contestedShots": 4.87,
+      "deflections": 1.95,
+      "contestedShots": 4.86,
       "contested3pt": 1.4,
-      "contested2pt": 3.48,
+      "contested2pt": 3.46,
       "chargesDrawn": 0.02,
       "looseBalls": 0.48,
-      "boxOuts": 0.75,
+      "boxOuts": 0.76,
       "screenAssists": 1.67
     },
     "misc": {
@@ -102619,9 +102619,9 @@
       "contested3pt": 1.3486068111455107,
       "contested2pt": 0.601857585139319,
       "boxOuts": 0.4681114551083591,
-      "looseBalls": 0.6352941176470588,
+      "looseBalls": 0.6464396284829721,
       "chargesDrawn": 0.03343653250773994,
-      "screenAssists": 0.3120743034055728,
+      "screenAssists": 0.32321981424148605,
       "potentialAst": 10.365325077399381,
       "passesMade": 56.73065015479876,
       "secondaryAst": 0.8916408668730651,
@@ -102660,9 +102660,9 @@
       "contested3pt": 1.21,
       "contested2pt": 0.54,
       "chargesDrawn": 0.03,
-      "looseBalls": 0.57,
+      "looseBalls": 0.58,
       "boxOuts": 0.42,
-      "screenAssists": 0.28
+      "screenAssists": 0.29
     },
     "misc": {
       "ptsOffTov": 1.9,
@@ -102722,7 +102722,7 @@
       "PlayCreation": 82,
       "PerimeterD": 39,
       "InteriorD": 35,
-      "Hustle": 34,
+      "Hustle": 35,
       "OverallImpact": 81,
       "SystemicImpact": 81,
       "Finishing": 48,
@@ -102745,7 +102745,7 @@
       "ShotDefense": 59,
       "ContestedReb": 25,
       "RebConversion": 25,
-      "LooseBalls": 49,
+      "LooseBalls": 52,
       "ChargesDrawn": 59
     },
     "rating": {
@@ -102836,7 +102836,7 @@
       "fg3a": 9.797468354430379,
       "ptsFb": 4.10126582278481,
       "twoPA": 5.012658227848101,
-      "deflections": 2.2784810126582276,
+      "deflections": 1.5265822784810126,
       "contestedShots": 9.11392405063291,
       "contested3pt": 5.308860759493671,
       "contested2pt": 3.80506329113924,
@@ -102877,7 +102877,7 @@
       "rTS": 4.8
     },
     "hustle": {
-      "deflections": 1,
+      "deflections": 0.67,
       "contestedShots": 4,
       "contested3pt": 2.33,
       "contested2pt": 1.67,
@@ -102931,7 +102931,7 @@
       "DefRtg": 1,
       "NetRtg": 2,
       "Contested": 84,
-      "Deflections": 38,
+      "Deflections": 10,
       "PER": 39,
       "WinPct": 47,
       "WS48": 68,
@@ -102942,9 +102942,9 @@
       "FtPct": 2,
       "ScoringIndex": 79,
       "PlayCreation": 0,
-      "PerimeterD": 34,
+      "PerimeterD": 30,
       "InteriorD": 23,
-      "Hustle": 25,
+      "Hustle": 14,
       "OverallImpact": 14,
       "SystemicImpact": 14,
       "Finishing": 54,
@@ -102999,8 +102999,8 @@
           "label": "PLAY"
         },
         "def": {
-          "grade": "D",
-          "pct": 20,
+          "grade": "F",
+          "pct": 18,
           "raw": "DBPM: -3.3 / 0.7s 0.0b",
           "label": "DEFENSE"
         }
@@ -104077,7 +104077,7 @@
       "ShotDefense": 93,
       "ContestedReb": 32,
       "RebConversion": 32,
-      "LooseBalls": 61,
+      "LooseBalls": 60,
       "ChargesDrawn": 48
     },
     "rating": {
@@ -104743,7 +104743,7 @@
       "ShotDefense": 51,
       "ContestedReb": 65,
       "RebConversion": 65,
-      "LooseBalls": 43,
+      "LooseBalls": 42,
       "ChargesDrawn": 75
     },
     "rating": {
@@ -105386,7 +105386,7 @@
       "PlayCreation": 24,
       "PerimeterD": 54,
       "InteriorD": 38,
-      "Hustle": 80,
+      "Hustle": 79,
       "OverallImpact": 4,
       "SystemicImpact": 4,
       "Finishing": 32,
@@ -105409,7 +105409,7 @@
       "ShotDefense": 22,
       "ContestedReb": 57,
       "RebConversion": 57,
-      "LooseBalls": 80,
+      "LooseBalls": 79,
       "ChargesDrawn": 82
     },
     "rating": {
@@ -105505,7 +105505,7 @@
       "contested3pt": 2.6106870229007635,
       "contested2pt": 2.596946564885496,
       "boxOuts": 0.24732824427480915,
-      "looseBalls": 0.7694656488549619,
+      "looseBalls": 0.783206106870229,
       "chargesDrawn": 0,
       "screenAssists": 0.21984732824427483,
       "potentialAst": 8.106870229007635,
@@ -105546,7 +105546,7 @@
       "contested3pt": 1.9,
       "contested2pt": 1.89,
       "chargesDrawn": 0,
-      "looseBalls": 0.56,
+      "looseBalls": 0.57,
       "boxOuts": 0.18,
       "screenAssists": 0.16
     },
@@ -105631,7 +105631,7 @@
       "ShotDefense": 52,
       "ContestedReb": 29,
       "RebConversion": 29,
-      "LooseBalls": 76,
+      "LooseBalls": 77,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -107498,7 +107498,7 @@
       "fg3a": 4.96113074204947,
       "ptsFb": 2.035335689045936,
       "twoPA": 6.23321554770318,
-      "deflections": 1.5773851590106007,
+      "deflections": 1.615547703180212,
       "contestedShots": 4.47773851590106,
       "contested3pt": 1.5901060070671378,
       "contested2pt": 2.887632508833922,
@@ -107539,7 +107539,7 @@
       "rTS": 3.8
     },
     "hustle": {
-      "deflections": 1.24,
+      "deflections": 1.27,
       "contestedShots": 3.52,
       "contested3pt": 1.25,
       "contested2pt": 2.27,
@@ -107593,7 +107593,7 @@
       "DefRtg": 42,
       "NetRtg": 62,
       "Contested": 32,
-      "Deflections": 11,
+      "Deflections": 12,
       "PER": 23,
       "WinPct": 89,
       "WS48": 38,
@@ -107606,7 +107606,7 @@
       "PlayCreation": 0,
       "PerimeterD": 33,
       "InteriorD": 37,
-      "Hustle": 23,
+      "Hustle": 24,
       "OverallImpact": 33,
       "SystemicImpact": 33,
       "Finishing": 32,
@@ -108295,7 +108295,7 @@
       "ShotDefense": 57,
       "ContestedReb": 63,
       "RebConversion": 63,
-      "LooseBalls": 32,
+      "LooseBalls": 33,
       "ChargesDrawn": 71
     },
     "rating": {
@@ -108387,9 +108387,9 @@
       "ptsFb": 1.6615384615384616,
       "twoPA": 7.753846153846155,
       "deflections": 1.2184615384615385,
-      "contestedShots": 3.3969230769230774,
+      "contestedShots": 3.4338461538461544,
       "contested3pt": 1.643076923076923,
-      "contested2pt": 1.7538461538461538,
+      "contested2pt": 1.7723076923076924,
       "boxOuts": 0.2953846153846154,
       "looseBalls": 0.8861538461538462,
       "chargesDrawn": 0.07384615384615385,
@@ -108428,9 +108428,9 @@
     },
     "hustle": {
       "deflections": 0.66,
-      "contestedShots": 1.84,
+      "contestedShots": 1.86,
       "contested3pt": 0.89,
-      "contested2pt": 0.95,
+      "contested2pt": 0.96,
       "chargesDrawn": 0.04,
       "looseBalls": 0.48,
       "boxOuts": 0.16,
@@ -108609,8 +108609,8 @@
       "ptsFb": 2.0186915887850465,
       "twoPA": 8.74766355140187,
       "deflections": 4.530841121495326,
-      "contestedShots": 4.385046728971963,
-      "contested3pt": 2.041121495327103,
+      "contestedShots": 4.3626168224299064,
+      "contested3pt": 2.0299065420560747,
       "contested2pt": 2.3327102803738318,
       "boxOuts": 0.26915887850467285,
       "looseBalls": 0.7626168224299066,
@@ -108650,8 +108650,8 @@
     },
     "hustle": {
       "deflections": 4.04,
-      "contestedShots": 3.91,
-      "contested3pt": 1.82,
+      "contestedShots": 3.89,
+      "contested3pt": 1.81,
       "contested2pt": 2.08,
       "chargesDrawn": 0.05,
       "looseBalls": 0.68,
@@ -108702,7 +108702,7 @@
       "OffRtg": 53,
       "DefRtg": 25,
       "NetRtg": 37,
-      "Contested": 30,
+      "Contested": 29,
       "Deflections": 94,
       "PER": 67,
       "WinPct": 35,
@@ -108925,7 +108925,7 @@
       "DefRtg": 24,
       "NetRtg": 35,
       "Contested": 4,
-      "Deflections": 12,
+      "Deflections": 11,
       "PER": 75,
       "WinPct": 28,
       "WS48": 62,
@@ -108938,7 +108938,7 @@
       "PlayCreation": 40,
       "PerimeterD": 30,
       "InteriorD": 16,
-      "Hustle": 33,
+      "Hustle": 32,
       "OverallImpact": 61,
       "SystemicImpact": 61,
       "Finishing": 59,
@@ -108961,7 +108961,7 @@
       "ShotDefense": 39,
       "ContestedReb": 51,
       "RebConversion": 51,
-      "LooseBalls": 48,
+      "LooseBalls": 49,
       "ChargesDrawn": 48
     },
     "rating": {
@@ -109604,7 +109604,7 @@
       "PlayCreation": 45,
       "PerimeterD": 67,
       "InteriorD": 69,
-      "Hustle": 55,
+      "Hustle": 56,
       "OverallImpact": 83,
       "SystemicImpact": 83,
       "Finishing": 65,
@@ -109627,7 +109627,7 @@
       "ShotDefense": 54,
       "ContestedReb": 77,
       "RebConversion": 77,
-      "LooseBalls": 50,
+      "LooseBalls": 51,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -110071,7 +110071,7 @@
       "ShotDefense": 16,
       "ContestedReb": 17,
       "RebConversion": 17,
-      "LooseBalls": 6,
+      "LooseBalls": 5,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -110829,9 +110829,9 @@
       "ptsFb": 0,
       "twoPA": 6.49624060150376,
       "deflections": 1.3533834586466165,
-      "contestedShots": 3.3834586466165413,
+      "contestedShots": 3.735338345864661,
       "contested3pt": 2.0300751879699246,
-      "contested2pt": 1.3533834586466165,
+      "contested2pt": 1.7052631578947368,
       "boxOuts": 0,
       "looseBalls": 0.3518796992481203,
       "chargesDrawn": 0,
@@ -110870,9 +110870,9 @@
     },
     "hustle": {
       "deflections": 0.5,
-      "contestedShots": 1.25,
+      "contestedShots": 1.38,
       "contested3pt": 0.75,
-      "contested2pt": 0.5,
+      "contested2pt": 0.63,
       "chargesDrawn": 0,
       "looseBalls": 0.13,
       "boxOuts": 0,
@@ -110922,7 +110922,7 @@
       "OffRtg": 75,
       "DefRtg": 13,
       "NetRtg": 38,
-      "Contested": 10,
+      "Contested": 16,
       "Deflections": 5,
       "PER": 65,
       "WinPct": 1,
@@ -110935,7 +110935,7 @@
       "ScoringIndex": 78,
       "PlayCreation": 34,
       "PerimeterD": 26,
-      "InteriorD": 21,
+      "InteriorD": 22,
       "Hustle": 8,
       "OverallImpact": 53,
       "SystemicImpact": 53,
@@ -110992,7 +110992,7 @@
         },
         "def": {
           "grade": "F",
-          "pct": 19,
+          "pct": 20,
           "raw": "DBPM: -1.3 / 0.8s 0.0b",
           "label": "DEFENSE"
         }
@@ -111602,7 +111602,7 @@
       "PlayCreation": 85,
       "PerimeterD": 25,
       "InteriorD": 32,
-      "Hustle": 53,
+      "Hustle": 52,
       "OverallImpact": 28,
       "SystemicImpact": 28,
       "Finishing": 59,
@@ -111625,7 +111625,7 @@
       "ShotDefense": 23,
       "ContestedReb": 29,
       "RebConversion": 29,
-      "LooseBalls": 71,
+      "LooseBalls": 70,
       "ChargesDrawn": 98
     },
     "rating": {
@@ -112490,7 +112490,7 @@
       "PlayCreation": 39,
       "PerimeterD": 69,
       "InteriorD": 85,
-      "Hustle": 70,
+      "Hustle": 69,
       "OverallImpact": 72,
       "SystemicImpact": 72,
       "Finishing": 50,
@@ -112513,7 +112513,7 @@
       "ShotDefense": 19,
       "ContestedReb": 75,
       "RebConversion": 75,
-      "LooseBalls": 90,
+      "LooseBalls": 89,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -113274,7 +113274,7 @@
       "contestedShots": 5.111999999999999,
       "contested3pt": 2.088,
       "contested2pt": 3.0359999999999996,
-      "boxOuts": 0.336,
+      "boxOuts": 0.348,
       "looseBalls": 0.708,
       "chargesDrawn": 0.012,
       "screenAssists": 0.564,
@@ -113317,7 +113317,7 @@
       "contested2pt": 2.53,
       "chargesDrawn": 0.01,
       "looseBalls": 0.59,
-      "boxOuts": 0.28,
+      "boxOuts": 0.29,
       "screenAssists": 0.47
     },
     "misc": {
@@ -113600,7 +113600,7 @@
       "PlayCreation": 21,
       "PerimeterD": 59,
       "InteriorD": 67,
-      "Hustle": 45,
+      "Hustle": 44,
       "OverallImpact": 66,
       "SystemicImpact": 66,
       "Finishing": 47,
@@ -113623,7 +113623,7 @@
       "ShotDefense": 93,
       "ContestedReb": 81,
       "RebConversion": 81,
-      "LooseBalls": 79,
+      "LooseBalls": 78,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -113808,7 +113808,7 @@
       "OffRtg": 68,
       "DefRtg": 17,
       "NetRtg": 38,
-      "Contested": 22,
+      "Contested": 23,
       "Deflections": 53,
       "PER": 21,
       "WinPct": 20,
@@ -114606,7 +114606,7 @@
       "contestedShots": 6.46046511627907,
       "contested3pt": 2.3302325581395347,
       "contested2pt": 4.144186046511629,
-      "boxOuts": 0.4604651162790698,
+      "boxOuts": 0.4883720930232558,
       "looseBalls": 1.0883720930232559,
       "chargesDrawn": 0,
       "screenAssists": 0.27906976744186046,
@@ -114649,7 +114649,7 @@
       "contested2pt": 2.97,
       "chargesDrawn": 0,
       "looseBalls": 0.78,
-      "boxOuts": 0.33,
+      "boxOuts": 0.35,
       "screenAssists": 0.2
     },
     "misc": {
@@ -114710,7 +114710,7 @@
       "PlayCreation": 14,
       "PerimeterD": 69,
       "InteriorD": 65,
-      "Hustle": 65,
+      "Hustle": 66,
       "OverallImpact": 46,
       "SystemicImpact": 46,
       "Finishing": 42,
@@ -115712,14 +115712,14 @@
       "fg3a": 0.8181818181818182,
       "ptsFb": 1.6363636363636365,
       "twoPA": 6.545454545454546,
-      "deflections": 8.50909090909091,
-      "contestedShots": 6.136363636363637,
-      "contested3pt": 2.3727272727272726,
-      "contested2pt": 3.7636363636363637,
+      "deflections": 8.181818181818182,
+      "contestedShots": 6.218181818181818,
+      "contested3pt": 2.290909090909091,
+      "contested2pt": 3.9272727272727272,
       "boxOuts": 0.32727272727272727,
-      "looseBalls": 1.3909090909090909,
+      "looseBalls": 1.309090909090909,
       "chargesDrawn": 0,
-      "screenAssists": 2.0454545454545454,
+      "screenAssists": 1.9636363636363636,
       "potentialAst": 9,
       "passesMade": 37.63636363636363,
       "secondaryAst": 0,
@@ -115753,14 +115753,14 @@
       "rTS": -6.2
     },
     "hustle": {
-      "deflections": 1.04,
-      "contestedShots": 0.75,
-      "contested3pt": 0.29,
-      "contested2pt": 0.46,
+      "deflections": 1,
+      "contestedShots": 0.76,
+      "contested3pt": 0.28,
+      "contested2pt": 0.48,
       "chargesDrawn": 0,
-      "looseBalls": 0.17,
+      "looseBalls": 0.16,
       "boxOuts": 0.04,
-      "screenAssists": 0.25
+      "screenAssists": 0.24
     },
     "misc": {
       "ptsOffTov": 0.5,
@@ -115806,7 +115806,7 @@
       "OffRtg": 0,
       "DefRtg": 100,
       "NetRtg": 68,
-      "Contested": 62,
+      "Contested": 63,
       "Deflections": 100,
       "PER": 46,
       "WinPct": 17,
@@ -115843,7 +115843,7 @@
       "ShotDefense": 41,
       "ContestedReb": 44,
       "RebConversion": 44,
-      "LooseBalls": 100,
+      "LooseBalls": 99,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -116953,7 +116953,7 @@
       "ShotDefense": 0,
       "ContestedReb": 1,
       "RebConversion": 1,
-      "LooseBalls": 6,
+      "LooseBalls": 5,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -117273,7 +117273,7 @@
       "boxOuts": 3.4363636363636365,
       "looseBalls": 0.5890909090909091,
       "chargesDrawn": 0,
-      "screenAssists": 3.272727272727273,
+      "screenAssists": 3.174545454545455,
       "potentialAst": 3.272727272727273,
       "passesMade": 27.490909090909092,
       "secondaryAst": 0,
@@ -117314,7 +117314,7 @@
       "chargesDrawn": 0,
       "looseBalls": 0.18,
       "boxOuts": 1.05,
-      "screenAssists": 1
+      "screenAssists": 0.97
     },
     "misc": {
       "ptsOffTov": 0.4,
@@ -117374,7 +117374,7 @@
       "PlayCreation": 9,
       "PerimeterD": 29,
       "InteriorD": 44,
-      "Hustle": 30,
+      "Hustle": 29,
       "OverallImpact": 17,
       "SystemicImpact": 17,
       "Finishing": 64,
@@ -117397,7 +117397,7 @@
       "ShotDefense": 61,
       "ContestedReb": 54,
       "RebConversion": 54,
-      "LooseBalls": 39,
+      "LooseBalls": 38,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -117817,7 +117817,7 @@
       "ScoringIndex": 39,
       "PlayCreation": 32,
       "PerimeterD": 53,
-      "InteriorD": 45,
+      "InteriorD": 44,
       "Hustle": 60,
       "OverallImpact": 35,
       "SystemicImpact": 35,
@@ -117933,11 +117933,11 @@
       "ptsFb": 3.0937500000000004,
       "twoPA": 9.140625000000002,
       "deflections": 2.25,
-      "contestedShots": 1.5046875000000002,
-      "contested3pt": 0.84375,
+      "contestedShots": 1.40625,
+      "contested3pt": 0.7453125,
       "contested2pt": 0.6609375,
       "boxOuts": 0.3796875,
-      "looseBalls": 0.6609375,
+      "looseBalls": 0.7453125,
       "chargesDrawn": 0.09843750000000001,
       "screenAssists": 0.18281250000000002,
       "potentialAst": 20.8125,
@@ -117974,11 +117974,11 @@
     },
     "hustle": {
       "deflections": 1.6,
-      "contestedShots": 1.07,
-      "contested3pt": 0.6,
+      "contestedShots": 1,
+      "contested3pt": 0.53,
       "contested2pt": 0.47,
       "chargesDrawn": 0.07,
-      "looseBalls": 0.47,
+      "looseBalls": 0.53,
       "boxOuts": 0.27,
       "screenAssists": 0.13
     },
@@ -118040,7 +118040,7 @@
       "PlayCreation": 100,
       "PerimeterD": 28,
       "InteriorD": 23,
-      "Hustle": 48,
+      "Hustle": 53,
       "OverallImpact": 71,
       "SystemicImpact": 71,
       "Finishing": 54,
@@ -118063,7 +118063,7 @@
       "ShotDefense": 1,
       "ContestedReb": 3,
       "RebConversion": 3,
-      "LooseBalls": 57,
+      "LooseBalls": 72,
       "ChargesDrawn": 84
     },
     "rating": {
@@ -118729,7 +118729,7 @@
       "ShotDefense": 24,
       "ContestedReb": 26,
       "RebConversion": 26,
-      "LooseBalls": 33,
+      "LooseBalls": 34,
       "ChargesDrawn": 93
     },
     "rating": {
@@ -118914,7 +118914,7 @@
       "OffRtg": 4,
       "DefRtg": 29,
       "NetRtg": 12,
-      "Contested": 50,
+      "Contested": 51,
       "Deflections": 78,
       "PER": 4,
       "WinPct": 64,
@@ -119043,8 +119043,8 @@
       "ptsFb": 2.2085889570552144,
       "twoPA": 9.2760736196319,
       "deflections": 1.8993865030674844,
-      "contestedShots": 7.9730061349693235,
-      "contested3pt": 3.732515337423312,
+      "contestedShots": 7.9288343558282195,
+      "contested3pt": 3.6883435582822077,
       "contested2pt": 4.240490797546012,
       "boxOuts": 0.48588957055214715,
       "looseBalls": 0.8171779141104293,
@@ -119084,8 +119084,8 @@
     },
     "hustle": {
       "deflections": 0.86,
-      "contestedShots": 3.61,
-      "contested3pt": 1.69,
+      "contestedShots": 3.59,
+      "contested3pt": 1.67,
       "contested2pt": 1.92,
       "chargesDrawn": 0,
       "looseBalls": 0.37,
@@ -119493,7 +119493,7 @@
       "boxOuts": 0.793421052631579,
       "looseBalls": 0.3907894736842106,
       "chargesDrawn": 0,
-      "screenAssists": 2.167105263157895,
+      "screenAssists": 1.9776315789473686,
       "potentialAst": 4.144736842105264,
       "passesMade": 36.71052631578948,
       "secondaryAst": 0.8289473684210527,
@@ -119534,7 +119534,7 @@
       "chargesDrawn": 0,
       "looseBalls": 0.33,
       "boxOuts": 0.67,
-      "screenAssists": 1.83
+      "screenAssists": 1.67
     },
     "misc": {
       "ptsOffTov": 0.5,
@@ -120329,7 +120329,7 @@
     "teamId": "NOP",
     "teamName": "Free Agent",
     "position": "NBA",
-    "age": 25,
+    "age": 26,
     "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1630530.png",
     "gameLog": [],
     "stats": {
@@ -120597,13 +120597,13 @@
       "ptsFb": 1.5157894736842106,
       "twoPA": 7.578947368421052,
       "deflections": 3.789473684210526,
-      "contestedShots": 8.829473684210527,
-      "contested3pt": 3.789473684210526,
-      "contested2pt": 5.04,
-      "boxOuts": 0.6442105263157895,
-      "looseBalls": 0.6442105263157895,
+      "contestedShots": 7.578947368421052,
+      "contested3pt": 3.2589473684210524,
+      "contested2pt": 4.319999999999999,
+      "boxOuts": 0.5305263157894737,
+      "looseBalls": 0.5305263157894737,
       "chargesDrawn": 0,
-      "screenAssists": 1.2505263157894737,
+      "screenAssists": 1.0989473684210525,
       "potentialAst": 4.1684210526315795,
       "passesMade": 29.936842105263157,
       "secondaryAst": 0,
@@ -120638,13 +120638,13 @@
     },
     "hustle": {
       "deflections": 1,
-      "contestedShots": 2.33,
-      "contested3pt": 1,
-      "contested2pt": 1.33,
+      "contestedShots": 2,
+      "contested3pt": 0.86,
+      "contested2pt": 1.14,
       "chargesDrawn": 0,
-      "looseBalls": 0.17,
-      "boxOuts": 0.17,
-      "screenAssists": 0.33
+      "looseBalls": 0.14,
+      "boxOuts": 0.14,
+      "screenAssists": 0.29
     },
     "misc": {
       "ptsOffTov": 1.2,
@@ -120683,14 +120683,14 @@
       "Efficiency": 57,
       "Impact": 40,
       "Shooting": 21,
-      "Defense": 68,
+      "Defense": 67,
       "OReb": 86,
       "DReb": 17,
       "AstPct": 30,
       "OffRtg": 98,
       "DefRtg": 99,
       "NetRtg": 100,
-      "Contested": 83,
+      "Contested": 76,
       "Deflections": 86,
       "PER": 67,
       "WinPct": 100,
@@ -120702,9 +120702,9 @@
       "FtPct": 34,
       "ScoringIndex": 46,
       "PlayCreation": 36,
-      "PerimeterD": 81,
-      "InteriorD": 51,
-      "Hustle": 61,
+      "PerimeterD": 80,
+      "InteriorD": 50,
+      "Hustle": 55,
       "OverallImpact": 67,
       "SystemicImpact": 67,
       "Finishing": 66,
@@ -120727,7 +120727,7 @@
       "ShotDefense": 3,
       "ContestedReb": 17,
       "RebConversion": 17,
-      "LooseBalls": 50,
+      "LooseBalls": 30,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -120760,7 +120760,7 @@
         },
         "def": {
           "grade": "C",
-          "pct": 57,
+          "pct": 55,
           "raw": "DBPM: -0.4 / 2.3s 0.0b",
           "label": "DEFENSE"
         }
@@ -120819,8 +120819,8 @@
       "ptsFb": 2.3649635036496353,
       "twoPA": 9.459854014598541,
       "deflections": 3.1270072992700735,
-      "contestedShots": 11.404379562043797,
-      "contested3pt": 3.4160583941605847,
+      "contestedShots": 11.456934306569345,
+      "contested3pt": 3.468613138686132,
       "contested2pt": 7.988321167883213,
       "boxOuts": 1.4978102189781022,
       "looseBalls": 0.7357664233576644,
@@ -120860,8 +120860,8 @@
     },
     "hustle": {
       "deflections": 1.19,
-      "contestedShots": 4.34,
-      "contested3pt": 1.3,
+      "contestedShots": 4.36,
+      "contested3pt": 1.32,
       "contested2pt": 3.04,
       "chargesDrawn": 0.02,
       "looseBalls": 0.28,
@@ -120924,7 +120924,7 @@
       "FtPct": 49,
       "ScoringIndex": 84,
       "PlayCreation": 44,
-      "PerimeterD": 48,
+      "PerimeterD": 49,
       "InteriorD": 59,
       "Hustle": 74,
       "OverallImpact": 51,
@@ -120949,7 +120949,7 @@
       "ShotDefense": 10,
       "ContestedReb": 78,
       "RebConversion": 78,
-      "LooseBalls": 71,
+      "LooseBalls": 70,
       "ChargesDrawn": 72
     },
     "rating": {
@@ -121047,7 +121047,7 @@
       "boxOuts": 0.8890688259109312,
       "looseBalls": 0.46639676113360323,
       "chargesDrawn": 0,
-      "screenAssists": 0.5829959514170041,
+      "screenAssists": 0.6121457489878542,
       "potentialAst": 3.497975708502024,
       "passesMade": 30.46153846153846,
       "secondaryAst": 0.29149797570850206,
@@ -121088,7 +121088,7 @@
       "chargesDrawn": 0,
       "looseBalls": 0.32,
       "boxOuts": 0.61,
-      "screenAssists": 0.4
+      "screenAssists": 0.42
     },
     "misc": {
       "ptsOffTov": 1.5,
@@ -121171,7 +121171,7 @@
       "ShotDefense": 47,
       "ContestedReb": 46,
       "RebConversion": 46,
-      "LooseBalls": 20,
+      "LooseBalls": 19,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -122022,7 +122022,7 @@
       "OffRtg": 1,
       "DefRtg": 1,
       "NetRtg": 0,
-      "Contested": 48,
+      "Contested": 49,
       "Deflections": 73,
       "PER": 8,
       "WinPct": 3,
@@ -122281,7 +122281,7 @@
       "ShotDefense": 24,
       "ContestedReb": 64,
       "RebConversion": 64,
-      "LooseBalls": 27,
+      "LooseBalls": 28,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -122598,7 +122598,7 @@
       "contestedShots": 6.730434782608696,
       "contested3pt": 3.2608695652173916,
       "contested2pt": 3.4695652173913047,
-      "boxOuts": 1.3043478260869565,
+      "boxOuts": 1.5130434782608695,
       "looseBalls": 0.20869565217391306,
       "chargesDrawn": 0,
       "screenAssists": 0.8608695652173913,
@@ -122641,7 +122641,7 @@
       "contested2pt": 1.33,
       "chargesDrawn": 0,
       "looseBalls": 0.08,
-      "boxOuts": 0.5,
+      "boxOuts": 0.58,
       "screenAssists": 0.33
     },
     "misc": {
@@ -123835,7 +123835,7 @@
       "ShotDefense": 3,
       "ContestedReb": 5,
       "RebConversion": 5,
-      "LooseBalls": 6,
+      "LooseBalls": 5,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -123931,7 +123931,7 @@
       "contested3pt": 1.8822857142857141,
       "contested2pt": 2.684571428571428,
       "boxOuts": 0.31885714285714284,
-      "looseBalls": 1.0697142857142856,
+      "looseBalls": 1.0594285714285714,
       "chargesDrawn": 0,
       "screenAssists": 0.2777142857142857,
       "potentialAst": 7.097142857142857,
@@ -123972,7 +123972,7 @@
       "contested3pt": 1.83,
       "contested2pt": 2.61,
       "chargesDrawn": 0,
-      "looseBalls": 1.04,
+      "looseBalls": 1.03,
       "boxOuts": 0.31,
       "screenAssists": 0.27
     },
@@ -124149,11 +124149,11 @@
       "ptsFb": 2.958904109589041,
       "twoPA": 14.054794520547944,
       "deflections": 3.217808219178082,
-      "contestedShots": 11.576712328767124,
-      "contested3pt": 3.217808219178082,
+      "contestedShots": 11.6013698630137,
+      "contested3pt": 3.2424657534246575,
       "contested2pt": 8.35890410958904,
       "boxOuts": 1.2575342465753425,
-      "looseBalls": 0.5794520547945206,
+      "looseBalls": 0.5917808219178082,
       "chargesDrawn": 0.06164383561643836,
       "screenAssists": 1.6767123287671235,
       "potentialAst": 6.904109589041096,
@@ -124190,11 +124190,11 @@
     },
     "hustle": {
       "deflections": 2.61,
-      "contestedShots": 9.39,
-      "contested3pt": 2.61,
+      "contestedShots": 9.41,
+      "contested3pt": 2.63,
       "contested2pt": 6.78,
       "chargesDrawn": 0.05,
-      "looseBalls": 0.47,
+      "looseBalls": 0.48,
       "boxOuts": 1.02,
       "screenAssists": 1.36
     },
@@ -124256,7 +124256,7 @@
       "PlayCreation": 59,
       "PerimeterD": 73,
       "InteriorD": 79,
-      "Hustle": 65,
+      "Hustle": 66,
       "OverallImpact": 99,
       "SystemicImpact": 99,
       "Finishing": 81,
@@ -124279,7 +124279,7 @@
       "ShotDefense": 98,
       "ContestedReb": 100,
       "RebConversion": 100,
-      "LooseBalls": 37,
+      "LooseBalls": 39,
       "ChargesDrawn": 76
     },
     "rating": {
@@ -124312,7 +124312,7 @@
         },
         "def": {
           "grade": "A+",
-          "pct": 94,
+          "pct": 95,
           "raw": "DBPM: +4.2 / 1.2s 3.8b",
           "label": "DEFENSE"
         }
@@ -124769,7 +124769,7 @@
     "teamId": "POR",
     "teamName": "Free Agent",
     "position": "NBA",
-    "age": 25,
+    "age": 26,
     "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1630249.png",
     "gameLog": [],
     "stats": {
@@ -124909,7 +124909,7 @@
       "DefRtg": 73,
       "NetRtg": 46,
       "Contested": 72,
-      "Deflections": 49,
+      "Deflections": 48,
       "PER": 19,
       "WinPct": 46,
       "WS48": 50,
@@ -125167,7 +125167,7 @@
       "ShotDefense": 75,
       "ContestedReb": 88,
       "RebConversion": 88,
-      "LooseBalls": 89,
+      "LooseBalls": 88,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -125389,7 +125389,7 @@
       "ShotDefense": 52,
       "ContestedReb": 15,
       "RebConversion": 15,
-      "LooseBalls": 23,
+      "LooseBalls": 22,
       "ChargesDrawn": 86
     },
     "rating": {
@@ -125484,10 +125484,10 @@
       "contestedShots": 9.374744027303755,
       "contested3pt": 2.3836177474402733,
       "contested2pt": 6.991126279863482,
-      "boxOuts": 2.924232081911263,
+      "boxOuts": 2.948805460750853,
       "looseBalls": 0.6757679180887373,
       "chargesDrawn": 0.03686006825938567,
-      "screenAssists": 3.4156996587030717,
+      "screenAssists": 3.427986348122867,
       "potentialAst": 3.5631399317406145,
       "passesMade": 33.296928327645055,
       "secondaryAst": 0.24573378839590446,
@@ -125527,8 +125527,8 @@
       "contested2pt": 5.69,
       "chargesDrawn": 0.03,
       "looseBalls": 0.55,
-      "boxOuts": 2.38,
-      "screenAssists": 2.78
+      "boxOuts": 2.4,
+      "screenAssists": 2.79
     },
     "misc": {
       "ptsOffTov": 1.4,
@@ -125929,7 +125929,7 @@
       "contested3pt": 1.872,
       "contested2pt": 2.034,
       "boxOuts": 0.558,
-      "looseBalls": 0.48600000000000004,
+      "looseBalls": 0.5040000000000001,
       "chargesDrawn": 0.12600000000000003,
       "screenAssists": 0.432,
       "potentialAst": 4.680000000000001,
@@ -125970,7 +125970,7 @@
       "contested3pt": 1.04,
       "contested2pt": 1.13,
       "chargesDrawn": 0.07,
-      "looseBalls": 0.27,
+      "looseBalls": 0.28,
       "boxOuts": 0.31,
       "screenAssists": 0.24
     },
@@ -126032,7 +126032,7 @@
       "PlayCreation": 24,
       "PerimeterD": 57,
       "InteriorD": 36,
-      "Hustle": 63,
+      "Hustle": 64,
       "OverallImpact": 24,
       "SystemicImpact": 24,
       "Finishing": 37,
@@ -126055,7 +126055,7 @@
       "ShotDefense": 17,
       "ContestedReb": 7,
       "RebConversion": 7,
-      "LooseBalls": 21,
+      "LooseBalls": 24,
       "ChargesDrawn": 89
     },
     "rating": {
@@ -126151,7 +126151,7 @@
       "contested3pt": 1.8895927601809954,
       "contested2pt": 3.76289592760181,
       "boxOuts": 0.4235294117647059,
-      "looseBalls": 0.4072398190045249,
+      "looseBalls": 0.4235294117647059,
       "chargesDrawn": 0.016289592760180997,
       "screenAssists": 0.3420814479638009,
       "potentialAst": 6.190045248868778,
@@ -126192,7 +126192,7 @@
       "contested3pt": 1.16,
       "contested2pt": 2.31,
       "chargesDrawn": 0.01,
-      "looseBalls": 0.25,
+      "looseBalls": 0.26,
       "boxOuts": 0.26,
       "screenAssists": 0.21
     },
@@ -126721,7 +126721,7 @@
       "ShotDefense": 56,
       "ContestedReb": 72,
       "RebConversion": 72,
-      "LooseBalls": 60,
+      "LooseBalls": 59,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -127142,7 +127142,7 @@
       "PlayCreation": 91,
       "PerimeterD": 61,
       "InteriorD": 31,
-      "Hustle": 72,
+      "Hustle": 71,
       "OverallImpact": 26,
       "SystemicImpact": 26,
       "Finishing": 17,
@@ -127479,9 +127479,9 @@
       "ptsFb": 4.017857142857143,
       "twoPA": 6.589285714285714,
       "deflections": 3.2303571428571427,
-      "contestedShots": 7.151785714285714,
+      "contestedShots": 7.119642857142857,
       "contested3pt": 2.5392857142857146,
-      "contested2pt": 4.612500000000001,
+      "contested2pt": 4.580357142857143,
       "boxOuts": 0.38571428571428573,
       "looseBalls": 0.6267857142857143,
       "chargesDrawn": 0,
@@ -127520,9 +127520,9 @@
     },
     "hustle": {
       "deflections": 2.01,
-      "contestedShots": 4.45,
+      "contestedShots": 4.43,
       "contested3pt": 1.58,
-      "contested2pt": 2.87,
+      "contested2pt": 2.85,
       "chargesDrawn": 0,
       "looseBalls": 0.39,
       "boxOuts": 0.24,
@@ -127831,7 +127831,7 @@
       "ShotDefense": 87,
       "ContestedReb": 92,
       "RebConversion": 92,
-      "LooseBalls": 38,
+      "LooseBalls": 37,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -128053,7 +128053,7 @@
       "ShotDefense": 94,
       "ContestedReb": 98,
       "RebConversion": 98,
-      "LooseBalls": 9,
+      "LooseBalls": 10,
       "ChargesDrawn": 23
     },
     "rating": {
@@ -128941,7 +128941,7 @@
       "ShotDefense": 90,
       "ContestedReb": 50,
       "RebConversion": 50,
-      "LooseBalls": 59,
+      "LooseBalls": 58,
       "ChargesDrawn": 55
     },
     "rating": {
