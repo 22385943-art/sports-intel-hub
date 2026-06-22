@@ -1,7 +1,7 @@
 {
   "metadata": {
     "season": "2025-26",
-    "generatedAt": "2026-06-20T19:16:33.197Z",
+    "generatedAt": "2026-06-22T03:35:27.267Z",
     "playerCount": 582,
     "teamCount": 30,
     "source": "nba-stats-api + basketball-reference"
@@ -21103,7 +21103,7 @@
       "teamId": "ATL",
       "teamName": "Free Agent",
       "position": "NBA",
-      "age": 25,
+      "age": 26,
       "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1631132.png",
       "gameLog": [],
       "stats": {
@@ -42859,7 +42859,7 @@
       "teamId": "GSW",
       "teamName": "Free Agent",
       "position": "NBA",
-      "age": 23,
+      "age": 24,
       "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1630611.png",
       "gameLog": [],
       "stats": {
