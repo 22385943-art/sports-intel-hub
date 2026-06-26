@@ -1,5 +1,6 @@
 import { useParams, Link, useSearchParams } from "react-router-dom";
 import { useState, useEffect, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useSport } from "@/contexts/SportContext";
 import { nbaService } from "@/services/sportServiceFactory";
 import { ArrowLeft, Loader2, Activity, Target, Zap, Shield, Crown, BarChart3, TrendingUp, Star, Trophy, Award, Users, Hexagon, CalendarDays, ShieldAlert, Brain, Crosshair } from "lucide-react";
@@ -59,7 +60,6 @@ const getAwardIcon = (title: string) => {
   return <Award className="h-7 w-7 text-slate-400" />;
 };
 
-// 🧠 ARCHETYPE ENGINE (100% ERA-RELATIVE)
 const getArchetype = (p: any) => {
   const pct = p.percentiles || {};
   
@@ -116,7 +116,6 @@ const getArchetype = (p: any) => {
   return { label: "Rotation Player", icon: Activity, color: "text-slate-400 bg-white/5 border-white/10" };
 };
 
-// 🚀 Helper para renderizar filas de datos elegantes sin ocupar espacio
 const StatRow = ({ label, val, highlight = false, valueColor = "" }: { label: string, val: string | number, highlight?: boolean, valueColor?: string }) => (
   <div className="flex justify-between items-center py-2.5 border-b border-white/[0.03] last:border-0 group">
     <span className="text-[10px] font-black uppercase tracking-widest text-[#666] group-hover:text-[#999] transition-colors">{label}</span>
@@ -124,7 +123,6 @@ const StatRow = ({ label, val, highlight = false, valueColor = "" }: { label: st
   </div>
 );
 
-// Helper para poner el % sin fallos
 const fPct = (val: string | number) => val !== "-" ? `${val}%` : "-";
 
 export default function NBAPlayerProfile() {
@@ -134,142 +132,168 @@ export default function NBAPlayerProfile() {
   const [searchParams, setSearchParams] = useSearchParams();
   const season = searchParams.get("season") || "2025-26";
   
-  const [player, setPlayer] = useState<NBAPlayer | null>(null);
-  const [allPlayers, setAllPlayers] = useState<NBAPlayer[]>([]);
-  const [allTeams, setAllTeams] = useState<any[]>([]);
-  const [bio, setBio] = useState<any>(null);
-  const [careerStats, setCareerStats] = useState<any>(null);
-  const [onOffSwing, setOnOffSwing] = useState<number | null>(null); 
-  const [accolades, setAccolades] = useState<any[]>([]); 
-  const [shots, setShots] = useState<any[]>([]); 
-  const [gameLog, setGameLog] = useState<any[]>([]);
-  
-  const [isBaseLoading, setIsBaseLoading] = useState(true);
-  const [isDeepDataLoading, setIsDeepDataLoading] = useState(true);
-  
   const [activeTab, setActiveTab] = useState<"stats" | "analytics" | "shotchart" | "accolades" | "splits">("stats");
   const [statsView, setStatsView] = useState<"season" | "career">("season");
   const [boxScoreSubTab, setBoxScoreSubTab] = useState<"overview" | "scoring" | "playmaking" | "defense">("overview");
 
   const { toggleFavorite, isFavorite } = useFavorites();
-  const isFav = player ? isFavorite(player.id, 'player') : false;
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [id]);
 
-  useEffect(() => {
-    if (!id) return;
-    setIsBaseLoading(true);
+  const { data: leagueData, isLoading: isBaseLoading } = useQuery({
+    queryKey: ['nba', 'players-teams', season],
+    queryFn: async () => {
+      const [players, teams] = await Promise.all([
+        nbaService.fetchAllOfficialPlayers(season),
+        nbaService.fetchAllOfficialTeams(season),
+      ]);
+      return { players, teams };
+    },
+    staleTime: 1000 * 60 * 30, 
+    gcTime: 1000 * 60 * 60,    
+  });
 
-    Promise.all([
-      nbaService.fetchAllOfficialPlayers(season),
-      nbaService.fetchAllOfficialTeams(season)
-    ]).then(([players, teams]) => {
-      setAllPlayers(players);
-      setAllTeams(teams); 
-      
-      const foundPlayer = players.find(p => p.id === id);
-      setPlayer(foundPlayer || null);
+  const allPlayers = leagueData?.players ?? [];
+  const allTeams   = leagueData?.teams   ?? [];
+  const player     = useMemo(
+    () => allPlayers.find(p => p.id === id) ?? null,
+    [allPlayers, id]
+  );
+  const isFav = player ? isFavorite(player.id, 'player') : false;
 
-      if (foundPlayer) {
-        setIsBaseLoading(false); 
-        setIsDeepDataLoading(true); 
+  const numericTeamId = useMemo(
+    () => allTeams.find(t => t.abbreviation === player?.teamId)?.id,
+    [allTeams, player]
+  );
 
-        const numericTeamId = teams.find(t => t.abbreviation === foundPlayer.teamId)?.id;
-
-        const bioFetch = fetch(`/nba-api/commonplayerinfo?PlayerID=${id}`).then(res => res.json()).catch(() => null);
-        const careerFetch = fetch(`/nba-api/playercareerstats?PerMode=PerGame&PlayerID=${id}`).then(res => res.json()).catch(() => null);
-
-        let onOffFetch = Promise.resolve(null);
-        if (numericTeamId && numericTeamId !== "FA") {
-          onOffFetch = fetch(`/nba-api/teamplayeronoffdetails?DateFrom=&DateTo=&GameSegment=&LastNGames=0&LeagueID=00&Location=&MeasureType=Advanced&Month=0&OpponentTeamID=0&Outcome=&PaceAdjust=N&PerMode=PerGame&Period=0&PlusMinus=N&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&TeamID=${numericTeamId}&VsConference=&VsDivision=`).then(res => res.json()).catch(() => null);
+  const { data: deepData, isLoading: isDeepDataLoading } = useQuery({
+    queryKey: ['nba', 'player-deep', id, season, numericTeamId],
+    enabled: !!id && !!player,
+    staleTime: 1000 * 60 * 15, 
+    queryFn: async () => {
+      const fetchBFF = async (endpoint: string, params: Record<string, string>) => {
+        const query = new URLSearchParams(params).toString();
+        try {
+            const res = await fetch(`/api/nba-proxy?endpoint=${endpoint}&${query}`);
+            if (!res.ok) throw new Error('BFF fetch failed');
+            return await res.json();
+        } catch {
+            const resLocal = await fetch(`/nba-api/${endpoint}?${query}`);
+            return await resLocal.json();
         }
+      };
 
-        const awardsFetch = fetch(`/nba-api/playerawards?PlayerID=${id}`).then(res => res.json()).catch(() => null);
-        const shotsFetch = nbaService.getPlayerShotChart(id, season); 
-        const gameLogFetch = nbaService.getPlayerGameLog(id, season);
+      const bioFetch    = fetchBFF('commonplayerinfo', { PlayerID: id! }).catch(() => null);
+      const careerFetch = fetchBFF('playercareerstats', { PerMode: 'PerGame', PlayerID: id! }).catch(() => null);
 
-        Promise.all([bioFetch, onOffFetch, awardsFetch, shotsFetch, gameLogFetch, careerFetch]).then(([bioData, onOffData, awardsData, shotData, logData, careerData]) => {
-          if (bioData) {
-            try {
-              const info = bioData.resultSets[0];
-              const h = info.headers;
-              const row = info.rowSet[0];
-              setBio({
-                firstName: row[h.indexOf('FIRST_NAME')], lastName: row[h.indexOf('LAST_NAME')],
-                ht: formatHeight(row[h.indexOf('HEIGHT')]), wt: row[h.indexOf('WEIGHT')],
-                dob: formatBirthdateAndAge(row[h.indexOf('BIRTHDATE')]),
-                school: row[h.indexOf('SCHOOL')] || row[h.indexOf('COUNTRY')],
-                jersey: row[h.indexOf('JERSEY')], pos: row[h.indexOf('POSITION')]
-              });
-            } catch (e) { console.error(e); }
-          }
-
-          if (careerData) {
-            try {
-              const careerSet = careerData.resultSets.find((rs:any) => rs.name === "CareerTotalsRegularSeason");
-              if (careerSet && careerSet.rowSet.length > 0) {
-                const h = careerSet.headers;
-                const r = careerSet.rowSet[0];
-                setCareerStats({
-                  gp: r[h.indexOf('GP')], mpg: r[h.indexOf('MIN')],
-                  ppg: r[h.indexOf('PTS')], rpg: r[h.indexOf('REB')],
-                  apg: r[h.indexOf('AST')], spg: r[h.indexOf('STL')],
-                  bpg: r[h.indexOf('BLK')], topg: r[h.indexOf('TOV')],
-                  fgPct: r[h.indexOf('FG_PCT')] * 100,
-                  threePct: r[h.indexOf('FG3_PCT')] * 100,
-                  ftPct: r[h.indexOf('FT_PCT')] * 100,
-                  fgm: r[h.indexOf('FGM')], fga: r[h.indexOf('FGA')],
-                  fg3m: r[h.indexOf('FG3M')], fg3a: r[h.indexOf('FG3A')],
-                  ftm: r[h.indexOf('FTM')], fta: r[h.indexOf('FTA')],
-                  oreb: r[h.indexOf('OREB')], dreb: r[h.indexOf('DREB')],
-                  pf: r[h.indexOf('PF')]
-                });
-              }
-            } catch (e) { console.error(e); }
-          }
-
-          if (onOffData) {
-            try {
-              const onSet = onOffData.resultSets.find((rs:any) => rs.name === "PlayersOnCourtTeamPlayerOnOffDetails");
-              const offSet = onOffData.resultSets.find((rs:any) => rs.name === "PlayersOffCourtTeamPlayerOnOffDetails");
-              const onRow = onSet?.rowSet.find((r:any) => r[1].toString() === id.toString());
-              const offRow = offSet?.rowSet.find((r:any) => r[1].toString() === id.toString());
-              if (onRow && offRow) {
-                setOnOffSwing(onRow[onSet.headers.indexOf('NET_RATING')] - offRow[offSet.headers.indexOf('NET_RATING')]);
-              } else setOnOffSwing(null);
-            } catch (e) { setOnOffSwing(null); }
-          }
-          
-          if (awardsData) {
-            try {
-              const set = awardsData.resultSets.find((s:any) => s.name === "PlayerAwards");
-              if (set) {
-                const h = set.headers;
-                const counts: Record<string, number> = {};
-                set.rowSet.forEach((row: any[]) => {
-                  const desc = row[h.indexOf("DESCRIPTION")];
-                  if (desc.includes("Week") || desc.includes("Month") || desc.includes("Community") || desc.includes("Olympic")) return;
-                  counts[desc] = (counts[desc] || 0) + 1;
-                });
-                const parsedAccolades = Object.entries(counts)
-                  .map(([title, count]) => ({ title, count, icon: getAwardIcon(title) }))
-                  .sort((a, b) => b.count - a.count);
-                setAccolades(parsedAccolades);
-              }
-            } catch (e) { console.error(e); }
-          }
-          
-          setShots(shotData || []); 
-          setGameLog(logData || []);
-          setIsDeepDataLoading(false);
-        });
-      } else {
-        setIsBaseLoading(false);
+      let onOffFetch = Promise.resolve(null as any);
+      if (numericTeamId && numericTeamId !== "FA") {
+        onOffFetch = fetchBFF('teamplayeronoffdetails', {
+            DateFrom: '', DateTo: '', GameSegment: '', LastNGames: '0', LeagueID: '00',
+            Location: '', MeasureType: 'Advanced', Month: '0', OpponentTeamID: '0',
+            Outcome: '', PaceAdjust: 'N', PerMode: 'PerGame', Period: '0',
+            PlusMinus: 'N', Rank: 'N', Season: season, SeasonSegment: '',
+            SeasonType: 'Regular Season', TeamID: String(numericTeamId), VsConference: '', VsDivision: ''
+        }).catch(() => null);
       }
-    });
-  }, [id, season]);
+
+      const awardsFetch   = fetchBFF('playerawards', { PlayerID: id! }).catch(() => null);
+      const shotsFetch    = nbaService.getPlayerShotChart(id!, season);
+      const gameLogFetch  = nbaService.getPlayerGameLog(id!, season);
+
+      const [bioData, onOffData, awardsData, shotData, logData, careerData] =
+        await Promise.all([bioFetch, onOffFetch, awardsFetch, shotsFetch, gameLogFetch, careerFetch]);
+
+      let bio: any = null;
+      if (bioData) {
+        try {
+          const info = bioData.resultSets[0];
+          const h = info.headers;
+          const row = info.rowSet[0];
+          bio = {
+            firstName: row[h.indexOf('FIRST_NAME')], lastName: row[h.indexOf('LAST_NAME')],
+            ht: formatHeight(row[h.indexOf('HEIGHT')]), wt: row[h.indexOf('WEIGHT')],
+            dob: formatBirthdateAndAge(row[h.indexOf('BIRTHDATE')]),
+            school: row[h.indexOf('SCHOOL')] || row[h.indexOf('COUNTRY')],
+            jersey: row[h.indexOf('JERSEY')], pos: row[h.indexOf('POSITION')]
+          };
+        } catch (e) { console.error(e); }
+      }
+
+      let careerStats: any = null;
+      if (careerData) {
+        try {
+          const careerSet = careerData.resultSets.find((rs: any) => rs.name === "CareerTotalsRegularSeason");
+          if (careerSet && careerSet.rowSet.length > 0) {
+            const h = careerSet.headers;
+            const r = careerSet.rowSet[0];
+            careerStats = {
+              gp: r[h.indexOf('GP')], mpg: r[h.indexOf('MIN')],
+              ppg: r[h.indexOf('PTS')], rpg: r[h.indexOf('REB')],
+              apg: r[h.indexOf('AST')], spg: r[h.indexOf('STL')],
+              bpg: r[h.indexOf('BLK')], topg: r[h.indexOf('TOV')],
+              fgPct: r[h.indexOf('FG_PCT')] * 100,
+              threePct: r[h.indexOf('FG3_PCT')] * 100,
+              ftPct: r[h.indexOf('FT_PCT')] * 100,
+              fgm: r[h.indexOf('FGM')], fga: r[h.indexOf('FGA')],
+              fg3m: r[h.indexOf('FG3M')], fg3a: r[h.indexOf('FG3A')],
+              ftm: r[h.indexOf('FTM')], fta: r[h.indexOf('FTA')],
+              oreb: r[h.indexOf('OREB')], dreb: r[h.indexOf('DREB')],
+              pf: r[h.indexOf('PF')]
+            };
+          }
+        } catch (e) { console.error(e); }
+      }
+
+      let onOffSwing: number | null = null;
+      if (onOffData) {
+        try {
+          const onSet  = onOffData.resultSets.find((rs: any) => rs.name === "PlayersOnCourtTeamPlayerOnOffDetails");
+          const offSet = onOffData.resultSets.find((rs: any) => rs.name === "PlayersOffCourtTeamPlayerOnOffDetails");
+          const onRow  = onSet?.rowSet.find((r: any) => r[1].toString() === id!.toString());
+          const offRow = offSet?.rowSet.find((r: any) => r[1].toString() === id!.toString());
+          if (onRow && offRow) {
+            onOffSwing = onRow[onSet.headers.indexOf('NET_RATING')] - offRow[offSet.headers.indexOf('NET_RATING')];
+          }
+        } catch (e) { onOffSwing = null; }
+      }
+
+      let accolades: any[] = [];
+      if (awardsData) {
+        try {
+          const set = awardsData.resultSets.find((s: any) => s.name === "PlayerAwards");
+          if (set) {
+            const h = set.headers;
+            const counts: Record<string, number> = {};
+            set.rowSet.forEach((row: any[]) => {
+              const desc = row[h.indexOf("DESCRIPTION")];
+              if (desc.includes("Week") || desc.includes("Month") || desc.includes("Community") || desc.includes("Olympic")) return;
+              counts[desc] = (counts[desc] || 0) + 1;
+            });
+            accolades = Object.entries(counts)
+              .map(([title, count]) => ({ title, count, icon: getAwardIcon(title) }))
+              .sort((a, b) => b.count - a.count);
+          }
+        } catch (e) { console.error(e); }
+      }
+
+      return {
+        bio, careerStats, onOffSwing, accolades,
+        shots: shotData || [],
+        gameLog: logData || [],
+        injury: (player as any).injury ?? null
+      };
+    },
+  });
+
+  const bio          = deepData?.bio ?? null;
+  const careerStats  = deepData?.careerStats ?? null;
+  const onOffSwing   = deepData?.onOffSwing ?? null;
+  const accolades    = deepData?.accolades ?? [];
+  const shots        = deepData?.shots ?? [];
+  const gameLog      = deepData?.gameLog ?? [];
 
   const handleSeasonChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSearchParams({ season: e.target.value });
@@ -366,18 +390,67 @@ export default function NBAPlayerProfile() {
   const oRtg = (dRtg + netRtg).toFixed(1);
   const swingDisplay = onOffSwing !== null ? (onOffSwing > 0 ? `+${onOffSwing.toFixed(1)}` : onOffSwing.toFixed(1)) : "N/A";
 
-  const teamGames = actualTeam ? ((actualTeam.wins || 0) + (actualTeam.losses || 0)) : 82;
-  const maxGames = teamGames > 0 ? teamGames : 82; 
   const gp = s.gp || 0;
-  const availabilityPct = gp / maxGames;
 
-  let durability;
-  if (gp === 0) {
-    durability = { label: "INACTIVE / DNP", dot: "⚫", color: "text-slate-400 border-slate-400/30 bg-slate-400/10" };
-  } else if (availabilityPct < 0.40) {
-    durability = { label: "LIMITED ROLE", dot: "🟡", color: "text-amber-400 border-amber-400/30 bg-amber-400/10" };
-  } else {
-    durability = { label: "ACTIVE", dot: "🟢", color: "text-emerald-400 border-emerald-400/30 bg-emerald-400/10" };
+  // ── STATUS LÓGICA (Sólo temporada actual) ──
+  const CURRENT_SEASON = '2025-26';
+  const isCurrentSeason = season === CURRENT_SEASON;
+
+  // injury viene del pipeline (Fase 1.5), disponible en Query 1 sin esperar deepData
+  const injury = (player as any).injury ?? null;
+  const isGhostPlayer = !!(player as any).ghostPlayer;
+
+  type DurabilityBadge = {
+    label    : string;
+    sublabel?: string;
+    icon     : string;
+    color    : string;
+    comment? : string | null;
+  };
+
+  let durability: DurabilityBadge | null = null;
+
+  if (isCurrentSeason) {
+    if (isGhostPlayer) {
+      durability = {
+        label: 'INACTIVE',
+        icon : '⚫',
+        color: 'text-slate-400 border-slate-400/30 bg-slate-400/10',
+      };
+    } else if (injury) {
+      const statusConfig: Record<string, { icon: string; color: string }> = {
+        'Out'         : { icon: '🔴', color: 'text-rose-400 border-rose-400/30 bg-rose-400/10'    },
+        'Day-To-Day'  : { icon: '🟡', color: 'text-amber-400 border-amber-400/30 bg-amber-400/10' },
+        'Questionable': { icon: '🟡', color: 'text-amber-400 border-amber-400/30 bg-amber-400/10' },
+        'Probable'    : { icon: '🟢', color: 'text-emerald-400 border-emerald-400/30 bg-emerald-400/10' },
+      };
+      const cfg = statusConfig[injury.status] ?? { icon: '🟡', color: 'text-amber-400 border-amber-400/30 bg-amber-400/10' };
+      const parts = [
+        injury.bodyPart,
+        injury.side && injury.side !== 'Not Specified' ? injury.side : null,
+        injury.detail,
+      ].filter(Boolean);
+
+      durability = {
+        label   : injury.status.toUpperCase(),
+        sublabel: parts.length > 0 ? parts.join(' · ') : undefined,
+        icon    : cfg.icon,
+        color   : cfg.color,
+        comment : injury.comment,
+      };
+    } else if (gp > 0) {
+      durability = {
+        label: 'ACTIVE',
+        icon : '🟢',
+        color: 'text-emerald-400 border-emerald-400/30 bg-emerald-400/10',
+      };
+    } else {
+      durability = {
+        label: 'DNP',
+        icon : '⚫',
+        color: 'text-slate-400 border-slate-400/30 bg-slate-400/10',
+      };
+    }
   }
 
   // 🚀 CONSTRUCCIÓN DEL OBJETO DE DATOS
@@ -387,39 +460,80 @@ export default function NBAPlayerProfile() {
   const getS = (key: string, dec = 1) => actStats[key] !== undefined ? Number(actStats[key]).toFixed(dec) : "-";
   const getA = (key: string, dec = 1) => actAdv[key] !== undefined ? Number(actAdv[key]).toFixed(dec) : "-";
 
+  const hasDeepMetrics = statsView === "season";
+  const p36       = (hasDeepMetrics && (player as any).per36Stats) || {};
+  const hustleD   = (hasDeepMetrics && (player as any).hustle)     || {};
+  const passingD  = (hasDeepMetrics && (player as any).passing)    || {};
+  const scoringD  = (hasDeepMetrics && (player as any).scoring)    || {};
+  const trackingD = (hasDeepMetrics && (player as any).tracking)   || {};
+  const mpgForConv = Number(actStats.mpg) || 0;
+
+  const getP36 = (key: string, dec = 1): string => {
+    const val = p36[key];
+    if (val === undefined || val === null || mpgForConv <= 0) return "-";
+    return ((val * mpgForConv) / 36).toFixed(dec);
+  };
+  const getRaw = (obj: Record<string, any>, key: string, dec = 1): string => {
+    const val = obj[key];
+    return (val === undefined || val === null) ? "-" : Number(val).toFixed(dec);
+  };
+
   const uiData = {
-    // Basic
     min: getS('mpg'), pts: getS('ppg'), reb: getS('rpg'), ast: getS('apg'), 
     stl: getS('spg'), blk: getS('bpg'), tov: getS('topg'),
     fgp: getS('fgPct'), fg3p: getS('threePct'), ftp: getS('ftPct'),
     plusMinus: actStats.plusMinus ? (actStats.plusMinus > 0 ? `+${getS('plusMinus')}` : getS('plusMinus')) : "-",
     pf: getS('pf'),
     
-    // Scoring & Shooting (Splits)
     fgm: getS('fgm'), fga: getS('fga'),
     fg3m: getS('fg3m'), fg3a: getS('fg3a'),
     ftm: getS('ftm'), fta: getS('fta'),
-    // Advanced Scoring 
     ts: getA('ts'), efg: getA('efg'),
     ftr: getA('ftr', 3), usg: getA('usg'),
     
-    // Playmaking & Glass
     astTov: actStats.topg ? (Number(actStats.apg) / Number(actStats.topg)).toFixed(2) : "-",
     oreb: getS('oreb'), dreb: getS('dreb'),
     astPct: getA('astPct'),
     
-    // Defense
     defRtg: getA('defRtg'),
     stlPct: getA('stlPct'),
     blkPct: getA('blkPct'),
     drbPct: getA('drbPct'),
     dws: getA('dws'),
     
-    // 🚧 TRACKING PLACEHOLDERS
-    p2m: "-", p2a: "-", p2pct: "-",
-    ptsAst: "-", passes: "-", secAst: "-", rimAst: "-", fg3Ast: "-", passToAstPct: "-", 
-    fgAllowed: "-", contested: "-", contested3: "-", charges: "-", looseBalls: "-", deflections: "-",
-    pctAst2: "-", pctAst3: "-", pctUast: "-"
+    p2m: (() => {
+      if (actStats.fgm === undefined || actStats.fg3m === undefined) return "-";
+      return (Number(actStats.fgm) - Number(actStats.fg3m)).toFixed(1);
+    })(),
+    p2a: (() => {
+      if (actStats.fga === undefined || actStats.fg3a === undefined) return "-";
+      return (Number(actStats.fga) - Number(actStats.fg3a)).toFixed(1);
+    })(),
+    p2pct: (() => {
+      if (actStats.fgm === undefined || actStats.fga === undefined) return "-";
+      const m = Number(actStats.fgm) - Number(actStats.fg3m || 0);
+      const att = Number(actStats.fga) - Number(actStats.fg3a || 0);
+      return att > 0 ? ((m / att) * 100).toFixed(1) : "-";
+    })(),
+
+    ptsAst: getP36('astPtsCreated'),
+    potentialAst: getP36('potentialAst'),   
+    totalPasses: getP36('passesMade'),      
+    secAst: getP36('secondaryAst'),
+    rimAst: "-", 
+    fg3Ast: getRaw(scoringD, 'fg3Ast', 1),
+    passToAstPct: getRaw(passingD, 'astToPassPct', 1),
+
+    fgAllowed: getRaw(trackingD, 'dfgPct', 1),
+    contested: getP36('contestedShots'),
+    contested3: getP36('contested3pt'),
+    charges: getP36('chargesDrawn'),
+    looseBalls: getP36('looseBalls'),
+    deflections: getP36('deflections'),
+
+    pctAst2: getRaw(scoringD, 'pctAst2fgm', 1),
+    pctAst3: getRaw(scoringD, 'pctAst3fgm', 1),
+    pctUast: getRaw(scoringD, 'pctFgmUast', 1),
   };
 
   return (
@@ -431,7 +545,6 @@ export default function NBAPlayerProfile() {
         </Link>
       </div>
 
-      {/* ═══════════════════ PLAYER HERO CARD ═══════════════════ */}
       <div className="bg-[#1a1a1a] rounded-[1.5rem] overflow-hidden shadow-2xl relative border border-white/5">
         <div className="absolute -right-20 -top-20 w-[400px] h-[400px] rounded-full blur-[100px] opacity-25 pointer-events-none" style={{ backgroundColor: themeColor }} />
         <div className="absolute right-[-10%] top-1/2 -translate-y-1/2 w-[600px] h-[600px] opacity-[0.85] pointer-events-none flex items-center justify-end z-0">
@@ -513,9 +626,22 @@ export default function NBAPlayerProfile() {
                         ))}
                       </select>
                     </div>
-                    <Badge className={`font-black uppercase tracking-widest text-[9px] border px-2 py-1 flex items-center gap-1.5 shadow-sm ${durability.color}`}>
-                       <span>{durability.dot}</span> {durability.label}
-                    </Badge>
+                    {/* Badge de salud: solo visible en temporada actual */}
+                    {durability && (
+                      <div className={`inline-flex flex-col items-start gap-0.5 px-3 py-1.5 rounded-lg border text-xs font-black uppercase tracking-widest ${durability.color}`}>
+                        <span>{durability.icon} {durability.label}</span>
+                        {durability.sublabel && (
+                          <span className="text-[10px] font-medium normal-case tracking-normal opacity-80">
+                            {durability.sublabel}
+                          </span>
+                        )}
+                        {durability.comment && (
+                          <span className="text-[10px] font-normal normal-case tracking-normal opacity-70 max-w-[220px] leading-tight mt-0.5">
+                            {durability.comment}
+                          </span>
+                        )}
+                      </div>
+                    )}
                 </span>
               </div>
             </div>
@@ -662,7 +788,7 @@ export default function NBAPlayerProfile() {
                             <StatRow label="Field Goal %" val={fPct(uiData.fgp)} />
                             <StatRow label="3-Point %" val={fPct(uiData.fg3p)} />
                             <StatRow label="Free Throw %" val={fPct(uiData.ftp)} />
-                            <StatRow label="Plus / Minus (+/-)" val={uiData.plusMinus} valueColor={uiData.plusMinus.includes('+') ? 'text-emerald-400' : (uiData.plusMinus.includes('-') && uiData.plusMinus !== '-' ? 'text-rose-400' : 'text-[#999]')} />
+                            <StatRow label="Plus / Minus (+/-)" val={uiData.plusMinus} valueColor={String(uiData.plusMinus).includes('+') ? 'text-emerald-400' : (String(uiData.plusMinus).includes('-') && uiData.plusMinus !== '-' ? 'text-rose-400' : 'text-[#999]')} />
                         </div>
                         <div className="flex flex-col">
                             <StatRow label="Steals (STL)" val={uiData.stl} />
@@ -723,14 +849,14 @@ export default function NBAPlayerProfile() {
                   <div className="bg-[#111] p-5 rounded-2xl border border-white/5 shadow-inner">
                     <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#888] mb-4 flex items-center gap-2"><Target className="w-3 h-3 text-cyan-400"/> Value Created (Tracking)</h4>
                     <StatRow label="PTS Created by AST" val={uiData.ptsAst} highlight />
-                    <StatRow label="Potential Assists" val={uiData.passes} />
+                    <StatRow label="Potential Assists" val={uiData.potentialAst} />
                     <StatRow label="Secondary Assists" val={uiData.secAst} />
                     <StatRow label="Rim Assists" val={uiData.rimAst} />
                     <StatRow label="3PT Assists" val={uiData.fg3Ast} />
                   </div>
                   <div className="bg-[#111] p-5 rounded-2xl border border-white/5 shadow-inner">
                     <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#888] mb-4 flex items-center gap-2"><Activity className="w-3 h-3 text-blue-400"/> Flow Metrics</h4>
-                    <StatRow label="Total Passes Made" val={uiData.passes} />
+                    <StatRow label="Total Passes Made" val={uiData.totalPasses} />
                     <StatRow label="Pass to Assist %" val={fPct(uiData.passToAstPct)} />
                     <div className="mt-8 p-3 bg-black/50 border border-white/5 rounded-xl text-center">
                         <span className="block text-[8px] font-black uppercase tracking-widest text-slate-500 mb-1">Playmaking Role</span>
@@ -751,7 +877,7 @@ export default function NBAPlayerProfile() {
                     <StatRow label="Block % (BLK%)" val={fPct(uiData.blkPct)} />
                     <StatRow label="Def Rebound % (DRB%)" val={fPct(uiData.drbPct)} />
                     <StatRow label="Personal Fouls (PF)" val={uiData.pf} />
-                    <StatRow label="Plus / Minus (+/-)" val={uiData.plusMinus} valueColor={uiData.plusMinus.includes('+') ? 'text-emerald-400' : (uiData.plusMinus.includes('-') && uiData.plusMinus !== '-' ? 'text-rose-400' : 'text-[#999]')} />
+                    <StatRow label="Plus / Minus (+/-)" val={uiData.plusMinus} valueColor={String(uiData.plusMinus).includes('+') ? 'text-emerald-400' : (String(uiData.plusMinus).includes('-') && uiData.plusMinus !== '-' ? 'text-rose-400' : 'text-[#999]')} />
                   </div>
                   <div className="bg-[#111] p-5 rounded-2xl border border-white/5 shadow-inner">
                     <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#888] mb-4 flex items-center gap-2"><Target className="w-3 h-3 text-rose-400"/> Shot Defense</h4>

@@ -219,7 +219,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631260",
@@ -441,7 +442,8 @@
           "label": "DEF"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642358",
@@ -663,7 +665,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "203932",
@@ -885,6 +888,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Calf",
+      "detail": "Soreness",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Gordon is out for Thursday's Game 6 against the Timberwolves, Anthony Slater of ESPN.com reports.",
+      "updatedAt": "2026-06-16T14:32Z",
+      "source": "espn"
     }
   },
   {
@@ -1107,7 +1120,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630174",
@@ -1329,6 +1343,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Neck",
+      "detail": "Strain",
+      "side": "Not Specified",
+      "returnDate": "2026-10-01",
+      "comment": "Nesmith (neck) won't play Sunday against the Pistons.",
+      "updatedAt": "2026-06-16T14:37Z",
+      "source": "espn"
     }
   },
   {
@@ -1551,7 +1575,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642846",
@@ -1773,7 +1798,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642380",
@@ -1995,6 +2021,16 @@
           "label": "DEF"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Ankle",
+      "detail": "Sprain",
+      "side": "Right",
+      "returnDate": "2026-07-02",
+      "comment": "Bal (ankle) is out for Sunday's game in Houston.",
+      "updatedAt": "2026-06-16T14:28Z",
+      "source": "espn"
     }
   },
   {
@@ -2217,7 +2253,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642876",
@@ -2439,7 +2476,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642349",
@@ -2447,7 +2485,7 @@
     "teamId": "OKC",
     "teamName": "Free Agent",
     "position": "NBA",
-    "age": 23,
+    "age": 24,
     "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1642349.png",
     "gameLog": [],
     "stats": {
@@ -2661,6 +2699,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Calf",
+      "detail": "Strain",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Mitchell (calf) has been ruled out for Saturday's Game 7 of the Western Conference Finals against the Spurs.",
+      "updatedAt": "2026-06-16T14:37Z",
+      "source": "espn"
     }
   },
   {
@@ -2883,7 +2931,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630828",
@@ -3105,7 +3154,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1627936",
@@ -3327,7 +3377,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631457",
@@ -3549,7 +3600,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642259",
@@ -3771,6 +3823,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Foot",
+      "detail": "Surgery",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Washington's selection of AJ Dybantsa likely won't significantly alter Sarr's role heading into his third NBA season",
+      "updatedAt": "2026-06-24T14:36Z",
+      "source": "espn"
     }
   },
   {
@@ -3993,7 +4055,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631214",
@@ -4215,7 +4278,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630578",
@@ -4437,7 +4501,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642873",
@@ -4659,7 +4724,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641708",
@@ -4881,7 +4947,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629599",
@@ -5103,7 +5170,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1643158",
@@ -5325,7 +5393,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "203083",
@@ -5547,7 +5616,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641748",
@@ -5769,7 +5839,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629614",
@@ -5991,6 +6062,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Back",
+      "detail": "Soreness",
+      "side": "Not Specified",
+      "returnDate": "2026-10-01",
+      "comment": "Nembhard (back) has been ruled out for Sunday's game against the Pistons.",
+      "updatedAt": "2026-06-16T14:37Z",
+      "source": "espn"
     }
   },
   {
@@ -6213,7 +6294,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629014",
@@ -6435,6 +6517,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Wrist",
+      "detail": "Fracture",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Simons (wrist) will not play in Chicago's final two games of the regular season, per K.C. Johnson of Chicago Sports Network.",
+      "updatedAt": "2026-06-16T14:41Z",
+      "source": "espn"
     }
   },
   {
@@ -6657,7 +6749,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "203076",
@@ -6879,6 +6972,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Finger",
+      "detail": "Sprain",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "The Wizards selected AJ Dybantsa with the No. 1 overall pick in the 2026 NBA Draft, adding another high-usage scorer to the roster.",
+      "updatedAt": "2026-06-24T14:26Z",
+      "source": "espn"
     }
   },
   {
@@ -7101,7 +7204,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630264",
@@ -7323,7 +7427,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641810",
@@ -7545,7 +7650,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630574",
@@ -7767,7 +7873,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642854",
@@ -7989,7 +8096,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641709",
@@ -8211,7 +8319,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630559",
@@ -8433,7 +8542,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630245",
@@ -8655,7 +8765,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628389",
@@ -8877,6 +8988,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Back",
+      "detail": "Not Specified",
+      "side": "Not Specified",
+      "returnDate": "2026-10-01",
+      "comment": "Adebayo (back) won't return to Tuesday's Play-In game against the Hornets.",
+      "updatedAt": "2026-06-16T14:28Z",
+      "source": "espn"
     }
   },
   {
@@ -9099,7 +9220,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642879",
@@ -9321,7 +9443,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641767",
@@ -9543,6 +9666,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Hip",
+      "detail": "Strain",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Sheppard (hip) won't play in Sunday's game against Detroit, Tony East of Forbes.com reports.",
+      "updatedAt": "2026-06-16T14:40Z",
+      "source": "espn"
     }
   },
   {
@@ -9765,7 +9898,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1643016",
@@ -9987,7 +10121,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641731",
@@ -10209,6 +10344,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Heel",
+      "detail": "Inflammation",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Coulibaly (heel) could continue to see significant minutes despite Washington's selection of AJ Dybantsa, though he may come off the bench.",
+      "updatedAt": "2026-06-24T14:50Z",
+      "source": "espn"
     }
   },
   {
@@ -10431,7 +10576,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642396",
@@ -10653,7 +10799,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631104",
@@ -10875,7 +11022,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1626171",
@@ -11097,7 +11245,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641752",
@@ -11319,7 +11468,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "203992",
@@ -11541,7 +11691,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630538",
@@ -11763,7 +11914,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "203078",
@@ -11985,6 +12137,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Hip",
+      "detail": "Surgery",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Beal will undergo season-ending surgery on his left hip, ESPN's Shams Charania reports.",
+      "updatedAt": "2026-06-16T14:28Z",
+      "source": "espn"
     }
   },
   {
@@ -12207,7 +12369,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641764",
@@ -12429,7 +12592,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629634",
@@ -12651,7 +12815,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1627742",
@@ -12873,6 +13038,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Heel",
+      "detail": "Surgery",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Ingram underwent successful surgery Friday to address ongoing heel pain, Michael Scotto of USA Today reports.",
+      "updatedAt": "2026-06-16T14:33Z",
+      "source": "espn"
     }
   },
   {
@@ -13095,6 +13270,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Shoulder",
+      "detail": "Surgery",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Miller (shoulder) appears poised to become Charlotte's primary offensive focal point following Lamelo Ball's departure, according to Cholo Magsino of Yahoo Sports.",
+      "updatedAt": "2026-06-25T17:07Z",
+      "source": "espn"
     }
   },
   {
@@ -13317,6 +13502,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Illness",
+      "detail": "Not Specified",
+      "side": "Not Specified",
+      "returnDate": "2026-10-01",
+      "comment": "Williams (illness) is unavailable for Sunday's game against Chicago.",
+      "updatedAt": "2026-06-16T14:43Z",
+      "source": "espn"
     }
   },
   {
@@ -13539,7 +13734,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642355",
@@ -13761,7 +13957,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "201572",
@@ -13983,7 +14180,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642964",
@@ -14205,7 +14403,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628971",
@@ -14427,7 +14626,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631121",
@@ -14649,7 +14849,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642267",
@@ -14871,7 +15072,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631205",
@@ -15093,7 +15295,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1627741",
@@ -15315,7 +15518,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1643047",
@@ -15537,7 +15741,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "203468",
@@ -15759,7 +15964,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630595",
@@ -15981,7 +16187,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631216",
@@ -16203,7 +16410,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631126",
@@ -16425,7 +16633,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628997",
@@ -16647,6 +16856,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Heel",
+      "detail": "Strain",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Martin (heel) is listed as out for Sunday's game against Chicago.",
+      "updatedAt": "2026-06-16T14:35Z",
+      "source": "espn"
     }
   },
   {
@@ -16869,7 +17088,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642285",
@@ -17091,6 +17311,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Back",
+      "detail": "Not Specified",
+      "side": "Not Specified",
+      "returnDate": "2026-10-01",
+      "comment": "Spencer (back) will not play in Sunday's season finale against the Rockets.",
+      "updatedAt": "2026-06-16T14:41Z",
+      "source": "espn"
     }
   },
   {
@@ -17313,7 +17543,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641715",
@@ -17535,6 +17766,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Shoulder",
+      "detail": "Not Specified",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Whitmore has begun the recovery process for a diagnosed venous condition and he will miss the remainder of the 2025-26 season.",
+      "updatedAt": "2026-06-16T14:43Z",
+      "source": "espn"
     }
   },
   {
@@ -17757,7 +17998,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1626166",
@@ -17979,7 +18221,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1627747",
@@ -18201,7 +18444,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642868",
@@ -18423,7 +18667,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641717",
@@ -18645,7 +18890,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642907",
@@ -18867,6 +19113,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Back",
+      "detail": "Soreness",
+      "side": "Not Specified",
+      "returnDate": "2026-10-01",
+      "comment": "Coward (back) could potentially have more competition for touches with the Grizzlies selecting Cameron Boozer with the third overall pick.",
+      "updatedAt": "2026-06-24T17:16Z",
+      "source": "espn"
     }
   },
   {
@@ -19089,7 +19345,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629646",
@@ -19311,7 +19568,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642404",
@@ -19533,7 +19791,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631096",
@@ -19755,7 +20014,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628449",
@@ -19977,7 +20237,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641753",
@@ -20199,7 +20460,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1643024",
@@ -20421,7 +20683,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "101108",
@@ -20643,7 +20906,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642959",
@@ -20865,7 +21129,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631128",
@@ -21087,7 +21352,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631132",
@@ -21309,7 +21575,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642935",
@@ -21531,6 +21798,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Knee",
+      "detail": "Surgery",
+      "side": "Right",
+      "returnDate": "2026-07-02",
+      "comment": "Hepburn (knee) will sign his two-way qualifying offer to return to the Raptors next season, per Michael Scotto of USA Today.",
+      "updatedAt": "2026-06-25T21:15Z",
+      "source": "espn"
     }
   },
   {
@@ -21753,7 +22030,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629632",
@@ -21975,7 +22253,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628998",
@@ -22197,7 +22476,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642262",
@@ -22419,7 +22699,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641732",
@@ -22641,7 +22922,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630175",
@@ -22863,7 +23145,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630658",
@@ -23085,7 +23368,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631221",
@@ -23093,7 +23377,7 @@
     "teamId": "PHX",
     "teamName": "Free Agent",
     "position": "NBA",
-    "age": 26,
+    "age": 27,
     "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1631221.png",
     "gameLog": [],
     "stats": {
@@ -23307,7 +23591,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642867",
@@ -23529,7 +23814,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629012",
@@ -23751,7 +24037,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642843",
@@ -23973,6 +24260,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Ankle",
+      "detail": "Sprain",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Flagg was named to the NBA All-Rookie First Team for the 2025-26 season Wednesday, Shams Charania of ESPN reports",
+      "updatedAt": "2026-06-16T14:31Z",
+      "source": "espn"
     }
   },
   {
@@ -24195,7 +24492,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642504",
@@ -24417,7 +24715,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641854",
@@ -24639,7 +24938,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642938",
@@ -24861,7 +25161,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1626156",
@@ -25083,7 +25384,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629610",
@@ -25305,7 +25607,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641747",
@@ -25527,7 +25830,8 @@
           "label": "DEF"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631342",
@@ -25749,7 +26053,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630625",
@@ -25971,7 +26276,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631207",
@@ -26193,7 +26499,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642261",
@@ -26415,7 +26722,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629655",
@@ -26637,7 +26945,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642450",
@@ -26859,7 +27168,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642874",
@@ -27081,6 +27391,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Ankle",
+      "detail": "Sprain",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Wolf (ankle) is expected to open 2026-27 in a bench role after the Nets acquired Julius Randle ahead of Tuesday's draft.",
+      "updatedAt": "2026-06-24T19:42Z",
+      "source": "espn"
     }
   },
   {
@@ -27303,7 +27623,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641727",
@@ -27525,7 +27846,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642468",
@@ -27747,7 +28069,8 @@
           "label": "DEF"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629636",
@@ -27969,7 +28292,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642357",
@@ -28191,6 +28515,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Ankle",
+      "detail": "Surgery",
+      "side": "Right",
+      "returnDate": "2026-07-02",
+      "comment": "Jones Garcia underwent ankle surgery Wednesday and will miss the remainder of the 2025-26 season, Tom Orsborn of the San Antonio Express-News reports.",
+      "updatedAt": "2026-06-16T14:34Z",
+      "source": "espn"
     }
   },
   {
@@ -28413,7 +28747,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630558",
@@ -28635,7 +28970,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630549",
@@ -28857,6 +29193,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Thumb",
+      "detail": "Surgery",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Sharpe (thumb) is set to function as Brooklyn's starting center in 2026-27 following the trade of Nic Claxton (finger).",
+      "updatedAt": "2026-06-24T19:49Z",
+      "source": "espn"
     }
   },
   {
@@ -29079,7 +29425,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629631",
@@ -29301,6 +29648,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Eye",
+      "detail": "Surgery",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Hunter (eye) has a major competitor for usage after the Kings took Darius Acuff in the 2026 WNBA Draft.",
+      "updatedAt": "2026-06-25T18:21Z",
+      "source": "espn"
     }
   },
   {
@@ -29523,7 +29880,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "201599",
@@ -29745,7 +30103,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630610",
@@ -29967,7 +30326,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "201942",
@@ -30189,6 +30549,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Hamstring",
+      "detail": "Strain",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "DeRozan (hamstring) could be working with a new point guard in 2026-27 after Sacramento took Darius Acuff in Tuesday's draft.",
+      "updatedAt": "2026-06-25T18:07Z",
+      "source": "espn"
     }
   },
   {
@@ -30411,7 +30781,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629028",
@@ -30633,7 +31004,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1627749",
@@ -30855,7 +31227,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630166",
@@ -31077,7 +31450,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "203471",
@@ -31299,6 +31673,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Illness",
+      "detail": "Not Specified",
+      "side": "Not Specified",
+      "returnDate": "2026-10-01",
+      "comment": "Schroder (illness) has been ruled out for Game 4 of the Eastern Conference Finals against the Knicks on Monday, independent journalist Tom Withers  reports.",
+      "updatedAt": "2026-06-16T14:39Z",
+      "source": "espn"
     }
   },
   {
@@ -31521,6 +31905,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Foot",
+      "detail": "Surgery",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Lively (foot) faces increased competition for minutes heading into the 2026-27 campaign, especially with the Mavericks selecting Morez Johnson with the No. 9 overall pick in the 2026 NBA Draft.",
+      "updatedAt": "2026-06-26T02:43Z",
+      "source": "espn"
     }
   },
   {
@@ -31743,7 +32137,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1627884",
@@ -31965,7 +32360,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628401",
@@ -32187,7 +32583,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630217",
@@ -32195,7 +32592,7 @@
     "teamId": "ORL",
     "teamName": "Free Agent",
     "position": "NBA",
-    "age": 27,
+    "age": 28,
     "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1630217.png",
     "gameLog": [],
     "stats": {
@@ -32409,7 +32806,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1626164",
@@ -32631,7 +33029,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642269",
@@ -32853,7 +33252,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630170",
@@ -33075,7 +33475,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628415",
@@ -33297,7 +33698,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641794",
@@ -33519,7 +33921,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1627734",
@@ -33741,6 +34144,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Knee",
+      "detail": "Surgery",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Sabonis (knee) has a new pick-and-roll partner after the Kings chose Darius Acuff in Tuesday's draft.",
+      "updatedAt": "2026-06-25T18:02Z",
+      "source": "espn"
     }
   },
   {
@@ -33963,7 +34376,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642270",
@@ -34185,7 +34599,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628378",
@@ -34407,7 +34822,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628978",
@@ -34629,6 +35045,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Out",
+      "bodyPart": "Achilles",
+      "detail": "Surgery",
+      "side": "Right",
+      "returnDate": "2027-04-01",
+      "comment": "DiVincenzo will undergo surgery Sunday to repair a ruptured right Achilles tendon that he suffered during the Timberwolves Game 4 win over the Nuggets on Saturday.",
+      "updatedAt": "2026-04-26T17:52Z",
+      "source": "espn"
     }
   },
   {
@@ -34851,7 +35277,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "203926",
@@ -35073,7 +35500,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642962",
@@ -35295,7 +35723,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "203110",
@@ -35517,7 +35946,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629234",
@@ -35739,6 +36169,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Thumb",
+      "detail": "Surgery",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Eubanks underwent successful surgery to repair a torn UCL in his left thumb Wednesday and he will miss the remainder of the season, Sean Cunningham of Fox 40 Sacramento reports.",
+      "updatedAt": "2026-06-16T14:31Z",
+      "source": "espn"
     }
   },
   {
@@ -35961,7 +36401,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631166",
@@ -36183,7 +36624,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630696",
@@ -36405,6 +36847,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Foot",
+      "detail": "Soreness",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Smith (foot) has been ruled out for Tuesday's Play-In Tournament game against the Hornets.",
+      "updatedAt": "2026-06-16T14:41Z",
+      "source": "espn"
     }
   },
   {
@@ -36627,7 +37079,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641871",
@@ -36849,7 +37302,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "203939",
@@ -37071,7 +37525,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642928",
@@ -37293,7 +37748,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642844",
@@ -37515,7 +37971,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630700",
@@ -37737,7 +38194,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630604",
@@ -37959,7 +38417,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642856",
@@ -38181,6 +38640,16 @@
           "label": "DEF"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Foot",
+      "detail": "Surgery",
+      "side": "Left",
+      "returnDate": "2026-07-02",
+      "comment": "Demin (foot) could have more competition for playmaking opportunities at point guard after the Nets took Mikel Brown in Tuesday's draft.",
+      "updatedAt": "2026-06-24T19:15Z",
+      "source": "espn"
     }
   },
   {
@@ -38403,7 +38872,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641801",
@@ -38625,7 +39095,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642402",
@@ -38847,7 +39318,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "201569",
@@ -39069,7 +39541,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630679",
@@ -39291,7 +39764,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630596",
@@ -39513,7 +39987,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630532",
@@ -39735,6 +40210,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Calf",
+      "detail": "Strain",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Wagner (calf) has been ruled out for Game 7 of the first round of the Eastern Conference playoffs Sunday against the Pistons, Jason Beede of the Orlando Sentinel reports.",
+      "updatedAt": "2026-06-16T14:42Z",
+      "source": "espn"
     }
   },
   {
@@ -39957,6 +40442,16 @@
           "label": "DEF"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Knee",
+      "detail": "Not Specified",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Jackson (knee) is out for Sunday's season finale against the Rockets.",
+      "updatedAt": "2026-06-16T14:33Z",
+      "source": "espn"
     }
   },
   {
@@ -40179,7 +40674,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "202066",
@@ -40401,7 +40897,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629726",
@@ -40623,7 +41120,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "203914",
@@ -40845,6 +41343,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Groin",
+      "detail": "Soreness",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Harris (groin) exercised his $3.82 million player option for the 2026-27 season Monday, Keith Smith of Spotrac.com reports.",
+      "updatedAt": "2026-06-23T13:30Z",
+      "source": "espn"
     }
   },
   {
@@ -41067,7 +41575,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629018",
@@ -41289,6 +41798,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Oblique",
+      "detail": "Strain",
+      "side": "Not Specified",
+      "returnDate": "2026-10-01",
+      "comment": "Trent (oblique) is out for Sunday's game in Philadelphia.",
+      "updatedAt": "2026-06-16T14:43Z",
+      "source": "espn"
     }
   },
   {
@@ -41511,6 +42030,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Knee",
+      "detail": "Bruise",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "The Bucks traded Antetokounmpo (knee) and Bobby Portis (wrist) to the Miami Heat on Monday in exchange for Tyler Herro (foot), Kel'el Ware, Jaime Jaquez, Kasparas Jakucionis, three first-round picks, one pick swap and a second-round pick, Shams Charania of ESPN reports.",
+      "updatedAt": "2026-06-23T04:04Z",
+      "source": "espn"
     }
   },
   {
@@ -41733,7 +42262,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641711",
@@ -41955,7 +42485,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641761",
@@ -42177,7 +42708,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629684",
@@ -42399,7 +42931,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628960",
@@ -42621,7 +43154,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1627824",
@@ -42843,6 +43377,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Shoulder",
+      "detail": "Sprain",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Head coach Billy Donovan said Friday that Yabusele (shoulder/elbow) will not play in Chicago's final two regular-season games, K.C. Johnson of Chicago Sports Network reports.",
+      "updatedAt": "2026-06-16T14:42Z",
+      "source": "espn"
     }
   },
   {
@@ -43065,7 +43609,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "203084",
@@ -43287,7 +43832,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631127",
@@ -43509,7 +44055,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1643060",
@@ -43731,7 +44278,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629312",
@@ -43953,7 +44501,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630529",
@@ -44175,7 +44724,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642864",
@@ -44397,7 +44947,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630621",
@@ -44619,7 +45170,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642282",
@@ -44841,7 +45393,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641816",
@@ -45063,7 +45616,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630193",
@@ -45285,6 +45839,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Hamstring",
+      "detail": "Strain",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Quickley (hamstring) is out for the remainder of Toronto's first-round series against Cleveland, per NBA reporter Marc Stein.",
+      "updatedAt": "2026-06-16T14:39Z",
+      "source": "espn"
     }
   },
   {
@@ -45507,7 +46071,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630171",
@@ -45729,6 +46294,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Quadriceps",
+      "detail": "Bruise",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Okoro (quad) is out for Sunday's game in Dallas.",
+      "updatedAt": "2026-06-16T14:38Z",
+      "source": "espn"
     }
   },
   {
@@ -45951,7 +46526,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642384",
@@ -46173,7 +46749,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628392",
@@ -46395,7 +46972,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630543",
@@ -46617,7 +47195,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630198",
@@ -46839,7 +47418,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630587",
@@ -47061,7 +47641,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641815",
@@ -47283,6 +47864,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Ankle",
+      "detail": "Soreness",
+      "side": "Right",
+      "returnDate": "2026-07-02",
+      "comment": "Stevens (ankle) is listed out for Sunday's game against the Trail Blazers.",
+      "updatedAt": "2026-06-16T14:41Z",
+      "source": "espn"
     }
   },
   {
@@ -47505,7 +48096,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1627826",
@@ -47727,6 +48319,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Ribs",
+      "detail": "Fracture",
+      "side": "Not Specified",
+      "returnDate": "2026-10-01",
+      "comment": "Zubac will miss the rest of the season with a fractured rib, Dustin Dopirak of The Indianapolis Star reports.",
+      "updatedAt": "2026-06-16T14:42Z",
+      "source": "espn"
     }
   },
   {
@@ -47949,7 +48551,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629630",
@@ -48171,6 +48774,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Elbow",
+      "detail": "Sprain",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "The Grizzlies announced Tuesday that Morant is progressing in his recovery from a UCL sprain in his left elbow and recently received a platelet-rich plasma injection, though he'll miss the remainder of the 2025-26 campaign.",
+      "updatedAt": "2026-06-16T14:37Z",
+      "source": "espn"
     }
   },
   {
@@ -48393,7 +49006,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631095",
@@ -48615,7 +49229,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631133",
@@ -48837,7 +49452,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631210",
@@ -49059,7 +49675,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630702",
@@ -49281,7 +49898,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631093",
@@ -49503,7 +50121,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630183",
@@ -49725,7 +50344,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630256",
@@ -49947,7 +50567,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642942",
@@ -50169,7 +50790,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642443",
@@ -50391,7 +51013,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1643141",
@@ -50613,7 +51236,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631170",
@@ -50835,7 +51459,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631222",
@@ -51057,7 +51682,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1627751",
@@ -51279,7 +51905,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628973",
@@ -51501,7 +52128,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631105",
@@ -51723,7 +52351,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630224",
@@ -51945,7 +52574,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630552",
@@ -52167,7 +52797,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629618",
@@ -52389,7 +53020,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641771",
@@ -52611,7 +53243,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630188",
@@ -52833,6 +53466,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Calf",
+      "detail": "Strain",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Smith (calf) is in line to open 2026-27 as the backup center behind Nic Claxton (finger).",
+      "updatedAt": "2026-06-24T18:23Z",
+      "source": "espn"
     }
   },
   {
@@ -53055,7 +53698,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631114",
@@ -53277,6 +53921,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Hamstring",
+      "detail": "Strain",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Williams (hamstring) has been ruled out for Saturday's Game 7 of the Western Conference Finals against the Spurs.",
+      "updatedAt": "2026-06-16T14:43Z",
+      "source": "espn"
     }
   },
   {
@@ -53499,7 +54153,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631288",
@@ -53721,7 +54376,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1627750",
@@ -53943,7 +54599,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642347",
@@ -54165,7 +54822,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631123",
@@ -54387,7 +55045,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "201935",
@@ -54609,7 +55268,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630164",
@@ -54831,7 +55491,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642364",
@@ -55053,7 +55714,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642419",
@@ -55275,7 +55937,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641716",
@@ -55497,6 +56160,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Foot",
+      "detail": "Sprain",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Walker (foot) won't play in Sunday's game against Detroit, Tony East of Forbes.com reports.",
+      "updatedAt": "2026-06-16T14:43Z",
+      "source": "espn"
     }
   },
   {
@@ -55719,7 +56392,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628991",
@@ -55941,7 +56615,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629020",
@@ -56163,7 +56838,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628386",
@@ -56385,7 +57061,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642859",
@@ -56607,7 +57284,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642914",
@@ -56829,7 +57507,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631451",
@@ -57051,7 +57730,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629750",
@@ -57273,7 +57953,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629637",
@@ -57495,7 +58176,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630643",
@@ -57717,7 +58399,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1627759",
@@ -57939,7 +58622,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641740",
@@ -58161,7 +58845,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642377",
@@ -58383,6 +59068,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Toe",
+      "detail": "Surgery",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Wells (toe) should continue competing for rotation minutes on the wing despite Memphis adding Cameron Boozer with the No. 3 overall pick.",
+      "updatedAt": "2026-06-24T17:36Z",
+      "source": "espn"
     }
   },
   {
@@ -58605,7 +59300,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642281",
@@ -58827,7 +59523,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1643257",
@@ -59049,7 +59746,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628369",
@@ -59271,6 +59969,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Knee",
+      "detail": "Soreness",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Tatum (knee) has been ruled out for Saturday's Game 7 against the 76ers, Shams Charania of ESPN reports.",
+      "updatedAt": "2026-06-16T14:41Z",
+      "source": "espn"
     }
   },
   {
@@ -59493,7 +60201,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "203924",
@@ -59715,7 +60424,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642847",
@@ -59937,7 +60647,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630526",
@@ -60159,7 +60870,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631110",
@@ -60381,7 +61093,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630579",
@@ -60603,7 +61316,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641724",
@@ -60825,7 +61539,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628975",
@@ -61047,7 +61762,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "202710",
@@ -61269,6 +61985,16 @@
           "label": "DEF"
         }
       }
+    },
+    "injury": {
+      "status": "Out",
+      "bodyPart": "Knee",
+      "detail": "Surgery",
+      "side": "Right",
+      "returnDate": "2026-12-01",
+      "comment": "Butler underwent successful surgery Monday to repair a torn right anterior cruciate ligament.",
+      "updatedAt": "2026-02-10T00:49Z",
+      "source": "espn"
     }
   },
   {
@@ -61491,7 +62217,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629111",
@@ -61713,6 +62440,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Ankle",
+      "detail": "Sprain",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Landale (ankle) will be re-evaluated in two weeks, Brad Rowland of the Locked On Podcast Network reports.",
+      "updatedAt": "2026-06-16T14:28Z",
+      "source": "espn"
     }
   },
   {
@@ -61935,7 +62672,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "203954",
@@ -62157,7 +62895,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628381",
@@ -62379,7 +63118,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629723",
@@ -62601,7 +63341,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642967",
@@ -62823,7 +63564,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642910",
@@ -63045,7 +63787,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641780",
@@ -63267,7 +64010,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642277",
@@ -63489,6 +64233,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Out",
+      "bodyPart": "Knee",
+      "detail": "Surgery",
+      "side": "Right",
+      "returnDate": "2027-01-01",
+      "comment": "Furphy was diagnosed with a torn right ACL on Monday and will miss the remainder of the season, Michael Scotto of USA Today reports.",
+      "updatedAt": "2026-02-09T21:43Z",
+      "source": "espn"
     }
   },
   {
@@ -63711,7 +64465,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "202685",
@@ -63933,7 +64688,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628371",
@@ -64155,6 +64911,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Knee",
+      "detail": "Sprain",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Isaac (knee) is listed as out for Sunday's Game 7 of the Eastern Conference first-round series against the Pistons.",
+      "updatedAt": "2026-06-16T14:33Z",
+      "source": "espn"
     }
   },
   {
@@ -64377,7 +65143,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642367",
@@ -64599,7 +65366,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "203903",
@@ -64821,7 +65589,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630692",
@@ -65043,6 +65812,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Calf",
+      "detail": "Strain",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Goodwin (calf) agreed to a three-year, $19 million deal with the Suns on Sunday, Shams Charania of ESPN reports.",
+      "updatedAt": "2026-06-21T16:09Z",
+      "source": "espn"
     }
   },
   {
@@ -65265,7 +66044,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629162",
@@ -65487,7 +66267,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641757",
@@ -65709,7 +66490,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629673",
@@ -65931,7 +66713,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641775",
@@ -66153,7 +66936,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630631",
@@ -66375,7 +67159,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630581",
@@ -66597,6 +67382,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Ankle",
+      "detail": "Not Specified",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Giddey (ankle) could benefit from the selections of Caleb Wilson and Dailyn Swain as well as Chicago's acquisition of Nic Claxton (finger) in 2026-27.",
+      "updatedAt": "2026-06-24T18:04Z",
+      "source": "espn"
     }
   },
   {
@@ -66819,7 +67614,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628404",
@@ -67041,7 +67837,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631169",
@@ -67263,6 +68060,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Ankle",
+      "detail": "Soreness",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Minott (ankle) won't play Sunday in Toronto, Erik Slater of ClutchPoints.com reports.",
+      "updatedAt": "2026-06-16T14:37Z",
+      "source": "espn"
     }
   },
   {
@@ -67485,7 +68292,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629006",
@@ -67707,7 +68515,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "201950",
@@ -67929,7 +68738,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630577",
@@ -68151,7 +68961,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641763",
@@ -68373,7 +69184,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642882",
@@ -68595,7 +69407,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631124",
@@ -68817,7 +69630,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "203944",
@@ -69039,7 +69853,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630551",
@@ -69261,7 +70076,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642348",
@@ -69483,7 +70299,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "203994",
@@ -69705,7 +70522,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642354",
@@ -69927,7 +70745,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642955",
@@ -70149,7 +70968,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642880",
@@ -70371,7 +71191,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1626157",
@@ -70593,7 +71414,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631255",
@@ -70815,7 +71637,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642857",
@@ -71037,7 +71860,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "202695",
@@ -71259,7 +72083,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630811",
@@ -71481,7 +72306,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631099",
@@ -71703,6 +72529,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Ankle",
+      "detail": "Sprain",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Murray underwent an arthroscopic procedure to remove loose bodies in his left ankle Tuesday, per James Ham of ESPN 1320 Sacramento.",
+      "updatedAt": "2026-06-16T14:37Z",
+      "source": "espn"
     }
   },
   {
@@ -71925,7 +72761,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629640",
@@ -72147,7 +72984,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "203482",
@@ -72369,7 +73207,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1626162",
@@ -72591,7 +73430,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631113",
@@ -72813,7 +73653,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629026",
@@ -73035,7 +73876,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "203484",
@@ -73257,6 +74099,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Finger",
+      "detail": "Surgery",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Caldwell-Pope (finger) exercised his $21.6 million player option for the 2026-27 campaign Friday, Shams Charania of ESPN reports.",
+      "updatedAt": "2026-06-19T23:07Z",
+      "source": "espn"
     }
   },
   {
@@ -73479,7 +74331,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642352",
@@ -73701,7 +74554,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642933",
@@ -73923,6 +74777,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Abdomen",
+      "detail": "Surgery",
+      "side": "Not Specified",
+      "returnDate": "2026-07-02",
+      "comment": "Gilbert signed a two-way contract with the Hawks on Tuesday, according to Jake Fischer of BleacherReport.com.",
+      "updatedAt": "2026-06-16T14:28Z",
+      "source": "espn"
     }
   },
   {
@@ -74145,6 +75009,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Ankle",
+      "detail": "Sprain",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Durant (ankle) is listed out for Friday's Game 6 versus the Lakers.",
+      "updatedAt": "2026-06-16T14:30Z",
+      "source": "espn"
     }
   },
   {
@@ -74367,7 +75241,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "201567",
@@ -74589,7 +75464,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641755",
@@ -74811,7 +75687,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629645",
@@ -75033,6 +75910,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Knee",
+      "detail": "Surgery",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Porter exercised his $5.39 million player option for the 2026-27 campaign Thursday, Michael Scotto of USA Today reports.",
+      "updatedAt": "2026-06-26T00:46Z",
+      "source": "espn"
     }
   },
   {
@@ -75255,7 +76142,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641718",
@@ -75477,7 +76365,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642863",
@@ -75699,7 +76588,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "203114",
@@ -75921,7 +76811,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630165",
@@ -76143,7 +77034,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "202691",
@@ -76365,7 +77257,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641738",
@@ -76587,7 +77480,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641723",
@@ -76809,7 +77703,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642920",
@@ -77031,7 +77926,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642886",
@@ -77253,7 +78149,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642851",
@@ -77475,7 +78372,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1627739",
@@ -77697,7 +78595,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631200",
@@ -77919,7 +78818,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "204001",
@@ -78141,7 +79041,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "203937",
@@ -78363,7 +79264,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642271",
@@ -78585,7 +79487,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628398",
@@ -78807,6 +79710,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Achilles",
+      "detail": "Tendinitis",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Kuzma (Achilles) won't play Sunday against the 76ers.",
+      "updatedAt": "2026-06-16T14:34Z",
+      "source": "espn"
     }
   },
   {
@@ -79029,7 +79942,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642273",
@@ -79251,6 +80165,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Elbow",
+      "detail": "Sprain",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "George's (elbow) role becomes less certain after Washington added another high-upside wing prospect in AJ Dybantsa at the top of the draft.",
+      "updatedAt": "2026-06-24T15:01Z",
+      "source": "espn"
     }
   },
   {
@@ -79473,6 +80397,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Ankle",
+      "detail": "Sprain",
+      "side": "Right",
+      "returnDate": "2026-07-02",
+      "comment": "Cryer (ankle) will be re-evaluated in one week after an MRI confirmed a right-ankle sprain.",
+      "updatedAt": "2026-06-16T14:29Z",
+      "source": "espn"
     }
   },
   {
@@ -79695,7 +80629,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642950",
@@ -79917,7 +80852,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629013",
@@ -80139,7 +81075,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1626204",
@@ -80361,7 +81298,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628374",
@@ -80583,7 +81521,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1643133",
@@ -80805,7 +81744,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "2544",
@@ -81027,7 +81967,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641778",
@@ -81249,7 +82190,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631159",
@@ -81471,7 +82413,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642862",
@@ -81693,7 +82636,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630322",
@@ -81915,7 +82859,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628366",
@@ -82137,7 +83082,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631351",
@@ -82359,7 +83305,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629652",
@@ -82581,7 +83528,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629029",
@@ -82803,6 +83751,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Hamstring",
+      "detail": "Strain",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Doncic said Wednesday that he has begun running, Dan Woike of The Athletic reports.",
+      "updatedAt": "2026-06-16T14:30Z",
+      "source": "espn"
     }
   },
   {
@@ -83025,7 +83983,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628379",
@@ -83033,7 +83992,7 @@
     "teamId": "LAL",
     "teamName": "Free Agent",
     "position": "NBA",
-    "age": 29,
+    "age": 30,
     "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1628379.png",
     "gameLog": [],
     "stats": {
@@ -83247,7 +84206,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628436",
@@ -83469,7 +84429,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631247",
@@ -83691,7 +84652,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630644",
@@ -83913,7 +84875,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641869",
@@ -84135,7 +85098,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631103",
@@ -84357,7 +85321,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642502",
@@ -84579,7 +85544,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628370",
@@ -84801,6 +85767,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Personal",
+      "detail": "Not Specified",
+      "side": "Not Specified",
+      "returnDate": "2026-10-01",
+      "comment": "Monk's (personal) role for 2026-27 is undetermined after Sacramento landed Darius Acuff in Tuesday's draft.",
+      "updatedAt": "2026-06-25T18:32Z",
+      "source": "espn"
     }
   },
   {
@@ -85023,7 +85999,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631204",
@@ -85245,7 +86222,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "203935",
@@ -85467,7 +86445,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641813",
@@ -85689,7 +86668,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631109",
@@ -85911,6 +86891,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Foot",
+      "detail": "Fracture",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Williams (foot) plans to sign a three-year, $38 million contract to remain with the Suns, Shams Charania of ESPN reports.",
+      "updatedAt": "2026-06-26T00:10Z",
+      "source": "espn"
     }
   },
   {
@@ -86133,7 +87123,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628963",
@@ -86355,6 +87346,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Shoulder",
+      "detail": "Pinched Nerve",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Bagley (shoulder) has been ruled out for Sunday's game against the Bulls.",
+      "updatedAt": "2026-06-16T14:28Z",
+      "source": "espn"
     }
   },
   {
@@ -86577,7 +87578,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641824",
@@ -86799,6 +87801,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Ankle",
+      "detail": "Sprain",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Buzelis (ankle) will have more competition for playing time in the frontcourt following the selections of Caleb Wilson and Dailyn Swain as well as Chicago's acquisition of Nic Claxton (finger).",
+      "updatedAt": "2026-06-24T18:11Z",
+      "source": "espn"
     }
   },
   {
@@ -87021,7 +88033,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631108",
@@ -87243,7 +88256,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642917",
@@ -87251,7 +88265,7 @@
     "teamId": "BOS",
     "teamName": "Free Agent",
     "position": "NBA",
-    "age": 23,
+    "age": 24,
     "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1642917.png",
     "gameLog": [],
     "stats": {
@@ -87465,7 +88479,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629622",
@@ -87687,7 +88702,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628467",
@@ -87909,7 +88925,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642875",
@@ -88131,7 +89148,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642877",
@@ -88353,7 +89371,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630695",
@@ -88575,7 +89594,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629008",
@@ -88797,6 +89817,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Hamstring",
+      "detail": "Strain",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Porter (hamstring) has been ruled out for the remainder of the 2025-26 season, Erik Slater of ClutchPoints.com reports.",
+      "updatedAt": "2026-06-16T14:39Z",
+      "source": "espn"
     }
   },
   {
@@ -89019,7 +90049,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "201144",
@@ -89241,7 +90272,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628970",
@@ -89463,7 +90495,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642939",
@@ -89685,7 +90718,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630540",
@@ -89907,7 +90941,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629011",
@@ -90129,7 +91164,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628964",
@@ -90351,7 +91387,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642885",
@@ -90573,7 +91610,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628420",
@@ -90795,7 +91833,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629021",
@@ -91017,7 +92056,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630541",
@@ -91239,6 +92279,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Out",
+      "bodyPart": "Knee",
+      "detail": "Surgery",
+      "side": "Left",
+      "returnDate": "2026-12-01",
+      "comment": "Moody has been diagnosed with a torn patellar tendon in his left knee, Shams Charania of ESPN reports.",
+      "updatedAt": "2026-03-24T20:48Z",
+      "source": "espn"
     }
   },
   {
@@ -91461,7 +92511,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631243",
@@ -91683,7 +92734,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630619",
@@ -91905,7 +92957,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631217",
@@ -92127,7 +93180,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1626167",
@@ -92349,6 +93403,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Ankle",
+      "detail": "Sprain",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Turner (ankle) has been ruled out for Sunday's game versus the 76ers.",
+      "updatedAt": "2026-06-16T14:43Z",
+      "source": "espn"
     }
   },
   {
@@ -92571,7 +93635,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642368",
@@ -92793,7 +93858,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641772",
@@ -93015,7 +94081,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630230",
@@ -93237,6 +94304,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Hip",
+      "detail": "Bruise",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Marshall (hip) is listed as out for Sunday's game against Chicago.",
+      "updatedAt": "2026-06-16T14:35Z",
+      "source": "espn"
     }
   },
   {
@@ -93459,7 +94536,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629675",
@@ -93681,7 +94759,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629674",
@@ -93903,7 +94982,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629651",
@@ -94125,6 +95205,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Finger",
+      "detail": "Sprain",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "The Nets traded Claxton (finger) and the No. 33 overall pick in the 2026 NBA Draft to the Bulls and Timberwolves, respectively, in exchange for Julius Randle and the No. 28 overall pick in this year's draft, Shams Charania of ESPN reports.",
+      "updatedAt": "2026-06-23T02:25Z",
+      "source": "espn"
     }
   },
   {
@@ -94347,6 +95437,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Elbow",
+      "detail": "Sprain",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Richards (elbow) will not play in Chicago's final two games of the regular season, per K.C. Johnson of Chicago Sports Network.",
+      "updatedAt": "2026-06-16T14:39Z",
+      "source": "espn"
     }
   },
   {
@@ -94569,7 +95669,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629638",
@@ -94791,7 +95892,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "201587",
@@ -95013,7 +96115,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628502",
@@ -95235,7 +96338,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "203999",
@@ -95457,7 +96561,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631107",
@@ -95679,6 +96784,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Ankle",
+      "detail": "Sprain",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Jovic (ankle) is out for Tuesday's Play-In Game against the Hornets.",
+      "updatedAt": "2026-06-16T14:34Z",
+      "source": "espn"
     }
   },
   {
@@ -95901,6 +97016,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Back",
+      "detail": "Surgery",
+      "side": "Not Specified",
+      "returnDate": "2026-10-01",
+      "comment": "Topic (back) underwent surgery Saturday and is expected to be ready for the start of training camp, Justin Martinez of The Oklahoman reports.",
+      "updatedAt": "2026-06-16T14:20Z",
+      "source": "espn"
     }
   },
   {
@@ -96123,7 +97248,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642363",
@@ -96345,7 +97471,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642855",
@@ -96567,6 +97694,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Shoulder",
+      "detail": "Surgery",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Essengue (shoulder) appears to be buried on the depth chart in the frontcourt after the Bulls chose Caleb Wilson and Dailyn Swain in Tuesday's draft.",
+      "updatedAt": "2026-06-24T18:17Z",
+      "source": "espn"
     }
   },
   {
@@ -96789,6 +97926,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Ankle",
+      "detail": "Not Specified",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Clowney (ankle) is likely to move into a reserve role after the Nets acquired Julius Randle prior to Tuesday's draft.",
+      "updatedAt": "2026-06-24T19:34Z",
+      "source": "espn"
     }
   },
   {
@@ -97011,7 +98158,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642849",
@@ -97233,6 +98381,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Illness",
+      "detail": "Not Specified",
+      "side": "Not Specified",
+      "returnDate": "2026-10-01",
+      "comment": "Traore (illness) has another obstacle for minutes in the backcourt after the Nets chose Mikel Brown in the 2026 NBA Draft.",
+      "updatedAt": "2026-06-24T19:30Z",
+      "source": "espn"
     }
   },
   {
@@ -97455,7 +98613,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1626181",
@@ -97677,7 +98836,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628384",
@@ -97899,7 +99059,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630167",
@@ -98121,7 +99282,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630534",
@@ -98343,7 +99505,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630846",
@@ -98565,7 +99728,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641765",
@@ -98787,7 +99951,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630209",
@@ -99009,7 +100174,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630168",
@@ -99231,7 +100397,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631115",
@@ -99453,7 +100620,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631131",
@@ -99675,7 +100843,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642345",
@@ -99897,7 +101066,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631172",
@@ -100119,7 +101289,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629023",
@@ -100341,6 +101512,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Elbow",
+      "detail": "Sprain",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Washington (elbow) could be in danger of losing minutes during the 2026-27 campaign, especially if Morez Johnson and Tobi Lawal develop faster than anticipated.",
+      "updatedAt": "2026-06-26T00:31Z",
+      "source": "espn"
     }
   },
   {
@@ -100563,6 +101744,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Ankle",
+      "detail": "Surgery",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "The Hornets announced Thursday that Hall underwent a procedure to address a fractured right ankle and will miss the remainder of the 2025-26 campaign.",
+      "updatedAt": "2026-06-16T14:32Z",
+      "source": "espn"
     }
   },
   {
@@ -100785,7 +101976,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631094",
@@ -101007,7 +102199,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1627783",
@@ -101229,6 +102422,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Ankle",
+      "detail": "Sprain",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Siakam (ankle) has been ruled out for Sunday's meeting with the Pistons.",
+      "updatedAt": "2026-06-16T14:41Z",
+      "source": "espn"
     }
   },
   {
@@ -101451,7 +102654,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630311",
@@ -101673,7 +102877,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631116",
@@ -101895,7 +103100,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630172",
@@ -102117,7 +103323,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "202331",
@@ -102339,7 +103546,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630194",
@@ -102561,7 +103769,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630202",
@@ -102783,7 +103992,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642362",
@@ -103005,7 +104215,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641796",
@@ -103227,7 +104438,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631250",
@@ -103449,6 +104661,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Knee",
+      "detail": "Sprain",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Nance (knee) will suit up for Sunday's game against the Sixers but will not play, Ky Carlin of USA Today reports.",
+      "updatedAt": "2026-06-16T14:37Z",
+      "source": "espn"
     }
   },
   {
@@ -103671,6 +104893,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Hamstring",
+      "detail": "Strain",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Watson (hamstring) is out for Game 6 on Thursday against Minnesota.",
+      "updatedAt": "2026-06-16T14:42Z",
+      "source": "espn"
     }
   },
   {
@@ -103893,7 +105125,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629656",
@@ -104115,7 +105348,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631245",
@@ -104337,7 +105571,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642366",
@@ -104559,6 +105794,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Foot",
+      "detail": "Not Specified",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Post (foot) averaged 7.7 points, 4.0 rebounds, 1.4 assists, 0.5 blocks and 0.4 steals in 17.3 minutes per game across 67 regular-season appearances (35 starts) in 2025-26.",
+      "updatedAt": "2026-06-16T14:39Z",
+      "source": "espn"
     }
   },
   {
@@ -104781,7 +106026,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642853",
@@ -105003,7 +106249,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642484",
@@ -105225,7 +106472,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641712",
@@ -105447,7 +106695,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642263",
@@ -105455,7 +106704,7 @@
     "teamId": "HOU",
     "teamName": "Free Agent",
     "position": "NBA",
-    "age": 21,
+    "age": 22,
     "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1642263.png",
     "gameLog": [],
     "stats": {
@@ -105669,7 +106918,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642434",
@@ -105891,7 +107141,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642265",
@@ -106113,6 +107364,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Wrist",
+      "detail": "Surgery",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Dillingham recently underwent successful minor surgery to have a ganglion cyst removed from his right wrist, the Bulls announced Wednesday.",
+      "updatedAt": "2026-06-16T14:30Z",
+      "source": "espn"
     }
   },
   {
@@ -106335,7 +107596,8 @@
           "label": "DEF"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642911",
@@ -106557,7 +107819,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631199",
@@ -106779,7 +108042,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641842",
@@ -107001,7 +108265,8 @@
           "label": "DEF"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1626220",
@@ -107223,7 +108488,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "203497",
@@ -107445,7 +108711,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629060",
@@ -107667,7 +108934,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "201566",
@@ -107889,6 +109157,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Toe",
+      "detail": "Not Specified",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Westbrook (toe) is out for Sunday's season finale against the Trail Blazers.",
+      "updatedAt": "2026-06-16T14:43Z",
+      "source": "espn"
     }
   },
   {
@@ -108111,7 +109389,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641750",
@@ -108333,7 +109612,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642948",
@@ -108555,7 +109835,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631157",
@@ -108777,6 +110058,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Thumb",
+      "detail": "Sprain",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Rollins (hip) has been ruled out for Sunday's meeting with the 76ers.",
+      "updatedAt": "2026-06-16T14:39Z",
+      "source": "espn"
     }
   },
   {
@@ -108999,7 +110290,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630573",
@@ -109221,7 +110513,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630241",
@@ -109443,7 +110736,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630572",
@@ -109665,7 +110959,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630583",
@@ -109887,6 +111182,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Knee",
+      "detail": "Surgery",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Aldama (knee) may face increased competition for minutes after the Grizzlies drafted Cameron Boozer.",
+      "updatedAt": "2026-06-24T17:10Z",
+      "source": "espn"
     }
   },
   {
@@ -110109,7 +111414,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630567",
@@ -110331,7 +111637,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630590",
@@ -110553,6 +111860,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Toe",
+      "detail": "Surgery",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Pippen will miss the remainder of the season after undergoing a sesamoidectomy to address ongoing discomfort in his right big toe, Michael Scotto of USA Today reports Friday.",
+      "updatedAt": "2026-06-16T14:38Z",
+      "source": "espn"
     }
   },
   {
@@ -110775,7 +112092,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "203552",
@@ -110997,7 +112315,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631101",
@@ -111219,7 +112538,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628983",
@@ -111441,7 +112761,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630536",
@@ -111663,7 +112984,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631321",
@@ -111885,7 +113207,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631323",
@@ -112107,7 +113430,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642883",
@@ -112329,7 +113653,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1627746",
@@ -112551,7 +113876,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642461",
@@ -112773,7 +114099,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630649",
@@ -112995,7 +114322,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "201939",
@@ -113217,7 +114545,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642264",
@@ -113439,7 +114768,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "203500",
@@ -113661,6 +114991,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Ankle",
+      "detail": "Surgery",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "The Rockets announced Wednesday that Adams has undergone season-ending left ankle surgery, per Shams Charania of ESPN.",
+      "updatedAt": "2026-06-16T14:28Z",
+      "source": "espn"
     }
   },
   {
@@ -113883,7 +115223,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "204456",
@@ -114105,6 +115446,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Hamstring",
+      "detail": "Not Specified",
+      "side": "Not Specified",
+      "returnDate": "2026-10-01",
+      "comment": "McConnell (hamstring) has been ruled out for Sunday's game against the Pistons.",
+      "updatedAt": "2026-06-16T14:36Z",
+      "source": "espn"
     }
   },
   {
@@ -114327,7 +115678,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "201959",
@@ -114549,7 +115901,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631106",
@@ -114771,7 +116124,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1627752",
@@ -114993,7 +116347,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641707",
@@ -115215,6 +116570,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Thumb",
+      "detail": "Sprain",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "The Grizzlies' selection of Cameron Boozer creates additional frontcourt competition, but Hendricks (thumb) should still have an opportunity to carve out a significant role entering 2026-27.",
+      "updatedAt": "2026-06-24T17:42Z",
+      "source": "espn"
     }
   },
   {
@@ -115437,6 +116802,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Knee",
+      "detail": "Tendinitis",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Mann (knee) is out for Sunday's game against the Raptors, Erik Slater of ClutchPoints.com reports.",
+      "updatedAt": "2026-06-16T14:35Z",
+      "source": "espn"
     }
   },
   {
@@ -115659,7 +117034,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "203648",
@@ -115881,7 +117257,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628418",
@@ -116103,7 +117480,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642275",
@@ -116325,7 +117703,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "203501",
@@ -116547,7 +117926,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "202699",
@@ -116769,7 +118149,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1643253",
@@ -116991,7 +118372,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642449",
@@ -117213,7 +118595,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628396",
@@ -117435,7 +118818,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641787",
@@ -117657,7 +119041,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641739",
@@ -117879,7 +119264,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629027",
@@ -118101,6 +119487,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Quadriceps",
+      "detail": "Bruise",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Young (quadriceps) plans to sign a four-year, $212 million deal with the Wizards, Shams Charania of ESPN reports.",
+      "updatedAt": "2026-06-22T18:50Z",
+      "source": "espn"
     }
   },
   {
@@ -118323,7 +119719,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642848",
@@ -118545,6 +119942,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Foot",
+      "detail": "Sprain",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "The arrival of AJ Dybantsa creates additional competition on the wing, though Johnson (foot) should still maintain a decent role in Washington's young core.",
+      "updatedAt": "2026-06-24T14:44Z",
+      "source": "espn"
     }
   },
   {
@@ -118767,7 +120174,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630544",
@@ -118989,7 +120397,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630570",
@@ -119211,7 +120620,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642280",
@@ -119433,7 +120843,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630286",
@@ -119655,7 +121066,8 @@
           "label": "DEF"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631211",
@@ -119877,7 +121289,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641725",
@@ -120099,7 +121512,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641998",
@@ -120321,7 +121735,8 @@
           "label": "DEF"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630530",
@@ -120543,7 +121958,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642400",
@@ -120765,7 +122181,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641774",
@@ -120987,6 +122404,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Knee",
+      "detail": "Bruise",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Vukcevic (knee) is out for Sunday's game in Cleveland.",
+      "updatedAt": "2026-06-16T14:42Z",
+      "source": "espn"
     }
   },
   {
@@ -121209,7 +122636,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641803",
@@ -121431,7 +122859,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629660",
@@ -121653,6 +123082,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Ankle",
+      "detail": "Sprain",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Jerome (ankle) is out for Sunday's season finale against the Rockets.",
+      "updatedAt": "2026-06-16T14:33Z",
+      "source": "espn"
     }
   },
   {
@@ -121875,7 +123314,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631174",
@@ -122097,7 +123537,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1629639",
@@ -122319,7 +123760,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642278",
@@ -122541,7 +123983,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641890",
@@ -122763,7 +124206,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631213",
@@ -122985,7 +124429,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630178",
@@ -123207,7 +124652,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642878",
@@ -123429,7 +124875,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630623",
@@ -123651,7 +125098,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1626145",
@@ -123873,7 +125321,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642845",
@@ -124095,7 +125544,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1641705",
@@ -124317,7 +125767,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631246",
@@ -124539,7 +125990,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642884",
@@ -124761,7 +126213,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630249",
@@ -124983,7 +126436,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631117",
@@ -125205,7 +126659,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642383",
@@ -125427,6 +126882,16 @@
           "label": "DEF"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Hip",
+      "detail": "Pinched Nerve",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Clayton (hip) is out for Sunday's game against the Rockets.",
+      "updatedAt": "2026-06-16T14:29Z",
+      "source": "espn"
     }
   },
   {
@@ -125649,7 +127114,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1631111",
@@ -125871,7 +127337,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642954",
@@ -126093,7 +127560,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642860",
@@ -126315,7 +127783,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630214",
@@ -126537,7 +128006,8 @@
           "label": "DEF"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642905",
@@ -126759,7 +128229,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642949",
@@ -126981,6 +128452,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Foot",
+      "detail": "Surgery",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Niederhauser has been diagnosed with a Lisfranc injury in his right foot and will require surgery. He's been ruled out for the remainder of the 2025-26 season, Joey Linn of SI.com reports.",
+      "updatedAt": "2026-06-16T14:38Z",
+      "source": "espn"
     }
   },
   {
@@ -127203,7 +128684,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642274",
@@ -127425,7 +128907,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642258",
@@ -127647,7 +129130,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1628380",
@@ -127869,6 +129353,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Toe",
+      "detail": "Surgery",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Collins will undergo surgery for a sprain right toe and will be sidelined for the rest of the 2025-26 season.",
+      "updatedAt": "2026-06-16T14:29Z",
+      "source": "espn"
     }
   },
   {
@@ -128091,6 +129585,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Ankle",
+      "detail": "Surgery",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Edey's (ankle, elbow) role becomes more intriguing following Memphis' addition of Cameron Boozer.",
+      "updatedAt": "2026-06-24T17:01Z",
+      "source": "espn"
     }
   },
   {
@@ -128313,6 +129817,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Finger",
+      "detail": "Surgery",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "LaVine (hand) is projected to have a new backcourt partner after the Kings selected Darius Acuff in Tuesday's draft.",
+      "updatedAt": "2026-06-25T17:46Z",
+      "source": "espn"
     }
   },
   {
@@ -128535,7 +130049,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1630533",
@@ -128757,6 +130272,16 @@
           "label": "DEFENSE"
         }
       }
+    },
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Foot",
+      "detail": "Inflammation",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Williams (foot) will miss Sunday's regular-season finale against the Raptors, Erik Slater of ClutchPoints.com reports.",
+      "updatedAt": "2026-06-16T14:42Z",
+      "source": "espn"
     }
   },
   {
@@ -128979,7 +130504,8 @@
           "label": "DEFENSE"
         }
       }
-    }
+    },
+    "injury": null
   },
   {
     "id": "1642389",
@@ -129199,6 +130725,917 @@
           "pct": 46,
           "raw": "DBPM: -1.3 / 0.8s 0.0b",
           "label": "DEFENSE"
+        }
+      }
+    },
+    "injury": null
+  },
+  {
+    "id": "202681",
+    "name": "Kyrie Irving",
+    "teamId": "DAL",
+    "teamName": "Unknown",
+    "position": "NBA",
+    "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/202681.png",
+    "age": 0,
+    "ghostPlayer": true,
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Knee",
+      "detail": "Surgery",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Irving (knee) will miss the remainder of the 2025-26 season, ESPN's Shams Charania reports.",
+      "updatedAt": "2026-06-16T14:33Z",
+      "source": "espn"
+    },
+    "gameLog": [],
+    "stats": {
+      "gp": 0,
+      "gs": 0,
+      "mpg": 0,
+      "winPct": 0,
+      "ppg": 0,
+      "rpg": 0,
+      "apg": 0,
+      "oreb": 0,
+      "dreb": 0,
+      "spg": 0,
+      "bpg": 0,
+      "topg": 0,
+      "fga": 0,
+      "fgm": 0,
+      "fgPct": 0,
+      "fg3a": 0,
+      "fg3m": 0,
+      "threePct": 0,
+      "fg2m": 0,
+      "fg2a": 0,
+      "fg2Pct": 0,
+      "fta": 0,
+      "ftm": 0,
+      "ftPct": 0,
+      "offRtg": 115,
+      "defRating": 115,
+      "netRtg": 0,
+      "net": 0,
+      "plusMinus": 0,
+      "pf": 0
+    },
+    "per36Stats": {
+      "ppg": 0,
+      "rpg": 0,
+      "apg": 0,
+      "spg": 0,
+      "bpg": 0,
+      "dreb": 0,
+      "oreb": 0,
+      "fg3m": 0,
+      "fg3a": 0,
+      "ptsFb": 0,
+      "twoPA": 0,
+      "deflections": 0,
+      "contestedShots": 0,
+      "contested3pt": 0,
+      "contested2pt": 0,
+      "boxOuts": 0,
+      "looseBalls": 0,
+      "chargesDrawn": 0,
+      "screenAssists": 0,
+      "potentialAst": 0,
+      "passesMade": 0,
+      "secondaryAst": 0,
+      "astPtsCreated": 0,
+      "paintFGM": 0,
+      "midRangeFGM": 0
+    },
+    "adv": {
+      "ts": 0,
+      "efg": 0,
+      "usg": 0,
+      "defRating": 115,
+      "pie": 0,
+      "per": 0,
+      "bpm": 0,
+      "obpm": 0,
+      "dbpm": 0,
+      "vorp": 0,
+      "ws48": 0,
+      "netRtg": 0,
+      "astPct": 0,
+      "astTo": 0,
+      "astRatio": 0,
+      "pace": 100,
+      "orebPct": 0,
+      "drebPct": 0,
+      "offRtg": 115,
+      "ftaRate": 0,
+      "net": 0,
+      "si": 0,
+      "rTS": 0,
+      "isRealBRef": false
+    },
+    "hustle": {
+      "deflections": 0,
+      "contestedShots": 0,
+      "contested3pt": 0,
+      "contested2pt": 0,
+      "chargesDrawn": 0,
+      "looseBalls": 0,
+      "boxOuts": 0,
+      "screenAssists": 0
+    },
+    "misc": {
+      "ptsOffTov": 0,
+      "pts2ndChance": 0,
+      "ptsFb": 0,
+      "ptsPaint": 0
+    },
+    "scoring": {
+      "pctPts2pt": 0,
+      "pctPts3pt": 0,
+      "pctPtsFt": 0,
+      "pctFgmAst": 0,
+      "pctFgmUast": 0
+    },
+    "passing": {
+      "passesMade": 0,
+      "potentialAst": 0,
+      "secondaryAst": 0,
+      "astPtsCreated": 0,
+      "astToPassPct": 0
+    },
+    "tracking": {
+      "dfgPct": 50,
+      "dfg3Pct": 36,
+      "dfg2Pct": 50
+    },
+    "playmaking": {
+      "astPct": 0,
+      "astTo": 0,
+      "astRatio": 0
+    },
+    "percentiles": {},
+    "rating": {
+      "ovr": 65,
+      "off": 65,
+      "def": 65,
+      "rebounding": 65,
+      "tier": "Bronze",
+      "color": "#cd7f32",
+      "reliability": 0,
+      "pillars": {
+        "sco": {
+          "grade": "F",
+          "pct": 5,
+          "raw": "0.0 PTS (0.0%)",
+          "label": "SCORE"
+        },
+        "reb": {
+          "grade": "F",
+          "pct": 5,
+          "raw": "0.0 ORB / 0.0 DRB",
+          "label": "REB"
+        },
+        "ply": {
+          "grade": "F",
+          "pct": 5,
+          "raw": "0.0 AST (0.0 A/T)",
+          "label": "PLAY"
+        },
+        "def": {
+          "grade": "F",
+          "pct": 5,
+          "raw": "0.0 STL / 0.0 BLK",
+          "label": "STOCKS"
+        }
+      }
+    }
+  },
+  {
+    "id": "1627832",
+    "name": "Fred VanVleet",
+    "teamId": "HOU",
+    "teamName": "Unknown",
+    "position": "NBA",
+    "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1627832.png",
+    "age": 0,
+    "ghostPlayer": true,
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Knee",
+      "detail": "Surgery",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "VanVleet suffered a torn ACL and may be out for the entire 2025-26 campaign, Shams Charania of ESPN reports.",
+      "updatedAt": "2026-06-16T14:43Z",
+      "source": "espn"
+    },
+    "gameLog": [],
+    "stats": {
+      "gp": 0,
+      "gs": 0,
+      "mpg": 0,
+      "winPct": 0,
+      "ppg": 0,
+      "rpg": 0,
+      "apg": 0,
+      "oreb": 0,
+      "dreb": 0,
+      "spg": 0,
+      "bpg": 0,
+      "topg": 0,
+      "fga": 0,
+      "fgm": 0,
+      "fgPct": 0,
+      "fg3a": 0,
+      "fg3m": 0,
+      "threePct": 0,
+      "fg2m": 0,
+      "fg2a": 0,
+      "fg2Pct": 0,
+      "fta": 0,
+      "ftm": 0,
+      "ftPct": 0,
+      "offRtg": 115,
+      "defRating": 115,
+      "netRtg": 0,
+      "net": 0,
+      "plusMinus": 0,
+      "pf": 0
+    },
+    "per36Stats": {
+      "ppg": 0,
+      "rpg": 0,
+      "apg": 0,
+      "spg": 0,
+      "bpg": 0,
+      "dreb": 0,
+      "oreb": 0,
+      "fg3m": 0,
+      "fg3a": 0,
+      "ptsFb": 0,
+      "twoPA": 0,
+      "deflections": 0,
+      "contestedShots": 0,
+      "contested3pt": 0,
+      "contested2pt": 0,
+      "boxOuts": 0,
+      "looseBalls": 0,
+      "chargesDrawn": 0,
+      "screenAssists": 0,
+      "potentialAst": 0,
+      "passesMade": 0,
+      "secondaryAst": 0,
+      "astPtsCreated": 0,
+      "paintFGM": 0,
+      "midRangeFGM": 0
+    },
+    "adv": {
+      "ts": 0,
+      "efg": 0,
+      "usg": 0,
+      "defRating": 115,
+      "pie": 0,
+      "per": 0,
+      "bpm": 0,
+      "obpm": 0,
+      "dbpm": 0,
+      "vorp": 0,
+      "ws48": 0,
+      "netRtg": 0,
+      "astPct": 0,
+      "astTo": 0,
+      "astRatio": 0,
+      "pace": 100,
+      "orebPct": 0,
+      "drebPct": 0,
+      "offRtg": 115,
+      "ftaRate": 0,
+      "net": 0,
+      "si": 0,
+      "rTS": 0,
+      "isRealBRef": false
+    },
+    "hustle": {
+      "deflections": 0,
+      "contestedShots": 0,
+      "contested3pt": 0,
+      "contested2pt": 0,
+      "chargesDrawn": 0,
+      "looseBalls": 0,
+      "boxOuts": 0,
+      "screenAssists": 0
+    },
+    "misc": {
+      "ptsOffTov": 0,
+      "pts2ndChance": 0,
+      "ptsFb": 0,
+      "ptsPaint": 0
+    },
+    "scoring": {
+      "pctPts2pt": 0,
+      "pctPts3pt": 0,
+      "pctPtsFt": 0,
+      "pctFgmAst": 0,
+      "pctFgmUast": 0
+    },
+    "passing": {
+      "passesMade": 0,
+      "potentialAst": 0,
+      "secondaryAst": 0,
+      "astPtsCreated": 0,
+      "astToPassPct": 0
+    },
+    "tracking": {
+      "dfgPct": 50,
+      "dfg3Pct": 36,
+      "dfg2Pct": 50
+    },
+    "playmaking": {
+      "astPct": 0,
+      "astTo": 0,
+      "astRatio": 0
+    },
+    "percentiles": {},
+    "rating": {
+      "ovr": 65,
+      "off": 65,
+      "def": 65,
+      "rebounding": 65,
+      "tier": "Bronze",
+      "color": "#cd7f32",
+      "reliability": 0,
+      "pillars": {
+        "sco": {
+          "grade": "F",
+          "pct": 5,
+          "raw": "0.0 PTS (0.0%)",
+          "label": "SCORE"
+        },
+        "reb": {
+          "grade": "F",
+          "pct": 5,
+          "raw": "0.0 ORB / 0.0 DRB",
+          "label": "REB"
+        },
+        "ply": {
+          "grade": "F",
+          "pct": 5,
+          "raw": "0.0 AST (0.0 A/T)",
+          "label": "PLAY"
+        },
+        "def": {
+          "grade": "F",
+          "pct": 5,
+          "raw": "0.0 STL / 0.0 BLK",
+          "label": "STOCKS"
+        }
+      }
+    }
+  },
+  {
+    "id": "1630169",
+    "name": "Tyrese Haliburton",
+    "teamId": "IND",
+    "teamName": "Unknown",
+    "position": "NBA",
+    "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1630169.png",
+    "age": 0,
+    "ghostPlayer": true,
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Achilles",
+      "detail": "Surgery",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Haliburton announced via his personal X account that he participated in 5-on-5 work Wednesday.",
+      "updatedAt": "2026-06-16T14:32Z",
+      "source": "espn"
+    },
+    "gameLog": [],
+    "stats": {
+      "gp": 0,
+      "gs": 0,
+      "mpg": 0,
+      "winPct": 0,
+      "ppg": 0,
+      "rpg": 0,
+      "apg": 0,
+      "oreb": 0,
+      "dreb": 0,
+      "spg": 0,
+      "bpg": 0,
+      "topg": 0,
+      "fga": 0,
+      "fgm": 0,
+      "fgPct": 0,
+      "fg3a": 0,
+      "fg3m": 0,
+      "threePct": 0,
+      "fg2m": 0,
+      "fg2a": 0,
+      "fg2Pct": 0,
+      "fta": 0,
+      "ftm": 0,
+      "ftPct": 0,
+      "offRtg": 115,
+      "defRating": 115,
+      "netRtg": 0,
+      "net": 0,
+      "plusMinus": 0,
+      "pf": 0
+    },
+    "per36Stats": {
+      "ppg": 0,
+      "rpg": 0,
+      "apg": 0,
+      "spg": 0,
+      "bpg": 0,
+      "dreb": 0,
+      "oreb": 0,
+      "fg3m": 0,
+      "fg3a": 0,
+      "ptsFb": 0,
+      "twoPA": 0,
+      "deflections": 0,
+      "contestedShots": 0,
+      "contested3pt": 0,
+      "contested2pt": 0,
+      "boxOuts": 0,
+      "looseBalls": 0,
+      "chargesDrawn": 0,
+      "screenAssists": 0,
+      "potentialAst": 0,
+      "passesMade": 0,
+      "secondaryAst": 0,
+      "astPtsCreated": 0,
+      "paintFGM": 0,
+      "midRangeFGM": 0
+    },
+    "adv": {
+      "ts": 0,
+      "efg": 0,
+      "usg": 0,
+      "defRating": 115,
+      "pie": 0,
+      "per": 0,
+      "bpm": 0,
+      "obpm": 0,
+      "dbpm": 0,
+      "vorp": 0,
+      "ws48": 0,
+      "netRtg": 0,
+      "astPct": 0,
+      "astTo": 0,
+      "astRatio": 0,
+      "pace": 100,
+      "orebPct": 0,
+      "drebPct": 0,
+      "offRtg": 115,
+      "ftaRate": 0,
+      "net": 0,
+      "si": 0,
+      "rTS": 0,
+      "isRealBRef": false
+    },
+    "hustle": {
+      "deflections": 0,
+      "contestedShots": 0,
+      "contested3pt": 0,
+      "contested2pt": 0,
+      "chargesDrawn": 0,
+      "looseBalls": 0,
+      "boxOuts": 0,
+      "screenAssists": 0
+    },
+    "misc": {
+      "ptsOffTov": 0,
+      "pts2ndChance": 0,
+      "ptsFb": 0,
+      "ptsPaint": 0
+    },
+    "scoring": {
+      "pctPts2pt": 0,
+      "pctPts3pt": 0,
+      "pctPtsFt": 0,
+      "pctFgmAst": 0,
+      "pctFgmUast": 0
+    },
+    "passing": {
+      "passesMade": 0,
+      "potentialAst": 0,
+      "secondaryAst": 0,
+      "astPtsCreated": 0,
+      "astToPassPct": 0
+    },
+    "tracking": {
+      "dfgPct": 50,
+      "dfg3Pct": 36,
+      "dfg2Pct": 50
+    },
+    "playmaking": {
+      "astPct": 0,
+      "astTo": 0,
+      "astRatio": 0
+    },
+    "percentiles": {},
+    "rating": {
+      "ovr": 65,
+      "off": 65,
+      "def": 65,
+      "rebounding": 65,
+      "tier": "Bronze",
+      "color": "#cd7f32",
+      "reliability": 0,
+      "pillars": {
+        "sco": {
+          "grade": "F",
+          "pct": 5,
+          "raw": "0.0 PTS (0.0%)",
+          "label": "SCORE"
+        },
+        "reb": {
+          "grade": "F",
+          "pct": 5,
+          "raw": "0.0 ORB / 0.0 DRB",
+          "label": "REB"
+        },
+        "ply": {
+          "grade": "F",
+          "pct": 5,
+          "raw": "0.0 AST (0.0 A/T)",
+          "label": "PLAY"
+        },
+        "def": {
+          "grade": "F",
+          "pct": 5,
+          "raw": "0.0 STL / 0.0 BLK",
+          "label": "STOCKS"
+        }
+      }
+    }
+  },
+  {
+    "id": "1642850",
+    "name": "Thomas Sorber",
+    "teamId": "OKC",
+    "teamName": "Unknown",
+    "position": "NBA",
+    "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1642850.png",
+    "age": 0,
+    "ghostPlayer": true,
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Knee",
+      "detail": "Surgery",
+      "side": "Right",
+      "returnDate": "2026-10-01",
+      "comment": "Sam Presti said Sorber (knee) is unlikely to play in the Summer League, Justin Martinez of The Oklahoman reports.",
+      "updatedAt": "2026-06-16T14:41Z",
+      "source": "espn"
+    },
+    "gameLog": [],
+    "stats": {
+      "gp": 0,
+      "gs": 0,
+      "mpg": 0,
+      "winPct": 0,
+      "ppg": 0,
+      "rpg": 0,
+      "apg": 0,
+      "oreb": 0,
+      "dreb": 0,
+      "spg": 0,
+      "bpg": 0,
+      "topg": 0,
+      "fga": 0,
+      "fgm": 0,
+      "fgPct": 0,
+      "fg3a": 0,
+      "fg3m": 0,
+      "threePct": 0,
+      "fg2m": 0,
+      "fg2a": 0,
+      "fg2Pct": 0,
+      "fta": 0,
+      "ftm": 0,
+      "ftPct": 0,
+      "offRtg": 115,
+      "defRating": 115,
+      "netRtg": 0,
+      "net": 0,
+      "plusMinus": 0,
+      "pf": 0
+    },
+    "per36Stats": {
+      "ppg": 0,
+      "rpg": 0,
+      "apg": 0,
+      "spg": 0,
+      "bpg": 0,
+      "dreb": 0,
+      "oreb": 0,
+      "fg3m": 0,
+      "fg3a": 0,
+      "ptsFb": 0,
+      "twoPA": 0,
+      "deflections": 0,
+      "contestedShots": 0,
+      "contested3pt": 0,
+      "contested2pt": 0,
+      "boxOuts": 0,
+      "looseBalls": 0,
+      "chargesDrawn": 0,
+      "screenAssists": 0,
+      "potentialAst": 0,
+      "passesMade": 0,
+      "secondaryAst": 0,
+      "astPtsCreated": 0,
+      "paintFGM": 0,
+      "midRangeFGM": 0
+    },
+    "adv": {
+      "ts": 0,
+      "efg": 0,
+      "usg": 0,
+      "defRating": 115,
+      "pie": 0,
+      "per": 0,
+      "bpm": 0,
+      "obpm": 0,
+      "dbpm": 0,
+      "vorp": 0,
+      "ws48": 0,
+      "netRtg": 0,
+      "astPct": 0,
+      "astTo": 0,
+      "astRatio": 0,
+      "pace": 100,
+      "orebPct": 0,
+      "drebPct": 0,
+      "offRtg": 115,
+      "ftaRate": 0,
+      "net": 0,
+      "si": 0,
+      "rTS": 0,
+      "isRealBRef": false
+    },
+    "hustle": {
+      "deflections": 0,
+      "contestedShots": 0,
+      "contested3pt": 0,
+      "contested2pt": 0,
+      "chargesDrawn": 0,
+      "looseBalls": 0,
+      "boxOuts": 0,
+      "screenAssists": 0
+    },
+    "misc": {
+      "ptsOffTov": 0,
+      "pts2ndChance": 0,
+      "ptsFb": 0,
+      "ptsPaint": 0
+    },
+    "scoring": {
+      "pctPts2pt": 0,
+      "pctPts3pt": 0,
+      "pctPtsFt": 0,
+      "pctFgmAst": 0,
+      "pctFgmUast": 0
+    },
+    "passing": {
+      "passesMade": 0,
+      "potentialAst": 0,
+      "secondaryAst": 0,
+      "astPtsCreated": 0,
+      "astToPassPct": 0
+    },
+    "tracking": {
+      "dfgPct": 50,
+      "dfg3Pct": 36,
+      "dfg2Pct": 50
+    },
+    "playmaking": {
+      "astPct": 0,
+      "astTo": 0,
+      "astRatio": 0
+    },
+    "percentiles": {},
+    "rating": {
+      "ovr": 65,
+      "off": 65,
+      "def": 65,
+      "rebounding": 65,
+      "tier": "Bronze",
+      "color": "#cd7f32",
+      "reliability": 0,
+      "pillars": {
+        "sco": {
+          "grade": "F",
+          "pct": 5,
+          "raw": "0.0 PTS (0.0%)",
+          "label": "SCORE"
+        },
+        "reb": {
+          "grade": "F",
+          "pct": 5,
+          "raw": "0.0 ORB / 0.0 DRB",
+          "label": "REB"
+        },
+        "ply": {
+          "grade": "F",
+          "pct": 5,
+          "raw": "0.0 AST (0.0 A/T)",
+          "label": "PLAY"
+        },
+        "def": {
+          "grade": "F",
+          "pct": 5,
+          "raw": "0.0 STL / 0.0 BLK",
+          "label": "STOCKS"
+        }
+      }
+    }
+  },
+  {
+    "id": "203081",
+    "name": "Damian Lillard",
+    "teamId": "POR",
+    "teamName": "Unknown",
+    "position": "NBA",
+    "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/203081.png",
+    "age": 0,
+    "ghostPlayer": true,
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Achilles",
+      "detail": "Surgery",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Lillard (Achilles) defeated Devin Booker and Kon Knueppel in the final round of Saturday's 2026 State Farm 3-Point Contest, taking home his third title.",
+      "updatedAt": "2026-06-16T14:34Z",
+      "source": "espn"
+    },
+    "gameLog": [],
+    "stats": {
+      "gp": 0,
+      "gs": 0,
+      "mpg": 0,
+      "winPct": 0,
+      "ppg": 0,
+      "rpg": 0,
+      "apg": 0,
+      "oreb": 0,
+      "dreb": 0,
+      "spg": 0,
+      "bpg": 0,
+      "topg": 0,
+      "fga": 0,
+      "fgm": 0,
+      "fgPct": 0,
+      "fg3a": 0,
+      "fg3m": 0,
+      "threePct": 0,
+      "fg2m": 0,
+      "fg2a": 0,
+      "fg2Pct": 0,
+      "fta": 0,
+      "ftm": 0,
+      "ftPct": 0,
+      "offRtg": 115,
+      "defRating": 115,
+      "netRtg": 0,
+      "net": 0,
+      "plusMinus": 0,
+      "pf": 0
+    },
+    "per36Stats": {
+      "ppg": 0,
+      "rpg": 0,
+      "apg": 0,
+      "spg": 0,
+      "bpg": 0,
+      "dreb": 0,
+      "oreb": 0,
+      "fg3m": 0,
+      "fg3a": 0,
+      "ptsFb": 0,
+      "twoPA": 0,
+      "deflections": 0,
+      "contestedShots": 0,
+      "contested3pt": 0,
+      "contested2pt": 0,
+      "boxOuts": 0,
+      "looseBalls": 0,
+      "chargesDrawn": 0,
+      "screenAssists": 0,
+      "potentialAst": 0,
+      "passesMade": 0,
+      "secondaryAst": 0,
+      "astPtsCreated": 0,
+      "paintFGM": 0,
+      "midRangeFGM": 0
+    },
+    "adv": {
+      "ts": 0,
+      "efg": 0,
+      "usg": 0,
+      "defRating": 115,
+      "pie": 0,
+      "per": 0,
+      "bpm": 0,
+      "obpm": 0,
+      "dbpm": 0,
+      "vorp": 0,
+      "ws48": 0,
+      "netRtg": 0,
+      "astPct": 0,
+      "astTo": 0,
+      "astRatio": 0,
+      "pace": 100,
+      "orebPct": 0,
+      "drebPct": 0,
+      "offRtg": 115,
+      "ftaRate": 0,
+      "net": 0,
+      "si": 0,
+      "rTS": 0,
+      "isRealBRef": false
+    },
+    "hustle": {
+      "deflections": 0,
+      "contestedShots": 0,
+      "contested3pt": 0,
+      "contested2pt": 0,
+      "chargesDrawn": 0,
+      "looseBalls": 0,
+      "boxOuts": 0,
+      "screenAssists": 0
+    },
+    "misc": {
+      "ptsOffTov": 0,
+      "pts2ndChance": 0,
+      "ptsFb": 0,
+      "ptsPaint": 0
+    },
+    "scoring": {
+      "pctPts2pt": 0,
+      "pctPts3pt": 0,
+      "pctPtsFt": 0,
+      "pctFgmAst": 0,
+      "pctFgmUast": 0
+    },
+    "passing": {
+      "passesMade": 0,
+      "potentialAst": 0,
+      "secondaryAst": 0,
+      "astPtsCreated": 0,
+      "astToPassPct": 0
+    },
+    "tracking": {
+      "dfgPct": 50,
+      "dfg3Pct": 36,
+      "dfg2Pct": 50
+    },
+    "playmaking": {
+      "astPct": 0,
+      "astTo": 0,
+      "astRatio": 0
+    },
+    "percentiles": {},
+    "rating": {
+      "ovr": 65,
+      "off": 65,
+      "def": 65,
+      "rebounding": 65,
+      "tier": "Bronze",
+      "color": "#cd7f32",
+      "reliability": 0,
+      "pillars": {
+        "sco": {
+          "grade": "F",
+          "pct": 5,
+          "raw": "0.0 PTS (0.0%)",
+          "label": "SCORE"
+        },
+        "reb": {
+          "grade": "F",
+          "pct": 5,
+          "raw": "0.0 ORB / 0.0 DRB",
+          "label": "REB"
+        },
+        "ply": {
+          "grade": "F",
+          "pct": 5,
+          "raw": "0.0 AST (0.0 A/T)",
+          "label": "PLAY"
+        },
+        "def": {
+          "grade": "F",
+          "pct": 5,
+          "raw": "0.0 STL / 0.0 BLK",
+          "label": "STOCKS"
         }
       }
     }

@@ -47,9 +47,10 @@ const fetchSafeJSON = async (endpoint: string, retries = 1) => {
     return null; 
 };
 
+// 🚀 FIX: parsePct (Evita bugs de ratios > 1)
 const parsePct = (val: number): number => {
-    if (val === undefined || val === null || isNaN(val)) return 0.0;
-    const pct = (val <= 1 && val > 0) || val === 1 ? val * 100 : val;
+    if (val === undefined || val === null || isNaN(val) || !isFinite(val)) return 0.0;
+    const pct = (val > 0 && val < 1) ? val * 100 : val;
     return Number(pct.toFixed(1));
 };
 
@@ -73,7 +74,6 @@ export const calculateLeagueContext = (players: any[]) => {
     return { avgTS, stdTS, avgUSG, stdUSG, avgPER, stdPER, avgBPM, stdBPM, avgVORP, stdVORP, avgPIE, stdPIE };
 };
 
-// 🚀 DATA SCIENCE: EL MOTOR DEFINITIVO
 export const calculatePlayer2KRating = (p: any, leagueContext?: any, seasonStr?: string) => {
     if (!p || !p.percentiles) {
         return { 
@@ -132,7 +132,6 @@ export const calculatePlayer2KRating = (p: any, leagueContext?: any, seasonStr?:
         reboundingPct = ((pct.Rebounding || 50) * 0.40) + ((pct.OReb || 50) * 0.35) + ((pct.DReb || 50) * 0.25);
     }
 
-    // Respeto Histórico al Volumen de Rebotes (Override manual)
     const actualRpg = p.stats?.rpg || 0;
     if (actualRpg >= 13.5) reboundingPct = Math.max(reboundingPct, 95); 
     else if (actualRpg >= 11.5) reboundingPct = Math.max(reboundingPct, 85);
@@ -261,7 +260,6 @@ export const calculatePlayer2KRating = (p: any, leagueContext?: any, seasonStr?:
 
     if (zTS < -1.5 && zUSG > 1.5) finalOVR -= 2; 
 
-    // Suelo de Anotación blindado al final
     const actualPts = p.stats?.ppg || 0;
     const scoringFloor = Math.round(68 + (actualPts * 0.55)); 
     if (finalOVR < scoringFloor) {
@@ -401,11 +399,9 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
   }
 
   getTeamLogoUrl(abbreviation: string): string {
-    // ✅ Guarda contra '???', abreviaturas vacías y valores inválidos
     if (!abbreviation || abbreviation === '0' || abbreviation === '???' || 
         abbreviation === 'FA' || abbreviation.trim().length < 2) return '';
     
-    // ✅ ESPN_MAP completo y correcto
     const ESPN_MAP: Record<string, string> = { 
       'NOP': 'no', 'GSW': 'gs', 'SAS': 'sa', 'NYK': 'ny', 'WAS': 'wsh', 'UTA': 'utah',
       'LAL': 'lal', 'LAC': 'lac', 'OKC': 'okc'
@@ -446,10 +442,15 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
   getPlayersByTeam(teamId: string) { return this.getAllPlayers().filter((p) => p.teamId === teamId); }
   getTeamById(id: string) { return this.getAllTeams().find((t) => String(t.id) === String(id) || t.abbreviation === id); }
 
-  private calcPercentile(val: number, arr: number[]) {
+  // 🚀 FIX: calcPercentile con mid-rank
+  private calcPercentile(val: number, arr: number[]): number {
       if (!arr || arr.length === 0 || val === undefined || isNaN(val)) return 50;
-      const below = arr.filter(v => v <= val).length;
-      return Math.min(100, Math.round((below / arr.length) * 100));
+      let below = 0, equal = 0;
+      for (const v of arr) {
+          if      (v < val)  below++;
+          else if (v === val) equal++;
+      }
+      return Math.min(100, Math.round(((below + 0.5 * equal) / arr.length) * 100));
   }
 
   qualifiesForLeaderboard(player: any, metric: string, maxGP: number): boolean {
@@ -479,16 +480,12 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
 
     const promise = (async () => {
       try {
-        // ┌─────────────────────────────────────────────────────────────────────┐
-        // │  [NUEVO] Lee el JSON pre-computado por el pipeline antes de llamar  │
-        // │  a la NBA API. Si falla silenciosamente, el flujo original continúa. │
-        // └─────────────────────────────────────────────────────────────────────┘
         if (season === '2025-26') {
           try {
             const staticRes = await fetch('/data/nba_players_current.json');
             if (staticRes.ok) {
               const json = await staticRes.json();
-              const players: any[] = json.players ?? json; // soporta ambos formatos de salida del pipeline
+              const players: any[] = json.players ?? json;
               if (Array.isArray(players) && players.length > 100) {
                 console.log(`[NBAService] ✅ ${players.length} jugadores desde JSON estático`);
                 this.historicalPlayersCache.set(season, players as unknown as NBAPlayer[]);
@@ -500,7 +497,6 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
             console.warn('[NBAService] ⚠️ JSON estático no disponible, usando NBA API en vivo...');
           }
         }
-        // ── [FIN NUEVO] ──────────────────────────────────────────────────────────
 
         const startYear = parseInt(season.split('-')[0]);
         const hasTracking = startYear >= 2013;
@@ -547,12 +543,13 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
 
         await new Promise(res => setTimeout(res, 800));
         
-        const [dataPassing, dataDefending] = await Promise.all([
-            hasTracking ? fetchSafeJSON(urlPassing).catch(() => null) : Promise.resolve(null),
-            hasTracking ? fetchSafeJSON(urlDefending).catch(() => null) : Promise.resolve(null)
+        // 🚀 FIX: Fetch paralelo con commonallplayers para jugadores fantasma
+        const [dataPassing, dataDefending, dataAllPlayers] = await Promise.all([
+            hasTracking ? fetchSafeJSON(urlPassing).catch(() => null)   : Promise.resolve(null),
+            hasTracking ? fetchSafeJSON(urlDefending).catch(() => null) : Promise.resolve(null),
+            fetchSafeJSON(`/commonallplayers?IsOnlyCurrentSeason=1&LeagueID=00&Season=${season}`).catch(() => null),
         ]);
 
-        // 🚀 INGESTA DE BALONCESTO-REFERENCE
         let bRefMap = new Map();
         try {
             const urlBref = `/data/bref_advanced_${season}.json`;
@@ -617,18 +614,21 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
             }
         } catch(e) {}
 
-        const scoringMap = new Map();
+        // 🚀 FIX: Extracción de pctAst2fgm y pctAst3fgm
+        const scoringMap = new Map<string, any>();
         try {
-            if (dataScoring && dataScoring.resultSets && dataScoring.resultSets[0].rowSet.length > 0) {
+            if (dataScoring?.resultSets?.[0]?.rowSet?.length > 0) {
                 const h = dataScoring.resultSets[0].headers;
                 dataScoring.resultSets[0].rowSet.forEach((row: any[]) => {
-                  scoringMap.set(String(row[h.indexOf("PLAYER_ID")]), {
-                    pctPts2pt: parsePct(getStat(row, h, "PCT_PTS_2PT")),
-                    pctPts3pt: parsePct(getStat(row, h, "PCT_PTS_3PT")),
-                    pctPtsFt: parsePct(getStat(row, h, "PCT_PTS_FT")),
-                    pctFgmAst: parsePct(getStat(row, h, "PCT_AST_FGM")),
-                    pctFgmUast: parsePct(getStat(row, h, "PCT_UAST_FGM")) 
-                  });
+                    scoringMap.set(String(row[h.indexOf("PLAYER_ID")]), {
+                        pctPts2pt  : parsePct(getStat(row, h, "PCT_PTS_2PT")),
+                        pctPts3pt  : parsePct(getStat(row, h, "PCT_PTS_3PT")),
+                        pctPtsFt   : parsePct(getStat(row, h, "PCT_PTS_FT")),
+                        pctFgmAst  : parsePct(getStat(row, h, "PCT_AST_FGM")),
+                        pctFgmUast : parsePct(getStat(row, h, "PCT_UAST_FGM")),
+                        pctAst2fgm : parsePct(getStat(row, h, "PCT_AST_2PM")),
+                        pctAst3fgm : parsePct(getStat(row, h, "PCT_AST_3PM")),
+                    });
                 });
             }
         } catch(e) {}
@@ -692,47 +692,51 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
           const baseAdv = advMap.get(playerId) || {};
           const hData = hustleMap.get(playerId) || { deflections: 0, contestedShots: 0, contested3pt: 0, contested2pt: 0, chargesDrawn: 0, looseBalls: 0, boxOuts: 0, screenAssists: 0 };
           const mData = miscMap.get(playerId) || { ptsOffTov: 0, pts2ndChance: 0, ptsFb: 0, ptsPaint: 0 };
-          const sData = scoringMap.get(playerId) || { pctPts2pt: 0, pctPts3pt: 0, pctPtsFt: 0, pctFgmAst: 0, pctFgmUast: 0 };
+          const sData = scoringMap.get(playerId) || { pctPts2pt: 0, pctPts3pt: 0, pctPtsFt: 0, pctFgmAst: 0, pctFgmUast: 0, pctAst2fgm: 0, pctAst3fgm: 0 };
           const passData = passingMap.get(playerId) || { passesMade: 0, potentialAst: 0, secondaryAst: 0, astPtsCreated: 0, astToPassPct: 0 };
           const defData = defendingMap.get(playerId) || { dfgPct: 50.0, dfg3Pct: 36.0, dfg2Pct: 50.0 };
           
-          const gp = getStat(row, headersBase, "GP"); 
+          // 🚀 FIX: Declaración de variables y cálculos de 2PT
+          const gp   = getStat(row, headersBase, "GP");
           const wins = getStat(row, headersBase, "W");
-          const min = getStat(row, headersBase, "MIN");
-          const pts = getStat(row, headersBase, "PTS");
-          const reb = getStat(row, headersBase, "REB");
-          const fga = getStat(row, headersBase, "FGA");
-          const fgm = getStat(row, headersBase, "FGM");
-          const fta = getStat(row, headersBase, "FTA");
+          const min  = getStat(row, headersBase, "MIN");
+          const pts  = getStat(row, headersBase, "PTS");
+          const reb  = getStat(row, headersBase, "REB");
+          const fga  = getStat(row, headersBase, "FGA");
+          const fgm  = getStat(row, headersBase, "FGM");
+          const fta  = getStat(row, headersBase, "FTA");
           const fg3a = getStat(row, headersBase, "FG3A");
-          const ast = getStat(row, headersBase, "AST");
-          const tov = getStat(row, headersBase, "TOV");
-          const bpg = getStat(row, headersBase, "BLK");
-          const spg = getStat(row, headersBase, "STL");
+          const ast  = getStat(row, headersBase, "AST");
+          const tov  = getStat(row, headersBase, "TOV");
+          const bpg  = getStat(row, headersBase, "BLK");
+          const spg  = getStat(row, headersBase, "STL");
           
           const rawOreb = getStat(row, headersBase, "OREB");
           const rawDreb = getStat(row, headersBase, "DREB");
           const oreb = rawOreb || Math.round((reb * 0.25) * 10) / 10;
           const dreb = rawDreb || Math.round((reb * 0.75) * 10) / 10;
-
-          const fg2m = fgm - getStat(row, headersBase, "FG3M");
-          const fg2a = fga - fg3a;
+          
+          const fg3m = getStat(row, headersBase, "FG3M");
+          const fg2m = fgm - fg3m;
+          const fg2a = Math.max(0, fga - fg3a);
           const fg2Pct = fg2a > 0 ? parsePct(fg2m / fg2a) : 0;
-
-          totalLeaguePTS += (pts * gp); totalLeagueFGA += (fga * gp); totalLeagueFTA += (fta * gp);
-
-          const fallbackTS = (fga > 0 || fta > 0) ? parsePct(pts / (2 * (fga + 0.44 * fta))) : 0;
+          
+          totalLeaguePTS += (pts * gp);
+          totalLeagueFGA += (fga * gp);
+          totalLeagueFTA += (fta * gp);
+          
+          const fallbackTS  = (fga > 0 || fta > 0) ? parsePct(pts / (2 * (fga + 0.44 * fta))) : 0;
           const fallbackUSG = min > 0 ? parsePct(((fga + 0.44 * fta + tov) * 40) / (min * 5)) : 15;
-          const fallbackAstTo = tov > 0 ? ast / tov : ast;
-
-          const offRtgVal = baseAdv.offRtg !== undefined ? baseAdv.offRtg : 115;
+          const fallbackAstTo = tov > 0 ? Number((ast / tov).toFixed(2)) : (ast > 0 ? 99.0 : 0.0);
+          
+          const offRtgVal = baseAdv.offRtg    !== undefined ? baseAdv.offRtg    : 115;
           const defRtgVal = baseAdv.defRating !== undefined ? baseAdv.defRating : 115;
-          const netRtgVal = baseAdv.netRtg !== undefined ? baseAdv.netRtg : 0;
-
-          const per36 = min > 0 ? 36 / min : 0;
-          const ftaRateRaw = fga > 0 ? fta / fga : 0;
-          const midRangeFGA = Math.max(0, fga - fg3a - (fta * 0.44)); 
-          const twoPA = Math.max(0, fga - fg3a);
+          const netRtgVal = baseAdv.netRtg    !== undefined ? baseAdv.netRtg    : 0;
+          
+          const per36       = min > 0 ? 36 / min : 0;
+          const ftaRateRaw  = fga > 0 ? fta / fga : 0;
+          const midRangeFGA = Math.max(0, fga - fg3a - (fta * 0.44));
+          const twoPA       = Math.max(0, fga - fg3a);
           
           const p = {
             id: playerId,
@@ -741,23 +745,25 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
             position: "NBA", imageUrl: this.getImageUrl(playerId),
             age: getStat(row, headersBase, "AGE"),
             stats: {
-              gp: gp, gs: Math.round(getStat(row, headersBase, "GS") * gp), mpg: min,
-              winPct: gp > 0 ? wins / gp : 0, 
-              ppg: pts, rpg: reb, apg: ast, oreb: oreb, dreb: dreb,
-              spg: spg, bpg: bpg, topg: tov,
-              fga: fga, fgm: fgm, fgPct: parsePct(getStat(row, headersBase, "FG_PCT")),
-              fg3a: fg3a, fg3m: getStat(row, headersBase, "FG3M"), threePct: parsePct(getStat(row, headersBase, "FG3_PCT")),
-              fta: fta, ftm: getStat(row, headersBase, "FTM"), ftPct: parsePct(getStat(row, headersBase, "FT_PCT")),
-              fg2Pct: fg2Pct,
-              offRtg: offRtgVal, defRating: defRtgVal, netRtg: netRtgVal, net: netRtgVal,
-              plusMinus: getStat(row, headersBase, "PLUS_MINUS"),
-              pf: getStat(row, headersBase, "PF")
+                gp, gs: Math.round(getStat(row, headersBase, "GS") * gp), mpg: min,
+                winPct: gp > 0 ? wins / gp : 0,
+                ppg: pts, rpg: reb, apg: ast, oreb, dreb,
+                spg, bpg, topg: tov,
+                fga, fgm, fgPct: parsePct(getStat(row, headersBase, "FG_PCT")),
+                fg3a, fg3m,                    
+                threePct: parsePct(getStat(row, headersBase, "FG3_PCT")),
+                fg2m, fg2a, fg2Pct,            
+                fta, ftm: getStat(row, headersBase, "FTM"),
+                ftPct: parsePct(getStat(row, headersBase, "FT_PCT")),
+                offRtg: offRtgVal, defRating: defRtgVal, netRtg: netRtgVal, net: netRtgVal,
+                plusMinus: getStat(row, headersBase, "PLUS_MINUS"),
+                pf: getStat(row, headersBase, "PF"),
             },
             per36Stats: {
                 ppg: pts * per36, rpg: reb * per36, apg: ast * per36,
                 spg: spg * per36, bpg: bpg * per36,
                 dreb: dreb * per36, oreb: oreb * per36,
-                fg3m: getStat(row, headersBase, "FG3M") * per36, fg3a: fg3a * per36, ptsFb: mData.ptsFb * per36,
+                fg3m: fg3m * per36, fg3a: fg3a * per36, ptsFb: mData.ptsFb * per36,
                 twoPA: twoPA * per36, 
                 deflections: (hasHustle ? hData.deflections : spg * 0.8) * per36,
                 contestedShots: (hasHustle ? hData.contestedShots : bpg * 2.0) * per36,
@@ -788,7 +794,11 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
             misc: mData,
             scoring: {
                 ...sData,
-                pctFgmUast: sData.pctFgmUast || (fallbackUSG * 1.5) 
+                pctFgmUast : sData.pctFgmUast || (fallbackUSG * 1.5),
+                pctAst2fgm : sData.pctAst2fgm || 0,
+                pctAst3fgm : sData.pctAst3fgm || 0,
+                fg3Ast : (sData.pctAst3fgm > 0 && fg3m > 0) ? Number((fg3m * (sData.pctAst3fgm / 100)).toFixed(1)) : null,
+                rimAst : null,
             },
             passing: passData, 
             tracking: {
@@ -798,30 +808,87 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
             },
             playmaking: { 
                 astPct: baseAdv.astPct !== undefined ? baseAdv.astPct : 15.0, 
-                astTo: baseAdv.astTo || fallbackAstTo, 
+                astTo: baseAdv.astTo !== undefined ? baseAdv.astTo : fallbackAstTo, 
                 astRatio: baseAdv.astRatio || 0 
             }
           };
           
           const advancedMetrics = this.computeAllAdvanced(p as any);
           
-          // 🚀 FUSIÓN MAESTRA CON DBPM y OBPM
-          const normName = p.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+          // 🚀 FIX: Fusión maestra recalculando SI
+          const normName  = p.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
           const bRefStats = bRefMap.get(normName);
-          
           if (bRefStats) {
-              advancedMetrics.per = bRefStats.per !== undefined && !isNaN(bRefStats.per) ? bRefStats.per : advancedMetrics.per;
-              advancedMetrics.bpm = bRefStats.bpm !== undefined && !isNaN(bRefStats.bpm) ? bRefStats.bpm : advancedMetrics.bpm;
-              advancedMetrics.obpm = bRefStats.obpm !== undefined ? bRefStats.obpm : advancedMetrics.obpm;
-              advancedMetrics.dbpm = bRefStats.dbpm !== undefined ? bRefStats.dbpm : advancedMetrics.dbpm;
-              advancedMetrics.vorp = bRefStats.vorp !== undefined && !isNaN(bRefStats.vorp) ? bRefStats.vorp : advancedMetrics.vorp;
-              advancedMetrics.ws48 = bRefStats.ws48 !== undefined && !isNaN(bRefStats.ws48) ? bRefStats.ws48 : advancedMetrics.ws48;
+              const safeBRef = (v: any, fallback: number) => v !== undefined && !isNaN(v) ? v : fallback;
+              advancedMetrics.per  = safeBRef(bRefStats.per,  advancedMetrics.per);
+              advancedMetrics.bpm  = safeBRef(bRefStats.bpm,  advancedMetrics.bpm);
+              advancedMetrics.obpm = safeBRef(bRefStats.obpm, advancedMetrics.obpm ?? 0);
+              advancedMetrics.dbpm = safeBRef(bRefStats.dbpm, advancedMetrics.dbpm ?? 0);
+              advancedMetrics.vorp = safeBRef(bRefStats.vorp, advancedMetrics.vorp);
+              advancedMetrics.ws48 = safeBRef(bRefStats.ws48, advancedMetrics.ws48);
               advancedMetrics.isRealBRef = true;
+              
+              const realTS = p.adv.ts ?? advancedMetrics.ts ?? 0;
+              const siReal = 100 + (advancedMetrics.bpm * 4.5) + ((advancedMetrics.per - 15) * 1.5) + ((realTS - 55) * 0.5);
+              advancedMetrics.si = isNaN(siReal) || !isFinite(siReal) ? advancedMetrics.si : Math.round(siReal);
           }
-
           p.adv = { ...p.adv, ...advancedMetrics };
           return p;
         });
+
+        // 🚀 FIX: JUGADORES FANTASMA
+        if (dataAllPlayers?.resultSets?.[0]?.rowSet) {
+            const hAll       = dataAllPlayers.resultSets[0].headers;
+            const activeIds  = new Set(parsedPlayersRaw.map((p: any) => String(p.id)));
+            dataAllPlayers.resultSets[0].rowSet.forEach((row: any[]) => {
+                const pid       = String(row[hAll.indexOf("PERSON_ID")]);
+                const rosterSt  = row[hAll.indexOf("ROSTERSTATUS")];
+                const teamAbbr  = getString(row, hAll, "TEAM_ABBREVIATION", "");
+                if (activeIds.has(pid) || !teamAbbr || teamAbbr === "0") return;
+                if (!rosterSt || rosterSt === "Inactive") return;
+                const zeroStats = {
+                    gp: 0, gs: 0, mpg: 0, winPct: 0,
+                    ppg: 0, rpg: 0, apg: 0, oreb: 0, dreb: 0, spg: 0, bpg: 0, topg: 0,
+                    fga: 0, fgm: 0, fgPct: 0, fg3a: 0, fg3m: 0, threePct: 0,
+                    fg2m: 0, fg2a: 0, fg2Pct: 0,
+                    fta: 0, ftm: 0, ftPct: 0,
+                    offRtg: 115, defRating: 115, netRtg: 0, net: 0, plusMinus: 0, pf: 0,
+                };
+                const zeroPer36 = {
+                    ppg: 0, rpg: 0, apg: 0, spg: 0, bpg: 0, dreb: 0, oreb: 0,
+                    fg3m: 0, fg3a: 0, ptsFb: 0, twoPA: 0,
+                    deflections: 0, contestedShots: 0, contested3pt: 0, contested2pt: 0,
+                    boxOuts: 0, looseBalls: 0, chargesDrawn: 0, screenAssists: 0,
+                    potentialAst: 0, passesMade: 0, secondaryAst: 0, astPtsCreated: 0,
+                    paintFGM: 0, midRangeFGM: 0,
+                };
+                const ghost: any = {
+                    id         : pid,
+                    name       : getString(row, hAll, "DISPLAY_FIRST_LAST", "Unknown Player"),
+                    teamId     : teamAbbr,
+                    position   : "NBA",
+                    imageUrl   : this.getImageUrl(pid),
+                    age        : 0,
+                    ghostPlayer: true,
+                    stats      : zeroStats,
+                    per36Stats : zeroPer36,
+                    adv: {
+                        ts: 0, efg: 0, usg: 0, defRating: 115, pie: 0,
+                        per: 0, bpm: 0, obpm: 0, dbpm: 0, vorp: 0, ws48: 0,
+                        netRtg: 0, astPct: 0, astTo: 0, astRatio: 0,
+                        pace: 100, orebPct: 0, drebPct: 0, offRtg: 115,
+                        ftaRate: 0, net: 0, si: 0, rTS: 0, isRealBRef: false,
+                    },
+                    hustle  : { deflections: 0, contestedShots: 0, contested3pt: 0, contested2pt: 0, chargesDrawn: 0, looseBalls: 0, boxOuts: 0, screenAssists: 0 },
+                    misc    : { ptsOffTov: 0, pts2ndChance: 0, ptsFb: 0, ptsPaint: 0 },
+                    scoring : { pctPts2pt: 0, pctPts3pt: 0, pctPtsFt: 0, pctFgmAst: 0, pctFgmUast: 0, pctAst2fgm: 0, pctAst3fgm: 0, fg3Ast: null, rimAst: null },
+                    passing : { passesMade: 0, potentialAst: 0, secondaryAst: 0, astPtsCreated: 0, astToPassPct: 0 },
+                    tracking: { dfgPct: 0, dfg3Pct: 0, dfg2Pct: 0 },
+                    playmaking: { astPct: 0, astTo: 0, astRatio: 0 },
+                };
+                parsedPlayersRaw.push(ghost);
+            });
+        }
 
         const leagueAvgTS = (totalLeagueFGA > 0 || totalLeagueFTA > 0) ? parsePct(totalLeaguePTS / (2 * (totalLeagueFGA + 0.44 * totalLeagueFTA))) : 55.0;
         const leagueContext = calculateLeagueContext(parsedPlayersRaw);
@@ -1142,18 +1209,13 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
 
     const promise = (async () => {
       try {
-        // ┌─────────────────────────────────────────────────────────────────────┐
-        // │  [NUEVO] Lee el JSON pre-computado por el pipeline antes de llamar  │
-        // │  a la NBA API. Si falla silenciosamente, el flujo original continúa. │
-        // └─────────────────────────────────────────────────────────────────────┘
         if (season === '2025-26') {
           try {
             const staticRes = await fetch('/data/nba_teams_current.json');
             if (staticRes.ok) {
               const json = await staticRes.json();
-              const teams: any[] = json.teams ?? json; // soporta ambos formatos de salida del pipeline
+              const teams: any[] = json.teams ?? json;
               if (Array.isArray(teams) && teams.length >= 30) {
-                console.log(`[NBAService] ✅ ${teams.length} equipos desde JSON estático`);
                 this.historicalTeamsCache.set(season, teams);
                 this.teamsCache = teams;
                 return JSON.parse(JSON.stringify(teams));
@@ -1163,7 +1225,6 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
             console.warn('[NBAService] ⚠️ JSON estático de equipos no disponible, usando NBA API en vivo...');
           }
         }
-        // ── [FIN NUEVO] ──────────────────────────────────────────────────────────
 
         const paramsTeamBase = `?Conference=&DateFrom=&DateTo=&Division=&GameScope=&GameSegment=&LastNGames=0&LeagueID=00&Location=&MeasureType=Base&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PaceAdjust=N&PerMode=PerGame&Period=0&PlusMinus=N&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&TeamID=0&TwoWay=0&VsConference=&VsDivision=`;
         const paramsAdv = paramsTeamBase.replace("MeasureType=Base", "MeasureType=Advanced");
@@ -1604,7 +1665,6 @@ async fetchAwardAuxData(season: string = "2025-26", prevSeason: string = "2024-2
         
         const benchUrl = `/leaguedashplayerstats?College=&Conference=&Country=&DateFrom=&DateTo=&Division=&DraftPick=&DraftYear=&GameScope=&GameSegment=&Height=&LastNGames=0&LeagueID=00&Location=&MeasureType=Base&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PaceAdjust=N&PerMode=Totals&Period=0&PlayerExperience=&PlayerPosition=&PlusMinus=N&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&StarterBench=Bench&TeamID=0&TwoWay=0&VsConference=&VsDivision=&Weight=`;
         
-        // 🚀 NUEVO: Promise.allSettled para que un error 500 no mate a los demás
         const [rookiesSettled, prevPlayersSettled, prevTeamsSettled] = await Promise.allSettled([
             fetchSafeJSON(rookieUrl),
             this.fetchAllOfficialPlayers(prevSeason),
@@ -1617,7 +1677,6 @@ async fetchAwardAuxData(season: string = "2025-26", prevSeason: string = "2024-2
 
         await new Promise(resolve => setTimeout(resolve, 800));
 
-        // 🚀 NUEVO: Promise.allSettled para el Clutch y Banquillo
         const [benchSettled, clutchBaseSettled, clutchAdvSettled] = await Promise.allSettled([
             fetchSafeJSON(benchUrl),
             fetchSafeJSON(clutchUrlBase),
@@ -1628,7 +1687,6 @@ async fetchAwardAuxData(season: string = "2025-26", prevSeason: string = "2024-2
         const resClutchBase = clutchBaseSettled.status === 'fulfilled' ? clutchBaseSettled.value : null;
         const resClutchAdv = clutchAdvSettled.status === 'fulfilled' ? clutchAdvSettled.value : null;
 
-        // ─── A PARTIR DE AQUÍ ES EXACTAMENTE TU CÓDIGO MATEMÁTICO ORIGINAL ───
         const prevPlayersMap = new Map<string, any>();
         if (prevPlayers && Array.isArray(prevPlayers)) {
             prevPlayers.forEach((p: any) => prevPlayersMap.set(p.id, p));

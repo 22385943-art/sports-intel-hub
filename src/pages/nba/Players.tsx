@@ -88,7 +88,8 @@ export default function NBAPlayers() {
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [teamFilter, setTeamFilter] = useState("all");
-  const [strictQualifiers, setStrictQualifiers] = useState(true);
+  // 🚀 CAMBIO CLAVE: Empezar con el botón apagado (false) para que carguen los 587 por defecto
+  const [strictQualifiers, setStrictQualifiers] = useState(false);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" }>({ key: "ovr", direction: "desc" }); 
 
   useEffect(() => {
@@ -106,11 +107,23 @@ export default function NBAPlayers() {
     });
   }, [season]);
 
+  // 🚀 CAMBIO CLAVE: Lógica de filtrado reescrita y blindada
   const filteredAndSortedPlayers = useMemo(() => {
     let filtered = players.filter(p => {
+      // 1. Filtrar por texto (búsqueda)
       const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase());
+      
+      // 2. Filtrar por equipo
       const matchesTeam = teamFilter === "all" || p.teamId === teamFilter;
-      const matchesQual = strictQualifiers ? p.qualifies : (p.stats?.mpg || 0) >= 5;
+      
+      // 3. Filtrar por Qualifiers
+      const isSearching = search.trim() !== "";
+      let matchesQual = true; // Por defecto pasan todos
+      
+      if (!isSearching && strictQualifiers) {
+          matchesQual = p.qualifies; // Si no busco y el botón está activo, exijo requisitos
+      }
+      
       return matchesSearch && matchesTeam && matchesQual;
     });
 
@@ -189,7 +202,7 @@ export default function NBAPlayers() {
         >
           <option value="all" className="bg-[#111]">ALL TEAMS</option>
           {Array.from(new Set(players.map(p => p.teamId))).sort().map(t => (
-            <option key={t} value={t} className="bg-[#111]">{t}</option>
+            <option key={t as string} value={t as string} className="bg-[#111]">{t as string}</option>
           ))}
         </select>
         <div className="flex items-center gap-3 bg-[#111] border border-[#333] px-4 py-2.5 rounded-xl">

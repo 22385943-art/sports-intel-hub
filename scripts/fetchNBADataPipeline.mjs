@@ -1,18 +1,14 @@
 /**
  * ╔══════════════════════════════════════════════════════════════════════════════╗
- * ║  SPORTS INTEL HUB — NBA DATA PIPELINE                                       ║
+ * ║  SPORTS INTEL HUB — NBA DATA PIPELINE                                        ║
  * ║  scripts/fetchNBADataPipeline.mjs                                            ║
  * ║                                                                              ║
- * ║  Runs server-side (GitHub Actions / local Node 18+):                        ║
+ * ║  Runs server-side (GitHub Actions / local Node 18+):                         ║
  * ║  • Fetches NBA stats API with proper headers (no CORS)                       ║
- * ║  • Merges with local Basketball-Reference data (real BPM/PER/VORP/WS48)    ║
+ * ║  • Merges with local Basketball-Reference data (real BPM/PER/VORP/WS48)      ║
  * ║  • Computes all percentiles, ratings, and advanced metrics                   ║
- * ║  • Writes public/data/nba_players_current.json                              ║
+ * ║  • Writes public/data/nba_players_current.json                               ║
  * ║         and  public/data/nba_teams_current.json                              ║
- * ║                                                                              ║
- * ║  Usage:                                                                      ║
- * ║    node scripts/fetchNBADataPipeline.mjs            → season 2025-26        ║
- * ║    node scripts/fetchNBADataPipeline.mjs 2024-25    → histórico             ║
  * ╚══════════════════════════════════════════════════════════════════════════════╝
  */
 
@@ -28,7 +24,7 @@ const OUTPUT_DIR = path.join(__dirname, '../public/data');
 // CONFIG
 // ════════════════════════════════════════════════════════
 const RATE_LIMIT_MS = 3800;   // ms mínimo entre requests a la NBA API
-const TIMEOUT_MS    = 32_000; // timeout por request
+const TIMEOUT_MS    = 45_000; // timeout por request (AUMENTADO A 45s)
 
 const NBA_HEADERS = {
   'Accept'            : 'application/json, text/plain, */*',
@@ -63,25 +59,12 @@ function getString(row, headers, key, fallback = '') {
     : fallback;
 }
 
-/**
- * parsePct: convierte ratio (0–1) a porcentaje sólo si es estrictamente ratio.
- * FIX vs el servicio: el original usaba `val <= 1` capturando también valores
- * legítimamente < 1 como bpg=0.8. Aquí exigimos > 0 AND < 1 (excluye 0 y 1).
- */
 function parsePct(val) {
   if (val === undefined || val === null || isNaN(val) || !isFinite(val)) return 0.0;
   const pct = (val > 0 && val < 1) ? val * 100 : val;
   return Number(pct.toFixed(1));
 }
 
-// ════════════════════════════════════════════════════════
-// ESTADÍSTICA CORREGIDA
-// ════════════════════════════════════════════════════════
-
-/**
- * Mid-rank percentile (FIX del bug auditado).
- * arr debe estar pre-ordenado (asc).
- */
 function calcPercentile(val, sortedArr) {
   if (!sortedArr?.length || val === undefined || isNaN(val)) return 50;
   let below = 0, equal = 0;
@@ -109,7 +92,6 @@ let lastFetchAt = 0;
 async function fetchFromNBA(endpoint, retries = 3) {
   const url = `https://stats.nba.com/stats${endpoint}`;
 
-  // Rate limiting global
   const elapsed = Date.now() - lastFetchAt;
   if (elapsed < RATE_LIMIT_MS) await sleep(RATE_LIMIT_MS - elapsed);
   lastFetchAt = Date.now();
@@ -123,6 +105,11 @@ async function fetchFromNBA(endpoint, retries = 3) {
         headers: NBA_HEADERS,
         signal : AbortSignal.timeout(TIMEOUT_MS),
       });
+
+      if (res.status === 500) {
+        console.warn(`    ℹ️  HTTP 500 — sin datos disponibles para este endpoint (off-season normal). Devolviendo null sin reintentos.`);
+        return null;
+      }
 
       if (res.status === 429) {
         const wait = attempt * 12_000;
@@ -161,7 +148,6 @@ async function fetchFromNBA(endpoint, retries = 3) {
 
 // ════════════════════════════════════════════════════════
 // HELPERS DE IMAGEN / LOGO
-// (Idénticos a nbaService.ts para compatibilidad)
 // ════════════════════════════════════════════════════════
 function getImageUrl(id) {
   if (id === null || id === undefined) return 'https://cdn.nba.com/headshots/nba/latest/260x190/fallback.png';
@@ -179,10 +165,6 @@ function getTeamLogoUrl(abbr) {
   return `https://a.espncdn.com/i/teamlogos/nba/500/${ESPN_MAP[a] || a.toLowerCase()}.png`;
 }
 
-// ════════════════════════════════════════════════════════
-// REFERENCIA ESTÁTICA DE EQUIPOS
-// (Espejo de NBA_TEAMS en mockData.ts)
-// ════════════════════════════════════════════════════════
 const STATIC_TEAMS = [
   { abbr:'ATL', name:'Atlanta Hawks',            conf:'Eastern', div:'Southeast' },
   { abbr:'BOS', name:'Boston Celtics',           conf:'Eastern', div:'Atlantic'  },
@@ -222,13 +204,27 @@ const staticTeamByName = new Map(STATIC_TEAMS.map(t => [t.name.toLowerCase(), t]
 function resolveStaticTeam(name, abbr) {
   return staticTeamByAbbr.get(abbr?.toUpperCase())
     || staticTeamByName.get(name?.toLowerCase())
-    || staticTeamByName.get(name?.split(' ').pop()?.toLowerCase())   // match por última palabra
+    || staticTeamByName.get(name?.split(' ').pop()?.toLowerCase())   
     || null;
 }
 
-// ════════════════════════════════════════════════════════
-// LEAGUE CONTEXT (idéntico a calculateLeagueContext)
-// ════════════════════════════════════════════════════════
+const NBA_TEAMID_TO_ABBR = {
+  '1610612737': 'ATL', '1610612738': 'BOS', '1610612751': 'BKN',
+  '1610612766': 'CHA', '1610612741': 'CHI', '1610612739': 'CLE',
+  '1610612742': 'DAL', '1610612743': 'DEN', '1610612765': 'DET',
+  '1610612744': 'GSW', '1610612745': 'HOU', '1610612754': 'IND',
+  '1610612746': 'LAC', '1610612747': 'LAL', '1610612763': 'MEM',
+  '1610612748': 'MIA', '1610612749': 'MIL', '1610612750': 'MIN',
+  '1610612740': 'NOP', '1610612752': 'NYK', '1610612760': 'OKC',
+  '1610612753': 'ORL', '1610612755': 'PHI', '1610612756': 'PHX',
+  '1610612757': 'POR', '1610612758': 'SAC', '1610612759': 'SAS',
+  '1610612761': 'TOR', '1610612762': 'UTA', '1610612764': 'WAS',
+};
+
+const NBA_ABBR_TO_TEAMID = Object.fromEntries(
+  Object.entries(NBA_TEAMID_TO_ABBR).map(([id, abbr]) => [abbr, id])
+);
+
 function calculateLeagueContext(players) {
   const valid = players.filter(p => (p.stats?.mpg || 0) >= 12);
   if (!valid.length) return null;
@@ -243,10 +239,6 @@ function calculateLeagueContext(players) {
   return { avgTS, stdTS, avgUSG, stdUSG, avgPER, stdPER, avgBPM, stdBPM, avgVORP, stdVORP, avgPIE, stdPIE };
 }
 
-// ════════════════════════════════════════════════════════
-// PLAYER 2K RATING
-// (Port exacto de calculatePlayer2KRating de nbaService.ts)
-// ════════════════════════════════════════════════════════
 function calculatePlayer2KRating(p, leagueContext, season) {
   if (!p?.percentiles) {
     return {
@@ -267,7 +259,6 @@ function calculatePlayer2KRating(p, leagueContext, season) {
 
   const getGrade = (n) => n>=95?'S':n>=85?'A+':n>=75?'A':n>=60?'B':n>=40?'C':n>=20?'D':'F';
 
-  // ── Scoring ──────────────────────────────────────────
   let effEff = pct.Efficiency || 50;
   if ((pct.Scoring || 50) < 75) effEff = Math.min(effEff, (pct.Scoring || 50) + 10);
   const scoringPct = (((pct.Scoring || 50) * 0.75) * volumeModifier) + (effEff * 0.25);
@@ -275,12 +266,10 @@ function calculatePlayer2KRating(p, leagueContext, season) {
   const rawTs  = p.adv?.ts || 50;
   const scoringText = `${rawPts.toFixed(1)} PTS (${rawTs.toFixed(1)}%)`;
 
-  // ── Tracking flag ────────────────────────────────────
   const hasTracking = season
     ? parseInt(season.split('-')[0]) >= 2013
     : (p.per36Stats?.deflections ?? 0) > 0.1;
 
-  // ── Rebounding ───────────────────────────────────────
   let rebPct = hasTracking
     ? ((pct.Rebounding||50)*0.25)+((pct.OReb||50)*0.20)+((pct.DReb||50)*0.20)
       +((pct.ContestedReb||pct.Rebounding||50)*0.15)+((pct.RebConversion||pct.Rebounding||50)*0.10)+((pct.BoxOuts||50)*0.10)
@@ -294,7 +283,6 @@ function calculatePlayer2KRating(p, leagueContext, season) {
   const rawDrb = p.per36Stats?.dreb || 0;
   const rebText = `${rawOrb.toFixed(1)} ORB / ${rawDrb.toFixed(1)} DRB`;
 
-  // ── Playmaking ───────────────────────────────────────
   const playmakingPct = hasTracking
     ? ((pct.Playmaking||50)*0.35)+((pct.AstPtsCreated||50)*0.20)
       +((pct.AstPct||50)*0.15)+((pct.PotentialAst||50)*0.15)
@@ -305,7 +293,6 @@ function calculatePlayer2KRating(p, leagueContext, season) {
   const rawAstTo = p.adv?.astTo || 1;
   const plyText  = `${rawAst.toFixed(1)} AST (${rawAstTo.toFixed(1)} A/T)`;
 
-  // ── Defense ──────────────────────────────────────────
   const stocksPct = pct.Stocks || 50;
   const rawStl = p.per36Stats?.spg || p.stats?.spg || 0;
   const rawBlk = p.per36Stats?.bpg || p.stats?.bpg || 0;
@@ -340,7 +327,6 @@ function calculatePlayer2KRating(p, leagueContext, season) {
   }
   const p4grade = getGrade(p4pct);
 
-  // ── Advanced z-scores ────────────────────────────────
   const rawBPM  = p.adv?.bpm  || -2.0;
   const rawVORP = p.adv?.vorp || 0.0;
   const rawPER  = p.adv?.per  || 15.0;
@@ -387,7 +373,6 @@ function calculatePlayer2KRating(p, leagueContext, season) {
   if (finalOVR < scoringFloor) finalOVR = scoringFloor;
   finalOVR = clamp(finalOVR, 65, 99);
 
-  // Sub-ratings para calculateTeam2KRating
   const offRating = clamp(Math.round((scoringPct*0.6)+(playmakingPct*0.4)), 60, 99);
   const defRating = clamp(Math.round((p4pct*0.7)+(rebPct*0.3)), 60, 99);
   const rebRating = clamp(Math.round(rebPct), 60, 99);
@@ -410,10 +395,6 @@ function calculatePlayer2KRating(p, leagueContext, season) {
   };
 }
 
-// ════════════════════════════════════════════════════════
-// TEAM 2K RATING
-// (Port exacto de calculateTeam2KRating de nbaService.ts)
-// ════════════════════════════════════════════════════════
 function calculateTeam2KRating(t, roster) {
   const netRtg = t.netRtg ?? t.adv?.netRtg ?? 0;
   const offRtg = t.offRtg ?? t.adv?.offRtg ?? 115;
@@ -490,9 +471,6 @@ function calculateTeam2KRating(t, roster) {
   return { ovr:finalOvr, off:finalOff, def:finalDef, tier, color, xNetRtg:xBPM.toFixed(1) };
 }
 
-// ════════════════════════════════════════════════════════
-// CARGA BREF
-// ════════════════════════════════════════════════════════
 async function loadBRefMap(season) {
   try {
     const p = path.join(OUTPUT_DIR, `bref_advanced_${season}.json`);
@@ -514,6 +492,173 @@ async function loadBRefMap(season) {
 }
 
 // ════════════════════════════════════════════════════════
+// FASE 1.5 — INJURY REPORT (ESPN, best-effort)
+// ════════════════════════════════════════════════════════
+const _normName = (name) => (name || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+
+const ESPN_STATUS_MAP = {
+  'out'         : 'Out',
+  'day-to-day'  : 'Day-To-Day',
+  'questionable': 'Questionable',
+  'probable'    : 'Probable',
+  'active'      : null,
+};
+
+async function fetchESPNInjuriesForTeam(abbr) {
+  try {
+    const res = await fetch(
+      `https://site.api.espn.com/apis/site/v2/sports/basketball/nba/injuries?team=${abbr}`,
+      { signal: AbortSignal.timeout(8000) }
+    );
+    if (!res.ok) return [];
+    const data = await res.json();
+    return Array.isArray(data?.injuries) ? data.injuries : [];
+  } catch {
+    return [];
+  }
+}
+
+async function attachInjuryReport(players) {
+  console.log('\n🏥 FASE 1.5: Extrayendo Injury Report (ESPN)...');
+  const injuryMap = new Map();
+  
+  const BATCH = 6;
+  const teamAbbrs = STATIC_TEAMS.map(t => t.abbr);
+  for (let i = 0; i < teamAbbrs.length; i += BATCH) {
+    const slice   = teamAbbrs.slice(i, i + BATCH);
+    const results = await Promise.all(slice.map(t => fetchESPNInjuriesForTeam(t)));
+    
+    results.flat().forEach((entry) => {
+      const displayName = entry?.athlete?.displayName;
+      if (!displayName) return;
+      
+      const rawStatus = (entry.status ?? '').toLowerCase();
+      const mappedStatus = ESPN_STATUS_MAP[rawStatus] ?? entry.status ?? null;
+      if (!mappedStatus) return;  
+      
+      injuryMap.set(_normName(displayName), {
+        status    : mappedStatus,
+        bodyPart  : entry.details?.type   ?? null,  
+        detail    : entry.details?.detail ?? null,  
+        side      : entry.details?.side   ?? null,  
+        returnDate: entry.details?.returnDate ?? null,  
+        comment   : entry.shortComment ?? null,
+        updatedAt : entry.date ?? null,
+        source    : 'espn',
+      });
+    });
+    if (i + BATCH < teamAbbrs.length) await sleep(200);
+  }
+  
+  let matched = 0;
+  players.forEach((p) => {
+    const key    = _normName(p.name);
+    const injury = injuryMap.get(key) || null;
+    p.injury     = injury;
+    if (injury) matched++;
+  });
+  
+  console.log(`  ✅ ${matched} lesiones activas inyectadas.`);
+  return players;
+}
+
+// ── NUEVO HELPER: Construir Roster Map
+async function buildRosterMap(season) {
+  const pidToData = new Map();
+  const BATCH_SIZE = 10;
+  for (let i = 0; i < STATIC_TEAMS.length; i += BATCH_SIZE) {
+    const batch = STATIC_TEAMS.slice(i, i + BATCH_SIZE);
+    const results = await Promise.all(batch.map(async (team) => {
+      const teamId = NBA_ABBR_TO_TEAMID[team.abbr];
+      if (!teamId) return null;
+      try {
+        const url = `https://stats.nba.com/stats/commonteamroster?LeagueID=00&Season=${season}&TeamID=${teamId}`;
+        const res = await fetch(url, {
+          headers: NBA_HEADERS,
+          signal : AbortSignal.timeout(10_000),
+        });
+        if (!res.ok) return null;
+        const data = await res.json();
+        const rs = data?.resultSets?.[0];
+        return rs ? { abbr: team.abbr, headers: rs.headers, rows: rs.rowSet } : null;
+      } catch {
+        return null;
+      }
+    }));
+    
+    results.forEach(result => {
+      if (!result) return;
+      const pidIdx = result.headers.indexOf('PLAYER_ID');
+      const nameIdx = result.headers.indexOf('PLAYER'); // La NBA entrega el nombre aquí
+      if (pidIdx === -1) return;
+      
+      result.rows.forEach(row => {
+        pidToData.set(String(row[pidIdx]), {
+          abbr: result.abbr,
+          name: nameIdx !== -1 ? String(row[nameIdx]) : 'Unknown Player'
+        });
+      });
+    });
+    if (i + BATCH_SIZE < STATIC_TEAMS.length) await sleep(1000);
+  }
+  console.log(`    Roster map: ${pidToData.size} jugadores mapeados en 30 equipos.`);
+  return pidToData;
+}
+
+
+// ── NUEVO HELPER: Construir Ghost Player
+function buildGhostPlayer(pid, displayName, teamAbbr) {
+  const zeroStats = {
+    gp:0, gs:0, mpg:0, winPct:0, ppg:0, rpg:0, apg:0, oreb:0, dreb:0, spg:0, bpg:0, topg:0,
+    fga:0, fgm:0, fgPct:0, fg3a:0, fg3m:0, threePct:0, fg2m:0, fg2a:0, fg2Pct:0,
+    fta:0, ftm:0, ftPct:0, offRtg:115, defRating:115, netRtg:0, net:0, plusMinus:0, pf:0,
+  };
+  const zeroPer36 = {
+    ppg:0, rpg:0, apg:0, spg:0, bpg:0, dreb:0, oreb:0, fg3m:0, fg3a:0, ptsFb:0, twoPA:0,
+    deflections:0, contestedShots:0, contested3pt:0, contested2pt:0, boxOuts:0, looseBalls:0, 
+    chargesDrawn:0, screenAssists:0, potentialAst:0, passesMade:0, secondaryAst:0, 
+    astPtsCreated:0, paintFGM:0, midRangeFGM:0,
+  };
+  return {
+    id         : pid,
+    name       : displayName,
+    teamId     : teamAbbr,
+    teamName   : 'Unknown',
+    position   : 'NBA',
+    imageUrl   : getImageUrl(pid),
+    age        : 0,
+    ghostPlayer: true,
+    injury     : null,
+    gameLog    : [],
+    stats      : zeroStats,
+    per36Stats : zeroPer36,
+    adv: {
+      ts:0, efg:0, usg:0, defRating:115, pie:0, per:0, bpm:0, obpm:0, dbpm:0, vorp:0, ws48:0,
+      netRtg:0, astPct:0, astTo:0, astRatio:0, pace:100, orebPct:0, drebPct:0, offRtg:115,
+      ftaRate:0, net:0, si:0, rTS:0, isRealBRef:false,
+    },
+    hustle  : defHustle(),
+    misc    : defMisc(),
+    scoring : defScoring(),
+    passing : defPassing(),
+    tracking: defDefending(),
+    playmaking: { astPct:0, astTo:0, astRatio:0 },
+    percentiles: {},
+    rating: {
+      ovr:65, off:65, def:65, rebounding:65,
+      tier:'Bronze', color:'#cd7f32', reliability:0,
+      pillars:{
+        sco:{grade:'F',pct:5,raw:'0.0 PTS (0.0%)',label:'SCORE'},
+        reb:{grade:'F',pct:5,raw:'0.0 ORB / 0.0 DRB',label:'REB'},
+        ply:{grade:'F',pct:5,raw:'0.0 AST (0.0 A/T)',label:'PLAY'},
+        def:{grade:'F',pct:5,raw:'0.0 STL / 0.0 BLK',label:'STOCKS'},
+      }
+    },
+  };
+}
+
+
+// ════════════════════════════════════════════════════════
 // FETCH PLAYERS PIPELINE
 // ════════════════════════════════════════════════════════
 async function buildPlayers(season) {
@@ -526,25 +671,17 @@ async function buildPlayers(season) {
 
   console.log('\n📊 FASE 1: Fetch estadísticas de jugadores...');
 
+  // 🚀 AHORA SON SECUENCIALES PARA NO BLOQUEAR LA API DE LA NBA
   const dataBase = await fetchFromNBA(`/leaguedashplayerstats${mk('Base')}`);
   if (!dataBase) throw new Error('Endpoint Base de jugadores falló. Pipeline abortado.');
 
-  const [dataAdv, dataMisc] = await Promise.all([
-    fetchFromNBA(`/leaguedashplayerstats${mk('Advanced')}`),
-    fetchFromNBA(`/leaguedashplayerstats${mk('Misc')}`)
-  ]);
+  const dataAdv = await fetchFromNBA(`/leaguedashplayerstats${mk('Advanced')}`);
+  const dataMisc = await fetchFromNBA(`/leaguedashplayerstats${mk('Misc')}`);
+  const dataScoring = await fetchFromNBA(`/leaguedashplayerstats${mk('Scoring')}`);
+  const dataHustle = hasHustle ? await fetchFromNBA(`/leaguehustlestatsplayer?College=&Conference=&Country=&DateFrom=&DateTo=&Division=&DraftPick=&DraftYear=&GameScope=&Height=&LastNGames=0&LeagueID=00&Location=&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PaceAdjust=N&PerMode=PerGame&PlayerExperience=&PlayerPosition=&PlusMinus=N&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&TeamID=0&VsConference=&VsDivision=&Weight=`) : null;
+  const dataPassing = hasTracking ? await fetchFromNBA(`/leaguedashptstats?College=&Conference=&Country=&DateFrom=&DateTo=&Division=&DraftPick=&DraftYear=&GameScope=&Height=&LastNGames=0&LeagueID=00&Location=&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PerMode=PerGame&PlayerExperience=&PlayerOrTeam=Player&PlayerPosition=&PtMeasureType=Passing&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&StarterBench=&TeamID=0&VsConference=&VsDivision=&Weight=`) : null;
+  const dataDefending = hasTracking ? await fetchFromNBA(`/leaguedashptdefend?College=&Conference=&Country=&DateFrom=&DateTo=&DefenseCategory=Overall&Division=&DraftPick=&DraftYear=&GameScope=&Height=&LastNGames=0&LeagueID=00&Location=&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PerMode=PerGame&PlayerExperience=&PlayerPosition=&PlusMinus=N&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&StarterBench=&TeamID=0&VsConference=&VsDivision=&Weight=`) : null;
 
-  const [dataScoring, dataHustle] = await Promise.all([
-    fetchFromNBA(`/leaguedashplayerstats${mk('Scoring')}`),
-    hasHustle ? fetchFromNBA(`/leaguehustlestatsplayer?College=&Conference=&Country=&DateFrom=&DateTo=&Division=&DraftPick=&DraftYear=&GameScope=&Height=&LastNGames=0&LeagueID=00&Location=&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PaceAdjust=N&PerMode=PerGame&PlayerExperience=&PlayerPosition=&PlusMinus=N&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&TeamID=0&VsConference=&VsDivision=&Weight=`) : null
-  ]);
-
-  const [dataPassing, dataDefending] = await Promise.all([
-    hasTracking ? fetchFromNBA(`/leaguedashptstats?College=&Conference=&Country=&DateFrom=&DateTo=&Division=&DraftPick=&DraftYear=&GameScope=&Height=&LastNGames=0&LeagueID=00&Location=&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PerMode=PerGame&PlayerExperience=&PlayerOrTeam=Player&PlayerPosition=&PtMeasureType=Passing&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&StarterBench=&TeamID=0&VsConference=&VsDivision=&Weight=`) : null,
-    hasTracking ? fetchFromNBA(`/leaguedashptdefend?College=&Conference=&Country=&DateFrom=&DateTo=&DefenseCategory=Overall&Division=&DraftPick=&DraftYear=&GameScope=&Height=&LastNGames=0&LeagueID=00&Location=&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PerMode=PerGame&PlayerExperience=&PlayerPosition=&PlusMinus=N&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&StarterBench=&TeamID=0&VsConference=&VsDivision=&Weight=`) : null,
-  ]);
-
-  // ── Construir maps auxiliares ──────────────────────────────────────────────
   const advMap      = buildMap(dataAdv,      'PLAYER_ID', buildAdvPlayerEntry);
   const miscMap     = buildMap(dataMisc,     'PLAYER_ID', buildMiscPlayerEntry);
   const scoringMap  = buildMap(dataScoring,  'PLAYER_ID', buildScoringPlayerEntry);
@@ -552,10 +689,8 @@ async function buildPlayers(season) {
   const passingMap  = buildMap(dataPassing,  'PLAYER_ID', buildPassingEntry);
   const defendingMap= buildMap(dataDefending,'CLOSE_DEF_PERSON_ID', buildDefendingEntry);
 
-  // ── Cargar BRef ─────────────────────────────────────────────────────────────
   const bRefMap = await loadBRefMap(season);
 
-  // ── Construir jugadores raw ─────────────────────────────────────────────────
   const headersBase = dataBase.resultSets[0].headers;
   const rowsBase    = dataBase.resultSets[0].rowSet;
 
@@ -597,7 +732,6 @@ async function buildPlayers(season) {
 
     const fallbackTS  = (fga>0||fta>0) ? parsePct(pts/(2*(fga+0.44*fta))) : 0;
     const fallbackUSG = min>0 ? parsePct(((fga+0.44*fta+tov)*40)/(min*5)) : 15;
-    // FIX: cuando tov=0, usar 99 en lugar de ast
     const fallbackAstTo = tov>0 ? ast/tov : (ast>0 ? 99.0 : 0.0);
 
     const per36     = min>0 ? 36/min : 0;
@@ -605,12 +739,10 @@ async function buildPlayers(season) {
     const twoPA     = Math.max(0, fga-fg3a);
     const midRangeFGA= Math.max(0, fga-fg3a-(fta*0.44));
 
-    // BRef merge (antes de computeAllAdvanced para que sea override)
     const normName  = getString(row,headersBase,'PLAYER_NAME','')
       .normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
     const bRef      = bRefMap.get(normName) || null;
 
-    // Advanced: BRef > API > estimado
     const adv = {
       ts     : baseAdv.ts      ?? fallbackTS,
       efg    : baseAdv.efg     ?? 0,
@@ -635,18 +767,15 @@ async function buildPlayers(season) {
       isRealBRef: !!bRef,
     };
 
-    // WS/48 (FIX: no forzamos >=0, dejamos negativo si aplica)
     if (adv.ws48 === null) {
       const perWS = adv.per - 15;
       const tsWS  = (adv.ts - 55) * 0.1;
       adv.ws48 = Number((0.100 + (perWS*0.01) + tsWS).toFixed(3));
-      // Solo en fallback estimado usamos clamp conservativo para no esconder datos negativos BRef
     }
 
-    // SI+ (con métricas reales cuando están disponibles)
     const siPlusRaw = 100 + (adv.bpm*4.5) + ((adv.per-15)*1.5) + ((adv.ts-55)*0.5);
     adv.si = isNaN(siPlusRaw)||!isFinite(siPlusRaw) ? 0 : Math.round(siPlusRaw);
-    adv.rTS= Number((adv.ts - 55).toFixed(1)); // placeholder, se actualiza después
+    adv.rTS= Number((adv.ts - 55).toFixed(1)); 
 
     const offRtgVal  = baseAdv.offRtg  ?? 115;
     const defRtgVal  = baseAdv.defRating?? 115;
@@ -660,7 +789,7 @@ async function buildPlayers(season) {
       position: 'NBA',
       age   : getStat(row, headersBase, 'AGE'),
       imageUrl: getImageUrl(pid),
-      gameLog : [],   // se fetchea bajo demanda desde nbaService
+      gameLog : [],   
       stats: {
         gp, gs: Math.round(getStat(row,headersBase,'GS')*gp), mpg: min,
         winPct: gp>0 ? wins/gp : 0,
@@ -680,20 +809,20 @@ async function buildPlayers(season) {
         fg3m: fg3m*per36, fg3a:fg3a*per36,
         ptsFb: (mData.ptsFb||0)*per36,
         twoPA: twoPA*per36,
-        deflections    : (hasHustle ? hData.deflections     : spg*0.8)*per36,
-        contestedShots : (hasHustle ? hData.contestedShots  : bpg*2.0)*per36,
-        contested3pt   : (hasHustle ? hData.contested3pt    : spg*0.5)*per36,
-        contested2pt   : (hasHustle ? hData.contested2pt    : bpg*1.5)*per36,
-        boxOuts        : (hasHustle ? hData.boxOuts         : dreb*0.5)*per36,
-        looseBalls     : (hasHustle ? hData.looseBalls      : spg*0.5)*per36,
-        chargesDrawn   : (hasHustle ? hData.chargesDrawn    : 0)*per36,
-        screenAssists  : (hasHustle ? hData.screenAssists   : oreb*0.5)*per36,
+        deflections    : (hasHustle ? hData.deflections      : spg*0.8)*per36,
+        contestedShots : (hasHustle ? hData.contestedShots   : bpg*2.0)*per36,
+        contested3pt   : (hasHustle ? hData.contested3pt     : spg*0.5)*per36,
+        contested2pt   : (hasHustle ? hData.contested2pt     : bpg*1.5)*per36,
+        boxOuts        : (hasHustle ? hData.boxOuts          : dreb*0.5)*per36,
+        looseBalls     : (hasHustle ? hData.looseBalls       : spg*0.5)*per36,
+        chargesDrawn   : (hasHustle ? hData.chargesDrawn     : 0)*per36,
+        screenAssists  : (hasHustle ? hData.screenAssists    : oreb*0.5)*per36,
         potentialAst   : (hasTracking ? passData.potentialAst   : ast*1.8)*per36,
         passesMade     : (hasTracking ? passData.passesMade     : ast*6.0)*per36,
         secondaryAst   : (hasTracking ? passData.secondaryAst   : ast*0.2)*per36,
         astPtsCreated  : (hasTracking ? passData.astPtsCreated  : ast*2.3)*per36,
-        paintFGM       : (hasTracking ? mData.ptsPaint/2        : fgm*0.6)*per36,
-        midRangeFGM    : (hasTracking ? midRangeFGA*0.4         : fgm*0.3)*per36,
+        paintFGM       : (hasTracking ? mData.ptsPaint/2         : fgm*0.6)*per36,
+        midRangeFGM    : (hasTracking ? midRangeFGA*0.4          : fgm*0.3)*per36,
       },
       adv,
       hustle : hData,
@@ -713,35 +842,51 @@ async function buildPlayers(season) {
     };
   });
 
-  // ── League avg TS ───────────────────────────────────────────────────────────
   const leagueAvgTS = (totalFGA>0||totalFTA>0)
     ? parsePct(totalPTS/(2*(totalFGA+0.44*totalFTA)))
     : 55.0;
 
   rawPlayers.forEach(p => { p.adv.rTS = Number((p.adv.ts - leagueAvgTS).toFixed(1)); });
 
-  // ── League context para 2K rating ──────────────────────────────────────────
   const leagueCtx = calculateLeagueContext(rawPlayers);
-
-  // ── Players con min. juegos para percentiles ───────────────────────────────
   const qualified = rawPlayers.filter(p => p.stats.gp>=10 && p.stats.mpg>=15);
-
-  // ── Arrays ordenados para percentiles (pre-sort = más rápido) ─────────────
   const arrays = buildPlayerArrays(qualified, hasTracking);
 
-  // ── Asignar percentiles y rating a cada jugador ────────────────────────────
   const finalPlayers = rawPlayers.map(p => {
-    // WS/48 recalculated with final adv values
     if (!p.adv.isRealBRef || p.adv.ws48 === undefined) {
       p.adv.ws48 = Number((0.100+((p.adv.per-15)*0.01)+((p.adv.ts-55)*0.1)).toFixed(3));
     }
-
     const percentiles = computePlayerPercentiles(p, arrays, hasTracking);
     const playerWithPct = { ...p, percentiles };
     const rating = calculatePlayer2KRating(playerWithPct, leagueCtx, season);
 
     return { ...playerWithPct, rating };
   });
+
+  // ── GHOST PLAYERS: jugadores en roster con 0 GP ───────────────────────────
+  console.log('\n👻 Inyectando ghost players (0 GP)...');
+  try {
+    const rosterMap  = await buildRosterMap(season);
+    const activeIds  = new Set(finalPlayers.map(p => String(p.id)));
+    const ghostIds   = [...rosterMap.keys()].filter(pid => !activeIds.has(pid));
+    console.log(`  ${ghostIds.length} jugadores en roster sin partidos jugados.`);
+
+    if (ghostIds.length > 0) {
+      let ghostCount = 0;
+      ghostIds.forEach(pid => {
+        const data = rosterMap.get(pid);
+        if (data) {
+            finalPlayers.push(buildGhostPlayer(pid, data.name, data.abbr));
+            ghostCount++;
+        }
+      });
+      console.log(`  ✅ ${ghostCount} ghost players inyectados con nombres reales.`);
+    }
+    console.log(`  📊 Total en JSON: ${finalPlayers.length} jugadores.`);
+  } catch (err) {
+    console.warn(`  ⚠️  Ghost players omitidos: ${err.message}`);
+  }
+  // ── FIN GHOST PLAYERS ─────────────────────────────────────────────────────
 
   console.log(`  ✅ ${finalPlayers.length} jugadores procesados (${qualified.length} con mins suficientes para percentiles).`);
   return finalPlayers;
@@ -756,28 +901,33 @@ async function buildTeams(season, allPlayers) {
   const bp = `?Conference=&DateFrom=&DateTo=&Division=&GameScope=&GameSegment=&LastNGames=0&LeagueID=00&Location=&MeasureType=BASE_TYPE&Month=0&OpponentTeamID=0&Outcome=&PORound=0&PaceAdjust=N&PerMode=PerGame&Period=0&PlusMinus=N&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&TeamID=0&TwoWay=0&VsConference=&VsDivision=`;
   const mk = (mt) => bp.replace('BASE_TYPE', mt);
 
-  const [resBase, resAdv, resOpp] = await Promise.all([
-    fetchFromNBA(`/leaguedashteamstats${mk('Base')}`),
-    fetchFromNBA(`/leaguedashteamstats${mk('Advanced')}`),
-    fetchFromNBA(`/leaguedashteamstats${mk('Opponent')}`),
-  ]);
-
+  // 🚀 SECUENCIAL Y CON RETRASO EXPLÍCITO ENTRE LLAMADAS
+  const resBase = await fetchFromNBA(`/leaguedashteamstats${mk('Base')}`);
   if (!resBase) throw new Error('Endpoint Base de equipos falló. Pipeline abortado.');
+  await sleep(1000);
 
-  const [resMisc, resHustle, resScoring] = await Promise.all([
-    fetchFromNBA(`/leaguedashteamstats${mk('Misc')}`),
-    fetchFromNBA(`/leaguehustlestatsteam?LastNGames=0&LeagueID=00&Month=0&OpponentTeamID=0&PaceAdjust=N&PerMode=PerGame&PlusMinus=N&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&TeamID=0`),
-    fetchFromNBA(`/leaguedashteamstats${mk('Scoring')}`),
-  ]);
+  const resAdv = await fetchFromNBA(`/leaguedashteamstats${mk('Advanced')}`);
+  await sleep(1000);
+
+  const resOpp = await fetchFromNBA(`/leaguedashteamstats${mk('Opponent')}`);
+  await sleep(1000);
+
+  const resMisc = await fetchFromNBA(`/leaguedashteamstats${mk('Misc')}`);
+  await sleep(1000);
+
+  const resHustle = await fetchFromNBA(`/leaguehustlestatsteam?LastNGames=0&LeagueID=00&Month=0&OpponentTeamID=0&PaceAdjust=N&PerMode=PerGame&PlusMinus=N&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&TeamID=0`);
+  await sleep(1000);
+
+  const resScoring = await fetchFromNBA(`/leaguedashteamstats${mk('Scoring')}`);
+  await sleep(1000);
 
   const cp = `?AheadBehind=Ahead%20or%20Behind&ClutchTime=Last%205%20Minutes&DateFrom=&DateTo=&Direction=DESC&GameScope=&GameSegment=&LastNGames=0&LeagueID=00&Location=&MeasureType=BASE_TYPE&Month=0&OpponentTeamID=0&Outcome=&PaceAdjust=N&PerMode=PerGame&Period=0&PlusMinus=N&Rank=N&Season=${season}&SeasonSegment=&SeasonType=Regular%20Season&ShotClockRange=&StarterBench=&TeamID=0&VsConference=&VsDivision=`;
 
-  const [resClutchBase, resClutchAdv] = await Promise.all([
-    fetchFromNBA(`/leaguedashteamclutch${cp.replace('BASE_TYPE','Base')}`),
-    fetchFromNBA(`/leaguedashteamclutch${cp.replace('BASE_TYPE','Advanced')}`),
-  ]);
+  const resClutchBase = await fetchFromNBA(`/leaguedashteamclutch${cp.replace('BASE_TYPE','Base')}`);
+  await sleep(1000);
 
-  // ── Construir maps auxiliares ──────────────────────────────────────────────
+  const resClutchAdv = await fetchFromNBA(`/leaguedashteamclutch${cp.replace('BASE_TYPE','Advanced')}`);
+
   const advMap      = buildMap(resAdv,      'TEAM_ID', buildAdvTeamEntry);
   const oppMap      = buildMap(resOpp,      'TEAM_ID', buildOppTeamEntry);
   const miscMap     = buildMap(resMisc,     'TEAM_ID', buildMiscTeamEntry);
@@ -785,11 +935,9 @@ async function buildTeams(season, allPlayers) {
   const scoringMap  = buildMap(resScoring,  'TEAM_ID', buildScoringTeamEntry);
   const clutchAdvMap= buildMap(resClutchAdv,'TEAM_ID', buildClutchAdvEntry);
 
-  // ── Clutch base ────────────────────────────────────────────────────────────
   const clutchDataRaw = buildClutchData(resClutchBase, clutchAdvMap, resBase, advMap);
   const clutchMap = computeClutchPercentiles(clutchDataRaw);
 
-  // ── Construir equipos ──────────────────────────────────────────────────────
   const headersBase = resBase.resultSets[0].headers;
   const rowsBase    = resBase.resultSets[0].rowSet;
 
@@ -877,10 +1025,8 @@ async function buildTeams(season, allPlayers) {
     };
   });
 
-  // ── Arrays para percentiles de equipo ──────────────────────────────────────
   const tArrays = buildTeamArrays(rawTeams);
 
-  // ── Enriquecer con percentiles + z-scores + rating ─────────────────────────
   const finalTeams = rawTeams.map(t => {
     const tId    = t.id;
     const pcts   = computeTeamPercentiles(t, tArrays);
@@ -981,7 +1127,6 @@ const buildDefendingEntry = (row, h) => ({
   dfg2Pct:parsePct(getStat(row,h,'NORMAL_FG_PCT')),
 });
 
-// Team map builders
 const buildAdvTeamEntry = (row, h) => ({
   offRtg:getStat(row,h,'OFF_RATING')||0,  defRtg:getStat(row,h,'DEF_RATING')||0,
   netRtg:getStat(row,h,'NET_RATING')||0,  pace:getStat(row,h,'PACE')||0,
@@ -1047,7 +1192,6 @@ function buildClutchData(resClutchBase, clutchAdvMap, resBase, advMap) {
       };
     });
   }
-  // Fallback: estimar desde datos base
   const hb = resBase.resultSets[0].headers;
   return resBase.resultSets[0].rowSet.map(row => {
     const tId=getString(row,hb,'TEAM_ID','0');
@@ -1091,9 +1235,6 @@ function computeClutchPercentiles(clutchDataRaw) {
   return map;
 }
 
-// ════════════════════════════════════════════════════════
-// ARRAYS Y PERCENTILES DE JUGADORES
-// ════════════════════════════════════════════════════════
 function buildPlayerArrays(qualified, hasTracking) {
   const m = (fn) => asc(qualified.map(fn));
   return {
@@ -1270,9 +1411,6 @@ function computePlayerPercentiles(p, a, hasTracking) {
   };
 }
 
-// ════════════════════════════════════════════════════════
-// ARRAYS Y PERCENTILES DE EQUIPOS
-// ════════════════════════════════════════════════════════
 function buildTeamArrays(teams) {
   const m = (fn) => asc(teams.map(fn));
   return {
@@ -1345,14 +1483,6 @@ function computeTeamPercentiles(t, a) {
   };
 }
 
-// ════════════════════════════════════════════════════════
-// ESTIMADORES DE FALLBACK (cuando NBA API Advanced falla
-// o el jugador no tiene BRef match)
-//
-// NOTA: Estos son ESTIMACIONES, NO las fórmulas correctas.
-//       Se usan SOLO como fallback. Están etiquetados en
-//       el objeto player con isRealBRef: false.
-// ════════════════════════════════════════════════════════
 function estimatePER(pts, reb, ast, stl, blk, fga, fgm, fta, tov, min) {
   if (!min || min <= 0) return 0;
   const missedFG = fga - fgm;
@@ -1369,9 +1499,6 @@ function estimateBPM(pts, reb, ast, stl, blk, fga, fta, tov, min) {
   return Math.max(-10, Math.round(isNaN(raw)||!isFinite(raw)?0:raw*10)/10);
 }
 
-// ════════════════════════════════════════════════════════
-// DEFAULTS PARA MAPAS AUXILIARES VACÍOS
-// ════════════════════════════════════════════════════════
 const defHustle  = () => ({ deflections:0,contestedShots:0,contested3pt:0,contested2pt:0,chargesDrawn:0,looseBalls:0,boxOuts:0,screenAssists:0 });
 const defMisc    = () => ({ ptsOffTov:0,pts2ndChance:0,ptsFb:0,ptsPaint:0 });
 const defScoring = () => ({ pctPts2pt:0,pctPts3pt:0,pctPtsFt:0,pctFgmAst:0,pctFgmUast:0 });
@@ -1400,6 +1527,14 @@ async function main() {
     process.exit(1);
   }
 
+  // ── FASE 1.5: Injury Report ────────────────────────────────────────
+  try {
+    players = await attachInjuryReport(players);
+  } catch (err) {
+    console.warn(`  ⚠️ Injury report omitido (${err.message}).`);
+    players.forEach(p => { if (p.injury === undefined) p.injury = null; });
+  }
+
   // ── FASE 2: Equipos ────────────────────────────────────────────────────────
   let teams;
   try {
@@ -1417,7 +1552,7 @@ async function main() {
     generatedAt: new Date().toISOString(),
     playerCount: players.length,
     teamCount  : teams.length,
-    source     : 'nba-stats-api + basketball-reference',
+    source     : 'nba-stats-api + basketball-reference + espn',
   };
 
   const playersOut = { metadata, players };
@@ -1435,7 +1570,6 @@ async function main() {
     'utf-8'
   );
 
-  // También guardar los JSON planos (sin metadata wrapper) para compatibilidad
   await fs.writeFile(
     path.join(OUTPUT_DIR, 'nba_players_current_raw.json'),
     JSON.stringify(players, null, 2),
