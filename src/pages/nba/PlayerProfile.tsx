@@ -61,6 +61,11 @@ const getAwardIcon = (title: string) => {
 };
 
 const getArchetype = (p: any) => {
+  // 🚀 FIX 3 CLAUDE: Si el jugador tiene 0 GP, el arquetipo debe ser N/A
+  if (!p || (p.stats?.gp ?? 0) === 0 || (p as any).ghostPlayer) {
+    return { label: 'NO DATA', icon: Activity, color: 'text-slate-500 bg-slate-500/10 border-slate-500/20' };
+  }
+
   const pct = p.percentiles || {};
   
   const isHighVolume = (pct.USG || 50) >= 85;
@@ -170,7 +175,8 @@ export default function NBAPlayerProfile() {
 
   const { data: deepData, isLoading: isDeepDataLoading } = useQuery({
     queryKey: ['nba', 'player-deep', id, season, numericTeamId],
-    enabled: !!id && !!player,
+    // 🚀 FIX 1 CLAUDE: Bypass de Deep Fetch si no tiene GP (0 GP = No Data)
+    enabled: !!id && !!player && ((player as any).stats?.gp ?? 0) > 0,
     staleTime: 1000 * 60 * 15, 
     queryFn: async () => {
       const fetchBFF = async (endpoint: string, params: Record<string, string>) => {
@@ -358,16 +364,28 @@ export default function NBAPlayerProfile() {
   const s = player.stats;
   const a = player.adv || { ts: 0, usg: 0, pie: 0, per: 15 };
   const archetype = getArchetype(player);
+  const isGhostPlayer = !!(player as any).ghostPlayer || (s.gp ?? 0) === 0; // Se asegura de pillar el 0 GP
   
-  const rating = (player as any).rating || { 
-      ovr: 75, tier: "Bronze", color: "#cd7f32",
-      pillars: {
-          sco: { grade: "-", pct: 0, raw: "-", label: "SCORE" },
-          reb: { grade: "-", pct: 0, raw: "-", label: "REB" },
-          ply: { grade: "-", pct: 0, raw: "-", label: "PLAY" },
-          def: { grade: "-", pct: 0, raw: "-", label: "STOCKS" }
+  // 🚀 FIX 2 CLAUDE: Badge y Pilares grises para Ghost Players
+  const rating = isGhostPlayer 
+    ? { 
+        ovr: null, tier: "N/A", color: "#555",
+        pillars: {
+            sco: { grade: "-", pct: 0, raw: "—", label: "SCORE" },
+            reb: { grade: "-", pct: 0, raw: "—", label: "REB" },
+            ply: { grade: "-", pct: 0, raw: "—", label: "PLAY" },
+            def: { grade: "-", pct: 0, raw: "—", label: "STOCKS" }
+        }
       }
-  };
+    : ((player as any).rating || { 
+        ovr: 75, tier: "Bronze", color: "#cd7f32",
+        pillars: {
+            sco: { grade: "-", pct: 0, raw: "-", label: "SCORE" },
+            reb: { grade: "-", pct: 0, raw: "-", label: "REB" },
+            ply: { grade: "-", pct: 0, raw: "-", label: "PLAY" },
+            def: { grade: "-", pct: 0, raw: "-", label: "STOCKS" }
+        }
+    });
 
   const actualTeam = allTeams.find(t => 
     String(t.id) === String(player.teamId) || 
@@ -398,7 +416,6 @@ export default function NBAPlayerProfile() {
 
   // injury viene del pipeline (Fase 1.5), disponible en Query 1 sin esperar deepData
   const injury = (player as any).injury ?? null;
-  const isGhostPlayer = !!(player as any).ghostPlayer;
 
   type DurabilityBadge = {
     label    : string;
@@ -411,13 +428,8 @@ export default function NBAPlayerProfile() {
   let durability: DurabilityBadge | null = null;
 
   if (isCurrentSeason) {
-    if (isGhostPlayer) {
-      durability = {
-        label: 'INACTIVE',
-        icon : '⚫',
-        color: 'text-slate-400 border-slate-400/30 bg-slate-400/10',
-      };
-    } else if (injury) {
+    // 🚀 FIX 4 CLAUDE: Prioridad Invertida (Lesión de ESPN gana a Ghost Player)
+    if (injury) {
       const statusConfig: Record<string, { icon: string; color: string }> = {
         'Out'         : { icon: '🔴', color: 'text-rose-400 border-rose-400/30 bg-rose-400/10'    },
         'Day-To-Day'  : { icon: '🟡', color: 'text-amber-400 border-amber-400/30 bg-amber-400/10' },
@@ -438,17 +450,17 @@ export default function NBAPlayerProfile() {
         color   : cfg.color,
         comment : injury.comment,
       };
-    } else if (gp > 0) {
+    } else if (isGhostPlayer || gp === 0) {
+      durability = {
+        label: 'INACTIVE',
+        icon : '⚫',
+        color: 'text-slate-400 border-slate-400/30 bg-slate-400/10',
+      };
+    } else {
       durability = {
         label: 'ACTIVE',
         icon : '🟢',
         color: 'text-emerald-400 border-emerald-400/30 bg-emerald-400/10',
-      };
-    } else {
-      durability = {
-        label: 'DNP',
-        icon : '⚫',
-        color: 'text-slate-400 border-slate-400/30 bg-slate-400/10',
       };
     }
   }
@@ -567,8 +579,15 @@ export default function NBAPlayerProfile() {
                 <div className="relative flex items-center justify-center w-24 h-24 hover:scale-105 transition-transform">
                   <Hexagon className="absolute inset-0 w-full h-full drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]" style={{ color: rating.color, fill: `${rating.color}20`, strokeWidth: 1.5 }} />
                   <div className="flex flex-col items-center justify-center relative z-10 mt-1">
-                    <span className="text-4xl font-black font-mono text-white tracking-tighter leading-none">{rating.ovr}</span>
-                    <span className="text-[9px] font-black uppercase tracking-widest mt-1" style={{ color: rating.color }}>OVR</span>
+                    {/* 🚀 FIX 2 CLAUDE: Hexágono OVR */}
+                    {isGhostPlayer ? (
+                      <span className="text-3xl font-black font-mono text-slate-500 tracking-tighter leading-none">N/A</span>
+                    ) : (
+                      <>
+                        <span className="text-4xl font-black font-mono text-white tracking-tighter leading-none">{rating.ovr}</span>
+                        <span className="text-[9px] font-black uppercase tracking-widest mt-1" style={{ color: rating.color }}>OVR</span>
+                      </>
+                    )}
                   </div>
                 </div>
             </div>
@@ -602,13 +621,13 @@ export default function NBAPlayerProfile() {
               <div className="grid grid-cols-[100px_1fr] items-center">
                 <span className="text-xs font-bold text-[#777] uppercase tracking-wider">HT/WT</span>
                 <span className="text-sm font-bold text-white flex items-center gap-2">
-                  {isDeepDataLoading ? <Loader2 className="h-3 w-3 animate-spin text-[#777]" /> : `${bio?.ht || "-"}, ${bio?.wt ? bio.wt + ' lbs' : "-"}`}
+                  {isDeepDataLoading && !isGhostPlayer ? <Loader2 className="h-3 w-3 animate-spin text-[#777]" /> : `${bio?.ht || "-"}, ${bio?.wt ? bio.wt + ' lbs' : "-"}`}
                 </span>
               </div>
               <div className="grid grid-cols-[100px_1fr] items-center">
                 <span className="text-xs font-bold text-[#777] uppercase tracking-wider">Birthdate</span>
                 <span className="text-sm font-bold text-white flex items-center gap-2">
-                  {isDeepDataLoading ? <Loader2 className="h-3 w-3 animate-spin text-[#777]" /> : bio?.dob || "-"}
+                  {isDeepDataLoading && !isGhostPlayer ? <Loader2 className="h-3 w-3 animate-spin text-[#777]" /> : bio?.dob || "-"}
                 </span>
               </div>
               <div className="grid grid-cols-[100px_1fr] items-center">
@@ -708,7 +727,7 @@ export default function NBAPlayerProfile() {
                     <span className="text-[10px] font-bold text-[#666]">{attr.p?.raw}</span>
                 </div>
                 
-                <span className="text-4xl font-black font-mono text-white relative z-10 leading-none my-1" style={{ color: ['S', 'A+', 'A'].includes(attr.p?.grade) ? '#10b981' : 'white' }}>
+                <span className="text-4xl font-black font-mono text-white relative z-10 leading-none my-1" style={{ color: ['S', 'A+', 'A'].includes(attr.p?.grade) ? '#10b981' : isGhostPlayer ? '#555' : 'white' }}>
                     {attr.p?.grade}
                 </span>
 
@@ -899,8 +918,6 @@ export default function NBAPlayerProfile() {
           </div>
         )}
 
-        {/* ... (El resto de pestañas Analytics, ShotChart, Accolades, Splits siguen igual) ... */}
-        
         {activeTab === "analytics" && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="bg-[#1a1a1a] border border-white/5 rounded-[2rem] p-6 shadow-2xl relative overflow-hidden">
@@ -965,7 +982,7 @@ export default function NBAPlayerProfile() {
                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-rose-400">Loading Shot Spatial Data...</p>
                </div>
             ) : (
-               <ShotChart shots={shots} />
+               <ShotChart shots={shots} player={player} />
             )}
           </div>
         )}
@@ -1032,19 +1049,19 @@ export default function NBAPlayerProfile() {
                 };
               };
 
-              const wins = gameLog.filter(g => g.wl === "W");
-              const losses = gameLog.filter(g => g.wl === "L");
-              const home = gameLog.filter(g => g.isHome);
-              const away = gameLog.filter(g => !g.isHome);
+              const wins = gameLog.filter((g: any) => g.wl === "W");
+              const losses = gameLog.filter((g: any) => g.wl === "L");
+              const home = gameLog.filter((g: any) => g.isHome);
+              const away = gameLog.filter((g: any) => !g.isHome);
               
-              const contenders = gameLog.filter(g => {
+              const contenders = gameLog.filter((g: any) => {
                 const oppTeam = allTeams.find(t => t.abbreviation.toLowerCase() === g.opponent.toLowerCase());
                 if (!oppTeam) return false;
                 const oppWinPct = oppTeam.wins / (oppTeam.wins + oppTeam.losses);
                 return oppWinPct >= 0.500;
               });
               
-              const lottery = gameLog.filter(g => {
+              const lottery = gameLog.filter((g: any) => {
                 const oppTeam = allTeams.find(t => t.abbreviation.toLowerCase() === g.opponent.toLowerCase());
                 if (!oppTeam) return false;
                 const oppWinPct = oppTeam.wins / (oppTeam.wins + oppTeam.losses);

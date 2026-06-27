@@ -25,6 +25,11 @@ const TEAM_COLORS: Record<string, string> = {
 
 // 🧠 ARCHETYPE ENGINE (100% ERA-RELATIVE)
 const getArchetype = (p: any) => {
+  // 🚀 FIX 3 CLAUDE: Guard - Jugadores sin minutos no tienen arquetipo
+  if (!p || (p.stats?.gp ?? 0) === 0 || (p as any).ghostPlayer) {
+    return { label: 'NO DATA', icon: Activity, color: 'text-slate-500 bg-slate-500/10 border-slate-500/20' };
+  }
+
   const pct = p.percentiles || {};
   
   const isHighVolume = (pct.USG || 50) >= 85;
@@ -88,7 +93,6 @@ export default function NBAPlayers() {
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [teamFilter, setTeamFilter] = useState("all");
-  // 🚀 CAMBIO CLAVE: Empezar con el botón apagado (false) para que carguen los 587 por defecto
   const [strictQualifiers, setStrictQualifiers] = useState(false);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" }>({ key: "ovr", direction: "desc" }); 
 
@@ -107,21 +111,15 @@ export default function NBAPlayers() {
     });
   }, [season]);
 
-  // 🚀 CAMBIO CLAVE: Lógica de filtrado reescrita y blindada
   const filteredAndSortedPlayers = useMemo(() => {
     let filtered = players.filter(p => {
-      // 1. Filtrar por texto (búsqueda)
       const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase());
-      
-      // 2. Filtrar por equipo
       const matchesTeam = teamFilter === "all" || p.teamId === teamFilter;
-      
-      // 3. Filtrar por Qualifiers
       const isSearching = search.trim() !== "";
-      let matchesQual = true; // Por defecto pasan todos
+      let matchesQual = true; 
       
       if (!isSearching && strictQualifiers) {
-          matchesQual = p.qualifies; // Si no busco y el botón está activo, exijo requisitos
+          matchesQual = p.qualifies;
       }
       
       return matchesSearch && matchesTeam && matchesQual;
@@ -141,10 +139,6 @@ export default function NBAPlayers() {
     return filtered;
   }, [players, search, teamFilter, strictQualifiers, sortConfig]);
 
-  const handleSort = (key: string) => {
-    setSortConfig(prev => ({ key, direction: prev.key === key && prev.direction === 'desc' ? 'asc' : 'desc' }));
-  };
-
   const handleSeasonChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSearchParams({ season: e.target.value });
   };
@@ -160,7 +154,6 @@ export default function NBAPlayers() {
 
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="space-y-6 pb-20 max-w-[1600px] mx-auto px-4">
-      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className="text-4xl font-black tracking-tight text-white uppercase leading-none">Scouting Hub</h1>
@@ -186,7 +179,6 @@ export default function NBAPlayers() {
         </div>
       </div>
 
-      {/* Filters */}
       <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-2xl p-4 flex flex-col md:flex-row gap-4 items-center">
         <div className="relative flex-1 w-full">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[#555]" />
@@ -216,18 +208,29 @@ export default function NBAPlayers() {
         </div>
       </div>
 
-      {/* ═══ PLAYER CARD GRID ═══ */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {filteredAndSortedPlayers.map((p, i) => {
-          const rating = p.rating || { 
-            ovr: 70, color: "#888", tier: "Bronze",
-            pillars: {
-                sco: { grade: "-", raw: "-", label: "SCORE" },
-                reb: { grade: "-", raw: "-", label: "REB" },
-                ply: { grade: "-", raw: "-", label: "PLAY" },
-                def: { grade: "-", raw: "-", label: "STOCKS" }
-            }
-          };
+          // 🚀 FIX 2 CLAUDE: El hexágono debe mostrar N/A si gp === 0
+          const isGhost = !!(p as any).ghostPlayer || (p.stats?.gp ?? 0) === 0;
+          const rating = isGhost
+            ? {
+                ovr: null, color: '#555', tier: 'N/A',
+                pillars: {
+                  sco: { grade: '-', raw: '—', label: 'SCORE'  },
+                  reb: { grade: '-', raw: '—', label: 'REB'    },
+                  ply: { grade: '-', raw: '—', label: 'PLAY'   },
+                  def: { grade: '-', raw: '—', label: 'STOCKS' },
+                }
+              }
+            : (p.rating || {
+                ovr: 70, color: '#888', tier: 'Bronze',
+                pillars: {
+                  sco: { grade: '-', raw: '-', label: 'SCORE'  },
+                  reb: { grade: '-', raw: '-', label: 'REB'    },
+                  ply: { grade: '-', raw: '-', label: 'PLAY'   },
+                  def: { grade: '-', raw: '-', label: 'STOCKS' },
+                }
+              });
           
           return (
             <motion.div
@@ -239,12 +242,10 @@ export default function NBAPlayers() {
               <Link to={`/nba/players/${p.id}?season=${season}`}>
                 <div className="relative bg-[#1a1a1a] border border-[#2a2a2a] rounded-2xl overflow-hidden hover:border-[#555] hover:scale-[1.02] transition-all duration-300 group shadow-lg">
                   
-                  {/* Team logo watermark */}
                   <div className="absolute -right-6 -bottom-6 w-28 h-28 opacity-[0.06] pointer-events-none">
                     <img src={nbaService.getTeamLogoUrl(p.teamId)} alt="" className="w-full h-full object-contain" />
                   </div>
 
-                  {/* Top accent bar */}
                   <div className="h-1 w-full" style={{ background: `linear-gradient(90deg, ${rating.color}, transparent)` }} />
 
                   <div className="p-5 relative z-10">
@@ -257,7 +258,7 @@ export default function NBAPlayers() {
                           </Avatar>
                           <div className="flex-1 min-w-0">
                             <h3 className="text-sm font-bold text-white truncate group-hover:text-cyan-400 transition-colors flex items-center gap-1">
-                              {p.name} {!p.qualifies && !strictQualifiers && <span className="text-amber-500 font-black text-lg leading-none">*</span>}
+                              {p.name} {!p.qualifies && !strictQualifiers && !isGhost && <span className="text-amber-500 font-black text-lg leading-none">*</span>}
                             </h3>
                             <div className="flex items-center gap-1.5 mt-1">
                               <img src={nbaService.getTeamLogoUrl(p.teamId)} alt="" className="w-3.5 h-3.5 object-contain" />
@@ -270,18 +271,26 @@ export default function NBAPlayers() {
                           </div>
                       </div>
                       
-                      {/* 🚀 OVR BADGE */}
+                      {/* 🚀 FIX 2 CLAUDE: BADGE VISUAL */}
                       <div className="relative flex items-center justify-center w-12 h-12">
-                          <Hexagon className="absolute inset-0 w-full h-full drop-shadow-md" style={{ color: rating.color, fill: `${rating.color}15`, strokeWidth: 2 }} />
-                          <div className="flex flex-col items-center justify-center relative z-10">
-                            <span className="text-lg font-black font-mono text-white leading-none">{rating.ovr}</span>
-                            <span className="text-[6px] font-black uppercase tracking-widest mt-0.5" style={{ color: rating.color }}>OVR</span>
-                          </div>
+                        <Hexagon
+                          className="absolute inset-0 w-full h-full drop-shadow-md"
+                          style={{ color: rating.color, fill: `${rating.color}15`, strokeWidth: 2 }}
+                        />
+                        <div className="flex flex-col items-center justify-center relative z-10">
+                          {isGhost ? (
+                            <span className="text-sm font-black font-mono text-slate-500 leading-none">N/A</span>
+                          ) : (
+                            <>
+                              <span className="text-lg font-black font-mono text-white leading-none">{rating.ovr}</span>
+                              <span className="text-[6px] font-black uppercase tracking-widest mt-0.5" style={{ color: rating.color }}>OVR</span>
+                            </>
+                          )}
+                        </div>
                       </div>
 
                     </div>
 
-                    {/* 🚀 LOS 4 PILARES DE SCOUTING */}
                     <div className="grid grid-cols-4 gap-2 mt-5 pt-4 border-t border-[#2a2a2a]">
                         {[
                             { label: rating.pillars?.sco?.label || "SCORE", grade: rating.pillars?.sco?.grade || "-", raw: rating.pillars?.sco?.raw || "-" },
@@ -291,7 +300,7 @@ export default function NBAPlayers() {
                         ].map((col, i) => (
                             <div key={i} className="flex flex-col items-center bg-black/30 rounded-lg py-1.5 border border-white/5">
                                 <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-0.5">{col.label}</span>
-                                <span className="text-sm font-black text-white font-mono" style={{ color: ['S', 'A+', 'A'].includes(col.grade) ? '#10b981' : 'white' }}>{col.grade}</span>
+                                <span className="text-sm font-black text-white font-mono" style={{ color: ['S', 'A+', 'A'].includes(col.grade) ? '#10b981' : isGhost ? '#555' : 'white' }}>{col.grade}</span>
                                 <span className="text-[7px] text-[#666] font-bold mt-0.5">{col.raw}</span>
                             </div>
                         ))}

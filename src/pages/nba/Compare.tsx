@@ -70,7 +70,10 @@ const getClutchMultiplier = (clutchData: any, pace: number, mode: string) => {
 };
 
 const getArchetype = (p: any) => {
-  if (!p || !p.stats || !p.adv) return { label: "Unknown", icon: Activity, color: "text-slate-400 bg-white/5 border-white/10" };
+  if (!p || (p.stats?.gp ?? 0) === 0 || (p as any).ghostPlayer) {
+    return { label: 'NO DATA', icon: Activity, color: 'text-slate-500 bg-slate-500/10 border-slate-500/20' };
+  }
+
   const { ppg, rpg, apg, bpg, spg, threePct, fgPct, fta } = p.stats;
   const { usg, defRating, astPct, ts, pie } = p.adv;
 
@@ -275,6 +278,65 @@ const PlayerCombobox = ({
   );
 };
 
+// Componente Búsqueda
+function PlayerSelector({ value, players, onSelect, placeholder, side }: { value: any, players: any[], onSelect: (p: any) => void, placeholder: string, side: 'left' | 'right' }) {
+  const [search, setSearch] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+
+  const filtered = useMemo(() => {
+    if (!search.trim()) return [];
+    return players
+      .filter(p => p.name.toLowerCase().includes(search.toLowerCase()))
+      .sort((a, b) => (b.rating?.ovr || 0) - (a.rating?.ovr || 0))
+      .slice(0, 5);
+  }, [search, players]);
+
+  return (
+    <div className="relative w-full">
+      {value ? (
+        <div className={`flex items-center gap-4 p-4 bg-[#111] border border-[#333] rounded-2xl hover:border-[#555] transition-colors cursor-pointer ${side === 'right' ? 'flex-row-reverse text-right' : ''}`} onClick={() => { onSelect(null); setSearch(""); setIsOpen(true); }}>
+          <Avatar className="h-16 w-16 border-2 border-[#333] bg-black">
+            <AvatarImage src={value.imageUrl} />
+            <AvatarFallback>{value.name.substring(0, 2)}</AvatarFallback>
+          </Avatar>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-white font-black text-xl truncate">{value.name}</h3>
+            <div className={`flex items-center gap-2 mt-1 ${side === 'right' ? 'justify-end' : ''}`}>
+              <img src={nbaService.getTeamLogoUrl(value.teamId)} className="w-4 h-4" />
+              <span className="text-[#888] font-bold text-xs">{value.teamId}</span>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="relative">
+          <Search className={`absolute top-1/2 -translate-y-1/2 h-5 w-5 text-[#555] ${side === 'left' ? 'left-4' : 'right-4'}`} />
+          <input
+            type="text"
+            className={`w-full bg-[#111] border-2 border-dashed border-[#333] rounded-2xl py-5 text-white font-bold placeholder:text-[#555] focus:border-cyan-500 focus:bg-black transition-all outline-none ${side === 'left' ? 'pl-12 pr-4 text-left' : 'pr-12 pl-4 text-right'}`}
+            placeholder={placeholder}
+            value={search}
+            onChange={(e) => { setSearch(e.target.value); setIsOpen(true); }}
+            onFocus={() => setIsOpen(true)}
+          />
+          {isOpen && filtered.length > 0 && (
+            <div className="absolute top-full mt-2 w-full bg-[#111] border border-[#333] rounded-xl shadow-2xl z-50 overflow-hidden">
+              {filtered.map(p => (
+                <div key={p.id} onClick={() => { onSelect(p); setIsOpen(false); }} className={`flex items-center gap-3 p-3 hover:bg-[#222] cursor-pointer border-b border-[#222] last:border-0 ${side === 'right' ? 'flex-row-reverse text-right' : ''}`}>
+                  <Avatar className="h-10 w-10 border border-[#333]"><AvatarImage src={p.imageUrl} /></Avatar>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-white font-bold text-sm truncate">{p.name}</p>
+                    <p className="text-[#666] text-[10px] font-black">{p.teamId} · {p.rating?.ovr || 'N/A'} OVR</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 const TugBar = ({ label, v1, v2, c1, c2, reverse = false, showPlus = false, isPct = false }: { label: string; v1: number | undefined; v2: number | undefined; c1: string; c2: string; reverse?: boolean; showPlus?: boolean; isPct?: boolean }) => {
   const safeV1 = Number(v1) || 0;
   const safeV2 = Number(v2) || 0;
@@ -370,16 +432,18 @@ export default function ComparePlayers() {
   const [p2Clutch, setP2Clutch] = useState<any>(null);
 
   useEffect(() => {
-    nbaService.fetchAllOfficialPlayers("2025-26").then(players => {
-      const jokic = players.find(p => p.id === "203999") || players[0];
-      const luka = players.find(p => p.id === "1629029") || players[1];
+    setIsLoading(true);
+    nbaService.fetchAllOfficialPlayers("2025-26").then(data => {
+      const jokic = data.find(p => p.id === "203999") || data[0];
+      const luka = data.find(p => p.id === "1629029") || data[1];
       setP1Data({ ...jokic, archetype: getArchetype(jokic) });
       setP2Data({ ...luka, archetype: getArchetype(luka) });
       setIsLoading(false);
     });
   }, []);
 
-  // Clutch Data
+  const isNoData = (p: any) => !p || (p.stats?.gp ?? 0) === 0 || !!(p as any).ghostPlayer;
+
   useEffect(() => {
     if (activeTab === "clutch" && p1Data && p2Data) {
       setIsClutchLoading(true);
@@ -402,7 +466,6 @@ export default function ComparePlayers() {
     }
   }, [activeTab, p1Id, p2Id, p1Season, p2Season, p1Data, p2Data]);
 
-  // Shot Chart
   useEffect(() => {
     if (activeTab === "shooting") {
       setIsShootingLoading(true);
@@ -431,7 +494,6 @@ export default function ComparePlayers() {
   const p1NameYear = p1 ? `${p1.name.split(" ").pop()} '${p1Season.substring(2,4)}` : "";
   const p2NameYear = p2 ? `${p2.name.split(" ").pop()} '${p2Season.substring(2,4)}` : "";
 
-  // 🚀 NEURAL VECTOR ANALYSIS (Distancia Euclidiana + Similitud de Coseno en 15 Dimensiones)
   const similarityScore = useMemo(() => {
     if (!p1 || !p2 || !p1.percentiles || !p2.percentiles) return null;
     
@@ -481,9 +543,10 @@ export default function ComparePlayers() {
     return Math.max(0, Math.min(100, Math.round(hybridSim * 100)));
   }, [p1, p2]);
 
-  // 🚀 RADARES DINÁMICOS POR PESTAÑA
   const radarData = useMemo(() => {
     if (!p1 || !p2) return [];
+    
+    if (isNoData(p1) || isNoData(p2)) return [];
 
     if (activeTab === "clutch" && p1Clutch && p2Clutch) {
         return [
@@ -546,7 +609,6 @@ export default function ComparePlayers() {
         ];
     }
 
-    // 🚀 DNA / Overview
     return [
         { stat: "Scoring Index", p1: Math.round(p1.percentiles?.ScoringIndex ?? 50), p2: Math.round(p2.percentiles?.ScoringIndex ?? 50) },
         { stat: "Play Creation", p1: Math.round(p1.percentiles?.PlayCreation ?? 50), p2: Math.round(p2.percentiles?.PlayCreation ?? 50) },
@@ -677,7 +739,6 @@ export default function ComparePlayers() {
     return { p1Wins, p2Wins };
   }, [statBars]);
 
-  // 🚀 FIX HTML Warning: Cambiado <p> por <div> para permitir el componente Badge dentro.
   const generateScoutReport = (p: any, color: string) => {
     if (!p || !p.percentiles) return null;
     const t = p.percentiles;
@@ -718,6 +779,8 @@ export default function ComparePlayers() {
 
   const aiVerdict = useMemo(() => {
     if (!p1 || !p2) return null;
+    
+    if (isNoData(p1) || isNoData(p2)) return null; 
 
     if (activeTab === "dna") {
         return (
@@ -911,7 +974,7 @@ export default function ComparePlayers() {
         {p1 && p2 ? (
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }} className="space-y-10 relative">
 
-            {/* FOTOS DE JUGADORES Y ETIQUETA DE ARQUETIPO CON TOOLTIP MAGICO - Bajado a z-40 para no molestar al buscador */}
+            {/* FOTOS DE JUGADORES Y ETIQUETA DE ARQUETIPO CON TOOLTIP MAGICO */}
             <div className="relative z-40 p-8 md:p-14 shadow-[0_50px_100px_-20px_rgba(0,0,0,1)] bg-white/[0.02] border border-white/[0.05] backdrop-blur-3xl rounded-[3rem]">
               
               <div className="absolute inset-0 rounded-[3rem] overflow-hidden pointer-events-none">
@@ -947,11 +1010,17 @@ export default function ComparePlayers() {
                     <div className="absolute top-full mt-3 left-1/2 -translate-x-1/2 w-[220px] h-[200px] bg-[#050914]/95 border border-white/10 rounded-2xl p-2 opacity-0 invisible group-hover/badge:opacity-100 group-hover/badge:visible transition-all duration-300 shadow-[0_30px_60px_rgba(0,0,0,0.9)] backdrop-blur-2xl pointer-events-none z-[100]">
                       <span className="text-[8px] text-center block text-white/50 mt-1 mb-1 font-mono uppercase tracking-widest">Individual DNA</span>
                       <ResponsiveContainer width="100%" height="85%">
-                        <RadarChart data={getIndividualDNA(p1)} outerRadius="60%">
-                          <PolarGrid stroke="rgba(255,255,255,0.05)" />
-                          <PolarAngleAxis dataKey="stat" tick={{ fill: "rgba(255,255,255,0.4)", fontSize: 8, fontWeight: 800 }} />
-                          <Radar dataKey="val" stroke={color1} strokeWidth={1.5} fill={color1} fillOpacity={0.25} />
-                        </RadarChart>
+                        {isNoData(p1) ? (
+                          <div className="flex items-center justify-center h-full">
+                            <span className="text-[9px] text-slate-500 font-mono uppercase tracking-widest text-center px-4">No data this season</span>
+                          </div>
+                        ) : (
+                          <RadarChart data={getIndividualDNA(p1)} outerRadius="60%">
+                            <PolarGrid stroke="rgba(255,255,255,0.05)" />
+                            <PolarAngleAxis dataKey="stat" tick={{ fill: "rgba(255,255,255,0.4)", fontSize: 8, fontWeight: 800 }} />
+                            <Radar dataKey="val" stroke={color1} strokeWidth={1.5} fill={color1} fillOpacity={0.25} />
+                          </RadarChart>
+                        )}
                       </ResponsiveContainer>
                     </div>
                   </div>
@@ -984,11 +1053,17 @@ export default function ComparePlayers() {
                     <div className="absolute top-full mt-3 left-1/2 -translate-x-1/2 w-[220px] h-[200px] bg-[#050914]/95 border border-white/10 rounded-2xl p-2 opacity-0 invisible group-hover/badge:opacity-100 group-hover/badge:visible transition-all duration-300 shadow-[0_30px_60px_rgba(0,0,0,0.9)] backdrop-blur-2xl pointer-events-none z-[100]">
                       <span className="text-[8px] text-center block text-white/50 mt-1 mb-1 font-mono uppercase tracking-widest">Individual DNA</span>
                       <ResponsiveContainer width="100%" height="85%">
-                        <RadarChart data={getIndividualDNA(p2)} outerRadius="60%">
-                          <PolarGrid stroke="rgba(255,255,255,0.05)" />
-                          <PolarAngleAxis dataKey="stat" tick={{ fill: "rgba(255,255,255,0.4)", fontSize: 8, fontWeight: 800 }} />
-                          <Radar dataKey="val" stroke={color2} strokeWidth={1.5} fill={color2} fillOpacity={0.25} />
-                        </RadarChart>
+                        {isNoData(p2) ? (
+                          <div className="flex items-center justify-center h-full">
+                            <span className="text-[9px] text-slate-500 font-mono uppercase tracking-widest text-center px-4">No data this season</span>
+                          </div>
+                        ) : (
+                          <RadarChart data={getIndividualDNA(p2)} outerRadius="60%">
+                            <PolarGrid stroke="rgba(255,255,255,0.05)" />
+                            <PolarAngleAxis dataKey="stat" tick={{ fill: "rgba(255,255,255,0.4)", fontSize: 8, fontWeight: 800 }} />
+                            <Radar dataKey="val" stroke={color2} strokeWidth={1.5} fill={color2} fillOpacity={0.25} />
+                          </RadarChart>
+                        )}
                       </ResponsiveContainer>
                     </div>
                   </div>
@@ -997,7 +1072,7 @@ export default function ComparePlayers() {
               </div>
             </div>
 
-            {/* 🚀 EL NUEVO TAB: OVERVIEW EXECUTIVE DASHBOARD (DNA) */}
+            {/* OVERVIEW EXECUTIVE DASHBOARD (DNA) */}
             {activeTab === "dna" && (
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch relative z-10">
                    {/* Left: Giant Radar DNA */}
@@ -1008,21 +1083,38 @@ export default function ComparePlayers() {
                           <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.25em] font-mono">Systemic Archetype Fingerprint</p>
                         </div>
                         <div className="w-full flex-1 relative z-10">
-                          <ResponsiveContainer width="100%" height="100%">
-                            <RadarChart data={radarData} outerRadius="65%">
-                              <PolarGrid stroke="rgba(255,255,255,0.06)" strokeDasharray="4 4" />
-                              <PolarRadiusAxis angle={90} domain={[0, 100]} tick={false} axisLine={false} />
-                              <PolarAngleAxis dataKey="stat" tick={{ fill: "rgba(255,255,255,0.8)", fontSize: 13, fontWeight: 900 }} />
-                              <RechartsTooltip contentStyle={{ backgroundColor: '#050914', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '20px', color: '#fff', fontWeight: '900', fontSize: '13px', backdropFilter: 'blur(20px)' }} itemStyle={{ padding: '4px 0' }} />
-                              <Radar name={p1NameYear} dataKey="p1" stroke={color1} strokeWidth={3.5} fill={color1} fillOpacity={0.15} dot={{ r: 5, fill: "#030712", stroke: color1, strokeWidth: 3 }} activeDot={{ r: 8, fill: color1, stroke: "#fff", strokeWidth: 2 }} />
-                              <Radar name={p2NameYear} dataKey="p2" stroke={color2} strokeWidth={3.5} fill={color2} fillOpacity={0.15} dot={{ r: 5, fill: "#030712", stroke: color2, strokeWidth: 3 }} activeDot={{ r: 8, fill: color2, stroke: "#fff", strokeWidth: 2 }} />
-                            </RadarChart>
-                          </ResponsiveContainer>
+                          {(isNoData(p1) || isNoData(p2)) ? (
+                            <div className="flex flex-col items-center justify-center h-full gap-3">
+                              <span className="text-2xl">📊</span>
+                              <p className="text-[11px] font-black uppercase tracking-widest text-slate-500 text-center px-4">
+                                {isNoData(p1) && isNoData(p2)
+                                  ? `No data available for ${p1?.name ?? 'P1'} and ${p2?.name ?? 'P2'}`
+                                  : isNoData(p1)
+                                  ? `No data available for ${p1?.name ?? 'P1'}`
+                                  : `No data available for ${p2?.name ?? 'P2'}`
+                                }
+                              </p>
+                              <p className="text-[9px] text-slate-600 text-center max-w-[220px]">
+                                Please select a season where the athlete has logged official minutes.
+                              </p>
+                            </div>
+                          ) : (
+                            <ResponsiveContainer width="100%" height="100%">
+                              <RadarChart data={radarData} outerRadius="65%">
+                                <PolarGrid stroke="rgba(255,255,255,0.06)" strokeDasharray="4 4" />
+                                <PolarRadiusAxis angle={90} domain={[0, 100]} tick={false} axisLine={false} />
+                                <PolarAngleAxis dataKey="stat" tick={{ fill: "rgba(255,255,255,0.8)", fontSize: 13, fontWeight: 900 }} />
+                                <RechartsTooltip contentStyle={{ backgroundColor: '#050914', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '20px', color: '#fff', fontWeight: '900', fontSize: '13px', backdropFilter: 'blur(20px)' }} itemStyle={{ padding: '4px 0' }} />
+                                <Radar name={p1NameYear} dataKey="p1" stroke={color1} strokeWidth={3.5} fill={color1} fillOpacity={0.15} dot={{ r: 5, fill: "#030712", stroke: color1, strokeWidth: 3 }} activeDot={{ r: 8, fill: color1, stroke: "#fff", strokeWidth: 2 }} />
+                                <Radar name={p2NameYear} dataKey="p2" stroke={color2} strokeWidth={3.5} fill={color2} fillOpacity={0.15} dot={{ r: 5, fill: "#030712", stroke: color2, strokeWidth: 3 }} activeDot={{ r: 8, fill: color2, stroke: "#fff", strokeWidth: 2 }} />
+                              </RadarChart>
+                            </ResponsiveContainer>
+                          )}
                         </div>
                       </div>
                    </div>
                    
-                   {/* Right: AI Verdict (Executive Summary) taking dynamic height without scroll */}
+                   {/* Right: AI Verdict */}
                    <div className="lg:col-span-6 w-full flex flex-col min-h-[500px]">
                       <div className="relative bg-[#030712]/50 border border-emerald-500/[0.15] rounded-[2.5rem] p-8 md:p-12 shadow-[0_40px_80px_rgba(0,0,0,0.5)] flex-1 flex flex-col justify-center">
                         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-400/50 to-transparent" />
@@ -1035,7 +1127,11 @@ export default function ComparePlayers() {
                             <p className="text-[10px] font-bold text-emerald-400/70 font-mono tracking-widest mt-1">Systemic Archetype Analysis</p>
                           </div>
                         </div>
-                        {aiVerdict}
+                        {aiVerdict ? aiVerdict : (
+                           <div className="text-sm md:text-base text-slate-500 leading-relaxed font-medium italic">
+                             The neural engine requires both athletes to have valid statistical profiles in the selected season to generate a comparative tactical report.
+                           </div>
+                        )}
                       </div>
                    </div>
                 </motion.div>
@@ -1080,23 +1176,31 @@ export default function ComparePlayers() {
                       </div>
 
                       <div className="w-full h-[380px] relative z-10">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <RadarChart data={radarData} outerRadius="60%">
-                            <PolarGrid stroke="rgba(255,255,255,0.06)" strokeDasharray="4 4" />
-                            <PolarRadiusAxis angle={90} domain={[0, 100]} tick={false} axisLine={false} />
-                            <PolarAngleAxis dataKey="stat" tick={{ fill: "rgba(255,255,255,0.8)", fontSize: 12, fontWeight: 900 }} />
-                            <RechartsTooltip 
-                              contentStyle={{ backgroundColor: '#050914', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '20px', color: '#fff', fontWeight: '900', fontSize: '13px', backdropFilter: 'blur(20px)', boxShadow: '0 30px 60px rgba(0,0,0,0.8)' }} 
-                              itemStyle={{ padding: '4px 0' }}
-                            />
-                            <Radar name={p1NameYear} dataKey="p1" stroke={color1} strokeWidth={3.5} fill={color1} fillOpacity={0.15} dot={{ r: 5, fill: "#030712", stroke: color1, strokeWidth: 3 }} activeDot={{ r: 8, fill: color1, stroke: "#fff", strokeWidth: 2 }} />
-                            <Radar name={p2NameYear} dataKey="p2" stroke={color2} strokeWidth={3.5} fill={color2} fillOpacity={0.15} dot={{ r: 5, fill: "#030712", stroke: color2, strokeWidth: 3 }} activeDot={{ r: 8, fill: color2, stroke: "#fff", strokeWidth: 2 }} />
-                          </RadarChart>
-                        </ResponsiveContainer>
+                         {(isNoData(p1) || isNoData(p2)) ? (
+                            <div className="flex flex-col items-center justify-center h-full gap-3">
+                              <span className="text-2xl">📊</span>
+                              <p className="text-[11px] font-black uppercase tracking-widest text-slate-500 text-center px-4">
+                                Insufficient Data
+                              </p>
+                            </div>
+                         ) : (
+                            <ResponsiveContainer width="100%" height="100%">
+                              <RadarChart data={radarData} outerRadius="60%">
+                                <PolarGrid stroke="rgba(255,255,255,0.06)" strokeDasharray="4 4" />
+                                <PolarRadiusAxis angle={90} domain={[0, 100]} tick={false} axisLine={false} />
+                                <PolarAngleAxis dataKey="stat" tick={{ fill: "rgba(255,255,255,0.8)", fontSize: 12, fontWeight: 900 }} />
+                                <RechartsTooltip 
+                                  contentStyle={{ backgroundColor: '#050914', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '20px', color: '#fff', fontWeight: '900', fontSize: '13px', backdropFilter: 'blur(20px)', boxShadow: '0 30px 60px rgba(0,0,0,0.8)' }} 
+                                  itemStyle={{ padding: '4px 0' }}
+                                />
+                                <Radar name={p1NameYear} dataKey="p1" stroke={color1} strokeWidth={3.5} fill={color1} fillOpacity={0.15} dot={{ r: 5, fill: "#030712", stroke: color1, strokeWidth: 3 }} activeDot={{ r: 8, fill: color1, stroke: "#fff", strokeWidth: 2 }} />
+                                <Radar name={p2NameYear} dataKey="p2" stroke={color2} strokeWidth={3.5} fill={color2} fillOpacity={0.15} dot={{ r: 5, fill: "#030712", stroke: color2, strokeWidth: 3 }} activeDot={{ r: 8, fill: color2, stroke: "#fff", strokeWidth: 2 }} />
+                              </RadarChart>
+                            </ResponsiveContainer>
+                         )}
                       </div>
                     </div>
 
-                    {/* 🚀 NUEVA REUBICACIÓN DEL AI VERDICT (Prime Real Estate bajo el radar) */}
                     {aiVerdict && (
                        <div className="bg-[#030712]/50 border border-emerald-500/[0.15] rounded-[2.5rem] p-8 shadow-2xl relative overflow-hidden">
                          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-400/50 to-transparent" />
