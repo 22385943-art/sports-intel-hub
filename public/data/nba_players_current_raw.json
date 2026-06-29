@@ -11923,7 +11923,7 @@
     "teamId": "LAC",
     "teamName": "Free Agent",
     "position": "NBA",
-    "age": 32,
+    "age": 33,
     "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/203078.png",
     "gameLog": [],
     "stats": {
@@ -12144,8 +12144,8 @@
       "detail": "Surgery",
       "side": "Left",
       "returnDate": "2026-10-01",
-      "comment": "Beal will undergo season-ending surgery on his left hip, ESPN's Shams Charania reports.",
-      "updatedAt": "2026-06-16T14:28Z",
+      "comment": "Beal (hip) has declined his $5.6 million player option for next season per Shams Charania of ESPN.",
+      "updatedAt": "2026-06-29T19:17Z",
       "source": "espn"
     }
   },
@@ -24267,8 +24267,8 @@
       "detail": "Sprain",
       "side": "Left",
       "returnDate": "2026-10-01",
-      "comment": "Flagg was named to the NBA All-Rookie First Team for the 2025-26 season Wednesday, Shams Charania of ESPN reports",
-      "updatedAt": "2026-06-16T14:31Z",
+      "comment": "Flagg (ankle) could be working alongside a new member of the starting lineup after Dallas selected Morez Johnson with the No. 9 overall pick in the 2026 NBA Draft.",
+      "updatedAt": "2026-06-26T18:46Z",
       "source": "espn"
     }
   },
@@ -29200,8 +29200,8 @@
       "detail": "Surgery",
       "side": "Left",
       "returnDate": "2026-10-01",
-      "comment": "Sharpe (thumb) is set to function as Brooklyn's starting center in 2026-27 following the trade of Nic Claxton (finger).",
-      "updatedAt": "2026-06-24T19:49Z",
+      "comment": "Sharpe (thumb) will sign a two-year, $20 million deal with the Nets, Shams Charania of ESPN reports.",
+      "updatedAt": "2026-06-29T14:55Z",
       "source": "espn"
     }
   },
@@ -31912,8 +31912,8 @@
       "detail": "Surgery",
       "side": "Right",
       "returnDate": "2026-10-01",
-      "comment": "Lively (foot) faces increased competition for minutes heading into the 2026-27 campaign, especially with the Mavericks selecting Morez Johnson with the No. 9 overall pick in the 2026 NBA Draft.",
-      "updatedAt": "2026-06-26T02:43Z",
+      "comment": "Lively (foot) still hasn't progressed to running yet, per Christian Clark of The Athletic.",
+      "updatedAt": "2026-06-26T20:09Z",
       "source": "espn"
     }
   },
@@ -36854,8 +36854,8 @@
       "detail": "Soreness",
       "side": "Right",
       "returnDate": "2026-10-01",
-      "comment": "Smith (foot) has been ruled out for Tuesday's Play-In Tournament game against the Hornets.",
-      "updatedAt": "2026-06-16T14:41Z",
+      "comment": "Smith had his $2.6 million salary for the 2026-27 season fully guaranteed by the Heat Sunday, Anthony Chiang of the Miami Herald reports.",
+      "updatedAt": "2026-06-29T04:17Z",
       "source": "espn"
     }
   },
@@ -37088,7 +37088,7 @@
     "teamId": "POR",
     "teamName": "Free Agent",
     "position": "NBA",
-    "age": 29,
+    "age": 30,
     "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1641871.png",
     "gameLog": [],
     "stats": {
@@ -40449,8 +40449,8 @@
       "detail": "Not Specified",
       "side": "Left",
       "returnDate": "2026-10-01",
-      "comment": "Jackson (knee) is out for Sunday's season finale against the Rockets.",
-      "updatedAt": "2026-06-16T14:33Z",
+      "comment": "The Grizzlies exercised Jackson's (knee) $2.4 million team option Monday, Jake Fischer of BleacherReport.com reports.",
+      "updatedAt": "2026-06-29T16:57Z",
       "source": "espn"
     }
   },
@@ -41805,8 +41805,8 @@
       "detail": "Strain",
       "side": "Not Specified",
       "returnDate": "2026-10-01",
-      "comment": "Trent (oblique) is out for Sunday's game in Philadelphia.",
-      "updatedAt": "2026-06-16T14:43Z",
+      "comment": "Trent (oblique) is expected to decline his $3.9 million player option for 2026-27, Chris Haynes of NBA TV reports.",
+      "updatedAt": "2026-06-26T22:07Z",
       "source": "espn"
     }
   },
@@ -54831,7 +54831,7 @@
     "teamId": "PHX",
     "teamName": "Free Agent",
     "position": "NBA",
-    "age": 26,
+    "age": 27,
     "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1631123.png",
     "gameLog": [],
     "stats": {
@@ -59086,7 +59086,7 @@
     "teamId": "OKC",
     "teamName": "Free Agent",
     "position": "NBA",
-    "age": 23,
+    "age": 24,
     "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1631119.png",
     "gameLog": [],
     "stats": {
@@ -61992,8 +61992,8 @@
       "detail": "Surgery",
       "side": "Right",
       "returnDate": "2026-12-01",
-      "comment": "Butler underwent successful surgery Monday to repair a torn right anterior cruciate ligament.",
-      "updatedAt": "2026-02-10T00:49Z",
+      "comment": "Butler believes he's about a month and a half away from running again after tearing his right ACL in January, per Nick Friedell of The New York Times.",
+      "updatedAt": "2026-06-26T19:40Z",
       "source": "espn"
     }
   },
@@ -64912,16 +64912,7 @@
         }
       }
     },
-    "injury": {
-      "status": "Day-To-Day",
-      "bodyPart": "Knee",
-      "detail": "Sprain",
-      "side": "Left",
-      "returnDate": "2026-10-01",
-      "comment": "Isaac (knee) is listed as out for Sunday's Game 7 of the Eastern Conference first-round series against the Pistons.",
-      "updatedAt": "2026-06-16T14:33Z",
-      "source": "espn"
-    }
+    "injury": null
   },
   {
     "id": "1630228",
@@ -68067,8 +68058,8 @@
       "detail": "Soreness",
       "side": "Left",
       "returnDate": "2026-10-01",
-      "comment": "Minott (ankle) won't play Sunday in Toronto, Erik Slater of ClutchPoints.com reports.",
-      "updatedAt": "2026-06-16T14:37Z",
+      "comment": "Minott (ankle) will sign a two-year, $9 million deal to stay with the Nets, Shams Charania of ESPN reports.",
+      "updatedAt": "2026-06-29T14:49Z",
       "source": "espn"
     }
   },
@@ -71869,7 +71860,7 @@
     "teamId": "LAC",
     "teamName": "Free Agent",
     "position": "NBA",
-    "age": 34,
+    "age": 35,
     "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/202695.png",
     "gameLog": [],
     "stats": {
@@ -79717,8 +79708,8 @@
       "detail": "Tendinitis",
       "side": "Right",
       "returnDate": "2026-10-01",
-      "comment": "Kuzma (Achilles) won't play Sunday against the 76ers.",
-      "updatedAt": "2026-06-16T14:34Z",
+      "comment": "Kuzma (Achilles) could take on a larger offensive role after Milwaukee pivoted toward a rebuild, though he also profiles as a logical trade candidate, Amir Mortameni of SI.com reports.",
+      "updatedAt": "2026-06-26T14:53Z",
       "source": "espn"
     }
   },
@@ -89603,7 +89594,7 @@
     "teamId": "BKN",
     "teamName": "Free Agent",
     "position": "NBA",
-    "age": 27,
+    "age": 28,
     "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1629008.png",
     "gameLog": [],
     "stats": {
@@ -91619,7 +91610,7 @@
     "teamId": "IND",
     "teamName": "Free Agent",
     "position": "NBA",
-    "age": 30,
+    "age": 31,
     "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1628420.png",
     "gameLog": [],
     "stats": {
@@ -93410,8 +93401,8 @@
       "detail": "Sprain",
       "side": "Left",
       "returnDate": "2026-10-01",
-      "comment": "Turner (ankle) has been ruled out for Sunday's game versus the 76ers.",
-      "updatedAt": "2026-06-16T14:43Z",
+      "comment": "Turner (ankle) remains one of Milwaukee's top trade candidates after the organization shifted into rebuilding mode following the Giannis Antetokounmpo deal, Amir Motameni of SI.com reports.",
+      "updatedAt": "2026-06-26T14:47Z",
       "source": "espn"
     }
   },
@@ -94311,8 +94302,8 @@
       "detail": "Bruise",
       "side": "Left",
       "returnDate": "2026-10-01",
-      "comment": "Marshall (hip) is listed as out for Sunday's game against Chicago.",
-      "updatedAt": "2026-06-16T14:35Z",
+      "comment": "Marshall (hip) has more competition for playing time after the Mavericks chose Morez Johnson with the No. 9 overall pick in the 2026 NBA Draft.",
+      "updatedAt": "2026-06-26T18:59Z",
       "source": "espn"
     }
   },
@@ -104900,8 +104891,8 @@
       "detail": "Strain",
       "side": "Right",
       "returnDate": "2026-10-01",
-      "comment": "Watson (hamstring) is out for Game 6 on Thursday against Minnesota.",
-      "updatedAt": "2026-06-16T14:42Z",
+      "comment": "The Nuggets tendered a qualifying offer to Watson (hamstring) on Monday, Keith Smith of Spotrac.com reports.",
+      "updatedAt": "2026-06-29T14:46Z",
       "source": "espn"
     }
   },
@@ -108497,7 +108488,7 @@
     "teamId": "MIN",
     "teamName": "Free Agent",
     "position": "NBA",
-    "age": 33,
+    "age": 34,
     "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/203497.png",
     "gameLog": [],
     "stats": {
@@ -110065,8 +110056,8 @@
       "detail": "Sprain",
       "side": "Right",
       "returnDate": "2026-10-01",
-      "comment": "Rollins (hip) has been ruled out for Sunday's meeting with the 76ers.",
-      "updatedAt": "2026-06-16T14:39Z",
+      "comment": "Rollins (thumb) appears poised for an expanded role after Milwaukee traded Giannis Antetokounmpo and entered a youth movement by drafting Brayden Burries and Nate Ament, Amir Motameni of SI.com reports.",
+      "updatedAt": "2026-06-26T14:32Z",
       "source": "espn"
     }
   },
@@ -121967,7 +121958,7 @@
     "teamId": "CLE",
     "teamName": "Free Agent",
     "position": "NBA",
-    "age": 24,
+    "age": 25,
     "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1642400.png",
     "gameLog": [],
     "stats": {
@@ -128015,7 +128006,7 @@
     "teamId": "POR",
     "teamName": "Free Agent",
     "position": "NBA",
-    "age": 20,
+    "age": 21,
     "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1642905.png",
     "gameLog": [],
     "stats": {
@@ -129820,12 +129811,12 @@
     },
     "injury": {
       "status": "Day-To-Day",
-      "bodyPart": "Finger",
+      "bodyPart": "Hand",
       "detail": "Surgery",
       "side": "Right",
       "returnDate": "2026-10-01",
-      "comment": "LaVine (hand) is projected to have a new backcourt partner after the Kings selected Darius Acuff in Tuesday's draft.",
-      "updatedAt": "2026-06-25T17:46Z",
+      "comment": "LaVine (hand) exercised his $49 million player option for 2026-27 on Monday, Shams Charania of ESPN reports.",
+      "updatedAt": "2026-06-29T14:02Z",
       "source": "espn"
     }
   },
@@ -130273,16 +130264,7 @@
         }
       }
     },
-    "injury": {
-      "status": "Day-To-Day",
-      "bodyPart": "Foot",
-      "detail": "Inflammation",
-      "side": "Left",
-      "returnDate": "2026-10-01",
-      "comment": "Williams (foot) will miss Sunday's regular-season finale against the Raptors, Erik Slater of ClutchPoints.com reports.",
-      "updatedAt": "2026-06-16T14:42Z",
-      "source": "espn"
-    }
+    "injury": null
   },
   {
     "id": "1629627",
@@ -130927,8 +130909,8 @@
       "detail": "Surgery",
       "side": "Right",
       "returnDate": "2026-10-01",
-      "comment": "VanVleet suffered a torn ACL and may be out for the entire 2025-26 campaign, Shams Charania of ESPN reports.",
-      "updatedAt": "2026-06-16T14:43Z",
+      "comment": "VanVleet (knee) exercised his $25 million player option for 2026-27 on Monday, Shams Charania of ESPN reports.",
+      "updatedAt": "2026-06-29T13:50Z",
       "source": "espn"
     },
     "gameLog": [],
@@ -131109,8 +131091,8 @@
       "detail": "Surgery",
       "side": "Right",
       "returnDate": "2026-10-01",
-      "comment": "Haliburton announced via his personal X account that he participated in 5-on-5 work Wednesday.",
-      "updatedAt": "2026-06-16T14:32Z",
+      "comment": "Haliburton said Saturday that he feels \"great,\" Scott Agness of FieldhouseFiles.com reports.",
+      "updatedAt": "2026-06-27T20:26Z",
       "source": "espn"
     },
     "gameLog": [],
