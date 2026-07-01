@@ -1,5 +1,5 @@
 // 🚀 1. Importa el icono Flame
-import { LayoutDashboard, Users, Shield, BarChart3, GitCompare, ChevronDown, Trophy, Calendar, Star, ListOrdered, Flame } from "lucide-react";
+import { LayoutDashboard, Users, Shield, BarChart3, GitCompare, ChevronDown, Trophy, Calendar, Star, ListOrdered, TrendingUpIcon ,Flame } from "lucide-react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useSport } from "@/contexts/SportContext";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter, SidebarSeparator } from "@/components/ui/sidebar";
@@ -20,6 +20,7 @@ export function AppSidebar() {
     ...(sport !== "ufc" ? [{ title: "Standings", path: "/standings", icon: Trophy }] : []),
     ...(sport !== "ufc" ? [{ title: "Rankings", path: "/rankings", icon: ListOrdered }] : []),
     ...(sport !== "ufc" ? [{ title: "Season Awards Tracker", path: "/awards", icon: Trophy }] : []),
+    ...(sport !== "ufc" ? [{ title: "Futures Projections", path: "/Projections", icon: TrendingUpIcon }] : []),
     { title: "Favorites", path: "/favorites", icon: Star },
     { title: "Analytics", path: "/analytics", icon: BarChart3 },
     { title: "Player Compare", path: "/compare", icon: GitCompare }, // 🚀 Renombrado para más claridad

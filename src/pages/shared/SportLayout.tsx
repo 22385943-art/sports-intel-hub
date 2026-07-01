@@ -20,6 +20,7 @@ import NBAGamePreview from "@/pages/nba/GamePreview";
 import NBABoxScore from "@/pages/nba/BoxScore";
 import NBARankings from "@/pages/nba/Rankings"; 
 import NBAAwardsTracker from "@/pages/nba/AwardsTracker"; 
+import AwardsDashboard from "@/pages/nba/Projections"; // o como lo hayas llamado
 
 // Football pages
 import FootballDashboard from "@/pages/football/Dashboard";
@@ -58,6 +59,7 @@ function SportRoutes() {
           <Route path="compare-teams" element={<CompareTeams />} /> {/* 🚀 AÑADIDO: Ruta registrada */}
           <Route path="rankings" element={<NBARankings />} />
           <Route path="awards" element={<NBAAwardsTracker />} /> 
+          <Route path="Projections" element={<AwardsDashboard />} />
           <Route path="favorites" element={<Favorites />} />
           <Route path="*" element={<Navigate to={`/${sport}`} replace />} />
         </Routes>

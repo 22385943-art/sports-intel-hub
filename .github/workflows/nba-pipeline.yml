@@ -1,15 +1,17 @@
 # ╔══════════════════════════════════════════════════════════════════╗
-# ║  SPORTS INTEL HUB — NBA Data Pipeline                           ║
-# ║  .github/workflows/nba-pipeline.yml                             ║
+# ║  SPORTS INTEL HUB — NBA Data Pipeline                            ║
+# ║  .github/workflows/nba-pipeline.yml                              ║
 # ║                                                                  ║
-# ║  Ejecuta fetchNBADataPipeline.mjs cada 6 horas en GitHub        ║
-# ║  Actions (GRATIS en repositorios públicos).                     ║
+# ║  Ejecuta fetchNBADataPipeline.mjs cada 6 horas en GitHub         ║
+# ║  Actions (GRATIS en repositorios públicos).                      ║
 # ║                                                                  ║
 # ║  Outputs generados:                                              ║
-# ║    public/data/nba_players_current.json                         ║
-# ║    public/data/nba_teams_current.json                           ║
+# ║    public/data/nba_players_current.json                          ║
+# ║    public/data/nba_teams_current.json                            ║
+# ║    public/data/nba_projections_2026-27.json                      ║
+# ║    public/data/nba_standings_projected.json                      ║
 # ║                                                                  ║
-# ║  Trigger manual: GitHub → Actions → Run workflow                ║
+# ║  Trigger manual: GitHub → Actions → Run workflow                 ║
 # ╚══════════════════════════════════════════════════════════════════╝
 
 name: NBA Data Pipeline
@@ -38,6 +40,7 @@ on:
     branches: [main]
     paths:
       - 'scripts/fetchNBADataPipeline.mjs'
+      - 'scripts/buildProjections.mjs'
       - '.github/workflows/nba-pipeline.yml'
 
 # Evitar ejecuciones concurrentes (sólo una a la vez)
@@ -78,7 +81,7 @@ jobs:
         run: npm ci --prefer-offline
         # --prefer-offline usa la caché cuando es posible (más rápido)
 
-      # ── 4. Ejecutar el pipeline ────────────────────────────────────
+      # ── 4. Ejecutar el pipeline de datos ───────────────────────────
       - name: Run NBA Data Pipeline
         id: pipeline
         run: |
@@ -90,6 +93,12 @@ jobs:
           # Hacer que node muestre stack traces completos en errores
           NODE_OPTIONS: '--stack-trace-limit=30'
 
+      # ── 4.5 Ejecutar el Motor de Proyecciones ──────────────────────
+      - name: Run Projection Engine
+        run: |
+          echo "🔮 Generando proyecciones individuales y de equipo 2026-27..."
+          node scripts/buildProjections.mjs
+
       # ── 5. Verificar si los datos cambiaron ────────────────────────
       - name: Check for data changes
         id: check_changes
@@ -99,6 +108,8 @@ jobs:
             public/data/nba_teams_current.json \
             public/data/nba_players_current_raw.json \
             public/data/nba_teams_current_raw.json \
+            public/data/nba_projections_2026-27.json \
+            public/data/nba_standings_projected.json \
             2>/dev/null || echo "changed=true" >> $GITHUB_OUTPUT
 
           # Mostrar resumen de lo que cambió (útil en los logs)
@@ -107,6 +118,9 @@ jobs:
           fi
           if git diff --stat public/data/nba_teams_current.json 2>/dev/null | grep -q "changed"; then
             echo "🏆 nba_teams_current.json actualizado"
+          fi
+          if git diff --stat public/data/nba_projections_2026-27.json 2>/dev/null | grep -q "changed"; then
+            echo "🔮 nba_projections_2026-27.json actualizado"
           fi
 
       # ── 6. Hacer commit y push si hay cambios ─────────────────────
@@ -125,18 +139,20 @@ jobs:
             public/data/nba_players_current.json \
             public/data/nba_teams_current.json \
             public/data/nba_players_current_raw.json \
-            public/data/nba_teams_current_raw.json
+            public/data/nba_teams_current_raw.json \
+            public/data/nba_projections_2026-27.json \
+            public/data/nba_standings_projected.json
 
           # Timestamp en UTC para el mensaje de commit
           TIMESTAMP=$(date -u '+%Y-%m-%d %H:%M UTC')
           SEASON="${{ github.event.inputs.season || '2025-26' }}"
 
-          git commit -m "chore(data): update NBA data ${SEASON} [${TIMESTAMP}] [skip ci]"
+          git commit -m "chore(data): update NBA data and projections ${SEASON} [${TIMESTAMP}] [skip ci]"
           # [skip ci] evita que este commit dispare otro workflow → bucle infinito
 
           git push
 
-          echo "✅ Datos NBA actualizados y pusheados correctamente."
+          echo "✅ Datos NBA y Proyecciones actualizados y pusheados correctamente."
 
       # ── 7. Notificar si no hubo cambios ───────────────────────────
       - name: No changes detected
@@ -151,7 +167,7 @@ jobs:
       - name: Write job summary
         if: always()
         run: |
-          echo "## 🏀 NBA Data Pipeline Summary" >> $GITHUB_STEP_SUMMARY
+          echo "## 🏀 NBA Data Pipeline & Projections Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Campo | Valor |" >> $GITHUB_STEP_SUMMARY
           echo "|---|---|" >> $GITHUB_STEP_SUMMARY
