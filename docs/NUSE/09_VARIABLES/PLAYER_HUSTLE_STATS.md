@@ -1,0 +1,345 @@
+---
+id: PLAYER_HUSTLE_STATS
+version: 1.0.0
+status: stable
+type: variables
+dependencies:
+  - PLAYER_TRACKING_STATS
+  - ENTITY_PLAYER
+  - ENTITY_EVENT
+---
+
+# Player Hustle Statistics
+
+## Purpose
+
+This document defines every hustle-related variable recognized by the NBA Universal Simulation Engine (NUSE).
+
+Hustle variables represent effort, activity, anticipation and motor.
+
+Unlike talent-based variables, hustle variables often remain relatively stable across offensive systems and therefore possess high predictive value.
+
+---
+
+# 1. Core Principles
+
+Hustle statistics describe actions that frequently do not appear in the traditional box score but directly influence winning.
+
+These variables frequently affect:
+
+- Rotation decisions
+- Defensive value
+- Team chemistry
+- Coach trust
+- Player development
+- Playoff viability
+
+---
+
+# 2. Loose Ball Variables
+
+PLAYER_LOOSE_BALLS_RECOVERED
+
+PLAYER_LOOSE_BALL_RECOVERY_RATE
+
+PLAYER_LOOSE_BALL_CONTESTS
+
+PLAYER_LOOSE_BALL_WIN_RATE
+
+PLAYER_50_50_BALL_RATE
+
+PLAYER_50_50_BALL_WIN_RATE
+
+---
+
+# 3. Deflections
+
+PLAYER_DEFLECTIONS
+
+PLAYER_DEFLECTION_RATE
+
+PLAYER_PASS_DEFLECTIONS
+
+PLAYER_DRIBBLE_DEFLECTIONS
+
+PLAYER_SHOT_DEFLECTIONS
+
+PLAYER_DEFLECTIONS_PER100
+
+---
+
+# 4. Charges
+
+PLAYER_CHARGES_DRAWN
+
+PLAYER_CHARGE_ATTEMPTS
+
+PLAYER_CHARGE_SUCCESS_RATE
+
+PLAYER_OFFENSIVE_FOULS_FORCED
+
+---
+
+# 5. Screen Activity
+
+PLAYER_SCREENS_SET
+
+PLAYER_SCREEN_ASSISTS
+
+PLAYER_SCREEN_CONTACT_RATE
+
+PLAYER_EFFECTIVE_SCREEN_RATE
+
+PLAYER_RESCREEN_RATE
+
+PLAYER_GHOST_SCREEN_RATE
+
+PLAYER_SLIP_SCREEN_RATE
+
+PLAYER_SCREEN_ANGLE_SCORE
+
+PLAYER_SCREEN_TIMING_SCORE
+
+---
+
+# 6. Box Outs
+
+PLAYER_BOXOUTS
+
+PLAYER_BOXOUT_RATE
+
+PLAYER_BOXOUT_SUCCESS_RATE
+
+PLAYER_OFFENSIVE_BOXOUTS
+
+PLAYER_DEFENSIVE_BOXOUTS
+
+PLAYER_BOXOUT_TO_REBOUND_RATE
+
+---
+
+# 7. Contest Activity
+
+PLAYER_TOTAL_CONTESTS
+
+PLAYER_RIM_CONTESTS
+
+PLAYER_PERIMETER_CONTESTS
+
+PLAYER_SUCCESSFUL_CONTEST_RATE
+
+PLAYER_VERTICAL_CONTEST_RATE
+
+PLAYER_LATE_CONTEST_RATE
+
+PLAYER_RECOVERY_CONTEST_RATE
+
+---
+
+# 8. Help Defense
+
+PLAYER_HELP_ROTATIONS
+
+PLAYER_HELP_ROTATION_RATE
+
+PLAYER_HELP_SUCCESS_RATE
+
+PLAYER_HELP_RECOVERIES
+
+PLAYER_HELP_STOPS
+
+PLAYER_SECOND_HELP_RATE
+
+PLAYER_LOW_MAN_ROTATIONS
+
+PLAYER_TAG_ROLLER_RATE
+
+---
+
+# 9. Recovery Activity
+
+PLAYER_RECOVERY_DISTANCE
+
+PLAYER_RECOVERY_SPEED
+
+PLAYER_RECOVERY_SUCCESS_RATE
+
+PLAYER_BLOW_BY_RECOVERY_RATE
+
+PLAYER_SECOND_EFFORT_RATE
+
+---
+
+# 10. Transition Effort
+
+PLAYER_DEFENSIVE_SPRINT_BACK_RATE
+
+PLAYER_OFFENSIVE_SPRINT_RATE
+
+PLAYER_FIRST_DOWN_FLOOR_RATE
+
+PLAYER_LAST_BACK_RATE
+
+PLAYER_TRANSITION_RECOVERY_RATE
+
+---
+
+# 11. Rebounding Hustle
+
+PLAYER_CONTESTED_REBOUND_RATE
+
+PLAYER_REBOUND_CHANCES_CREATED
+
+PLAYER_TIP_OUT_RATE
+
+PLAYER_TAP_REBOUND_RATE
+
+PLAYER_TEAM_REBOUND_CREATION
+
+PLAYER_REBOUND_POSITIONING_SCORE
+
+---
+
+# 12. Off-Ball Effort
+
+PLAYER_OFFBALL_MOVEMENT_SCORE
+
+PLAYER_CUT_ACTIVITY_RATE
+
+PLAYER_RELOCATION_RATE
+
+PLAYER_SCREEN_NAVIGATION_RATE
+
+PLAYER_DECoy_MOVEMENT_RATE
+
+PLAYER_SPACING_DISCIPLINE
+
+PLAYER_CONSTANT_MOVEMENT_RATE
+
+---
+
+# 13. Defensive Activity
+
+PLAYER_CLOSEOUT_RATE
+
+PLAYER_CLOSEOUT_SPEED
+
+PLAYER_SWITCH_ACTIVITY
+
+PLAYER_SWITCH_COMMUNICATION
+
+PLAYER_STUNT_RATE
+
+PLAYER_DIG_RATE
+
+PLAYER_HELP_AND_RECOVER_RATE
+
+PLAYER_XOUT_RATE
+
+---
+
+# 14. Physical Activity
+
+PLAYER_DISTANCE_PER_MINUTE
+
+PLAYER_HIGH_INTENSITY_DISTANCE
+
+PLAYER_SPRINTS_PER_GAME
+
+PLAYER_ACCELERATION_EVENTS
+
+PLAYER_DECELERATION_EVENTS
+
+PLAYER_DIRECTION_CHANGES
+
+PLAYER_HIGH_MOTOR_INDEX
+
+---
+
+# 15. Effort Consistency
+
+PLAYER_HUSTLE_CONSISTENCY
+
+PLAYER_FIRST_HALF_HUSTLE
+
+PLAYER_SECOND_HALF_HUSTLE
+
+PLAYER_CLUTCH_HUSTLE
+
+PLAYER_BACK_TO_BACK_HUSTLE
+
+PLAYER_PLAYOFF_HUSTLE
+
+PLAYER_HIGH_LEVERAGE_HUSTLE
+
+---
+
+# 16. Team Impact
+
+PLAYER_EXTRA_POSSESSIONS_CREATED
+
+PLAYER_EXTRA_SHOTS_CREATED
+
+PLAYER_EXTRA_REBOUNDS_CREATED
+
+PLAYER_EXTRA_STOPS_CREATED
+
+PLAYER_HUSTLE_WIN_CONTRIBUTION
+
+PLAYER_HUSTLE_PLUS_MINUS
+
+---
+
+# 17. Composite Hustle Metrics
+
+PLAYER_HUSTLE_INDEX
+
+PLAYER_DEFENSIVE_ACTIVITY_SCORE
+
+PLAYER_EFFORT_SCORE
+
+PLAYER_MOTOR_SCORE
+
+PLAYER_COMPETITIVENESS_SCORE
+
+PLAYER_DIRTY_WORK_SCORE
+
+PLAYER_ENERGY_SCORE
+
+PLAYER_NON_BOX_IMPACT
+
+---
+
+# 18. Projection Importance
+
+Hustle variables strongly predict:
+
+- Defensive scalability
+- Rotation stability
+- Coach confidence
+- Minutes earned
+- Playoff reliability
+- Role sustainability
+- Aging resilience
+
+These variables SHALL receive elevated weighting when projecting role players and defensive specialists.
+
+---
+
+# 19. General Rules
+
+Hustle variables SHALL:
+
+- Originate from observable events whenever possible.
+- Be normalized by possessions and minutes where appropriate.
+- Preserve temporal ordering.
+- Distinguish repeatable effort from random outcomes.
+- Be independent of score effects whenever feasible.
+
+---
+
+# Final Statement
+
+Hustle variables represent the effort layer of player evaluation.
+
+Within NUSE they complement traditional, advanced and tracking statistics by quantifying the repeatable behaviours that consistently generate hidden value for teams.

@@ -1,0 +1,364 @@
+---
+id: PLAYER_LATENT_VARIABLES
+version: 1.0.0
+status: stable
+type: variables
+dependencies:
+  - PLAYER_TRADITIONAL_BOX_SCORE
+  - PLAYER_ADVANCED_STATS
+  - PLAYER_TRACKING_STATS
+  - PLAYER_PLAYTYPE_STATS
+  - PLAYER_BIORHYTHM_VARIABLES
+  - PLAYER_HEALTH_VARIABLES
+  - ENTITY_PLAYER
+---
+
+# Player Latent Variables
+
+## Purpose
+
+This document defines every latent (non-directly observable) variable used by the NBA Universal Simulation Engine (NUSE).
+
+Latent variables cannot be directly obtained from any public API.
+
+Instead, they are inferred from observable basketball behaviour through statistical models, historical evidence and Bayesian updating.
+
+These variables allow NUSE to model the hidden mechanisms that drive player evolution.
+
+---
+
+# 1. Core Principles
+
+A basketball player possesses characteristics that cannot be measured directly.
+
+Examples include:
+
+- Decision making
+- Basketball IQ
+- Confidence
+- Leadership
+- Adaptability
+- Learning ability
+
+Although invisible, these characteristics manifest through observable actions.
+
+NUSE models these hidden traits as latent variables.
+
+---
+
+# 2. Offensive Intelligence
+
+PLAYER_OFFENSIVE_IQ
+
+PLAYER_DECISION_QUALITY
+
+PLAYER_READ_DEFENSE
+
+PLAYER_PASSING_VISION
+
+PLAYER_SPACING_AWARENESS
+
+PLAYER_HELP_RECOGNITION
+
+PLAYER_CLOCK_MANAGEMENT
+
+PLAYER_PLAY_SELECTION
+
+PLAYER_OFFENSIVE_DISCIPLINE
+
+---
+
+# 3. Defensive Intelligence
+
+PLAYER_DEFENSIVE_IQ
+
+PLAYER_ROTATION_IQ
+
+PLAYER_HELP_TIMING
+
+PLAYER_SWITCH_RECOGNITION
+
+PLAYER_SCREEN_RECOGNITION
+
+PLAYER_CLOSEOUT_DISCIPLINE
+
+PLAYER_GAMBLING_TENDENCY
+
+PLAYER_DEFENSIVE_ANTICIPATION
+
+PLAYER_POSITIONAL_DISCIPLINE
+
+---
+
+# 4. Learning Variables
+
+PLAYER_LEARNING_RATE
+
+PLAYER_SKILL_ADAPTABILITY
+
+PLAYER_SYSTEM_ADAPTABILITY
+
+PLAYER_ROLE_ADAPTABILITY
+
+PLAYER_POSITIONAL_FLEXIBILITY
+
+PLAYER_COACHABILITY
+
+PLAYER_YEAR_OVER_YEAR_GROWTH
+
+PLAYER_INSEASON_IMPROVEMENT
+
+---
+
+# 5. Decision Variables
+
+PLAYER_SHOT_SELECTION
+
+PLAYER_PASS_SELECTION
+
+PLAYER_DRIVE_SELECTION
+
+PLAYER_RISK_DECISIONS
+
+PLAYER_CONSERVATIVE_DECISIONS
+
+PLAYER_HIGH_VALUE_DECISION_RATE
+
+PLAYER_BAD_DECISION_RATE
+
+PLAYER_DECISION_CONSISTENCY
+
+---
+
+# 6. Psychological Variables
+
+PLAYER_CONFIDENCE
+
+PLAYER_SELF_CONFIDENCE
+
+PLAYER_AGGRESSIVENESS
+
+PLAYER_COMPETITIVENESS
+
+PLAYER_RESILIENCE
+
+PLAYER_EMOTIONAL_STABILITY
+
+PLAYER_PRESSURE_RESPONSE
+
+PLAYER_FOCUS
+
+PLAYER_DISCIPLINE
+
+---
+
+# 7. Leadership Variables
+
+PLAYER_LEADERSHIP
+
+PLAYER_COMMUNICATION
+
+PLAYER_TEAM_ORGANIZATION
+
+PLAYER_DEFENSIVE_COMMAND
+
+PLAYER_OFFENSIVE_COMMAND
+
+PLAYER_VOCAL_ACTIVITY
+
+PLAYER_LOCKER_ROOM_IMPACT
+
+PLAYER_TEAM_INFLUENCE
+
+---
+
+# 8. Motor Variables
+
+PLAYER_WORK_ETHIC
+
+PLAYER_COMPETITIVE_MOTOR
+
+PLAYER_CONSISTENT_EFFORT
+
+PLAYER_PRACTICE_DEVELOPMENT
+
+PLAYER_GAME_INTENSITY
+
+PLAYER_SECOND_EFFORT
+
+PLAYER_HUSTLE_IDENTITY
+
+---
+
+# 9. Offensive Gravity
+
+PLAYER_GRAVITY
+
+PLAYER_SHOOTING_GRAVITY
+
+PLAYER_DRIVING_GRAVITY
+
+PLAYER_POST_GRAVITY
+
+PLAYER_HELP_ATTRACTION
+
+PLAYER_DOUBLE_TEAM_ATTRACTION
+
+PLAYER_DEFENSIVE_COLLAPSE_RATE
+
+PLAYER_SPACING_VALUE
+
+---
+
+# 10. Defensive Presence
+
+PLAYER_DEFENSIVE_PRESENCE
+
+PLAYER_RIM_DETERRENCE
+
+PLAYER_PERIMETER_DETERRENCE
+
+PLAYER_HELP_PRESENCE
+
+PLAYER_INTIMIDATION
+
+PLAYER_SWITCH_THREAT
+
+PLAYER_RECOVERY_THREAT
+
+---
+
+# 11. Consistency Variables
+
+PLAYER_CONSISTENCY
+
+PLAYER_GAME_TO_GAME_VARIANCE
+
+PLAYER_SHOOTING_VARIANCE
+
+PLAYER_DECISION_VARIANCE
+
+PLAYER_EFFORT_VARIANCE
+
+PLAYER_ROLE_STABILITY
+
+PLAYER_PERFORMANCE_STABILITY
+
+---
+
+# 12. Adaptability Variables
+
+PLAYER_NEW_TEAM_ADAPTATION
+
+PLAYER_NEW_COACH_ADAPTATION
+
+PLAYER_NEW_SYSTEM_ADAPTATION
+
+PLAYER_NEW_ROLE_ADAPTATION
+
+PLAYER_POSITION_CHANGE_ADAPTATION
+
+PLAYER_LINEUP_ADAPTATION
+
+PLAYER_PLAYOFF_ADAPTATION
+
+---
+
+# 13. Development Variables
+
+PLAYER_DEVELOPMENT_CURVE
+
+PLAYER_PEAK_PROGRESS
+
+PLAYER_DECLINE_PROGRESS
+
+PLAYER_SKILL_GROWTH_RATE
+
+PLAYER_ATHLETIC_GROWTH_RATE
+
+PLAYER_MENTAL_GROWTH_RATE
+
+PLAYER_LONG_TERM_TRAJECTORY
+
+---
+
+# 14. Reliability Variables
+
+PLAYER_LATENT_CONFIDENCE
+
+PLAYER_LATENT_STABILITY
+
+PLAYER_LATENT_UNCERTAINTY
+
+PLAYER_MODEL_CONFIDENCE
+
+PLAYER_POSTERIOR_VARIANCE
+
+PLAYER_PRIOR_WEIGHT
+
+PLAYER_OBSERVATION_WEIGHT
+
+---
+
+# 15. Composite Variables
+
+PLAYER_BASKETBALL_IQ
+
+PLAYER_TOTAL_IMPACT
+
+PLAYER_PLAYER_ARCHETYPE
+
+PLAYER_DEVELOPMENT_SCORE
+
+PLAYER_SCALABILITY_SCORE
+
+PLAYER_PORTABILITY_SCORE
+
+PLAYER_WINNING_PROFILE
+
+PLAYER_SUPERSTAR_PROBABILITY
+
+PLAYER_ROLE_PLAYER_PROBABILITY
+
+---
+
+# 16. Projection Importance
+
+Latent variables influence nearly every predictive subsystem.
+
+They are particularly important for:
+
+- Player development
+- Aging curves
+- Team changes
+- Coaching changes
+- Trade simulations
+- Playoff projections
+- Breakout probability
+- Regression probability
+
+---
+
+# 17. General Rules
+
+Latent variables SHALL:
+
+Never be directly observed.
+
+Always be inferred.
+
+Continuously update as new observations arrive.
+
+Support Bayesian updating.
+
+Include uncertainty estimation.
+
+Be explainable through observable evidence.
+
+---
+
+# Final Statement
+
+Latent variables represent the hidden basketball characteristics that cannot be measured directly but strongly influence long-term performance.
+
+Within NUSE they form the cognitive and behavioural layer of the simulation engine, allowing player evolution to be modeled beyond observable statistics.

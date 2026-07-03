@@ -1,0 +1,574 @@
+---
+id: LINEUP_VARIABLES
+version: 1.0.0
+status: stable
+type: variables
+dependencies:
+  - MATCHUP_VARIABLES
+  - DEFENSIVE_ASSIGNMENT_VARIABLES
+  - PLAYER_LATENT_VARIABLES
+  - ENTITY_LINEUP
+  - ENTITY_PLAYER
+  - ENTITY_TEAM
+---
+
+# Lineup Variables
+
+## Purpose
+
+This document defines every variable describing a lineup within the NBA Universal Simulation Engine (NUSE).
+
+A lineup is the primary tactical unit of basketball.
+
+Although players execute actions individually, basketball is fundamentally played by groups of five players interacting simultaneously.
+
+NUSE therefore models lineups as independent entities possessing emergent properties that cannot be derived from individual player statistics alone.
+
+---
+
+# 1. Core Principles
+
+A lineup is not the sum of five players.
+
+A lineup possesses emergent characteristics resulting from:
+
+- Player interactions.
+- Offensive fit.
+- Defensive fit.
+- Spacing.
+- Communication.
+- Role compatibility.
+- Tactical execution.
+- Coaching philosophy.
+
+Lineup value SHALL always be modeled independently from the sum of individual player projections.
+
+---
+
+# 2. Identity
+
+LINEUP_ID
+
+LINEUP_UUID
+
+TEAM_ID
+
+SEASON
+
+GAME_ID
+
+LINEUP_HASH
+
+PLAYER_1_ID
+
+PLAYER_2_ID
+
+PLAYER_3_ID
+
+PLAYER_4_ID
+
+PLAYER_5_ID
+
+---
+
+# 3. Temporal Variables
+
+MINUTES_PLAYED
+
+POSSESSIONS
+
+OFFENSIVE_POSSESSIONS
+
+DEFENSIVE_POSSESSIONS
+
+GAME_SEGMENTS
+
+FIRST_APPEARANCE
+
+LAST_APPEARANCE
+
+CONTINUOUS_MINUTES
+
+ROTATION_SLOT
+
+---
+
+# 4. Composition Variables
+
+POINT_GUARD
+
+SHOOTING_GUARD
+
+SMALL_FORWARD
+
+POWER_FORWARD
+
+CENTER
+
+PRIMARY_BALL_HANDLER
+
+SECONDARY_BALL_HANDLER
+
+PRIMARY_SCORER
+
+SECONDARY_SCORER
+
+PRIMARY_PLAYMAKER
+
+PRIMARY_DEFENDER
+
+PRIMARY_REBOUNDER
+
+PRIMARY_RIM_PROTECTOR
+
+---
+
+# 5. Physical Profile
+
+AVERAGE_HEIGHT
+
+AVERAGE_WEIGHT
+
+AVERAGE_WINGSPAN
+
+AVERAGE_AGE
+
+AVERAGE_VERTICAL
+
+AVERAGE_SPEED
+
+AVERAGE_STRENGTH
+
+AVERAGE_REACH
+
+POSITIONAL_SIZE
+
+POSITIONAL_LENGTH
+
+---
+
+# 6. Offensive Variables
+
+PACE
+
+OFFENSIVE_RATING
+
+TRUE_SHOOTING
+
+EFFECTIVE_FIELD_GOAL
+
+ASSIST_RATE
+
+TURNOVER_RATE
+
+OFFENSIVE_REBOUND_RATE
+
+FREE_THROW_RATE
+
+SHOT_CREATION
+
+SHOT_QUALITY
+
+BALL_MOVEMENT
+
+PLAYER_MOVEMENT
+
+OFFENSIVE_SPACING
+
+PAINT_PRESSURE
+
+THREE_POINT_VOLUME
+
+THREE_POINT_ACCURACY
+
+RIM_PRESSURE
+
+SECOND_CHANCE_RATE
+
+TRANSITION_FREQUENCY
+
+HALFCOURT_EFFICIENCY
+
+---
+
+# 7. Defensive Variables
+
+DEFENSIVE_RATING
+
+DEFENSIVE_REBOUND_RATE
+
+STEAL_RATE
+
+BLOCK_RATE
+
+FOUL_RATE
+
+RIM_PROTECTION
+
+PERIMETER_DEFENSE
+
+SCREEN_NAVIGATION
+
+HELP_DEFENSE
+
+ROTATION_SPEED
+
+COMMUNICATION
+
+SWITCHABILITY
+
+VERSATILITY
+
+TRANSITION_DEFENSE
+
+PAINT_DEFENSE
+
+POINT_OF_ATTACK_DEFENSE
+
+DEFLECTION_RATE
+
+CONTEST_RATE
+
+---
+
+# 8. Rebounding Variables
+
+TOTAL_REBOUND_RATE
+
+OFFENSIVE_REBOUND_RATE
+
+DEFENSIVE_REBOUND_RATE
+
+BOX_OUT_RATE
+
+SECOND_CHANCE_ALLOWED
+
+SECOND_CHANCE_CREATED
+
+LONG_REBOUND_RATE
+
+TEAM_REBOUNDING
+
+---
+
+# 9. Spacing Variables
+
+CORNER_SPACING
+
+WING_SPACING
+
+TOP_SPACING
+
+DUNKER_SPOT_USAGE
+
+PAINT_OCCUPANCY
+
+AVERAGE_PLAYER_DISTANCE
+
+GRAVITY_SCORE
+
+SHOOTING_GRAVITY
+
+CUTTING_GRAVITY
+
+ROLL_GRAVITY
+
+HELP_DEFENDER_STRETCH
+
+---
+
+# 10. Ball Movement Variables
+
+PASSES_PER_POSSESSION
+
+PASSES_PER_TOUCH
+
+AVERAGE_TOUCH_TIME
+
+SECONDS_PER_TOUCH
+
+BALL_REVERSALS
+
+EXTRA_PASSES
+
+ASSIST_OPPORTUNITIES
+
+POTENTIAL_ASSISTS
+
+HOCKEY_ASSISTS
+
+OFFENSIVE_FLOW
+
+---
+
+# 11. Defensive Synergy
+
+HELP_COVERAGE
+
+ROTATION_DISCIPLINE
+
+DOUBLE_TEAM_EFFICIENCY
+
+SWITCH_EFFICIENCY
+
+RECOVERY_SPEED
+
+CLOSEOUT_QUALITY
+
+HELP_RECOVERY
+
+COMMUNICATION_SCORE
+
+TEAM_DISCIPLINE
+
+---
+
+# 12. Offensive Synergy
+
+ROLE_COMPATIBILITY
+
+SHOT_CREATION_DISTRIBUTION
+
+USAGE_BALANCE
+
+PLAYMAKING_BALANCE
+
+FLOOR_BALANCE
+
+DECISION_SHARING
+
+OFFENSIVE_CHEMISTRY
+
+BALL_SHARING
+
+OFF_BALL_MOVEMENT
+
+SCREENING_CHEMISTRY
+
+---
+
+# 13. Tactical Variables
+
+PRIMARY_OFFENSIVE_SYSTEM
+
+SECONDARY_OFFENSIVE_SYSTEM
+
+PRIMARY_DEFENSIVE_SYSTEM
+
+PICK_AND_ROLL_USAGE
+
+ISOLATION_RATE
+
+POST_UP_RATE
+
+HANDOFF_RATE
+
+CUT_RATE
+
+OFF_SCREEN_RATE
+
+TRANSITION_RATE
+
+ZONE_USAGE
+
+SWITCH_RATE
+
+DROP_RATE
+
+---
+
+# 14. Context Variables
+
+HOME
+
+AWAY
+
+REST_DAYS
+
+BACK_TO_BACK
+
+PLAYOFF
+
+CLUTCH
+
+LEADING
+
+TRAILING
+
+OPPONENT_STRENGTH
+
+MATCHUP_DIFFICULTY
+
+COACH
+
+---
+
+# 15. Chemistry Variables
+
+LINEUP_CHEMISTRY
+
+OFFENSIVE_CHEMISTRY
+
+DEFENSIVE_CHEMISTRY
+
+PASSING_CHEMISTRY
+
+SCREENING_CHEMISTRY
+
+COMMUNICATION_CHEMISTRY
+
+ROLE_ACCEPTANCE
+
+ROLE_STABILITY
+
+TRUST_SCORE
+
+COLLECTIVE_DECISION_QUALITY
+
+---
+
+# 16. Stability Variables
+
+MINUTES_TOGETHER
+
+GAMES_TOGETHER
+
+SEASONS_TOGETHER
+
+CONTINUITY_SCORE
+
+ROTATION_STABILITY
+
+INJURY_DISRUPTION
+
+SUBSTITUTION_FREQUENCY
+
+EXPERIENCE_TOGETHER
+
+---
+
+# 17. Impact Variables
+
+PLUS_MINUS
+
+NET_RATING
+
+WIN_PROBABILITY_ADDED
+
+EXPECTED_WINS_ADDED
+
+POSSESSION_VALUE
+
+LINEUP_IMPACT
+
+OFFENSIVE_IMPACT
+
+DEFENSIVE_IMPACT
+
+CLUTCH_IMPACT
+
+PLAYOFF_IMPACT
+
+---
+
+# 18. Latent Variables
+
+LINEUP_IQ
+
+COLLECTIVE_BASKETBALL_IQ
+
+TACTICAL_DISCIPLINE
+
+ADAPTABILITY
+
+RESILIENCE
+
+CONSISTENCY
+
+EXPLOSIVENESS
+
+PREDICTABILITY
+
+CREATIVITY
+
+COLLECTIVE_CONFIDENCE
+
+MENTAL_TOUGHNESS
+
+---
+
+# 19. Projection Variables
+
+EXPECTED_MINUTES
+
+EXPECTED_POSSESSIONS
+
+EXPECTED_OFFENSIVE_RATING
+
+EXPECTED_DEFENSIVE_RATING
+
+EXPECTED_NET_RATING
+
+EXPECTED_WINS
+
+EXPECTED_PLUS_MINUS
+
+EXPECTED_CHEMISTRY
+
+EXPECTED_STABILITY
+
+EXPECTED_PLAYOFF_VALUE
+
+EXPECTED_CHAMPIONSHIP_VALUE
+
+---
+
+# 20. Reliability Variables
+
+MODEL_CONFIDENCE
+
+OBSERVATION_CONFIDENCE
+
+DATA_COMPLETENESS
+
+POSTERIOR_CONFIDENCE
+
+UNCERTAINTY
+
+POSTERIOR_VARIANCE
+
+SIGNAL_TO_NOISE
+
+SAMPLE_SIZE
+
+---
+
+# 21. General Rules
+
+Lineup variables SHALL:
+
+Represent exactly one lineup.
+
+Remain independent from player projections.
+
+Support deterministic replay.
+
+Support probabilistic simulation.
+
+Support Bayesian updating.
+
+Support uncertainty propagation.
+
+Support lineup optimization.
+
+Support trade simulation.
+
+Support coaching simulation.
+
+---
+
+# Final Statement
+
+Lineup variables define the complete representation of five-player units within NUSE.
+
+Rather than evaluating lineups as simple combinations of individual talent, NUSE models them as complex adaptive systems whose performance emerges from player interactions, tactical compatibility, role distribution, chemistry, spacing, communication and contextual factors. This representation enables realistic simulation of rotations, coaching decisions, roster construction, trades and championship-level team building.

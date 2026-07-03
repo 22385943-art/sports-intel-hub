@@ -1,0 +1,331 @@
+---
+id: COACH_VARIABLES
+version: 1.0.0
+status: stable
+type: variables
+dependencies:
+  - ENTITY_COACH
+  - ENTITY_TEAM
+  - PLAYER_LATENT_VARIABLES
+  - TEAM_PLAYSTYLE_VARIABLES
+  - TEAM_CHEMISTRY_VARIABLES
+---
+
+# Coach Variables
+
+## Purpose
+
+This document defines every coach-related variable recognized by the NBA Universal Simulation Engine (NUSE).
+
+Within NUSE, a coach is an active decision-making entity capable of modifying player development, team identity, rotations, tactical systems and long-term organizational performance.
+
+Coach variables describe stable tendencies rather than isolated game decisions.
+
+---
+
+# 1. Core Principles
+
+A coach influences basketball through decisions.
+
+These decisions affect:
+
+- Rotations
+- Minutes
+- Offensive philosophy
+- Defensive philosophy
+- Player development
+- Team chemistry
+- Tactical flexibility
+- Playoff adjustments
+
+Coach influence SHALL propagate throughout the entire simulation engine.
+
+---
+
+# 2. Identity Variables
+
+COACH_ID
+
+COACH_NAME
+
+COACH_AGE
+
+COACH_EXPERIENCE
+
+COACH_NBA_SEASONS
+
+COACH_TEAM_TENURE
+
+COACH_PREVIOUS_TEAMS
+
+---
+
+# 3. Offensive Philosophy
+
+COACH_OFFENSIVE_SYSTEM
+
+COACH_PACE_PREFERENCE
+
+COACH_SPACE_PREFERENCE
+
+COACH_BALL_MOVEMENT
+
+COACH_ISOLATION_RATE
+
+COACH_PNR_RATE
+
+COACH_POST_RATE
+
+COACH_TRANSITION_RATE
+
+COACH_OFFENSIVE_COMPLEXITY
+
+COACH_SHOT_PROFILE_PREFERENCE
+
+---
+
+# 4. Defensive Philosophy
+
+COACH_DEFENSIVE_SYSTEM
+
+COACH_SWITCH_RATE
+
+COACH_DROP_RATE
+
+COACH_HEDGE_RATE
+
+COACH_ZONE_RATE
+
+COACH_PRESS_RATE
+
+COACH_HELP_DEFENSE
+
+COACH_DEFENSIVE_AGGRESSION
+
+COACH_DEFENSIVE_COMPLEXITY
+
+---
+
+# 5. Rotation Philosophy
+
+COACH_ROTATION_SIZE
+
+COACH_STARTER_MINUTES
+
+COACH_BENCH_USAGE
+
+COACH_STAGGER_RATE
+
+COACH_CLOSING_LINEUP_STABILITY
+
+COACH_EXPERIMENTATION_RATE
+
+COACH_ROOKIE_USAGE
+
+COACH_VETERAN_USAGE
+
+---
+
+# 6. Player Development
+
+COACH_PLAYER_DEVELOPMENT
+
+COACH_SHOOTING_DEVELOPMENT
+
+COACH_PLAYMAKING_DEVELOPMENT
+
+COACH_DEFENSIVE_DEVELOPMENT
+
+COACH_BIG_MAN_DEVELOPMENT
+
+COACH_GUARD_DEVELOPMENT
+
+COACH_ROOKIE_DEVELOPMENT
+
+COACH_SKILL_SPECIALIZATION
+
+---
+
+# 7. Tactical Adaptability
+
+COACH_IN_GAME_ADJUSTMENTS
+
+COACH_SERIES_ADJUSTMENTS
+
+COACH_MATCHUP_ADAPTATION
+
+COACH_LINEUP_FLEXIBILITY
+
+COACH_SCHEME_FLEXIBILITY
+
+COACH_PLAYBOOK_DEPTH
+
+COACH_COUNTER_STRATEGY
+
+---
+
+# 8. Timeout Management
+
+COACH_TIMEOUT_USAGE
+
+COACH_TIMEOUT_EFFICIENCY
+
+COACH_AFTER_TIMEOUT_OFFENSE
+
+COACH_AFTER_TIMEOUT_DEFENSE
+
+COACH_LATE_GAME_TIMEOUTS
+
+---
+
+# 9. Clutch Management
+
+COACH_CLUTCH_ROTATIONS
+
+COACH_CLUTCH_PLAYCALLING
+
+COACH_CLUTCH_DEFENSE
+
+COACH_CLUTCH_TIMEOUT_USAGE
+
+COACH_CLUTCH_RISK_TOLERANCE
+
+---
+
+# 10. Load Management
+
+COACH_MINUTES_LIMIT
+
+COACH_REST_POLICY
+
+COACH_BACK_TO_BACK_POLICY
+
+COACH_INJURY_CAUTION
+
+COACH_PLAYOFF_PREPARATION
+
+---
+
+# 11. Communication Variables
+
+COACH_PLAYER_RELATIONSHIP
+
+COACH_VETERAN_RELATIONSHIP
+
+COACH_ROOKIE_RELATIONSHIP
+
+COACH_COMMUNICATION
+
+COACH_ACCOUNTABILITY
+
+COACH_LEADERSHIP
+
+---
+
+# 12. Organizational Variables
+
+COACH_FRONT_OFFICE_ALIGNMENT
+
+COACH_SYSTEM_CONTINUITY
+
+COACH_LONG_TERM_VISION
+
+COACH_JOB_SECURITY
+
+COACH_ORGANIZATIONAL_SUPPORT
+
+---
+
+# 13. Psychological Variables
+
+COACH_AGGRESSIVENESS
+
+COACH_PATIENCE
+
+COACH_CONFIDENCE
+
+COACH_DISCIPLINE
+
+COACH_RISK_PROFILE
+
+COACH_EMOTIONAL_STABILITY
+
+COACH_COMPETITIVENESS
+
+---
+
+# 14. Historical Variables
+
+COACH_CAREER_WINS
+
+COACH_CAREER_LOSSES
+
+COACH_PLAYOFF_APPEARANCES
+
+COACH_PLAYOFF_SERIES_WINS
+
+COACH_CHAMPIONSHIPS
+
+COACH_CAREER_NET_RATING
+
+COACH_DEVELOPMENT_HISTORY
+
+---
+
+# 15. Composite Variables
+
+COACH_OVERALL_RATING
+
+COACH_TACTICAL_SCORE
+
+COACH_DEVELOPMENT_SCORE
+
+COACH_ADAPTABILITY_SCORE
+
+COACH_ROTATION_SCORE
+
+COACH_LEADERSHIP_SCORE
+
+COACH_PLAYOFF_SCORE
+
+---
+
+# 16. Projection Variables
+
+COACH_EXPECTED_SYSTEM
+
+COACH_EXPECTED_ROTATION
+
+COACH_EXPECTED_PLAYER_DEVELOPMENT
+
+COACH_EXPECTED_TEAM_IDENTITY
+
+COACH_EXPECTED_PLAYOFF_ADJUSTMENTS
+
+COACH_EXPECTED_ORGANIZATIONAL_IMPACT
+
+---
+
+# 17. General Rules
+
+Coach variables SHALL:
+
+Represent long-term tendencies.
+
+Remain independent of single-game outcomes.
+
+Support coaching changes.
+
+Support organizational changes.
+
+Influence player and team projections.
+
+Support uncertainty estimation.
+
+---
+
+# Final Statement
+
+Coach variables represent the strategic decision-making layer of the NBA Universal Simulation Engine.
+
+Within NUSE they govern how player talent is translated into team performance by shaping systems, rotations, development pathways and tactical adaptations over time.

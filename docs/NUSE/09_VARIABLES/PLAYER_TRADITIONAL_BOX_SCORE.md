@@ -1,0 +1,520 @@
+---
+id: PLAYER_TRADITIONAL_BOX_SCORE
+version: 1.0.0
+status: stable
+type: variables
+dependencies:
+  - ENTITY_PLAYER
+  - ENTITY_EVENT
+  - NUSE_VARIABLES_INDEX
+---
+
+# Player Traditional Box Score Variables
+
+## Purpose
+
+This document defines every traditional player box score statistic recognized by the NBA Universal Simulation Engine (NUSE).
+
+Traditional statistics are direct aggregations of game events.
+
+They are never estimated directly.
+
+They always emerge from simulated possessions and events.
+
+---
+
+# 1. General Rules
+
+Every statistic contained in this document SHALL satisfy:
+
+• Generated from EVENTS
+
+• Aggregated from POSSESSIONS
+
+• Traceable to individual actions
+
+• Reproducible
+
+• Independent from implementation
+
+---
+
+# 2. Minutes
+
+Identifier
+
+PLAYER_MINUTES
+
+Definition
+
+Total minutes played.
+
+Generated From
+
+Substitution events.
+
+Unit
+
+Minutes
+
+Range
+
+0–53+ (including overtimes)
+
+Dependencies
+
+Rotation
+
+Coach decisions
+
+Foul trouble
+
+Injuries
+
+Game context
+
+---
+
+# 3. Games Played
+
+Identifier
+
+PLAYER_GP
+
+Definition
+
+Number of games played.
+
+Generated From
+
+Game participation.
+
+---
+
+# 4. Games Started
+
+Identifier
+
+PLAYER_GS
+
+Definition
+
+Number of games started.
+
+Generated From
+
+Starting lineup.
+
+---
+
+# 5. Points
+
+Identifier
+
+PLAYER_PTS
+
+Definition
+
+Total points scored.
+
+Generated From
+
+Made field goals.
+
+Made free throws.
+
+Unit
+
+Points
+
+Dependencies
+
+Shot attempts
+
+Shot quality
+
+Usage
+
+Minutes
+
+Defense
+
+Pace
+
+---
+
+# 6. Field Goals Made
+
+Identifier
+
+PLAYER_FGM
+
+Definition
+
+Made two or three-point field goals.
+
+---
+
+# 7. Field Goals Attempted
+
+Identifier
+
+PLAYER_FGA
+
+Definition
+
+All field goal attempts.
+
+---
+
+# 8. Field Goal Percentage
+
+Identifier
+
+PLAYER_FG_PCT
+
+Definition
+
+FGM / FGA
+
+---
+
+# 9. Three-Point Field Goals Made
+
+Identifier
+
+PLAYER_FG3M
+
+Definition
+
+Made three-point shots.
+
+---
+
+# 10. Three-Point Attempts
+
+Identifier
+
+PLAYER_FG3A
+
+Definition
+
+Attempted three-point shots.
+
+---
+
+# 11. Three-Point Percentage
+
+Identifier
+
+PLAYER_FG3_PCT
+
+Definition
+
+FG3M / FG3A
+
+---
+
+# 12. Two-Point Field Goals Made
+
+Identifier
+
+PLAYER_FG2M
+
+Definition
+
+Made two-point field goals.
+
+---
+
+# 13. Two-Point Attempts
+
+Identifier
+
+PLAYER_FG2A
+
+Definition
+
+Attempted two-point field goals.
+
+---
+
+# 14. Two-Point Percentage
+
+Identifier
+
+PLAYER_FG2_PCT
+
+Definition
+
+FG2M / FG2A
+
+---
+
+# 15. Free Throws Made
+
+Identifier
+
+PLAYER_FTM
+
+Definition
+
+Made free throws.
+
+---
+
+# 16. Free Throw Attempts
+
+Identifier
+
+PLAYER_FTA
+
+Definition
+
+Attempted free throws.
+
+---
+
+# 17. Free Throw Percentage
+
+Identifier
+
+PLAYER_FT_PCT
+
+Definition
+
+FTM / FTA
+
+---
+
+# 18. Offensive Rebounds
+
+Identifier
+
+PLAYER_OREB
+
+Definition
+
+Offensive rebounds secured.
+
+---
+
+# 19. Defensive Rebounds
+
+Identifier
+
+PLAYER_DREB
+
+Definition
+
+Defensive rebounds secured.
+
+---
+
+# 20. Total Rebounds
+
+Identifier
+
+PLAYER_REB
+
+Definition
+
+OREB + DREB
+
+---
+
+# 21. Assists
+
+Identifier
+
+PLAYER_AST
+
+Definition
+
+Official assists.
+
+---
+
+# 22. Steals
+
+Identifier
+
+PLAYER_STL
+
+Definition
+
+Official steals.
+
+---
+
+# 23. Blocks
+
+Identifier
+
+PLAYER_BLK
+
+Definition
+
+Official blocked shots.
+
+---
+
+# 24. Turnovers
+
+Identifier
+
+PLAYER_TOV
+
+Definition
+
+Official turnovers.
+
+---
+
+# 25. Personal Fouls
+
+Identifier
+
+PLAYER_PF
+
+Definition
+
+Personal fouls committed.
+
+---
+
+# 26. Plus Minus
+
+Identifier
+
+PLAYER_PLUS_MINUS
+
+Definition
+
+Score differential while player is on court.
+
+---
+
+# 27. Double Doubles
+
+Identifier
+
+PLAYER_DOUBLE_DOUBLE
+
+Definition
+
+Games with double digits in two major statistical categories.
+
+---
+
+# 28. Triple Doubles
+
+Identifier
+
+PLAYER_TRIPLE_DOUBLE
+
+Definition
+
+Games with double digits in three major statistical categories.
+
+---
+
+# 29. Quadruple Doubles
+
+Identifier
+
+PLAYER_QUADRUPLE_DOUBLE
+
+Definition
+
+Games with double digits in four statistical categories.
+
+---
+
+# 30. Five by Five Games
+
+Identifier
+
+PLAYER_FIVE_BY_FIVE
+
+Definition
+
+Games with at least five in:
+
+PTS
+
+REB
+
+AST
+
+STL
+
+BLK
+
+---
+
+# 31. Technical Fouls
+
+Identifier
+
+PLAYER_TECHNICAL_FOULS
+
+---
+
+# 32. Flagrant Fouls
+
+Identifier
+
+PLAYER_FLAGRANT_FOULS
+
+---
+
+# 33. Ejections
+
+Identifier
+
+PLAYER_EJECTIONS
+
+---
+
+# 34. Disqualifications
+
+Identifier
+
+PLAYER_FOUL_OUTS
+
+---
+
+# 35. Traditional Box Score Rules
+
+Traditional statistics:
+
+Never predict themselves.
+
+Always originate from events.
+
+Always precede advanced metrics.
+
+May aggregate over:
+
+Game
+
+Week
+
+Month
+
+Season
+
+Career
+
+Playoffs
+
+Any custom split.
+
+---
+
+# Final Statement
+
+Traditional box score variables represent the first observable statistical layer generated by NUSE.
+
+Every advanced metric contained elsewhere in the documentation ultimately depends on one or more variables defined in this document.

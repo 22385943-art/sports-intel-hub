@@ -1,0 +1,350 @@
+---
+id: TEAM_LINEUP_VARIABLES
+version: 1.0.0
+status: stable
+type: variables
+dependencies:
+  - TEAM_TRADITIONAL_STATS
+  - TEAM_ADVANCED_STATS
+  - PLAYER_LINEUP_STATS
+  - PLAYER_ON_OFF_STATS
+  - ENTITY_TEAM
+  - ENTITY_PLAYER
+  - ENTITY_GAME
+---
+
+# Team Lineup Variables
+
+## Purpose
+
+This document defines every lineup-related variable recognized by the NBA Universal Simulation Engine (NUSE).
+
+Unlike player lineup variables, these variables describe the collective behaviour of the team across all possible lineup combinations.
+
+They form one of the most important foundations for:
+
+- Team simulations
+- Rotation simulations
+- Trade simulations
+- Coaching simulations
+- Playoff matchup simulations
+
+---
+
+# 1. Core Principles
+
+A basketball team is not a fixed entity.
+
+It is a sequence of lineup configurations.
+
+Every lineup possesses unique:
+
+- Offensive efficiency
+- Defensive efficiency
+- Pace
+- Chemistry
+- Spacing
+- Rebounding
+- Matchup profile
+
+The overall team identity emerges from the weighted combination of these lineups.
+
+---
+
+# 2. Lineup Inventory
+
+TEAM_TOTAL_LINEUPS
+
+TEAM_UNIQUE_LINEUPS
+
+TEAM_LINEUP_USAGE_DISTRIBUTION
+
+TEAM_PRIMARY_LINEUP
+
+TEAM_SECONDARY_LINEUP
+
+TEAM_CLOSING_LINEUP
+
+TEAM_STARTING_LINEUP
+
+TEAM_BENCH_LINEUP
+
+---
+
+# 3. Minutes Distribution
+
+TEAM_LINEUP_MINUTES
+
+TEAM_LINEUP_POSSESSIONS
+
+TEAM_LINEUP_GAMES
+
+TEAM_LINEUP_STARTS
+
+TEAM_LINEUP_STINTS
+
+TEAM_LINEUP_MINUTE_SHARE
+
+---
+
+# 4. Offensive Lineup Variables
+
+TEAM_LINEUP_OFF_RTG
+
+TEAM_LINEUP_TS
+
+TEAM_LINEUP_EFG
+
+TEAM_LINEUP_AST_RATE
+
+TEAM_LINEUP_TOV_RATE
+
+TEAM_LINEUP_OREB_RATE
+
+TEAM_LINEUP_SHOT_PROFILE
+
+TEAM_LINEUP_PACE
+
+---
+
+# 5. Defensive Lineup Variables
+
+TEAM_LINEUP_DEF_RTG
+
+TEAM_LINEUP_OPP_EFG
+
+TEAM_LINEUP_OPP_TS
+
+TEAM_LINEUP_STL_RATE
+
+TEAM_LINEUP_BLK_RATE
+
+TEAM_LINEUP_DEF_REB_RATE
+
+TEAM_LINEUP_FORCE_TOV_RATE
+
+TEAM_LINEUP_RIM_PROTECTION
+
+---
+
+# 6. Net Impact
+
+TEAM_LINEUP_NET_RTG
+
+TEAM_LINEUP_PLUS_MINUS
+
+TEAM_LINEUP_EXPECTED_NET
+
+TEAM_LINEUP_POINT_DIFFERENTIAL
+
+TEAM_LINEUP_WIN_CONTRIBUTION
+
+---
+
+# 7. Spacing Variables
+
+TEAM_LINEUP_SPACING
+
+TEAM_LINEUP_CORNER_OCCUPANCY
+
+TEAM_LINEUP_GRAVITY
+
+TEAM_LINEUP_PAINT_CONGESTION
+
+TEAM_LINEUP_SHOOTING_DENSITY
+
+TEAM_LINEUP_OFFBALL_MOVEMENT
+
+---
+
+# 8. Creation Variables
+
+TEAM_LINEUP_PRIMARY_CREATION
+
+TEAM_LINEUP_SECONDARY_CREATION
+
+TEAM_LINEUP_BALL_MOVEMENT
+
+TEAM_LINEUP_SELF_CREATION
+
+TEAM_LINEUP_ASSIST_CREATION
+
+TEAM_LINEUP_DECISION_SPEED
+
+---
+
+# 9. Defensive Identity
+
+TEAM_LINEUP_SWITCHABILITY
+
+TEAM_LINEUP_HELP_DEFENSE
+
+TEAM_LINEUP_ROTATION_SPEED
+
+TEAM_LINEUP_CLOSEOUT_SPEED
+
+TEAM_LINEUP_RIM_DETERRENCE
+
+TEAM_LINEUP_DEFENSIVE_LENGTH
+
+---
+
+# 10. Physical Profile
+
+TEAM_LINEUP_SIZE
+
+TEAM_LINEUP_LENGTH
+
+TEAM_LINEUP_WEIGHT
+
+TEAM_LINEUP_ATHLETICISM
+
+TEAM_LINEUP_SPEED
+
+TEAM_LINEUP_VERTICALITY
+
+---
+
+# 11. Positional Structure
+
+TEAM_LINEUP_POSITIONAL_BALANCE
+
+TEAM_LINEUP_BALL_HANDLERS
+
+TEAM_LINEUP_SHOOTERS
+
+TEAM_LINEUP_WINGS
+
+TEAM_LINEUP_BIGS
+
+TEAM_LINEUP_PLAYMAKERS
+
+TEAM_LINEUP_RIM_PROTECTORS
+
+---
+
+# 12. Chemistry Variables
+
+TEAM_LINEUP_CHEMISTRY
+
+TEAM_LINEUP_CONTINUITY
+
+TEAM_LINEUP_SHARED_MINUTES
+
+TEAM_LINEUP_SHARED_SEASONS
+
+TEAM_LINEUP_ROLE_STABILITY
+
+TEAM_LINEUP_DECISION_SYNCHRONIZATION
+
+TEAM_LINEUP_COMMUNICATION
+
+---
+
+# 13. Rotation Variables
+
+TEAM_ROTATION_DEPTH
+
+TEAM_ROTATION_STABILITY
+
+TEAM_ROTATION_FLEXIBILITY
+
+TEAM_ROTATION_CONTINUITY
+
+TEAM_ROTATION_MINUTE_CONCENTRATION
+
+TEAM_ROTATION_VARIANCE
+
+---
+
+# 14. Matchup Variables
+
+TEAM_LINEUP_SMALLBALL_VALUE
+
+TEAM_LINEUP_BIGBALL_VALUE
+
+TEAM_LINEUP_SWITCH_VALUE
+
+TEAM_LINEUP_ZONE_VALUE
+
+TEAM_LINEUP_DROP_VALUE
+
+TEAM_LINEUP_PLAYOFF_VALUE
+
+---
+
+# 15. Replacement Variables
+
+TEAM_SUBSTITUTION_IMPACT
+
+TEAM_BENCH_STRENGTH
+
+TEAM_STARTER_DEPENDENCY
+
+TEAM_STAR_DEPENDENCY
+
+TEAM_REPLACEMENT_DEPTH
+
+TEAM_INJURY_RESILIENCE
+
+---
+
+# 16. Stability Variables
+
+TEAM_LINEUP_SAMPLE_SIZE
+
+TEAM_LINEUP_CONFIDENCE
+
+TEAM_LINEUP_VARIANCE
+
+TEAM_LINEUP_STABILITY
+
+TEAM_LINEUP_REGRESSION_WEIGHT
+
+TEAM_LINEUP_SIGNAL_TO_NOISE
+
+---
+
+# 17. Projection Variables
+
+TEAM_EXPECTED_PRIMARY_LINEUP
+
+TEAM_EXPECTED_CLOSING_LINEUP
+
+TEAM_EXPECTED_ROTATION
+
+TEAM_EXPECTED_MINUTE_DISTRIBUTION
+
+TEAM_EXPECTED_LINEUP_EFFICIENCY
+
+TEAM_EXPECTED_ROTATION_STABILITY
+
+TEAM_EXPECTED_PLAYOFF_ROTATION
+
+---
+
+# 18. General Rules
+
+Lineup variables SHALL:
+
+Model lineups as dynamic entities.
+
+Preserve lineup identity.
+
+Support arbitrary lineup sizes.
+
+Track continuity over time.
+
+Adjust for opponent quality.
+
+Include uncertainty estimation.
+
+Support future roster modifications.
+
+---
+
+# Final Statement
+
+Lineup variables describe how team performance emerges from the interaction of players sharing the floor.
+
+Within NUSE they form the structural foundation for realistic simulations of rotations, coaching decisions, roster construction, injuries and trades.
