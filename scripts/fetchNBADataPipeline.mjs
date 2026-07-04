@@ -166,18 +166,18 @@ function getTeamLogoUrl(abbr) {
 }
 
 const STATIC_TEAMS = [
-  { abbr:'ATL', name:'Atlanta Hawks',            conf:'Eastern', div:'Southeast' },
-  { abbr:'BOS', name:'Boston Celtics',           conf:'Eastern', div:'Atlantic'  },
-  { abbr:'BKN', name:'Brooklyn Nets',            conf:'Eastern', div:'Atlantic'  },
-  { abbr:'CHA', name:'Charlotte Hornets',        conf:'Eastern', div:'Southeast' },
-  { abbr:'CHI', name:'Chicago Bulls',            conf:'Eastern', div:'Central'   },
-  { abbr:'CLE', name:'Cleveland Cavaliers',      conf:'Eastern', div:'Central'   },
+  { abbr:'ATL', name:'Atlanta Hawks',             conf:'Eastern', div:'Southeast' },
+  { abbr:'BOS', name:'Boston Celtics',            conf:'Eastern', div:'Atlantic'  },
+  { abbr:'BKN', name:'Brooklyn Nets',             conf:'Eastern', div:'Atlantic'  },
+  { abbr:'CHA', name:'Charlotte Hornets',         conf:'Eastern', div:'Southeast' },
+  { abbr:'CHI', name:'Chicago Bulls',             conf:'Eastern', div:'Central'   },
+  { abbr:'CLE', name:'Cleveland Cavaliers',       conf:'Eastern', div:'Central'   },
   { abbr:'DAL', name:'Dallas Mavericks',         conf:'Western', div:'Southwest' },
-  { abbr:'DEN', name:'Denver Nuggets',           conf:'Western', div:'Northwest' },
+  { abbr:'DEN', name:'Denver Nuggets',            conf:'Western', div:'Northwest' },
   { abbr:'DET', name:'Detroit Pistons',          conf:'Eastern', div:'Central'   },
   { abbr:'GSW', name:'Golden State Warriors',    conf:'Western', div:'Pacific'   },
   { abbr:'HOU', name:'Houston Rockets',          conf:'Western', div:'Southwest' },
-  { abbr:'IND', name:'Indiana Pacers',           conf:'Eastern', div:'Central'   },
+  { abbr:'IND', name:'Indiana Pacers',            conf:'Eastern', div:'Central'   },
   { abbr:'LAC', name:'Los Angeles Clippers',     conf:'Western', div:'Pacific'   },
   { abbr:'LAL', name:'Los Angeles Lakers',       conf:'Western', div:'Pacific'   },
   { abbr:'MEM', name:'Memphis Grizzlies',        conf:'Western', div:'Southwest' },
@@ -187,7 +187,7 @@ const STATIC_TEAMS = [
   { abbr:'NOP', name:'New Orleans Pelicans',     conf:'Western', div:'Southwest' },
   { abbr:'NYK', name:'New York Knicks',          conf:'Eastern', div:'Atlantic'  },
   { abbr:'OKC', name:'Oklahoma City Thunder',    conf:'Western', div:'Northwest' },
-  { abbr:'ORL', name:'Orlando Magic',            conf:'Eastern', div:'Southeast' },
+  { abbr:'ORL', name:'Orlando Magic',             conf:'Eastern', div:'Southeast' },
   { abbr:'PHI', name:'Philadelphia 76ers',       conf:'Eastern', div:'Atlantic'  },
   { abbr:'PHX', name:'Phoenix Suns',             conf:'Western', div:'Pacific'   },
   { abbr:'POR', name:'Portland Trail Blazers',   conf:'Western', div:'Northwest' },
@@ -201,13 +201,6 @@ const STATIC_TEAMS = [
 const staticTeamByAbbr = new Map(STATIC_TEAMS.map(t => [t.abbr, t]));
 const staticTeamByName = new Map(STATIC_TEAMS.map(t => [t.name.toLowerCase(), t]));
 
-function resolveStaticTeam(name, abbr) {
-  return staticTeamByAbbr.get(abbr?.toUpperCase())
-    || staticTeamByName.get(name?.toLowerCase())
-    || staticTeamByName.get(name?.split(' ').pop()?.toLowerCase())   
-    || null;
-}
-
 const NBA_TEAMID_TO_ABBR = {
   '1610612737': 'ATL', '1610612738': 'BOS', '1610612751': 'BKN',
   '1610612766': 'CHA', '1610612741': 'CHI', '1610612739': 'CLE',
@@ -220,6 +213,16 @@ const NBA_TEAMID_TO_ABBR = {
   '1610612757': 'POR', '1610612758': 'SAC', '1610612759': 'SAS',
   '1610612761': 'TOR', '1610612762': 'UTA', '1610612764': 'WAS',
 };
+
+function resolveStaticTeam(teamId, name, abbr) {
+  const idAbbr = NBA_TEAMID_TO_ABBR[String(teamId)];
+  if (idAbbr && staticTeamByAbbr.has(idAbbr)) {
+    return staticTeamByAbbr.get(idAbbr);
+  }
+  return staticTeamByAbbr.get(abbr?.toUpperCase())
+    || staticTeamByName.get(name?.toLowerCase())
+    || null;
+}
 
 const NBA_ABBR_TO_TEAMID = Object.fromEntries(
   Object.entries(NBA_TEAMID_TO_ABBR).map(([id, abbr]) => [abbr, id])
@@ -565,7 +568,7 @@ async function attachInjuryReport(players) {
 // ── NUEVO HELPER: Construir Roster Map
 async function buildRosterMap(season) {
   const pidToData = new Map();
-  const BATCH_SIZE = 10;
+  const BATCH_SIZE = 2;
   for (let i = 0; i < STATIC_TEAMS.length; i += BATCH_SIZE) {
     const batch = STATIC_TEAMS.slice(i, i + BATCH_SIZE);
     const results = await Promise.all(batch.map(async (team) => {
@@ -945,7 +948,7 @@ async function buildTeams(season, allPlayers) {
     const tId       = getString(row, headersBase, 'TEAM_ID', '0');
     const name      = getString(row, headersBase, 'TEAM_NAME', 'Unknown Team');
     const tAbbr     = getString(row, headersBase, 'TEAM_ABBREVIATION', '???');
-    const staticTeam= resolveStaticTeam(name, tAbbr);
+    const staticTeam= resolveStaticTeam(tId, name, tAbbr);
 
     const pts  = getStat(row,headersBase,'PTS');
     const fga  = getStat(row,headersBase,'FGA');

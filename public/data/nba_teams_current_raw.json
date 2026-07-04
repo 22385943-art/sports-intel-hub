@@ -2390,9 +2390,9 @@
   {
     "id": "1610612746",
     "name": "LA Clippers",
-    "abbreviation": "???",
-    "conference": "Unknown",
-    "division": "Unknown",
+    "abbreviation": "LAC",
+    "conference": "Western",
+    "division": "Pacific",
     "wins": 42,
     "losses": 40,
     "winPct": 51.2,
@@ -2492,7 +2492,7 @@
     "pctPtsPitp": 43.4,
     "boxOuts": 5.68,
     "looseBalls": 3.77,
-    "imageUrl": "https://a.espncdn.com/i/teamlogos/nba/500/???.png",
+    "imageUrl": "https://a.espncdn.com/i/teamlogos/nba/500/lac.png",
     "opp": {
       "oppFgPct": 46.9,
       "opp3ptPct": 36.4,
@@ -2578,12 +2578,12 @@
       "Rebounding": -0.5563574714052506
     },
     "rating": {
-      "ovr": 82,
-      "off": 82,
-      "def": 80,
+      "ovr": 79,
+      "off": 76,
+      "def": 72,
       "tier": "B",
-      "color": "#ef4444",
-      "xNetRtg": "1.1"
+      "color": "#f59e0b",
+      "xNetRtg": "-3.4"
     }
   },
   {

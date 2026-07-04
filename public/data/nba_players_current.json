@@ -1,7 +1,7 @@
 {
   "metadata": {
     "season": "2025-26",
-    "generatedAt": "2026-06-29T19:50:00.559Z",
+    "generatedAt": "2026-07-03T15:46:51.491Z",
     "playerCount": 587,
     "teamCount": 30,
     "source": "nba-stats-api + basketball-reference + espn"
@@ -6532,8 +6532,8 @@
         "detail": "Fracture",
         "side": "Left",
         "returnDate": "2026-10-01",
-        "comment": "Simons (wrist) will not play in Chicago's final two games of the regular season, per K.C. Johnson of Chicago Sports Network.",
-        "updatedAt": "2026-06-16T14:41Z",
+        "comment": "Simons (elbow) will join the 76ers on a two-year, $12.3 million deal, Shams Charania of ESPN reports.",
+        "updatedAt": "2026-07-02T18:29Z",
         "source": "espn"
       }
     },
@@ -12146,16 +12146,7 @@
           }
         }
       },
-      "injury": {
-        "status": "Day-To-Day",
-        "bodyPart": "Hip",
-        "detail": "Surgery",
-        "side": "Left",
-        "returnDate": "2026-10-01",
-        "comment": "Beal (hip) has declined his $5.6 million player option for next season per Shams Charania of ESPN.",
-        "updatedAt": "2026-06-29T19:17Z",
-        "source": "espn"
-      }
+      "injury": null
     },
     {
       "id": "1642382",
@@ -13047,16 +13038,7 @@
           }
         }
       },
-      "injury": {
-        "status": "Day-To-Day",
-        "bodyPart": "Heel",
-        "detail": "Surgery",
-        "side": "Right",
-        "returnDate": "2026-10-01",
-        "comment": "Ingram underwent successful surgery Friday to address ongoing heel pain, Michael Scotto of USA Today reports.",
-        "updatedAt": "2026-06-16T14:33Z",
-        "source": "espn"
-      }
+      "injury": null
     },
     {
       "id": "1641706",
@@ -18676,7 +18658,16 @@
           }
         }
       },
-      "injury": null
+      "injury": {
+        "status": "Day-To-Day",
+        "bodyPart": "Not Injury Related",
+        "detail": null,
+        "side": null,
+        "returnDate": "2026-07-09",
+        "comment": "Bryant will only play during the Las Vegas Summer League, NBA reporter Matthew Tynan reports.",
+        "updatedAt": "2026-06-30T18:28Z",
+        "source": "espn"
+      }
     },
     {
       "id": "1641717",
@@ -21812,7 +21803,7 @@
         "bodyPart": "Knee",
         "detail": "Surgery",
         "side": "Right",
-        "returnDate": "2026-07-02",
+        "returnDate": "2026-07-10",
         "comment": "Hepburn (knee) will sign his two-way qualifying offer to return to the Raptors next season, per Michael Scotto of USA Today.",
         "updatedAt": "2026-06-25T21:15Z",
         "source": "espn"
@@ -28529,9 +28520,9 @@
         "bodyPart": "Ankle",
         "detail": "Surgery",
         "side": "Right",
-        "returnDate": "2026-07-02",
-        "comment": "Jones Garcia underwent ankle surgery Wednesday and will miss the remainder of the 2025-26 season, Tom Orsborn of the San Antonio Express-News reports.",
-        "updatedAt": "2026-06-16T14:34Z",
+        "returnDate": "2026-07-03",
+        "comment": "The Spurs tendered a two-way qualifying offer to Jones Garcia (ankle) on Monday, Keith Smith of Spotrac.com reports.",
+        "updatedAt": "2026-06-30T01:04Z",
         "source": "espn"
       }
     },
@@ -38654,7 +38645,7 @@
         "bodyPart": "Foot",
         "detail": "Surgery",
         "side": "Left",
-        "returnDate": "2026-07-02",
+        "returnDate": "2026-07-04",
         "comment": "Demin (foot) could have more competition for playmaking opportunities at point guard after the Nets took Mikel Brown in Tuesday's draft.",
         "updatedAt": "2026-06-24T19:15Z",
         "source": "espn"
@@ -41807,16 +41798,7 @@
           }
         }
       },
-      "injury": {
-        "status": "Day-To-Day",
-        "bodyPart": "Oblique",
-        "detail": "Strain",
-        "side": "Not Specified",
-        "returnDate": "2026-10-01",
-        "comment": "Trent (oblique) is expected to decline his $3.9 million player option for 2026-27, Chris Haynes of NBA TV reports.",
-        "updatedAt": "2026-06-26T22:07Z",
-        "source": "espn"
-      }
+      "injury": null
     },
     {
       "id": "203507",
@@ -47878,7 +47860,7 @@
         "bodyPart": "Ankle",
         "detail": "Soreness",
         "side": "Right",
-        "returnDate": "2026-07-02",
+        "returnDate": "2026-07-04",
         "comment": "Stevens (ankle) is listed out for Sunday's game against the Trail Blazers.",
         "updatedAt": "2026-06-16T14:41Z",
         "source": "espn"
@@ -48789,8 +48771,8 @@
         "detail": "Sprain",
         "side": "Left",
         "returnDate": "2026-10-01",
-        "comment": "The Grizzlies announced Tuesday that Morant is progressing in his recovery from a UCL sprain in his left elbow and recently received a platelet-rich plasma injection, though he'll miss the remainder of the 2025-26 campaign.",
-        "updatedAt": "2026-06-16T14:37Z",
+        "comment": "The Grizzlies traded Morant (elbow) to Portland in exchange for Jerami Grant and Kris Murray on Monday, Shams Charania of ESPN reports.",
+        "updatedAt": "2026-06-29T20:38Z",
         "source": "espn"
       }
     },
@@ -62455,8 +62437,8 @@
         "detail": "Sprain",
         "side": "Right",
         "returnDate": "2026-10-01",
-        "comment": "Landale (ankle) will be re-evaluated in two weeks, Brad Rowland of the Locked On Podcast Network reports.",
-        "updatedAt": "2026-06-16T14:28Z",
+        "comment": "Landale (ankle) will return to the Hawks on a one-year, $14 million deal, Shams Charania of ESPN reports.",
+        "updatedAt": "2026-06-30T16:35Z",
         "source": "espn"
       }
     },
@@ -64920,7 +64902,16 @@
           }
         }
       },
-      "injury": null
+      "injury": {
+        "status": "Day-To-Day",
+        "bodyPart": "Knee",
+        "detail": "Sprain",
+        "side": "Left",
+        "returnDate": "2026-10-01",
+        "comment": "Isaac (knee) will return to the Magic on a one-year deal, Jason Beede of the Orlando Sentinel reports.",
+        "updatedAt": "2026-07-01T17:22Z",
+        "source": "espn"
+      }
     },
     {
       "id": "1630228",
@@ -68746,7 +68737,7 @@
       "teamId": "SAS",
       "teamName": "Free Agent",
       "position": "NBA",
-      "age": 24,
+      "age": 25,
       "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1630577.png",
       "gameLog": [],
       "stats": {
@@ -69192,7 +69183,7 @@
       "teamId": "WAS",
       "teamName": "Free Agent",
       "position": "NBA",
-      "age": 22,
+      "age": 23,
       "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1642882.png",
       "gameLog": [],
       "stats": {
@@ -69861,7 +69852,7 @@
       "teamId": "WAS",
       "teamName": "Free Agent",
       "position": "NBA",
-      "age": 24,
+      "age": 25,
       "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1630551.png",
       "gameLog": [],
       "stats": {
@@ -74562,7 +74553,7 @@
       "teamId": "ATL",
       "teamName": "Free Agent",
       "position": "NBA",
-      "age": 22,
+      "age": 23,
       "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1642933.png",
       "gameLog": [],
       "stats": {
@@ -74782,7 +74773,7 @@
         "bodyPart": "Abdomen",
         "detail": "Surgery",
         "side": "Not Specified",
-        "returnDate": "2026-07-02",
+        "returnDate": "2026-07-04",
         "comment": "Gilbert signed a two-way contract with the Hawks on Tuesday, according to Jake Fischer of BleacherReport.com.",
         "updatedAt": "2026-06-16T14:28Z",
         "source": "espn"
@@ -80402,7 +80393,7 @@
         "bodyPart": "Ankle",
         "detail": "Sprain",
         "side": "Right",
-        "returnDate": "2026-07-02",
+        "returnDate": "2026-07-03",
         "comment": "Cryer (ankle) will be re-evaluated in one week after an MRI confirmed a right-ankle sprain.",
         "updatedAt": "2026-06-16T14:29Z",
         "source": "espn"
@@ -83757,8 +83748,8 @@
         "detail": "Strain",
         "side": "Left",
         "returnDate": "2026-10-01",
-        "comment": "Doncic said Wednesday that he has begun running, Dan Woike of The Athletic reports.",
-        "updatedAt": "2026-06-16T14:30Z",
+        "comment": "Doncic (hamstring) is positioned to take on an even larger offensive role after LeBron James' departure from Los Angeles, Dan Woike of The Athletic opines.",
+        "updatedAt": "2026-07-01T18:53Z",
         "source": "espn"
       }
     },
@@ -87352,8 +87343,8 @@
         "detail": "Pinched Nerve",
         "side": "Left",
         "returnDate": "2026-10-01",
-        "comment": "Bagley (shoulder) has been ruled out for Sunday's game against the Bulls.",
-        "updatedAt": "2026-06-16T14:28Z",
+        "comment": "Bagley (shoulder) agreed to a one-year deal with the Nuggets on Wednesday, Shams Charania of ESPN reports.",
+        "updatedAt": "2026-07-02T04:42Z",
         "source": "espn"
       }
     },
@@ -98383,12 +98374,12 @@
       },
       "injury": {
         "status": "Day-To-Day",
-        "bodyPart": "Illness",
-        "detail": "Not Specified",
-        "side": "Not Specified",
+        "bodyPart": "Knee",
+        "detail": "Surgery",
+        "side": "Right",
         "returnDate": "2026-10-01",
-        "comment": "Traore (illness) has another obstacle for minutes in the backcourt after the Nets chose Mikel Brown in the 2026 NBA Draft.",
-        "updatedAt": "2026-06-24T19:30Z",
+        "comment": "Brooklyn general manager Sean Marks announced Monday that Traore underwent right knee surgery and won't play in Summer League, C.J. Holmes of the New York Daily News reports.",
+        "updatedAt": "2026-06-30T13:28Z",
         "source": "espn"
       }
     },
@@ -111188,8 +111179,8 @@
         "detail": "Surgery",
         "side": "Right",
         "returnDate": "2026-10-01",
-        "comment": "Aldama (knee) may face increased competition for minutes after the Grizzlies drafted Cameron Boozer.",
-        "updatedAt": "2026-06-24T17:10Z",
+        "comment": "The Grizzlies traded Aldama (knee) to the Mavericks on Wednesday in exchange for AJ Johnson, a protected 2030 Warriors first-round pick and two second-round picks, Shams Charania of ESPN reports.",
+        "updatedAt": "2026-07-01T23:01Z",
         "source": "espn"
       }
     },
@@ -129359,8 +129350,8 @@
         "detail": "Surgery",
         "side": "Right",
         "returnDate": "2026-10-01",
-        "comment": "Collins will undergo surgery for a sprain right toe and will be sidelined for the rest of the 2025-26 season.",
-        "updatedAt": "2026-06-16T14:29Z",
+        "comment": "Collins (toe) agreed to a two-year, $17 million extension with Chicago on Tuesday, Shams Charania of ESPN reports.",
+        "updatedAt": "2026-07-01T02:31Z",
         "source": "espn"
       }
     },
@@ -131281,8 +131272,8 @@
         "detail": "Surgery",
         "side": "Right",
         "returnDate": "2026-10-01",
-        "comment": "Sam Presti said Sorber (knee) is unlikely to play in the Summer League, Justin Martinez of The Oklahoman reports.",
-        "updatedAt": "2026-06-16T14:41Z",
+        "comment": "Sorber underwent a successful minor arthroscopic procedure on his right knee Wednesday and will return to full basketball activities in approximately four weeks, Clemente Almanza of USA Today reports.",
+        "updatedAt": "2026-07-01T22:31Z",
         "source": "espn"
       },
       "gameLog": [],

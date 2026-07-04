@@ -1,6 +1,7 @@
 import type { SportService } from "@/types/sports/base";
 import type { NBAPlayer, NBATeam } from "@/data/nba/mockData";
 import { NBA_PLAYERS, NBA_TEAMS, computeTeamMetrics } from "@/data/nba/mockData";
+import { supabase } from "./supabaseClient"; // 🚀 NUESTRA CONEXIÓN A LA NUBE
 
 const getStat = (row: any[], headers: string[], key: string): number => {
     const idx = headers.indexOf(key);
@@ -47,7 +48,6 @@ const fetchSafeJSON = async (endpoint: string, retries = 1) => {
     return null; 
 };
 
-// 🚀 FIX: parsePct (Evita bugs de ratios > 1)
 const parsePct = (val: number): number => {
     if (val === undefined || val === null || isNaN(val) || !isFinite(val)) return 0.0;
     const pct = (val > 0 && val < 1) ? val * 100 : val;
@@ -442,7 +442,6 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
   getPlayersByTeam(teamId: string) { return this.getAllPlayers().filter((p) => p.teamId === teamId); }
   getTeamById(id: string) { return this.getAllTeams().find((t) => String(t.id) === String(id) || t.abbreviation === id); }
 
-  // 🚀 FIX: calcPercentile con mid-rank
   private calcPercentile(val: number, arr: number[]): number {
       if (!arr || arr.length === 0 || val === undefined || isNaN(val)) return 50;
       let below = 0, equal = 0;
@@ -543,7 +542,6 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
 
         await new Promise(res => setTimeout(res, 800));
         
-        // 🚀 FIX: Fetch paralelo con commonallplayers para jugadores fantasma
         const [dataPassing, dataDefending, dataAllPlayers] = await Promise.all([
             hasTracking ? fetchSafeJSON(urlPassing).catch(() => null)   : Promise.resolve(null),
             hasTracking ? fetchSafeJSON(urlDefending).catch(() => null) : Promise.resolve(null),
@@ -614,7 +612,6 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
             }
         } catch(e) {}
 
-        // 🚀 FIX: Extracción de pctAst2fgm y pctAst3fgm
         const scoringMap = new Map<string, any>();
         try {
             if (dataScoring?.resultSets?.[0]?.rowSet?.length > 0) {
@@ -696,7 +693,6 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
           const passData = passingMap.get(playerId) || { passesMade: 0, potentialAst: 0, secondaryAst: 0, astPtsCreated: 0, astToPassPct: 0 };
           const defData = defendingMap.get(playerId) || { dfgPct: 50.0, dfg3Pct: 36.0, dfg2Pct: 50.0 };
           
-          // 🚀 FIX: Declaración de variables y cálculos de 2PT
           const gp   = getStat(row, headersBase, "GP");
           const wins = getStat(row, headersBase, "W");
           const min  = getStat(row, headersBase, "MIN");
@@ -815,7 +811,6 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
           
           const advancedMetrics = this.computeAllAdvanced(p as any);
           
-          // 🚀 FIX: Fusión maestra recalculando SI
           const normName  = p.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
           const bRefStats = bRefMap.get(normName);
           if (bRefStats) {
@@ -836,7 +831,6 @@ class NBAService implements SportService<NBAPlayer, NBATeam> {
           return p;
         });
 
-        // 🚀 FIX: JUGADORES FANTASMA
         if (dataAllPlayers?.resultSets?.[0]?.rowSet) {
             const hAll       = dataAllPlayers.resultSets[0].headers;
             const activeIds  = new Set(parsedPlayersRaw.map((p: any) => String(p.id)));
@@ -2095,6 +2089,46 @@ async fetchAwardAuxData(season: string = "2025-26", prevSeason: string = "2024-2
   async getLivePlayers(): Promise<NBAPlayer[]> { return this.fetchAllOfficialPlayers("2025-26"); }
   findSimilarPlayers() { return []; }
   computeTeamMetrics = computeTeamMetrics;
+
+  // 🚀 NUEVOS MÉTODOS SUPABASE (Para el Oráculo y el Histórico Profundo)
+  async fetchHistoricalStatsFromSupabase(playerName: string) {
+    try {
+        const { data: player, error: playerError } = await supabase
+            .from('players')
+            .select('player_id')
+            .ilike('full_name', playerName)
+            .single();
+
+        if (playerError || !player) return [];
+
+        const { data: stats, error: statsError } = await supabase
+            .from('player_season_stats')
+            .select('*')
+            .eq('player_id', player.player_id)
+            .order('season', { ascending: false });
+
+        if (statsError) throw statsError;
+        return stats || [];
+    } catch (error) {
+        console.error("Error fetching historical stats from Supabase:", error);
+        return [];
+    }
+  }
+
+  async fetchOracleProjections() {
+    try {
+        const { data, error } = await supabase
+            .from('daily_projections')
+            .select(`*, players ( full_name, current_team_id, bref_player_id )`)
+            .order('projected_bpm', { ascending: false });
+
+        if (error) throw error;
+        return data || [];
+    } catch (error) {
+        console.error("Error fetching Oracle projections from Supabase:", error);
+        return [];
+    }
+  }
 }
 
 export const nbaService = new NBAService();
