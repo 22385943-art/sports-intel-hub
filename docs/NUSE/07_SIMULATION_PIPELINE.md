@@ -364,3 +364,15 @@ No external transformations are allowed outside this pipeline.
 This document defines the full execution lifecycle of the NBA Universal Simulation Engine.
 
 All simulations, predictions, and generated seasons MUST follow this pipeline exactly.
+
+
+## PHASE 6.5: DATA COMPLETENESS AUDIT (SECURITY RING 1)
+**MANDATORY STEP BEFORE PROCEEDING TO PHASE 7:**
+The system must run an automated script (`audit_api_coverage.py`). This script will dynamically extract ALL raw fields provided by the NBA Stats API, Second Spectrum, and Supabase schemas, and cross-reference them against the variables defined in `docs/NUSE/09_VARIABLES/`. 
+*Rule:* If the API provides a metric that is NOT mapped in our latent inputs, the pipeline must halt and raise a critical warning. We do not rely on human or AI memory to know what data exists.
+
+## PHASE 7: MACHINE LEARNING & ORACLE CALIBRATION (SECURITY RING 2)
+**CRITICAL AI DIRECTIVE FOR ORACLE CREATION:**
+When generating the ML training pipeline (`train_oracle.py`), the AI is STRICTLY FORBIDDEN from hardcoding or manually listing the feature columns. 
+The ML pipeline MUST dynamically parse and extract its feature list directly from the SQL definitions in `Supabase_migrations/02_advanced_microscopic_schema.sql` and the `EcosystemResolver` Dataclasses. 
+*Rationale:* This prevents "Oracle Blindness" (Reward Hacking) where the AI trains a model omitting key variables (like `star_whistle_margin` or `tanking_index`) just to make the code compile faster. The SQL schema is the immutable source of truth.

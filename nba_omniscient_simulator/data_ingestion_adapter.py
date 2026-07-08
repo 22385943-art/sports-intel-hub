@@ -193,6 +193,22 @@ def _parse_clock_to_seconds(clock: str) -> float:
     return 0.0
 
 
+def _calculate_fractional_age(birthdate_str: Optional[str], fallback_age: float) -> float:
+    """Calculates age as a fractional float to prevent DTW aging step-functions.
+    Uses Jan 15th of the target season as a stable midpoint reference."""
+    if not birthdate_str:
+        return float(fallback_age)
+    try:
+        clean_str = birthdate_str.split("T")[0]
+        bdate = datetime.strptime(clean_str, "%Y-%m-%d")
+        # Reference date: mid-season 2025-26
+        ref_date = datetime(2026, 1, 15)
+        delta = ref_date - bdate
+        return round(delta.days / 365.25, 2)
+    except Exception:
+        return float(fallback_age)
+
+
 def _validate_simplex(name: str, weights: Sequence[float], tol: float = 1e-6) -> None:
     if any(w < 0 for w in weights):
         raise ValueError(f"{name} weights must all be non-negative, got {list(weights)}")
@@ -356,6 +372,7 @@ class RawPlayerRecord:
     name: str
     team_id: str
     age: float = 0.0
+    birthdate: Optional[str] = None
     gp: int = 0
     gs: int = 0
     mpg: float = 0.0
@@ -541,21 +558,6 @@ class PlayerLatentTranslationWeights:
             _validate_simplex(name, getattr(self, name))
 
 
-@dataclass(frozen=True)
-class CoachProfileTranslationWeights:
-    """Normalization reference constants for translating team/lineup
-    aggregates into `CoachProfile`'s six [0, 1] dimensions. Same provisional
-    posture as `PlayerLatentTranslationWeights` above."""
-
-    minutes_concentration_hhi_floor: float = 1.0 / 15.0  # perfectly egalitarian 15-man rotation
-    minutes_concentration_hhi_ceiling: float = 0.18  # empirically shortened ~7-8 man rotation
-    pace_reference_min: float = 92.0
-    pace_reference_max: float = 106.0
-    lineup_variance_reference_max: float = 12.0
-    lineup_count_reference_min: float = 8.0
-    lineup_count_reference_max: float = 40.0
-
-
 @dataclass
 class LatentIngestionBundle:
     """The sole hand-off artifact between `OnCourtIngestionAdapter` and the
@@ -587,56 +589,60 @@ class _LeaguePopulation:
     ts_pct: List[float] = field(default_factory=list)
     ppg: List[float] = field(default_factory=list)
     ast_pct: List[float] = field(default_factory=list)
-    potential_ast_p36: List[float] = field(default_factory=list)
-    ast_pts_created_p36: List[float] = field(default_factory=list)
+    potential_ast_p100: List[float] = field(default_factory=list)
+    ast_pts_created_p100: List[float] = field(default_factory=list)
     fg3a_rate: List[float] = field(default_factory=list)
     fg3_pct: List[float] = field(default_factory=list)
     pct_pts_3pt: List[float] = field(default_factory=list)
-    pts_paint_p36: List[float] = field(default_factory=list)
+    pts_paint_p100: List[float] = field(default_factory=list)
     fta_rate: List[float] = field(default_factory=list)
     fg2_pct: List[float] = field(default_factory=list)
     oreb_pct: List[float] = field(default_factory=list)
     dreb_pct: List[float] = field(default_factory=list)
-    box_outs_p36: List[float] = field(default_factory=list)
-    charges_drawn_p36: List[float] = field(default_factory=list)
+    box_outs_p100: List[float] = field(default_factory=list)
+    charges_drawn_p100: List[float] = field(default_factory=list)
     def_rating: List[float] = field(default_factory=list)
-    deflections_p36: List[float] = field(default_factory=list)
+    deflections_p100: List[float] = field(default_factory=list)
     spg: List[float] = field(default_factory=list)
     dfg_pct: List[float] = field(default_factory=list)
-    contested_shots_p36: List[float] = field(default_factory=list)
+    contested_shots_p100: List[float] = field(default_factory=list)
     bpg: List[float] = field(default_factory=list)
     ast_to: List[float] = field(default_factory=list)
     ast_ratio: List[float] = field(default_factory=list)
     topg: List[float] = field(default_factory=list)
 
     @classmethod
-    def from_players(cls, players: Iterable[RawPlayerRecord]) -> "_LeaguePopulation":
+    def from_players(cls, players: Iterable[RawPlayerRecord], team_pace_map: Dict[str, float]) -> "_LeaguePopulation":
         pop = cls()
         for p in players:
             if p.is_ghost or p.mpg <= 0:
                 continue
-            per36 = p.per36
+            
+            # The Per 100 Possessions Fix: Mathematically rigorous volume scale
+            t_pace = team_pace_map.get(p.team_id, 100.0)
+            per100 = _safe_div(4800.0, p.mpg * t_pace, default=1.0)
+            
             pop.usg_pct.append(p.advanced.usg_pct)
             pop.ts_pct.append(p.advanced.ts_pct)
             pop.ppg.append(p.ppg)
             pop.ast_pct.append(p.advanced.ast_pct)
-            pop.potential_ast_p36.append(p.passing.potential_ast * per36)
-            pop.ast_pts_created_p36.append(p.passing.ast_points_created * per36)
+            pop.potential_ast_p100.append(p.passing.potential_ast * per100)
+            pop.ast_pts_created_p100.append(p.passing.ast_points_created * per100)
             pop.fg3a_rate.append(_safe_div(p.fg3a, p.fga))
             pop.fg3_pct.append(p.fg3_pct)
             pop.pct_pts_3pt.append(p.scoring.pct_pts_3pt)
-            pop.pts_paint_p36.append(p.misc.pts_paint * per36)
+            pop.pts_paint_p100.append(p.misc.pts_paint * per100)
             pop.fta_rate.append(p.advanced.fta_rate or _safe_div(p.fta, p.fga))
             pop.fg2_pct.append(p.fg2_pct)
             pop.oreb_pct.append(p.advanced.oreb_pct)
             pop.dreb_pct.append(p.advanced.dreb_pct)
-            pop.box_outs_p36.append(p.hustle.box_outs * per36)
-            pop.charges_drawn_p36.append(p.hustle.charges_drawn * per36)
+            pop.box_outs_p100.append(p.hustle.box_outs * per100)
+            pop.charges_drawn_p100.append(p.hustle.charges_drawn * per100)
             pop.def_rating.append(p.advanced.def_rating)
-            pop.deflections_p36.append(p.hustle.deflections * per36)
+            pop.deflections_p100.append(p.hustle.deflections * per100)
             pop.spg.append(p.spg)
             pop.dfg_pct.append(p.tracking_defense.dfg_pct)
-            pop.contested_shots_p36.append(p.hustle.contested_shots * per36)
+            pop.contested_shots_p100.append(p.hustle.contested_shots * per100)
             pop.bpg.append(p.bpg)
             pop.ast_to.append(p.advanced.ast_to)
             pop.ast_ratio.append(p.advanced.ast_ratio)
@@ -693,7 +699,6 @@ class OnCourtIngestionAdapter:
         retry_backoff_seconds: float = 1.5,
         min_request_interval_seconds: float = 0.6,
         player_latent_weights: Optional[PlayerLatentTranslationWeights] = None,
-        coach_profile_weights: Optional[CoachProfileTranslationWeights] = None,
     ) -> None:
         self.season = season
         # nba_omniscient_simulator/data_ingestion_adapter.py -> parent is the
@@ -711,7 +716,12 @@ class OnCourtIngestionAdapter:
         self._last_request_at = 0.0
 
         self.player_latent_weights = player_latent_weights or PlayerLatentTranslationWeights()
-        self.coach_profile_weights = coach_profile_weights or CoachProfileTranslationWeights()
+        
+        # Dynamic league context populations (populated during build_latent_inputs)
+        self._league_minutes_hhi_pop: List[float] = []
+        self._league_usage_hhi_pop: List[float] = []
+        self._league_rigidity_std_pop: List[float] = []
+        self._temp_league_lineup_counts: List[int] = []
 
         logger.info(
             "OnCourtIngestionAdapter initialized | season=%s | data_dir=%s | scripts_dir=%s",
@@ -1390,6 +1400,7 @@ class OnCourtIngestionAdapter:
                 name=p.get("name", "Unknown Player"),
                 team_id=p.get("teamId", "FA"),
                 age=float(p.get("age", 0) or 0),
+                birthdate=p.get("birthdate") or None,
                 gp=int(gp),
                 gs=int(stats.get("gs", 0) or 0),
                 mpg=float(stats.get("mpg", 0) or 0),
@@ -1599,6 +1610,7 @@ class OnCourtIngestionAdapter:
                 name=self._string(row, headers_base, "PLAYER_NAME", "Unknown Player"),
                 team_id=team_abbr,
                 age=self._stat(row, headers_base, "AGE"),
+                birthdate=None,  # Typically fetched in a secondary pass or static JSON
                 gp=int(self._stat(row, headers_base, "GP")),
                 gs=int(self._stat(row, headers_base, "GS")),
                 mpg=self._stat(row, headers_base, "MIN"),
@@ -2117,12 +2129,46 @@ class OnCourtIngestionAdapter:
             except Exception as exc:  # noqa: BLE001 -- one team's lineup fetch must never sink the batch
                 logger.warning("Could not fetch lineups for team_id=%s: %s", team_id, exc)
                 lineups_by_team[team_id] = []
+        
+        # --- Escaneo Dinámico de la Liga (Anti-Hardcoding) ---
+        self._league_minutes_hhi_pop = []
+        self._league_usage_hhi_pop = []
+        self._league_rigidity_std_pop = []
+        self._temp_league_lineup_counts = []
+        
+        for t_id, raw_team in teams.items():
+            t_roster = [p for p in players.values() if p.team_id in (raw_team.abbreviation, raw_team.team_id)]
+            t_lineups = lineups_by_team.get(t_id, [])
+            
+            # Recolectar HHIs crudos
+            mpg_shares = [p.mpg for p in t_roster if p.mpg > 0]
+            if mpg_shares: self._league_minutes_hhi_pop.append(_herfindahl_index(mpg_shares))
+            
+            usg_shares = [p.advanced.usg_pct for p in t_roster if p.advanced.usg_pct > 0]
+            if usg_shares: self._league_usage_hhi_pop.append(_herfindahl_index(usg_shares))
+            
+            # Recolectar Rigidez (Varianza ponderada por minutos)
+            valid_lineups = [ln for ln in t_lineups if ln.minutes > 0]
+            if len(valid_lineups) >= 2:
+                ratings = [ln.def_rating for ln in valid_lineups]
+                weights = [ln.minutes for ln in valid_lineups]
+                avg = np.average(ratings, weights=weights)
+                variance = np.average((ratings - avg)**2, weights=weights)
+                self._league_rigidity_std_pop.append(float(np.sqrt(variance)))
+            
+            self._temp_league_lineup_counts.append(len([ln for ln in t_lineups if ln.minutes >= 1.0]))
+        # -------------------------------------------------------------------
 
-        league_population = _LeaguePopulation.from_players(players.values())
+        team_pace_map = {t.team_id: t.pace for t in teams.values()}
+        for t in teams.values():
+            team_pace_map[t.abbreviation] = t.pace
+
+        league_population = _LeaguePopulation.from_players(players.values(), team_pace_map)
 
         for player_id, raw in players.items():
             try:
-                bundle.player_latent_states[player_id] = self._translate_to_player_latent_state(raw, league_population)
+                t_pace = team_pace_map.get(raw.team_id, 100.0)
+                bundle.player_latent_states[player_id] = self._translate_to_player_latent_state(raw, league_population, t_pace)
             except Exception as exc:  # noqa: BLE001
                 logger.warning("Failed to translate player_id=%s to PlayerLatentState: %s", player_id, exc)
 
@@ -2182,7 +2228,9 @@ class OnCourtIngestionAdapter:
 
     # ---- PlayerLatentState / CoachProfile translation -------------------
 
-    def _translate_to_player_latent_state(self, raw: RawPlayerRecord, population: _LeaguePopulation) -> PlayerLatentState:
+    def _translate_to_player_latent_state(
+        self, raw: RawPlayerRecord, population: _LeaguePopulation, team_pace: float
+    ) -> PlayerLatentState:
         """Exact, documented translation from raw box-score / advanced /
         hustle / passing / tracking-defense / scoring stats onto
         `PlayerLatentState`'s nine [0, 1] latent dimensions. Every
@@ -2193,7 +2241,9 @@ class OnCourtIngestionAdapter:
         are injectable, exactly like every `*Weights` dataclass
         `EcosystemResolver.__init__` accepts."""
         w = self.player_latent_weights
-        per36 = raw.per36
+        
+        # Matemáticamente puro: factorizamos contra las posesiones reales del equipo.
+        per100 = _safe_div(4800.0, raw.mpg * team_pace, default=1.0)
 
         offensive_gravity = _clip01(
             w.offensive_gravity_weights[0] * _percentile_rank(raw.advanced.usg_pct, population.usg_pct)
@@ -2202,8 +2252,8 @@ class OnCourtIngestionAdapter:
         )
         playmaking_gravity = _clip01(
             w.playmaking_gravity_weights[0] * _percentile_rank(raw.advanced.ast_pct, population.ast_pct)
-            + w.playmaking_gravity_weights[1] * _percentile_rank(raw.passing.potential_ast * per36, population.potential_ast_p36)
-            + w.playmaking_gravity_weights[2] * _percentile_rank(raw.passing.ast_points_created * per36, population.ast_pts_created_p36)
+            + w.playmaking_gravity_weights[1] * _percentile_rank(raw.passing.potential_ast * per100, population.potential_ast_p100)
+            + w.playmaking_gravity_weights[2] * _percentile_rank(raw.passing.ast_points_created * per100, population.ast_pts_created_p100)
         )
         fg3a_rate = _safe_div(raw.fg3a, raw.fga)
         perimeter_gravity = _clip01(
@@ -2213,24 +2263,24 @@ class OnCourtIngestionAdapter:
         )
         fta_rate = raw.advanced.fta_rate or _safe_div(raw.fta, raw.fga)
         rim_pressure = _clip01(
-            w.rim_pressure_weights[0] * _percentile_rank(raw.misc.pts_paint * per36, population.pts_paint_p36)
+            w.rim_pressure_weights[0] * _percentile_rank(raw.misc.pts_paint * per100, population.pts_paint_p100)
             + w.rim_pressure_weights[1] * _percentile_rank(fta_rate, population.fta_rate)
             + w.rim_pressure_weights[2] * _percentile_rank(raw.fg2_pct, population.fg2_pct)
         )
         contact_absorption = _clip01(
             w.contact_absorption_weights[0] * _percentile_rank(raw.advanced.oreb_pct, population.oreb_pct)
             + w.contact_absorption_weights[1] * _percentile_rank(raw.advanced.dreb_pct, population.dreb_pct)
-            + w.contact_absorption_weights[2] * _percentile_rank(raw.hustle.box_outs * per36, population.box_outs_p36)
-            + w.contact_absorption_weights[3] * _percentile_rank(raw.hustle.charges_drawn * per36, population.charges_drawn_p36)
+            + w.contact_absorption_weights[2] * _percentile_rank(raw.hustle.box_outs * per100, population.box_outs_p100)
+            + w.contact_absorption_weights[3] * _percentile_rank(raw.hustle.charges_drawn * per100, population.charges_drawn_p100)
         )
         defensive_iq = _clip01(
             w.defensive_iq_weights[0] * (1.0 - _percentile_rank(raw.advanced.def_rating, population.def_rating))
-            + w.defensive_iq_weights[1] * _percentile_rank(raw.hustle.deflections * per36, population.deflections_p36)
+            + w.defensive_iq_weights[1] * _percentile_rank(raw.hustle.deflections * per100, population.deflections_p100)
             + w.defensive_iq_weights[2] * _percentile_rank(raw.spg, population.spg)
         )
         lateral_mobility = _clip01(
             w.lateral_mobility_weights[0] * (1.0 - _percentile_rank(raw.tracking_defense.dfg_pct, population.dfg_pct))
-            + w.lateral_mobility_weights[1] * _percentile_rank(raw.hustle.contested_shots * per36, population.contested_shots_p36)
+            + w.lateral_mobility_weights[1] * _percentile_rank(raw.hustle.contested_shots * per100, population.contested_shots_p100)
             + w.lateral_mobility_weights[2] * _percentile_rank(raw.bpg, population.bpg)
         )
         processing_speed = _clip01(
@@ -2257,10 +2307,11 @@ class OnCourtIngestionAdapter:
         )
 
         cumulative_physical_load = max(0.0, raw.mpg * raw.gp * _CUMULATIVE_LOAD_SCALE)
+        fractional_age = _calculate_fractional_age(raw.birthdate, raw.age or _DEFAULT_AGE_YEARS)
 
         return PlayerLatentState(
             player_id=raw.player_id,
-            age_years=float(raw.age or _DEFAULT_AGE_YEARS),
+            age_years=float(fractional_age),
             offensive_gravity=offensive_gravity,
             playmaking_gravity=playmaking_gravity,
             perimeter_gravity=perimeter_gravity,
@@ -2285,35 +2336,52 @@ class OnCourtIngestionAdapter:
         `CoachProfile`'s six [0, 1] dimensions -- every field is clipped
         into [0, 1] before construction since `CoachProfile.__post_init__`
         hard-raises `ValueError` outside that range."""
-        cw = self.coach_profile_weights
         roster = [players[pid] for pid in roster_ids if pid in players and not players[pid].is_ghost]
 
+        # 1. Concentración de Minutos (HHI)
         mpg_shares = [p.mpg for p in roster if p.mpg > 0]
         minutes_hhi = _herfindahl_index(mpg_shares)
-        minutes_concentration_index = _clip01(
-            _normalize_range(minutes_hhi, cw.minutes_concentration_hhi_floor, cw.minutes_concentration_hhi_ceiling)
-        )
+        if hasattr(self, '_league_minutes_hhi_pop') and self._league_minutes_hhi_pop:
+            minutes_concentration_index = _clip01(_percentile_rank(minutes_hhi, self._league_minutes_hhi_pop))
+        else:
+            minutes_concentration_index = 0.5
 
+        # 2. Flexibilidad de Uso (HHI)
         usage_shares = [p.advanced.usg_pct for p in roster if p.advanced.usg_pct > 0]
         usage_hhi = _herfindahl_index(usage_shares)
-        usage_flexibility = _clip01(
-            1.0 - _normalize_range(usage_hhi, cw.minutes_concentration_hhi_floor, cw.minutes_concentration_hhi_ceiling)
-        )
+        if hasattr(self, '_league_usage_hhi_pop') and self._league_usage_hhi_pop:
+            usage_flexibility = _clip01(1.0 - _percentile_rank(usage_hhi, self._league_usage_hhi_pop))
+        else:
+            usage_flexibility = 0.5
 
-        pace_modifier = _clip01(
-            _percentile_rank(team.pace, league_pace_population)
-            if league_pace_population
-            else _normalize_range(team.pace, cw.pace_reference_min, cw.pace_reference_max)
-        )
+        # 3. Ritmo (Pace)
+        if league_pace_population:
+            pace_modifier = _clip01(_percentile_rank(team.pace, league_pace_population))
+        else:
+            pace_modifier = 0.5
 
-        lineup_def_ratings = [ln.def_rating for ln in lineups if ln.minutes > 0]
-        rigidity_std = float(np.std(lineup_def_ratings)) if len(lineup_def_ratings) >= 2 else 0.0
-        defensive_scheme_rigidity = _clip01(_normalize_range(rigidity_std, 0.0, cw.lineup_variance_reference_max))
+        # 4. Rigidez del Esquema Defensivo (Varianza ponderada por minutos)
+        valid_lineups = [ln for ln in lineups if ln.minutes > 0]
+        if len(valid_lineups) >= 2:
+            ratings = [ln.def_rating for ln in valid_lineups]
+            weights = [ln.minutes for ln in valid_lineups]
+            avg = np.average(ratings, weights=weights)
+            variance = np.average((ratings - avg)**2, weights=weights)
+            rigidity_std = float(np.sqrt(variance))
+        else:
+            rigidity_std = 0.0
 
+        if hasattr(self, '_league_rigidity_std_pop') and self._league_rigidity_std_pop:
+            defensive_scheme_rigidity = _clip01(_percentile_rank(rigidity_std, self._league_rigidity_std_pop))
+        else:
+            defensive_scheme_rigidity = 0.5
+
+        # 5. Tasa de Experimentación (Alineaciones distintas)
         distinct_lineups = len([ln for ln in lineups if ln.minutes >= 1.0])
-        lineup_experimentation_rate = _clip01(
-            _normalize_range(float(distinct_lineups), cw.lineup_count_reference_min, cw.lineup_count_reference_max)
-        )
+        if hasattr(self, '_temp_league_lineup_counts') and self._temp_league_lineup_counts:
+            lineup_experimentation_rate = _clip01(_percentile_rank(distinct_lineups, self._temp_league_lineup_counts))
+        else:
+            lineup_experimentation_rate = 0.5
 
         # Quick-hook tendency needs per-game minutes volatility
         # (fetch_player_game_log per roster player) to compute properly;
