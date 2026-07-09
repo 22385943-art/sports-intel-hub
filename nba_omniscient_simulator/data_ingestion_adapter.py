@@ -2610,3 +2610,68 @@ class OnCourtIngestionAdapter:
                 )
             )
         return inputs
+    
+    # =========================================================================
+    # NUSE PHASE 7.5: OMNISCIENT DYNAMIC MAPPER
+    # =========================================================================
+    def build_dynamic_omniscient_payload(self, raw_data_dict: Dict[str, Any], target_table_schema: List[str]) -> Dict[str, Any]:
+        """
+        El Motor de Reflexión: Compara dinámicamente cualquier JSON entrante 
+        contra el esquema masivo de 10,000+ variables de Supabase.
+        
+        Args:
+            raw_data_dict: Diccionario JSON crudo de cualquier API (NBA, BRef, etc)
+            target_table_schema: Lista de columnas oficiales extraídas de 03_omniscient_expansion.sql
+            
+        Returns:
+            Un payload perfectamente formateado y listo para ser insertado en Supabase 
+            con supabase.table(X).upsert(payload).execute()
+        """
+        clean_payload = {}
+        
+        # 1. Aplanamiento recursivo (Flattening) del JSON por si viene anidado
+        flat_data = self._flatten_json(raw_data_dict)
+        
+        # 2. Normalización y Match Dinámico
+        for api_key, value in flat_data.items():
+            # Convertimos la clave de la API (ej. 'AST%', 'AstPct', 'ast_pct') al estándar NUSE
+            normalized_key = self._normalize_column_name(api_key)
+            
+            # Si la métrica existe en nuestra base de datos masiva, la guardamos
+            if normalized_key in target_table_schema:
+                clean_payload[normalized_key] = self._safely_cast_value(value)
+                
+        return clean_payload
+
+    def _flatten_json(self, y: Dict[str, Any], prefix: str = '') -> Dict[str, Any]:
+        """Aplana JSONs anidados de la API de la NBA a un solo nivel (ej. stats.ast -> ast)."""
+        out = {}
+        for k, v in y.items():
+            # Mantenemos el key original de momento
+            if isinstance(v, dict):
+                out.update(self._flatten_json(v, prefix))
+            else:
+                out[k] = v
+        return out
+
+    def _normalize_column_name(self, api_key: str) -> str:
+        """Fuerza cualquier nomenclatura de la NBA API al estándar Snake Case de NUSE."""
+        import re
+        # Eliminar caracteres especiales comunes en stats
+        clean_key = re.sub(r'[^a-zA-Z0-9_]', '', api_key.replace('%', '_pct'))
+        # Convertir CamelCase a snake_case
+        snake = re.sub(r'(?<!^)(?=[A-Z])', '_', clean_key).lower()
+        # Limpiar barras bajas dobles
+        return re.sub(r'_+', '_', snake)
+
+    def _safely_cast_value(self, value: Any) -> Any:
+        """Evita que strings vacíos de la API rompan las columnas FLOAT de Supabase."""
+        if value is None or value == "":
+            return 0.0
+        try:
+            # Si es un booleano o ID, lo respeta. Si es número, lo pasa a float.
+            if isinstance(value, bool) or isinstance(value, str) and not value.replace('.','',1).isdigit():
+                return value
+            return float(value)
+        except ValueError:
+            return 0.0
