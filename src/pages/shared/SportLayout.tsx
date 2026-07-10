@@ -14,13 +14,14 @@ import NBATeamProfile from "@/pages/nba/TeamProfile";
 import NBAStandings from "@/pages/nba/Standings";
 import NBAAnalytics from "@/pages/nba/Analytics";
 import NBACompare from "@/pages/nba/Compare";
-import CompareTeams from "@/pages/nba/CompareTeams"; // 🚀 AÑADIDO: Importamos el Team Compare
+import CompareTeams from "@/pages/nba/CompareTeams";
+import NBASynergy from "@/pages/nba/Synergy"; // 🚀 AÑADIDO: Importamos la página de Sinergia
 import NBASchedule from "@/pages/nba/Schedule";
 import NBAGamePreview from "@/pages/nba/GamePreview";
 import NBABoxScore from "@/pages/nba/BoxScore";
 import NBARankings from "@/pages/nba/Rankings"; 
 import NBAAwardsTracker from "@/pages/nba/AwardsTracker"; 
-import AwardsDashboard from "@/pages/nba/Projections"; // o como lo hayas llamado
+import AwardsDashboard from "@/pages/nba/Projections"; 
 
 // Football pages
 import FootballDashboard from "@/pages/football/Dashboard";
@@ -56,7 +57,8 @@ function SportRoutes() {
           <Route path="games/:id/boxscore" element={<NBABoxScore />} />
           <Route path="analytics" element={<NBAAnalytics />} />
           <Route path="compare" element={<NBACompare />} />
-          <Route path="compare-teams" element={<CompareTeams />} /> {/* 🚀 AÑADIDO: Ruta registrada */}
+          <Route path="compare-teams" element={<CompareTeams />} />
+          <Route path="synergy" element={<NBASynergy />} /> {/* 🚀 AÑADIDO: Registramos la ruta /nba/synergy */}
           <Route path="rankings" element={<NBARankings />} />
           <Route path="awards" element={<NBAAwardsTracker />} /> 
           <Route path="Projections" element={<AwardsDashboard />} />
@@ -93,7 +95,7 @@ function AnimatedContent() {
       <Header />
       <main className="flex-1 relative overflow-x-hidden overflow-y-auto scrollbar-premium">
         
-        {/* 🚀 MASSIVE VOLUMETRIC LIGHTING & NOISE */}
+        {/* MASSIVE VOLUMETRIC LIGHTING & NOISE */}
         <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden mix-blend-screen">
           <div className="absolute inset-0 bg-noise opacity-50 mix-blend-overlay z-10" />
           <motion.div 

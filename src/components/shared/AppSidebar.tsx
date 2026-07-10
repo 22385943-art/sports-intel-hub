@@ -1,5 +1,4 @@
-// 🚀 1. Importa el icono Flame
-import { LayoutDashboard, Users, Shield, BarChart3, GitCompare, ChevronDown, Trophy, Calendar, Star, ListOrdered, TrendingUpIcon ,Flame } from "lucide-react";
+import { LayoutDashboard, Users, Shield, BarChart3, GitCompare, ChevronDown, Trophy, Calendar, Star, ListOrdered, TrendingUpIcon, Flame, Network } from "lucide-react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useSport } from "@/contexts/SportContext";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter, SidebarSeparator } from "@/components/ui/sidebar";
@@ -11,7 +10,7 @@ export function AppSidebar() {
   const navigate = useNavigate();
   const basePath = `/${sport}`;
 
-  // 🚀 2. Añadidas las pestañas de Player Compare y Team Compare
+  // 🚀 Añadidas las pestañas de Compare y Synergy Grid
   const navItems = [
     { title: "Dashboard", path: "", icon: LayoutDashboard },
     { title: "Schedule", path: "/schedule", icon: Calendar },
@@ -23,8 +22,9 @@ export function AppSidebar() {
     ...(sport !== "ufc" ? [{ title: "Futures Projections", path: "/Projections", icon: TrendingUpIcon }] : []),
     { title: "Favorites", path: "/favorites", icon: Star },
     { title: "Analytics", path: "/analytics", icon: BarChart3 },
-    { title: "Player Compare", path: "/compare", icon: GitCompare }, // 🚀 Renombrado para más claridad
-    ...(sport !== "ufc" ? [{ title: "Team Compare", path: "/compare-teams", icon: GitCompare }] : []), // 🚀 AÑADIDO AQUÍ
+    { title: "Player Compare", path: "/compare", icon: GitCompare }, 
+    ...(sport !== "ufc" ? [{ title: "Team Compare", path: "/compare-teams", icon: GitCompare }] : []), 
+    ...(sport !== "ufc" ? [{ title: "Synergy Grid", path: "/synergy", icon: Network }] : []), // 🚀 NUEVA RUTA AQUÍ
   ];
 
   return (
