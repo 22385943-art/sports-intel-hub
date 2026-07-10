@@ -15,13 +15,14 @@ import NBAStandings from "@/pages/nba/Standings";
 import NBAAnalytics from "@/pages/nba/Analytics";
 import NBACompare from "@/pages/nba/Compare";
 import CompareTeams from "@/pages/nba/CompareTeams";
-import NBASynergy from "@/pages/nba/Synergy"; // 🚀 AÑADIDO: Importamos la página de Sinergia
+import NBASynergy from "@/pages/nba/Synergy"; 
 import NBASchedule from "@/pages/nba/Schedule";
 import NBAGamePreview from "@/pages/nba/GamePreview";
 import NBABoxScore from "@/pages/nba/BoxScore";
 import NBARankings from "@/pages/nba/Rankings"; 
 import NBAAwardsTracker from "@/pages/nba/AwardsTracker"; 
 import AwardsDashboard from "@/pages/nba/Projections"; 
+import GamesHub from "@/pages/nba/GamesHub"; // 🚀 AÑADIDO: Importamos el GamesHub
 
 // Football pages
 import FootballDashboard from "@/pages/football/Dashboard";
@@ -58,10 +59,11 @@ function SportRoutes() {
           <Route path="analytics" element={<NBAAnalytics />} />
           <Route path="compare" element={<NBACompare />} />
           <Route path="compare-teams" element={<CompareTeams />} />
-          <Route path="synergy" element={<NBASynergy />} /> {/* 🚀 AÑADIDO: Registramos la ruta /nba/synergy */}
+          <Route path="synergy" element={<NBASynergy />} />
           <Route path="rankings" element={<NBARankings />} />
           <Route path="awards" element={<NBAAwardsTracker />} /> 
           <Route path="Projections" element={<AwardsDashboard />} />
+          <Route path="arena" element={<GamesHub />} /> {/* 🚀 AÑADIDO: Registramos la ruta /nba/arena */}
           <Route path="favorites" element={<Favorites />} />
           <Route path="*" element={<Navigate to={`/${sport}`} replace />} />
         </Routes>

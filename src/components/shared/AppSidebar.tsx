@@ -1,4 +1,8 @@
-import { LayoutDashboard, Users, Shield, BarChart3, GitCompare, ChevronDown, Trophy, Calendar, Star, ListOrdered, TrendingUpIcon, Flame, Network } from "lucide-react";
+import { 
+  LayoutDashboard, Users, Shield, BarChart3, GitCompare, ChevronDown, 
+  Trophy, Calendar, Star, ListOrdered, TrendingUpIcon, Flame, Network, 
+  Gamepad2 // 🚀 AÑADIDO: Icono para el Gaming Arena
+} from "lucide-react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useSport } from "@/contexts/SportContext";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter, SidebarSeparator } from "@/components/ui/sidebar";
@@ -10,7 +14,6 @@ export function AppSidebar() {
   const navigate = useNavigate();
   const basePath = `/${sport}`;
 
-  // 🚀 Añadidas las pestañas de Compare y Synergy Grid
   const navItems = [
     { title: "Dashboard", path: "", icon: LayoutDashboard },
     { title: "Schedule", path: "/schedule", icon: Calendar },
@@ -24,7 +27,8 @@ export function AppSidebar() {
     { title: "Analytics", path: "/analytics", icon: BarChart3 },
     { title: "Player Compare", path: "/compare", icon: GitCompare }, 
     ...(sport !== "ufc" ? [{ title: "Team Compare", path: "/compare-teams", icon: GitCompare }] : []), 
-    ...(sport !== "ufc" ? [{ title: "Synergy Grid", path: "/synergy", icon: Network }] : []), // 🚀 NUEVA RUTA AQUÍ
+    ...(sport !== "ufc" ? [{ title: "Synergy Grid", path: "/synergy", icon: Network }] : []),
+    ...(sport !== "ufc" ? [{ title: "Gaming Arena", path: "/arena", icon: Gamepad2 }] : []), // 🚀 NUEVA RUTA AQUÍ
   ];
 
   return (
