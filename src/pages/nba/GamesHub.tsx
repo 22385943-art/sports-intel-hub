@@ -8,9 +8,16 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { nbaService } from "@/services/sports/nbaService";
 import { Loader2 } from "lucide-react";
+
+// --- IMPORTACIÓN DE MÓDULOS QUANT (NUEVOS MINIJUEGOS) ---
+import SpotTheFake from "@/components/SpotTheFake";
+import DraftReDo from "@/components/DraftReDo";
+import BlindResume from "@/components/BlindResume";
+import ShotChartDetective from "@/components/ShotChartDetective";
+import TargetX from "@/components/TargetX";
+import TeammateChain from "@/components/TeammateChain";
 
 // ─── CONFIGURACIÓN E INGESTA DE DATOS ─────────────────────────────────────────
 const GAME_MODES = [
@@ -84,7 +91,7 @@ export default function GamesHub() {
   const getStat = () => getRandom(STAT_TYPES);
 
   // ============================================================================
-  // 1. HIGHER OR LOWER (ARREGLADO: Imágenes gigantes y Stat oculta)
+  // 1. HIGHER OR LOWER 
   // ============================================================================
   const [hlMode, setHlMode] = useState<"line" | "vs">("vs");
   const [hlState, setHlState] = useState<any>(null);
@@ -119,7 +126,7 @@ export default function GamesHub() {
   };
 
   // ============================================================================
-  // 2. THE SORTER (ARREGLADO: Confirmación final y cartas grandes)
+  // 2. THE SORTER 
   // ============================================================================
   const [sorterState, setSorterState] = useState<any>(null);
   
@@ -146,14 +153,14 @@ export default function GamesHub() {
   };
 
   // ============================================================================
-  // 3. SALARY CAP GM (ARREGLADO: Presupuestos y stats dinámicas)
+  // 3. SALARY CAP GM
   // ============================================================================
   const [capState, setCapState] = useState<any>(null);
 
   const initSalaryCap = () => {
     const stat = getStat();
-    const budget = Math.floor(Math.random() * 100) + 150; // Presupuesto aleatorio 150M - 250M
-    const target = Math.floor(budget * (Math.random() * 0.3 + 0.4)); // Target dinámico
+    const budget = Math.floor(Math.random() * 100) + 150; 
+    const target = Math.floor(budget * (Math.random() * 0.3 + 0.4)); 
     setCapState({ stat, budget, target, selected: [], status: "drafting", total: 0, cost: 0 });
   };
 
@@ -172,7 +179,7 @@ export default function GamesHub() {
   };
 
   // ============================================================================
-  // 4. IMMACULATE GRID (NUEVO)
+  // 4. IMMACULATE GRID
   // ============================================================================
   const [gridState, setGridState] = useState<any>(null);
 
@@ -194,12 +201,12 @@ export default function GamesHub() {
   };
 
   // ============================================================================
-  // 5. MYSTERY PLAYER (NUEVO)
+  // 5. MYSTERY PLAYER
   // ============================================================================
   const [mysteryState, setMysteryState] = useState<any>(null);
 
   const initMystery = () => {
-    const target = getRandom(players.filter(p => p.nStats.pts > 15)); // Jugadores conocidos
+    const target = getRandom(players.filter(p => p.nStats.pts > 15));
     setMysteryState({ target, guesses: [], search: "", won: false });
   };
 
@@ -213,11 +220,11 @@ export default function GamesHub() {
   const launchGame = (id: string) => {
     setActiveMode(id);
     if (id === "higher_lower") { setGlobalScore(0); initHigherLower(); }
-    if (id === "sorter" || id === "draft_redo") { setGlobalScore(0); initSorter(); }
+    if (id === "sorter") { setGlobalScore(0); initSorter(); }
     if (id === "salary_cap") initSalaryCap();
     if (id === "grid") initGrid();
     if (id === "mystery") initMystery();
-    // Resto usarán placeholders temporales en esta UI por espacio
+    // spot_fake, draft_redo, blind_resume, shot_chart, target_x, teammate_chain gestionan su propio estado al montarse
   };
 
   if (loading) return <div className="h-screen flex items-center justify-center"><Loader2 className="w-16 h-16 animate-spin text-cyan-500" /></div>;
@@ -272,7 +279,8 @@ export default function GamesHub() {
           </motion.div>
         )}
 
-        {/* ==================== VISTA: HIGHER OR LOWER (GIGANTE) ==================== */}
+        {/* ==================== VISTAS: JUEGOS INTERNOS ==================== */}
+        
         {activeMode === "higher_lower" && hlState && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-[1400px] mx-auto">
             <div className="flex justify-center mb-8 gap-4">
@@ -289,8 +297,6 @@ export default function GamesHub() {
             )}
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
-              
-              {/* JUGADOR A */}
               <Card className="bg-[#0a0f18]/80 border-white/10 p-10 rounded-[3rem] text-center relative shadow-2xl">
                 <div className="w-64 h-64 mx-auto bg-slate-800 rounded-full border-8 border-cyan-500/30 overflow-hidden mb-8 shadow-[0_0_50px_rgba(34,211,238,0.2)]">
                   <img src={hlState.pA.imageUrl} className="w-full h-full object-cover" />
@@ -300,7 +306,6 @@ export default function GamesHub() {
                 <div className="text-slate-500 font-black uppercase tracking-widest mt-2">{hlState.stat.label}</div>
               </Card>
 
-              {/* RETO B (LÍNEA O JUGADOR B) */}
               <Card className="bg-[#0a0f18]/80 border-white/10 p-10 rounded-[3rem] text-center shadow-2xl flex flex-col justify-center min-h-[600px]">
                 {hlState.type === "line" ? (
                   <>
@@ -345,12 +350,10 @@ export default function GamesHub() {
                   </>
                 )}
               </Card>
-
             </div>
           </motion.div>
         )}
 
-        {/* ==================== VISTA: THE SORTER (ARREGLADO CON SLOTS) ==================== */}
         {activeMode === "sorter" && sorterState && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-5xl mx-auto">
             <div className="text-center mb-10">
@@ -358,7 +361,6 @@ export default function GamesHub() {
               <Badge className="bg-cyan-500 text-black text-lg px-6 py-2 uppercase font-black">{sorterState.stat.label}</Badge>
             </div>
 
-            {/* Los Slots (Ranuras de Destino) */}
             <div className="grid grid-cols-5 gap-4 mb-12">
               {Array(5).fill(0).map((_, i) => {
                 const p = sorterState.slots[i];
@@ -376,7 +378,6 @@ export default function GamesHub() {
               })}
             </div>
 
-            {/* El Pool de Jugadores a Elegir */}
             <div className="flex justify-center gap-6 mb-12 flex-wrap">
               {sorterState.pool.map((p:any) => {
                 if (sorterState.slots.find((x:any)=>x.id===p.id)) return null;
@@ -407,7 +408,6 @@ export default function GamesHub() {
           </motion.div>
         )}
 
-        {/* ==================== VISTA: SALARY CAP GM (DINÁMICO) ==================== */}
         {activeMode === "salary_cap" && capState && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
             <div>
@@ -465,7 +465,6 @@ export default function GamesHub() {
           </motion.div>
         )}
 
-        {/* ==================== VISTA: MYSTERY PLAYER (WORDLE) ==================== */}
         {activeMode === "mystery" && mysteryState && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl font-black uppercase mb-8">¿Quién es el jugador?</h2>
@@ -495,7 +494,6 @@ export default function GamesHub() {
                 <span>Jugador</span><span>Conf</span><span>Edad</span><span>Pts</span>
               </div>
               {mysteryState.guesses.map((g:any, i:number) => {
-                const isTarget = g.id === mysteryState.target.id;
                 return (
                   <motion.div initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} key={i} className="grid grid-cols-4 gap-4 items-center bg-[#0a0f18] border border-white/10 p-3 rounded-2xl">
                     <div className="flex items-center gap-3"><img src={g.imageUrl} className="w-12 h-12 object-cover rounded-full border border-white/20"/> <span className="font-black truncate">{g.name}</span></div>
@@ -517,12 +515,11 @@ export default function GamesHub() {
           </motion.div>
         )}
 
-        {/* ==================== VISTA: IMMACULATE GRID ==================== */}
         {activeMode === "grid" && gridState && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-4xl mx-auto">
             <h2 className="text-3xl font-black uppercase text-center mb-10">Immaculate Grid</h2>
             <div className="grid grid-cols-4 gap-4 max-w-2xl mx-auto">
-              <div></div> {/* Esquina superior izq vacía */}
+              <div></div>
               {gridState.cols.map((c:any, i:number) => <div key={i} className="text-center font-black uppercase text-cyan-400 bg-cyan-950/30 p-4 rounded-xl flex items-center justify-center">{c.label}</div>)}
               
               {gridState.rows.map((r:any, rIdx:number) => (
@@ -543,7 +540,6 @@ export default function GamesHub() {
               ))}
             </div>
 
-            {/* Modal de búsqueda para la celda */}
             {gridState.activeCell !== null && (
                <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
                  <div className="bg-[#1e293b] p-8 rounded-3xl w-full max-w-lg">
@@ -564,18 +560,41 @@ export default function GamesHub() {
           </motion.div>
         )}
 
-        {/* ==================== PLACEHOLDERS RESTANTES ==================== */}
-        {['spot_fake', 'shot_chart', 'target_x', 'blind_resume', 'draft_redo', 'teammate_chain'].includes(activeMode) && (
-          <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="max-w-2xl mx-auto text-center py-20">
-            <Card className="bg-[#1e293b]/40 border-white/10 p-16 rounded-[3rem] relative overflow-hidden">
-              <Zap className="w-20 h-20 text-cyan-500 mx-auto mb-6 opacity-50" />
-              <h2 className="text-4xl font-black uppercase text-white mb-4">Motor Listo</h2>
-              <p className="text-slate-400 text-lg mb-8 leading-relaxed">
-                El entorno de {GAME_MODES.find(m=>m.id===activeMode)?.title} está estructurado. Para que no colapse el compilador por tamaño de archivo, 
-                su lógica debe modularizarse en un archivo propio (`{activeMode}.tsx`).
-              </p>
-              <Button onClick={() => setActiveMode("menu")} className="bg-cyan-500 text-black font-black uppercase h-14 px-8">Volver al Hub</Button>
-            </Card>
+        {/* ==================== VISTAS: NUEVOS MÓDULOS MODULARES ==================== */}
+        
+        {activeMode === "spot_fake" && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full">
+            <SpotTheFake />
+          </motion.div>
+        )}
+
+        {activeMode === "draft_redo" && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full">
+            <DraftReDo />
+          </motion.div>
+        )}
+
+        {activeMode === "blind_resume" && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full">
+            <BlindResume />
+          </motion.div>
+        )}
+
+        {activeMode === "shot_chart" && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full">
+            <ShotChartDetective />
+          </motion.div>
+        )}
+
+        {activeMode === "target_x" && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full">
+            <TargetX />
+          </motion.div>
+        )}
+
+        {activeMode === "teammate_chain" && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full">
+            <TeammateChain />
           </motion.div>
         )}
 
