@@ -28,7 +28,7 @@ Firewall enforcement (11_ORACLE_CALIBRATION_PIPELINE.md Section 2):
 """
 
 from __future__ import annotations
-
+from ml.historical_replay import load_alpha_batch
 import dataclasses
 import logging
 from pathlib import Path
@@ -45,6 +45,7 @@ from nba_omniscient_simulator.possession_engine import (
     ExtendedPossessionOutcome,
     PossessionResultType,
 )
+
 
 logger = logging.getLogger("nuse.oracle_calibration")
 
@@ -188,79 +189,6 @@ def load_alpha_batch(replay_output_path: str | Path) -> AlphaFeatureBatch:
     logger.info("Ingeniero: Cargando AlphaFeatureBatch con instanciación dinámica segura...")
     df_raw = pd.read_parquet(replay_output_path)
     
-    # [!] PARCHE DEL INGENIERO: El Auto-Instanciador.
-    # En lugar de adivinar los parámetros de cada clase, leemos su código en tiempo real.
-def load_alpha_batch(replay_output_path: str | Path) -> AlphaFeatureBatch:
-    import pandas as pd
-    import inspect
-    import dataclasses
-    from nba_omniscient_simulator.latent_state import PlayerLatentState
-    from nba_omniscient_simulator.domain import TeamEcosystemState, CoachProfile
-    from nba_omniscient_simulator.possession_engine import LivePossessionContext, ExtendedPossessionOutcome, PossessionResultType
-
-    logger.info("Ingeniero: Cargando AlphaFeatureBatch con Inmunidad de Estado (Time-Freeze)...")
-    df_raw = pd.read_parquet(replay_output_path)
-    
-    # 1. El Auto-Instanciador Quirúrgico
-    def auto_instantiate(cls, string_val):
-        kwargs = {}
-        for name, param in inspect.signature(cls).parameters.items():
-            if name in ('self', 'args', 'kwargs'): continue
-            is_string = (name in ('id', 'name') or name.endswith('_id') or param.annotation == str or param.annotation == 'str')
-            if is_string: kwargs[name] = string_val
-            elif param.annotation == CoachProfile or 'coach' in name.lower(): kwargs[name] = auto_instantiate(CoachProfile, string_val)
-            else: kwargs[name] = 1.0 if 'temp' in name.lower() else 0.5
-        return cls(**kwargs)
-
-    c_real = auto_instantiate(CoachProfile, "coach_1")
-    t_off = auto_instantiate(TeamEcosystemState, "TM_OFF")
-    t_def = auto_instantiate(TeamEcosystemState, "TM_DEF")
-    t_off.coach_profile = c_real
-    t_def.coach_profile = c_real
-
-    p_base = auto_instantiate(PlayerLatentState, "base_player")
-    off_roster = [dataclasses.replace(p_base, player_id=f"off_{i}") for i in range(5)]
-    def_roster = [dataclasses.replace(p_base, player_id=f"def_{i}") for i in range(5)]
-    
-    # [!] EL ESCUDO TÉRMICO: Congelamos el tiempo y el estado.
-    # Evita que las simulaciones paralelas acumulen tiempo negativo y cuelguen el motor.
-    class ImmortalPossessionContext(LivePossessionContext):
-        _is_frozen = False
-        def __setattr__(self, name, value):
-            # Si el escudo está activo, bloqueamos cualquier mutación del motor
-            if not self._is_frozen:
-                super().__setattr__(name, value)
-
-    contexts, outcomes = [], []
-    for idx, row in df_raw.iterrows():
-        poss_id = str(row.get('possession_id', f"poss_{idx}"))
-        
-        live_ctx = ImmortalPossessionContext(
-            team_id="TM_OFF", opponent_id="TM_DEF", score_differential=0.0, 
-            game_clock_seconds_remaining=720.0, shot_clock_seconds_remaining=24.0, 
-            quarter=1, possession_index=int(idx), team_fouls={"TM_OFF":0, "TM_DEF":0}
-        )
-        live_ctx._is_frozen = True  # Escudo activado: El motor ya no puede restarle tiempo
-        
-        ctx = PossessionContext(
-            possession_id=poss_id,
-            off_players=off_roster,
-            def_players=def_roster,
-            off_team=t_off,
-            def_team=t_def,
-            session_layer={},
-            live_state=live_ctx,
-            bias_lookup={}
-        )
-        outc = ExtendedPossessionOutcome(PossessionResultType.MADE_SHOT, "off_0", points_scored=2)
-        
-        contexts.append(ctx)
-        outcomes.append(outc)
-
-    return AlphaFeatureBatch(tuple(contexts), tuple(outcomes))
-
-# ─── BETA SIDE: derived, disjoint historical containers ─────────────────────
-
 @dataclasses.dataclass(frozen=True)
 class BetaFeatureBatch:
     """
