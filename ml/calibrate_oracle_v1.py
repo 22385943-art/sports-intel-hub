@@ -28,7 +28,6 @@ Firewall enforcement (11_ORACLE_CALIBRATION_PIPELINE.md Section 2):
 """
 
 from __future__ import annotations
-from ml.historical_replay import load_alpha_batch
 import dataclasses
 import logging
 from pathlib import Path
@@ -762,6 +761,7 @@ class AlphaBetaOrchestrator:
 
 def main() -> None:
     import argparse
+    from ml.historical_replay import load_alpha_batch
     parser = argparse.ArgumentParser(description="NUSE Oracle Calibration -- Fase 11")
     parser.add_argument("--alpha-replay-path", required=True, help="Output of the Sec.3.4 historical replay engine")
     parser.add_argument("--beta-parquet-path", required=True, help="beta_feature_space_{SEASON}.parquet")
@@ -771,7 +771,33 @@ def main() -> None:
 
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
-    alpha_batch = load_alpha_batch(args.alpha_replay_path)
+# 1. Importamos los adaptadores
+    from nba_omniscient_simulator.data_ingestion_adapter import OnCourtIngestionAdapter
+    from nba_omniscient_simulator.real_data_source import ProductionReplayDataSource
+    from curl_cffi import requests
+    
+    # 2. Le ponemos el traje de camuflaje al Oráculo
+    stealth_session = requests.Session(impersonate="chrome110")
+    stealth_session.headers.update({
+        'Host': 'stats.nba.com',
+        'Accept': 'application/json, text/plain, */*',
+        'Referer': 'https://www.nba.com/',
+        'Origin': 'https://www.nba.com',
+        'x-nba-stats-origin': 'stats',
+        'x-nba-stats-token': 'true',
+    })
+
+    # 3. Encendemos la base de datos local con la sesión camuflada
+    on_court = OnCourtIngestionAdapter(
+        season="2025-26",
+        session=stealth_session,
+        request_timeout_seconds=30.0,
+        max_retries=3
+    )
+    data_source = ProductionReplayDataSource(season="2025-26", on_court_adapter=on_court)
+    
+    # 4. Le pasamos la llave de datos al cargador Alfa
+    alpha_batch = load_alpha_batch(args.alpha_replay_path, data_source)
     beta_batch = load_beta_batch(args.beta_parquet_path)
 
     # --- [!] INYECCIÓN DEL INGENIERO: LIMITADOR DE SEGURIDAD PARA TEST LOCAL ---

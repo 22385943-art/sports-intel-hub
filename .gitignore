@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 
 .env
+
+
+data/historical/kaggle_raw/

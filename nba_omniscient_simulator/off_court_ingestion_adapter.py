@@ -1995,6 +1995,7 @@ class OffCourtIngestionAdapter:
     def derive_adjusted_coach_profile(
         self,
         coach_profile: CoachProfile,  # type-only reference -- see note below
+        coach_id: str,                # AÑADIDO: Pasamos la ID explícitamente
         team_id: str,
         medical_history_by_player: Dict[str, List[PlayerMedicalHistoryEntry]],
         franchise_dynamics_by_team: Dict[str, FranchiseDynamicsSnapshot],
@@ -2055,14 +2056,14 @@ class OffCourtIngestionAdapter:
             coach_profile.lineup_experimentation_rate * (1.0 - forced_rotation_pressure)
         )
 
-        tendencies = tactical_tendencies_by_coach.get(coach_profile.coach_id, {})
+        tendencies = tactical_tendencies_by_coach.get(coach_id, {})
         if "switch_rate" in tendencies:
             observed_rigidity_proxy = _clip01(1.0 - tendencies["switch_rate"])
             blended_rigidity = _clip01(0.7 * coach_profile.defensive_scheme_rigidity + 0.3 * observed_rigidity_proxy)
         else:
             blended_rigidity = coach_profile.defensive_scheme_rigidity
 
-        lineage = coaching_tree_by_coach.get(coach_profile.coach_id, {})
+        lineage = coaching_tree_by_coach.get(coach_id, {})
         if lineage.get("is_first_time_head_coach") and lineage.get("mentor_coach_id") and coach_profiles_by_id:
             mentor_profile = coach_profiles_by_id.get(lineage["mentor_coach_id"])
             if mentor_profile is not None:
@@ -2080,7 +2081,7 @@ class OffCourtIngestionAdapter:
         logger.info(
             "derive_adjusted_coach_profile(coach_id=%s): lineup_experimentation_rate %.3f -> %.3f "
             "(forced_rotation_pressure=%.3f), defensive_scheme_rigidity %.3f -> %.3f.",
-            coach_profile.coach_id, coach_profile.lineup_experimentation_rate, adjusted_lineup_experimentation_rate,
+            coach_id, coach_profile.lineup_experimentation_rate, adjusted_lineup_experimentation_rate,
             forced_rotation_pressure, coach_profile.defensive_scheme_rigidity, blended_rigidity,
         )
         return adjusted
@@ -2157,15 +2158,17 @@ class OffCourtIngestionAdapter:
         adjusted_count = 0
         for coach_id, coach_profile in original_profiles_snapshot.items():
             try:
+                # SE PASAN COMO LITERALES/VARIABLES LOCALES, NO DEL OBJETO MATHEMATICO
                 adjusted_profiles[coach_id] = self.derive_adjusted_coach_profile(
                     coach_profile=coach_profile,
-                    team_id=coach_profile.team_id,
+                    coach_id=coach_id,
+                    team_id="UNKNOWN",
                     medical_history_by_player=off_court_bundle.medical_history_by_player,
                     franchise_dynamics_by_team=off_court_bundle.franchise_dynamics_by_team,
                     tactical_tendencies_by_coach=tactical_tendencies_by_coach,
                     coaching_tree_by_coach=coaching_tree_by_coach,
                     coach_profiles_by_id=original_profiles_snapshot,
-                    team_roster_player_ids=team_roster_player_ids_by_team.get(coach_profile.team_id),
+                    team_roster_player_ids=None,
                 )
                 adjusted_count += 1
             except (TypeError, ValueError) as exc:
