@@ -1,7 +1,7 @@
 {
   "metadata": {
     "season": "2025-26",
-    "generatedAt": "2026-07-03T15:46:51.491Z",
+    "generatedAt": "2026-07-13T02:09:50.528Z",
     "playerCount": 587,
     "teamCount": 30,
     "source": "nba-stats-api + basketball-reference + espn"
@@ -2030,16 +2030,7 @@
           }
         }
       },
-      "injury": {
-        "status": "Day-To-Day",
-        "bodyPart": "Ankle",
-        "detail": "Sprain",
-        "side": "Right",
-        "returnDate": "2026-07-02",
-        "comment": "Bal (ankle) is out for Sunday's game in Houston.",
-        "updatedAt": "2026-06-16T14:28Z",
-        "source": "espn"
-      }
+      "injury": null
     },
     {
       "id": "1641737",
@@ -4064,7 +4055,16 @@
           }
         }
       },
-      "injury": null
+      "injury": {
+        "status": "Day-To-Day",
+        "bodyPart": "Knee",
+        "detail": "Inflammation",
+        "side": null,
+        "returnDate": "2026-07-13",
+        "comment": "Martin (knee) has been ruled out for Saturday's Summer League game against Houston, Zulfi Sheikh of Sportsnet reports.",
+        "updatedAt": "2026-07-12T01:21Z",
+        "source": "espn"
+      }
     },
     {
       "id": "1631214",
@@ -4215,7 +4215,7 @@
         "Deflections": 21,
         "PER": 85,
         "WinPct": 47,
-        "WS48": 87,
+        "WS48": 86,
         "VORP": 33,
         "PIE": 86,
         "USG": 17,
@@ -5997,7 +5997,7 @@
         "NetRtg": 13,
         "Contested": 3,
         "Deflections": 21,
-        "PER": 61,
+        "PER": 62,
         "WinPct": 10,
         "WS48": 35,
         "VORP": 53,
@@ -6010,8 +6010,8 @@
         "PerimeterD": 26,
         "InteriorD": 17,
         "Hustle": 37,
-        "OverallImpact": 46,
-        "SystemicImpact": 46,
+        "OverallImpact": 47,
+        "SystemicImpact": 47,
         "Finishing": 42,
         "MidRange": 66,
         "ShotCreation": 87,
@@ -6071,16 +6071,7 @@
           }
         }
       },
-      "injury": {
-        "status": "Day-To-Day",
-        "bodyPart": "Back",
-        "detail": "Soreness",
-        "side": "Not Specified",
-        "returnDate": "2026-10-01",
-        "comment": "Nembhard (back) has been ruled out for Sunday's game against the Pistons.",
-        "updatedAt": "2026-06-16T14:37Z",
-        "source": "espn"
-      }
+      "injury": null
     },
     {
       "id": "203952",
@@ -6526,16 +6517,7 @@
           }
         }
       },
-      "injury": {
-        "status": "Day-To-Day",
-        "bodyPart": "Wrist",
-        "detail": "Fracture",
-        "side": "Left",
-        "returnDate": "2026-10-01",
-        "comment": "Simons (elbow) will join the 76ers on a two-year, $12.3 million deal, Shams Charania of ESPN reports.",
-        "updatedAt": "2026-07-02T18:29Z",
-        "source": "espn"
-      }
+      "injury": null
     },
     {
       "id": "1641710",
@@ -6909,7 +6891,7 @@
         "Deflections": 61,
         "PER": 94,
         "WinPct": 47,
-        "WS48": 52,
+        "WS48": 51,
         "VORP": 57,
         "PIE": 95,
         "USG": 92,
@@ -8033,7 +8015,7 @@
         "Deflections": 4,
         "PER": 48,
         "WinPct": 51,
-        "WS48": 60,
+        "WS48": 59,
         "VORP": 33,
         "PIE": 21,
         "USG": 31,
@@ -8256,7 +8238,7 @@
         "Deflections": 99,
         "PER": 67,
         "WinPct": 92,
-        "WS48": 81,
+        "WS48": 80,
         "VORP": 90,
         "PIE": 57,
         "USG": 37,
@@ -8702,7 +8684,7 @@
         "Deflections": 13,
         "PER": 70,
         "WinPct": 51,
-        "WS48": 68,
+        "WS48": 67,
         "VORP": 76,
         "PIE": 73,
         "USG": 61,
@@ -10353,16 +10335,7 @@
           }
         }
       },
-      "injury": {
-        "status": "Day-To-Day",
-        "bodyPart": "Heel",
-        "detail": "Inflammation",
-        "side": "Right",
-        "returnDate": "2026-10-01",
-        "comment": "Coulibaly (heel) could continue to see significant minutes despite Washington's selection of AJ Dybantsa, though he may come off the bench.",
-        "updatedAt": "2026-06-24T14:50Z",
-        "source": "espn"
-      }
+      "injury": null
     },
     {
       "id": "202687",
@@ -11035,7 +11008,7 @@
     },
     {
       "id": "1626171",
-      "name": "Bobby Portis",
+      "name": "Bobby Portis Jr.",
       "teamId": "MIL",
       "teamName": "Free Agent",
       "position": "NBA",
@@ -11105,12 +11078,12 @@
         "usg": 22.5,
         "defRating": 118.4,
         "pie": 12.2,
-        "per": 17.1,
+        "per": 15,
         "bpm": 0,
-        "obpm": 1.5,
-        "dbpm": -1.6,
-        "vorp": 0.8,
-        "ws48": 0.083,
+        "obpm": 0,
+        "dbpm": 0,
+        "vorp": 0,
+        "ws48": 0.47,
         "netRtg": -8.2,
         "astPct": 10.3,
         "astTo": 1.59,
@@ -11120,8 +11093,8 @@
         "drebPct": 19.8,
         "offRtg": 110.2,
         "ftaRate": 0,
-        "isRealBRef": true,
-        "si": 105,
+        "isRealBRef": false,
+        "si": 102,
         "rTS": 0.5
       },
       "hustle": {
@@ -11180,10 +11153,10 @@
         "NetRtg": 18,
         "Contested": 78,
         "Deflections": 49,
-        "PER": 75,
+        "PER": 55,
         "WinPct": 34,
-        "WS48": 40,
-        "VORP": 61,
+        "WS48": 99,
+        "VORP": 28,
         "PIE": 80,
         "USG": 75,
         "EFG": 69,
@@ -11193,8 +11166,8 @@
         "PerimeterD": 41,
         "InteriorD": 28,
         "Hustle": 52,
-        "OverallImpact": 57,
-        "SystemicImpact": 57,
+        "OverallImpact": 52,
+        "SystemicImpact": 52,
         "Finishing": 41,
         "MidRange": 74,
         "ShotCreation": 34,
@@ -11248,9 +11221,9 @@
           },
           "def": {
             "grade": "D",
-            "pct": 27,
-            "raw": "DBPM: -1.6 / 0.9s 0.3b",
-            "label": "DEFENSE"
+            "pct": 23,
+            "raw": "118 DRTG / 2.4 DEFL",
+            "label": "DEF"
           }
         }
       },
@@ -12297,7 +12270,7 @@
         "Deflections": 6,
         "PER": 79,
         "WinPct": 96,
-        "WS48": 91,
+        "WS48": 90,
         "VORP": 46,
         "PIE": 66,
         "USG": 52,
@@ -13038,7 +13011,16 @@
           }
         }
       },
-      "injury": null
+      "injury": {
+        "status": "Day-To-Day",
+        "bodyPart": "Heel",
+        "detail": "Surgery",
+        "side": "Right",
+        "returnDate": "2026-10-01",
+        "comment": "The Clippers are nearing a deal that would send Kawhi Leonard to the Raptors for Ingram (heel), Gradey Dick, two future first-round picks, one pick swap and two future second-rounders, Shams Charania of ESPN reports.",
+        "updatedAt": "2026-06-30T19:47Z",
+        "source": "espn"
+      }
     },
     {
       "id": "1641706",
@@ -14100,7 +14082,7 @@
         "PER": 31,
         "WinPct": 58,
         "WS48": 30,
-        "VORP": 49,
+        "VORP": 50,
         "PIE": 23,
         "USG": 38,
         "EFG": 26,
@@ -14768,7 +14750,7 @@
         "Deflections": 60,
         "PER": 25,
         "WinPct": 28,
-        "WS48": 48,
+        "WS48": 47,
         "VORP": 18,
         "PIE": 12,
         "USG": 14,
@@ -18364,7 +18346,7 @@
         "PER": 17,
         "WinPct": 93,
         "WS48": 29,
-        "VORP": 49,
+        "VORP": 50,
         "PIE": 30,
         "USG": 44,
         "EFG": 18,
@@ -18660,12 +18642,12 @@
       },
       "injury": {
         "status": "Day-To-Day",
-        "bodyPart": "Not Injury Related",
+        "bodyPart": "Rest",
         "detail": null,
         "side": null,
-        "returnDate": "2026-07-09",
-        "comment": "Bryant will only play during the Las Vegas Summer League, NBA reporter Matthew Tynan reports.",
-        "updatedAt": "2026-06-30T18:28Z",
+        "returnDate": "2026-07-15",
+        "comment": "Bryant (rest) won't play in Sunday's Summer League game against the Bucks, Tom Orsborn of the San Antonio Express-News reports.",
+        "updatedAt": "2026-07-13T01:05Z",
         "source": "espn"
       }
     },
@@ -18818,7 +18800,7 @@
         "Deflections": 99,
         "PER": 29,
         "WinPct": 98,
-        "WS48": 67,
+        "WS48": 66,
         "VORP": 81,
         "PIE": 23,
         "USG": 17,
@@ -19039,7 +19021,7 @@
         "NetRtg": 53,
         "Contested": 75,
         "Deflections": 39,
-        "PER": 58,
+        "PER": 59,
         "WinPct": 27,
         "WS48": 34,
         "VORP": 57,
@@ -19113,16 +19095,7 @@
           }
         }
       },
-      "injury": {
-        "status": "Day-To-Day",
-        "bodyPart": "Back",
-        "detail": "Soreness",
-        "side": "Not Specified",
-        "returnDate": "2026-10-01",
-        "comment": "Coward (back) could potentially have more competition for touches with the Grizzlies selecting Cameron Boozer with the third overall pick.",
-        "updatedAt": "2026-06-24T17:16Z",
-        "source": "espn"
-      }
+      "injury": null
     },
     {
       "id": "1643052",
@@ -19273,7 +19246,7 @@
         "Deflections": 87,
         "PER": 65,
         "WinPct": 12,
-        "WS48": 71,
+        "WS48": 70,
         "VORP": 38,
         "PIE": 55,
         "USG": 31,
@@ -20386,9 +20359,9 @@
         "NetRtg": 100,
         "Contested": 24,
         "Deflections": 27,
-        "PER": 59,
+        "PER": 60,
         "WinPct": 85,
-        "WS48": 90,
+        "WS48": 89,
         "VORP": 28,
         "PIE": 60,
         "USG": 54,
@@ -20399,8 +20372,8 @@
         "PerimeterD": 74,
         "InteriorD": 46,
         "Hustle": 43,
-        "OverallImpact": 59,
-        "SystemicImpact": 59,
+        "OverallImpact": 60,
+        "SystemicImpact": 60,
         "Finishing": 77,
         "MidRange": 54,
         "ShotCreation": 35,
@@ -21280,7 +21253,7 @@
         "Deflections": 46,
         "PER": 32,
         "WinPct": 83,
-        "WS48": 52,
+        "WS48": 51,
         "VORP": 43,
         "PIE": 23,
         "USG": 18,
@@ -21798,16 +21771,7 @@
           }
         }
       },
-      "injury": {
-        "status": "Day-To-Day",
-        "bodyPart": "Knee",
-        "detail": "Surgery",
-        "side": "Right",
-        "returnDate": "2026-07-10",
-        "comment": "Hepburn (knee) will sign his two-way qualifying offer to return to the Raptors next season, per Michael Scotto of USA Today.",
-        "updatedAt": "2026-06-25T21:15Z",
-        "source": "espn"
-      }
+      "injury": null
     },
     {
       "id": "203991",
@@ -22179,7 +22143,7 @@
         "NetRtg": 69,
         "Contested": 44,
         "Deflections": 5,
-        "PER": 66,
+        "PER": 67,
         "WinPct": 69,
         "WS48": 34,
         "VORP": 38,
@@ -22850,7 +22814,7 @@
         "Deflections": 0,
         "PER": 35,
         "WinPct": 0,
-        "WS48": 68,
+        "WS48": 67,
         "VORP": 28,
         "PIE": 100,
         "USG": 29,
@@ -23517,7 +23481,7 @@
         "NetRtg": 73,
         "Contested": 10,
         "Deflections": 75,
-        "PER": 58,
+        "PER": 59,
         "WinPct": 55,
         "WS48": 72,
         "VORP": 92,
@@ -23530,8 +23494,8 @@
         "PerimeterD": 63,
         "InteriorD": 41,
         "Hustle": 80,
-        "OverallImpact": 70,
-        "SystemicImpact": 70,
+        "OverallImpact": 71,
+        "SystemicImpact": 71,
         "Finishing": 20,
         "MidRange": 32,
         "ShotCreation": 63,
@@ -23814,7 +23778,16 @@
           }
         }
       },
-      "injury": null
+      "injury": {
+        "status": "Day-To-Day",
+        "bodyPart": "Finger",
+        "detail": "Sprain",
+        "side": null,
+        "returnDate": "2026-07-13",
+        "comment": "Murray-Boyles (finger) has been ruled out for Saturday's Summer League game against Houston, Zulfi Sheikh of Sportsnet reports.",
+        "updatedAt": "2026-07-12T01:19Z",
+        "source": "espn"
+      }
     },
     {
       "id": "1629012",
@@ -25535,7 +25508,7 @@
         "Deflections": 47,
         "PER": 68,
         "WinPct": 0,
-        "WS48": 90,
+        "WS48": 89,
         "VORP": 28,
         "PIE": 26,
         "USG": 17,
@@ -27096,8 +27069,8 @@
         "Deflections": 75,
         "PER": 41,
         "WinPct": 94,
-        "WS48": 48,
-        "VORP": 49,
+        "WS48": 47,
+        "VORP": 50,
         "PIE": 56,
         "USG": 66,
         "EFG": 14,
@@ -27391,16 +27364,7 @@
           }
         }
       },
-      "injury": {
-        "status": "Day-To-Day",
-        "bodyPart": "Ankle",
-        "detail": "Sprain",
-        "side": "Left",
-        "returnDate": "2026-10-01",
-        "comment": "Wolf (ankle) is expected to open 2026-27 in a bench role after the Nets acquired Julius Randle ahead of Tuesday's draft.",
-        "updatedAt": "2026-06-24T19:42Z",
-        "source": "espn"
-      }
+      "injury": null
     },
     {
       "id": "203967",
@@ -27850,7 +27814,7 @@
     },
     {
       "id": "1642468",
-      "name": "Darius Brown",
+      "name": "Darius Brown II",
       "teamId": "CLE",
       "teamName": "Free Agent",
       "position": "NBA",
@@ -27920,12 +27884,12 @@
         "usg": 16.7,
         "defRating": 180,
         "pie": 0,
-        "per": 15,
-        "bpm": -4.3,
-        "obpm": 0,
-        "dbpm": 0,
+        "per": -7.7,
+        "bpm": -18.7,
+        "obpm": -16.3,
+        "dbpm": -2.4,
         "vorp": 0,
-        "ws48": -5.4,
+        "ws48": -0.269,
         "netRtg": -80,
         "astPct": 0,
         "astTo": 0,
@@ -27935,8 +27899,8 @@
         "drebPct": 1,
         "offRtg": 100,
         "ftaRate": 0,
-        "isRealBRef": false,
-        "si": 53,
+        "isRealBRef": true,
+        "si": -46,
         "rTS": -58.2
       },
       "hustle": {
@@ -27984,7 +27948,7 @@
         "Playmaking": 0,
         "Rebounding": 96,
         "Efficiency": 0,
-        "Impact": 10,
+        "Impact": 0,
         "Shooting": 3,
         "Defense": 31,
         "OReb": 92,
@@ -27995,7 +27959,7 @@
         "NetRtg": 0,
         "Contested": 0,
         "Deflections": 0,
-        "PER": 55,
+        "PER": 0,
         "WinPct": 100,
         "WS48": 0,
         "VORP": 28,
@@ -28008,8 +27972,8 @@
         "PerimeterD": 16,
         "InteriorD": 27,
         "Hustle": 4,
-        "OverallImpact": 16,
-        "SystemicImpact": 16,
+        "OverallImpact": 0,
+        "SystemicImpact": 0,
         "Finishing": 14,
         "MidRange": 79,
         "ShotCreation": 1,
@@ -28036,7 +28000,7 @@
       "rating": {
         "ovr": 68,
         "off": 60,
-        "def": 75,
+        "def": 62,
         "rebounding": 92,
         "tier": "Bronze",
         "color": "#cd7f32",
@@ -28062,10 +28026,10 @@
             "label": "PLAY"
           },
           "def": {
-            "grade": "B",
-            "pct": 67,
-            "raw": "180 DRTG / 0.0 DEFL",
-            "label": "DEF"
+            "grade": "C",
+            "pct": 49,
+            "raw": "DBPM: -2.4 / 0.0s 0.0b",
+            "label": "DEFENSE"
           }
         }
       },
@@ -28520,7 +28484,7 @@
         "bodyPart": "Ankle",
         "detail": "Surgery",
         "side": "Right",
-        "returnDate": "2026-07-03",
+        "returnDate": "2026-10-01",
         "comment": "The Spurs tendered a two-way qualifying offer to Jones Garcia (ankle) on Monday, Keith Smith of Spotrac.com reports.",
         "updatedAt": "2026-06-30T01:04Z",
         "source": "espn"
@@ -29121,7 +29085,7 @@
         "Deflections": 95,
         "PER": 91,
         "WinPct": 19,
-        "WS48": 81,
+        "WS48": 80,
         "VORP": 67,
         "PIE": 90,
         "USG": 55,
@@ -29193,16 +29157,7 @@
           }
         }
       },
-      "injury": {
-        "status": "Day-To-Day",
-        "bodyPart": "Thumb",
-        "detail": "Surgery",
-        "side": "Left",
-        "returnDate": "2026-10-01",
-        "comment": "Sharpe (thumb) will sign a two-year, $20 million deal with the Nets, Shams Charania of ESPN reports.",
-        "updatedAt": "2026-06-29T14:55Z",
-        "source": "espn"
-      }
+      "injury": null
     },
     {
       "id": "1628368",
@@ -30029,7 +29984,7 @@
         "NetRtg": 41,
         "Contested": 76,
         "Deflections": 7,
-        "PER": 61,
+        "PER": 62,
         "WinPct": 47,
         "WS48": 75,
         "VORP": 33,
@@ -30042,8 +29997,8 @@
         "PerimeterD": 41,
         "InteriorD": 68,
         "Hustle": 23,
-        "OverallImpact": 58,
-        "SystemicImpact": 58,
+        "OverallImpact": 59,
+        "SystemicImpact": 59,
         "Finishing": 57,
         "MidRange": 26,
         "ShotCreation": 63,
@@ -30549,16 +30504,7 @@
           }
         }
       },
-      "injury": {
-        "status": "Day-To-Day",
-        "bodyPart": "Hamstring",
-        "detail": "Strain",
-        "side": "Right",
-        "returnDate": "2026-10-01",
-        "comment": "DeRozan (hamstring) could be working with a new point guard in 2026-27 after Sacramento took Darius Acuff in Tuesday's draft.",
-        "updatedAt": "2026-06-25T18:07Z",
-        "source": "espn"
-      }
+      "injury": null
     },
     {
       "id": "1629731",
@@ -31673,16 +31619,7 @@
           }
         }
       },
-      "injury": {
-        "status": "Day-To-Day",
-        "bodyPart": "Illness",
-        "detail": "Not Specified",
-        "side": "Not Specified",
-        "returnDate": "2026-10-01",
-        "comment": "Schroder (illness) has been ruled out for Game 4 of the Eastern Conference Finals against the Knicks on Monday, independent journalist Tom Withers  reports.",
-        "updatedAt": "2026-06-16T14:39Z",
-        "source": "espn"
-      }
+      "injury": null
     },
     {
       "id": "1641726",
@@ -32288,8 +32225,8 @@
         "Deflections": 66,
         "PER": 40,
         "WinPct": 51,
-        "WS48": 51,
-        "VORP": 49,
+        "WS48": 50,
+        "VORP": 50,
         "PIE": 18,
         "USG": 20,
         "EFG": 74,
@@ -34072,7 +34009,7 @@
         "Deflections": 19,
         "PER": 86,
         "WinPct": 3,
-        "WS48": 48,
+        "WS48": 47,
         "VORP": 46,
         "PIE": 86,
         "USG": 74,
@@ -34973,7 +34910,7 @@
         "Deflections": 83,
         "PER": 32,
         "WinPct": 72,
-        "WS48": 51,
+        "WS48": 50,
         "VORP": 81,
         "PIE": 34,
         "USG": 34,
@@ -37230,7 +37167,7 @@
         "Deflections": 5,
         "PER": 14,
         "WinPct": 47,
-        "WS48": 52,
+        "WS48": 51,
         "VORP": 33,
         "PIE": 12,
         "USG": 11,
@@ -37676,7 +37613,7 @@
         "Deflections": 47,
         "PER": 63,
         "WinPct": 23,
-        "WS48": 67,
+        "WS48": 66,
         "VORP": 28,
         "PIE": 41,
         "USG": 3,
@@ -38642,12 +38579,12 @@
       },
       "injury": {
         "status": "Day-To-Day",
-        "bodyPart": "Foot",
-        "detail": "Surgery",
-        "side": "Left",
-        "returnDate": "2026-07-04",
-        "comment": "Demin (foot) could have more competition for playmaking opportunities at point guard after the Nets took Mikel Brown in Tuesday's draft.",
-        "updatedAt": "2026-06-24T19:15Z",
+        "bodyPart": "Rest",
+        "detail": null,
+        "side": null,
+        "returnDate": "2026-07-14",
+        "comment": "Demin (rest) won't play in Saturday's Summer League game against the Hawks, Erik Slater of ClutchPoints.com reports.",
+        "updatedAt": "2026-07-11T23:27Z",
         "source": "espn"
       }
     },
@@ -39023,7 +38960,7 @@
         "Deflections": 59,
         "PER": 55,
         "WinPct": 0,
-        "WS48": 58,
+        "WS48": 57,
         "VORP": 28,
         "PIE": 48,
         "USG": 37,
@@ -39244,7 +39181,7 @@
         "NetRtg": 100,
         "Contested": 87,
         "Deflections": 22,
-        "PER": 60,
+        "PER": 61,
         "WinPct": 94,
         "WS48": 89,
         "VORP": 28,
@@ -41343,16 +41280,7 @@
           }
         }
       },
-      "injury": {
-        "status": "Day-To-Day",
-        "bodyPart": "Groin",
-        "detail": "Soreness",
-        "side": "Right",
-        "returnDate": "2026-10-01",
-        "comment": "Harris (groin) exercised his $3.82 million player option for the 2026-27 season Monday, Keith Smith of Spotrac.com reports.",
-        "updatedAt": "2026-06-23T13:30Z",
-        "source": "espn"
-      }
+      "injury": null
     },
     {
       "id": "1627780",
@@ -41798,7 +41726,16 @@
           }
         }
       },
-      "injury": null
+      "injury": {
+        "status": "Day-To-Day",
+        "bodyPart": "Oblique",
+        "detail": "Strain",
+        "side": "Not Specified",
+        "returnDate": "2026-10-01",
+        "comment": "Trent (oblique) signed a four-year, $64 million contract with the Bucks on Saturday. Shams Charania of ESPN reports.",
+        "updatedAt": "2026-07-11T21:23Z",
+        "source": "espn"
+      }
     },
     {
       "id": "203507",
@@ -42850,7 +42787,7 @@
         "Deflections": 6,
         "PER": 35,
         "WinPct": 90,
-        "WS48": 74,
+        "WS48": 73,
         "VORP": 57,
         "PIE": 41,
         "USG": 13,
@@ -43071,7 +43008,7 @@
         "NetRtg": 51,
         "Contested": 21,
         "Deflections": 70,
-        "PER": 66,
+        "PER": 67,
         "WinPct": 49,
         "WS48": 70,
         "VORP": 78,
@@ -43368,16 +43305,7 @@
           }
         }
       },
-      "injury": {
-        "status": "Day-To-Day",
-        "bodyPart": "Shoulder",
-        "detail": "Sprain",
-        "side": "Left",
-        "returnDate": "2026-10-01",
-        "comment": "Head coach Billy Donovan said Friday that Yabusele (shoulder/elbow) will not play in Chicago's final two regular-season games, K.C. Johnson of Chicago Sports Network reports.",
-        "updatedAt": "2026-06-16T14:42Z",
-        "source": "espn"
-      }
+      "injury": null
     },
     {
       "id": "1630611",
@@ -43529,7 +43457,7 @@
         "PER": 48,
         "WinPct": 39,
         "WS48": 46,
-        "VORP": 49,
+        "VORP": 50,
         "PIE": 53,
         "USG": 48,
         "EFG": 75,
@@ -47855,16 +47783,7 @@
           }
         }
       },
-      "injury": {
-        "status": "Day-To-Day",
-        "bodyPart": "Ankle",
-        "detail": "Soreness",
-        "side": "Right",
-        "returnDate": "2026-07-04",
-        "comment": "Stevens (ankle) is listed out for Sunday's game against the Trail Blazers.",
-        "updatedAt": "2026-06-16T14:41Z",
-        "source": "espn"
-      }
+      "injury": null
     },
     {
       "id": "1630191",
@@ -48310,16 +48229,7 @@
           }
         }
       },
-      "injury": {
-        "status": "Day-To-Day",
-        "bodyPart": "Ribs",
-        "detail": "Fracture",
-        "side": "Not Specified",
-        "returnDate": "2026-10-01",
-        "comment": "Zubac will miss the rest of the season with a fractured rib, Dustin Dopirak of The Indianapolis Star reports.",
-        "updatedAt": "2026-06-16T14:42Z",
-        "source": "espn"
-      }
+      "injury": null
     },
     {
       "id": "1631120",
@@ -50486,7 +50396,7 @@
         "Deflections": 45,
         "PER": 15,
         "WinPct": 91,
-        "WS48": 48,
+        "WS48": 47,
         "VORP": 18,
         "PIE": 12,
         "USG": 12,
@@ -51376,7 +51286,7 @@
         "NetRtg": 66,
         "Contested": 68,
         "Deflections": 17,
-        "PER": 61,
+        "PER": 62,
         "WinPct": 58,
         "WS48": 46,
         "VORP": 70,
@@ -51601,7 +51511,7 @@
         "Deflections": 92,
         "PER": 27,
         "WinPct": 81,
-        "WS48": 44,
+        "WS48": 43,
         "VORP": 46,
         "PIE": 12,
         "USG": 16,
@@ -51824,7 +51734,7 @@
         "Deflections": 84,
         "PER": 81,
         "WinPct": 64,
-        "WS48": 93,
+        "WS48": 92,
         "VORP": 67,
         "PIE": 75,
         "USG": 23,
@@ -52119,7 +52029,16 @@
           }
         }
       },
-      "injury": null
+      "injury": {
+        "status": "Day-To-Day",
+        "bodyPart": "Wrist",
+        "detail": "Surgery",
+        "side": "Left",
+        "returnDate": "2026-10-01",
+        "comment": "Brunson is set to undergo surgery on his right wrist/forearm area Tuesday and is expected to require at least two months of rehab, Ian Begley of SportsNet New York reports.",
+        "updatedAt": "2026-07-07T15:14Z",
+        "source": "espn"
+      }
     },
     {
       "id": "1631105",
@@ -52716,7 +52635,7 @@
         "Deflections": 50,
         "PER": 91,
         "WinPct": 69,
-        "WS48": 80,
+        "WS48": 79,
         "VORP": 97,
         "PIE": 97,
         "USG": 90,
@@ -53615,7 +53534,7 @@
         "NetRtg": 79,
         "Contested": 24,
         "Deflections": 91,
-        "PER": 60,
+        "PER": 61,
         "WinPct": 71,
         "WS48": 40,
         "VORP": 83,
@@ -55705,7 +55624,16 @@
           }
         }
       },
-      "injury": null
+      "injury": {
+        "status": "Day-To-Day",
+        "bodyPart": "Knee",
+        "detail": null,
+        "side": "Left",
+        "returnDate": "2026-07-14",
+        "comment": "Watkins (knee) won't play in Sunday's Las Vegas Summer League game against the Kings, Staff Editor of Bullets Forever Greg Finberg reports.",
+        "updatedAt": "2026-07-12T23:38Z",
+        "source": "espn"
+      }
     },
     {
       "id": "1642419",
@@ -56532,10 +56460,10 @@
         "NetRtg": 42,
         "Contested": 91,
         "Deflections": 57,
-        "PER": 61,
+        "PER": 62,
         "WinPct": 35,
         "WS48": 21,
-        "VORP": 49,
+        "VORP": 50,
         "PIE": 64,
         "USG": 86,
         "EFG": 61,
@@ -57275,7 +57203,16 @@
           }
         }
       },
-      "injury": null
+      "injury": {
+        "status": "Day-To-Day",
+        "bodyPart": "Undisclosed",
+        "detail": null,
+        "side": null,
+        "returnDate": "2026-07-15",
+        "comment": "Richardson (undisclosed) will miss Sunday's Las Vegas Summer League game against the Trail Blazers.",
+        "updatedAt": "2026-07-12T22:39Z",
+        "source": "espn"
+      }
     },
     {
       "id": "1642914",
@@ -57424,7 +57361,7 @@
         "NetRtg": 26,
         "Contested": 45,
         "Deflections": 82,
-        "PER": 66,
+        "PER": 67,
         "WinPct": 25,
         "WS48": 59,
         "VORP": 53,
@@ -58318,7 +58255,7 @@
         "Deflections": 8,
         "PER": 58,
         "WinPct": 11,
-        "WS48": 44,
+        "WS48": 43,
         "VORP": 70,
         "PIE": 46,
         "USG": 44,
@@ -59219,7 +59156,7 @@
         "Deflections": 14,
         "PER": 45,
         "WinPct": 99,
-        "WS48": 87,
+        "WS48": 86,
         "VORP": 78,
         "PIE": 75,
         "USG": 26,
@@ -59888,7 +59825,7 @@
         "Deflections": 37,
         "PER": 90,
         "WinPct": 99,
-        "WS48": 83,
+        "WS48": 82,
         "VORP": 64,
         "PIE": 97,
         "USG": 94,
@@ -60341,7 +60278,7 @@
         "NetRtg": 49,
         "Contested": 17,
         "Deflections": 12,
-        "PER": 59,
+        "PER": 60,
         "WinPct": 43,
         "WS48": 60,
         "VORP": 64,
@@ -60354,8 +60291,8 @@
         "PerimeterD": 32,
         "InteriorD": 48,
         "Hustle": 39,
-        "OverallImpact": 53,
-        "SystemicImpact": 53,
+        "OverallImpact": 54,
+        "SystemicImpact": 54,
         "Finishing": 52,
         "MidRange": 43,
         "ShotCreation": 51,
@@ -62208,7 +62145,16 @@
           }
         }
       },
-      "injury": null
+      "injury": {
+        "status": "Day-To-Day",
+        "bodyPart": "Back",
+        "detail": "Soreness",
+        "side": null,
+        "returnDate": "2026-07-13",
+        "comment": "Beringer has been ruled out for Saturday's Summer League game against the Nuggets due to back tightness.",
+        "updatedAt": "2026-07-11T22:42Z",
+        "source": "espn"
+      }
     },
     {
       "id": "1629111",
@@ -62359,7 +62305,7 @@
         "Deflections": 13,
         "PER": 71,
         "WinPct": 53,
-        "WS48": 67,
+        "WS48": 66,
         "VORP": 57,
         "PIE": 54,
         "USG": 43,
@@ -63483,7 +63429,7 @@
         "Deflections": 11,
         "PER": 28,
         "WinPct": 11,
-        "WS48": 48,
+        "WS48": 47,
         "VORP": 28,
         "PIE": 15,
         "USG": 26,
@@ -64460,7 +64406,7 @@
     },
     {
       "id": "202685",
-      "name": "Jonas Valančiūnas",
+      "name": "Jonas Valanciunas",
       "teamId": "DEN",
       "teamName": "Free Agent",
       "position": "NBA",
@@ -64830,7 +64776,7 @@
         "Deflections": 95,
         "PER": 22,
         "WinPct": 61,
-        "WS48": 42,
+        "WS48": 41,
         "VORP": 33,
         "PIE": 26,
         "USG": 7,
@@ -66186,7 +66132,7 @@
         "Deflections": 100,
         "PER": 28,
         "WinPct": 100,
-        "WS48": 51,
+        "WS48": 50,
         "VORP": 38,
         "PIE": 44,
         "USG": 19,
@@ -67754,7 +67700,7 @@
         "NetRtg": 80,
         "Contested": 65,
         "Deflections": 82,
-        "PER": 61,
+        "PER": 62,
         "WinPct": 85,
         "WS48": 82,
         "VORP": 91,
@@ -68051,16 +67997,7 @@
           }
         }
       },
-      "injury": {
-        "status": "Day-To-Day",
-        "bodyPart": "Ankle",
-        "detail": "Soreness",
-        "side": "Left",
-        "returnDate": "2026-10-01",
-        "comment": "Minott (ankle) will sign a two-year, $9 million deal to stay with the Nets, Shams Charania of ESPN reports.",
-        "updatedAt": "2026-06-29T14:49Z",
-        "source": "espn"
-      }
+      "injury": null
     },
     {
       "id": "1642490",
@@ -68434,7 +68371,7 @@
         "Deflections": 84,
         "PER": 11,
         "WinPct": 78,
-        "WS48": 48,
+        "WS48": 47,
         "VORP": 43,
         "PIE": 5,
         "USG": 4,
@@ -70887,7 +70824,7 @@
         "Deflections": 98,
         "PER": 88,
         "WinPct": 85,
-        "WS48": 92,
+        "WS48": 91,
         "VORP": 33,
         "PIE": 85,
         "USG": 5,
@@ -71556,7 +71493,7 @@
         "Deflections": 52,
         "PER": 70,
         "WinPct": 34,
-        "WS48": 80,
+        "WS48": 79,
         "VORP": 53,
         "PIE": 65,
         "USG": 10,
@@ -72680,7 +72617,7 @@
         "Deflections": 40,
         "PER": 88,
         "WinPct": 48,
-        "WS48": 92,
+        "WS48": 91,
         "VORP": 83,
         "PIE": 88,
         "USG": 40,
@@ -73796,7 +73733,7 @@
         "PER": 48,
         "WinPct": 93,
         "WS48": 72,
-        "VORP": 49,
+        "VORP": 50,
         "PIE": 54,
         "USG": 44,
         "EFG": 59,
@@ -74768,16 +74705,7 @@
           }
         }
       },
-      "injury": {
-        "status": "Day-To-Day",
-        "bodyPart": "Abdomen",
-        "detail": "Surgery",
-        "side": "Not Specified",
-        "returnDate": "2026-07-04",
-        "comment": "Gilbert signed a two-way contract with the Hawks on Tuesday, according to Jake Fischer of BleacherReport.com.",
-        "updatedAt": "2026-06-16T14:28Z",
-        "source": "espn"
-      }
+      "injury": null
     },
     {
       "id": "201142",
@@ -74928,7 +74856,7 @@
         "Deflections": 10,
         "PER": 93,
         "WinPct": 76,
-        "WS48": 93,
+        "WS48": 92,
         "VORP": 98,
         "PIE": 94,
         "USG": 89,
@@ -78514,7 +78442,7 @@
         "Deflections": 95,
         "PER": 20,
         "WinPct": 50,
-        "WS48": 42,
+        "WS48": 41,
         "VORP": 53,
         "PIE": 21,
         "USG": 8,
@@ -78960,7 +78888,7 @@
         "Deflections": 28,
         "PER": 87,
         "WinPct": 37,
-        "WS48": 83,
+        "WS48": 82,
         "VORP": 61,
         "PIE": 82,
         "USG": 90,
@@ -79184,7 +79112,7 @@
         "PER": 44,
         "WinPct": 31,
         "WS48": 53,
-        "VORP": 49,
+        "VORP": 50,
         "PIE": 50,
         "USG": 12,
         "EFG": 86,
@@ -80156,16 +80084,7 @@
           }
         }
       },
-      "injury": {
-        "status": "Day-To-Day",
-        "bodyPart": "Elbow",
-        "detail": "Sprain",
-        "side": "Left",
-        "returnDate": "2026-10-01",
-        "comment": "George's (elbow) role becomes less certain after Washington added another high-upside wing prospect in AJ Dybantsa at the top of the draft.",
-        "updatedAt": "2026-06-24T15:01Z",
-        "source": "espn"
-      }
+      "injury": null
     },
     {
       "id": "1643018",
@@ -80388,16 +80307,7 @@
           }
         }
       },
-      "injury": {
-        "status": "Day-To-Day",
-        "bodyPart": "Ankle",
-        "detail": "Sprain",
-        "side": "Right",
-        "returnDate": "2026-07-03",
-        "comment": "Cryer (ankle) will be re-evaluated in one week after an MRI confirmed a right-ankle sprain.",
-        "updatedAt": "2026-06-16T14:29Z",
-        "source": "espn"
-      }
+      "injury": null
     },
     {
       "id": "1630163",
@@ -80995,7 +80905,7 @@
         "PER": 19,
         "WinPct": 89,
         "WS48": 54,
-        "VORP": 49,
+        "VORP": 50,
         "PIE": 17,
         "USG": 24,
         "EFG": 31,
@@ -81886,7 +81796,7 @@
         "Deflections": 24,
         "PER": 92,
         "WinPct": 82,
-        "WS48": 74,
+        "WS48": 73,
         "VORP": 93,
         "PIE": 96,
         "USG": 89,
@@ -86141,7 +86051,7 @@
         "Deflections": 85,
         "PER": 19,
         "WinPct": 93,
-        "WS48": 42,
+        "WS48": 41,
         "VORP": 28,
         "PIE": 26,
         "USG": 61,
@@ -86810,7 +86720,7 @@
         "Deflections": 83,
         "PER": 95,
         "WinPct": 64,
-        "WS48": 96,
+        "WS48": 95,
         "VORP": 76,
         "PIE": 90,
         "USG": 36,
@@ -87337,16 +87247,7 @@
           }
         }
       },
-      "injury": {
-        "status": "Day-To-Day",
-        "bodyPart": "Shoulder",
-        "detail": "Pinched Nerve",
-        "side": "Left",
-        "returnDate": "2026-10-01",
-        "comment": "Bagley (shoulder) agreed to a one-year deal with the Nuggets on Wednesday, Shams Charania of ESPN reports.",
-        "updatedAt": "2026-07-02T04:42Z",
-        "source": "espn"
-      }
+      "injury": null
     },
     {
       "id": "203486",
@@ -87721,7 +87622,7 @@
         "PER": 53,
         "WinPct": 32,
         "WS48": 24,
-        "VORP": 49,
+        "VORP": 50,
         "PIE": 53,
         "USG": 74,
         "EFG": 52,
@@ -87792,16 +87693,7 @@
           }
         }
       },
-      "injury": {
-        "status": "Day-To-Day",
-        "bodyPart": "Ankle",
-        "detail": "Sprain",
-        "side": "Right",
-        "returnDate": "2026-10-01",
-        "comment": "Buzelis (ankle) will have more competition for playing time in the frontcourt following the selections of Caleb Wilson and Dailyn Swain as well as Chicago's acquisition of Nic Claxton (finger).",
-        "updatedAt": "2026-06-24T18:11Z",
-        "source": "espn"
-      }
+      "injury": null
     },
     {
       "id": "1629680",
@@ -89966,7 +89858,7 @@
         "NetRtg": 82,
         "Contested": 58,
         "Deflections": 51,
-        "PER": 58,
+        "PER": 59,
         "WinPct": 81,
         "WS48": 80,
         "VORP": 94,
@@ -91083,7 +90975,7 @@
         "Deflections": 87,
         "PER": 93,
         "WinPct": 85,
-        "WS48": 98,
+        "WS48": 97,
         "VORP": 80,
         "PIE": 82,
         "USG": 2,
@@ -91973,7 +91865,7 @@
         "NetRtg": 13,
         "Contested": 59,
         "Deflections": 78,
-        "PER": 58,
+        "PER": 59,
         "WinPct": 69,
         "WS48": 52,
         "VORP": 28,
@@ -93323,7 +93215,7 @@
         "PER": 48,
         "WinPct": 38,
         "WS48": 34,
-        "VORP": 49,
+        "VORP": 50,
         "PIE": 37,
         "USG": 48,
         "EFG": 34,
@@ -93626,7 +93518,16 @@
           }
         }
       },
-      "injury": null
+      "injury": {
+        "status": "Day-To-Day",
+        "bodyPart": "Ankle",
+        "detail": "Sprain",
+        "side": "Left",
+        "returnDate": "2026-10-01",
+        "comment": "Gardner (ankle) won't participate in the Las Vegas Summer League, per Ira Winderman of the South Florida Sun Sentinel.",
+        "updatedAt": "2026-07-08T19:52Z",
+        "source": "espn"
+      }
     },
     {
       "id": "1642368",
@@ -94221,9 +94122,9 @@
         "NetRtg": 29,
         "Contested": 39,
         "Deflections": 37,
-        "PER": 59,
+        "PER": 60,
         "WinPct": 29,
-        "WS48": 48,
+        "WS48": 47,
         "VORP": 61,
         "PIE": 63,
         "USG": 62,
@@ -94676,7 +94577,7 @@
         "NetRtg": 69,
         "Contested": 79,
         "Deflections": 44,
-        "PER": 59,
+        "PER": 60,
         "WinPct": 72,
         "WS48": 49,
         "VORP": 78,
@@ -94689,8 +94590,8 @@
         "PerimeterD": 66,
         "InteriorD": 74,
         "Hustle": 59,
-        "OverallImpact": 66,
-        "SystemicImpact": 66,
+        "OverallImpact": 67,
+        "SystemicImpact": 67,
         "Finishing": 57,
         "MidRange": 51,
         "ShotCreation": 39,
@@ -94901,7 +94802,7 @@
         "Deflections": 45,
         "PER": 90,
         "WinPct": 88,
-        "WS48": 97,
+        "WS48": 96,
         "VORP": 90,
         "PIE": 85,
         "USG": 20,
@@ -96480,7 +96381,7 @@
         "Deflections": 63,
         "PER": 100,
         "WinPct": 84,
-        "WS48": 99,
+        "WS48": 98,
         "VORP": 100,
         "PIE": 100,
         "USG": 94,
@@ -96775,16 +96676,7 @@
           }
         }
       },
-      "injury": {
-        "status": "Day-To-Day",
-        "bodyPart": "Ankle",
-        "detail": "Sprain",
-        "side": "Left",
-        "returnDate": "2026-10-01",
-        "comment": "Jovic (ankle) is out for Tuesday's Play-In Game against the Hornets.",
-        "updatedAt": "2026-06-16T14:34Z",
-        "source": "espn"
-      }
+      "injury": null
     },
     {
       "id": "1642260",
@@ -97685,16 +97577,7 @@
           }
         }
       },
-      "injury": {
-        "status": "Day-To-Day",
-        "bodyPart": "Shoulder",
-        "detail": "Surgery",
-        "side": "Left",
-        "returnDate": "2026-10-01",
-        "comment": "Essengue (shoulder) appears to be buried on the depth chart in the frontcourt after the Bulls chose Caleb Wilson and Dailyn Swain in Tuesday's draft.",
-        "updatedAt": "2026-06-24T18:17Z",
-        "source": "espn"
-      }
+      "injury": null
     },
     {
       "id": "1641730",
@@ -98149,7 +98032,16 @@
           }
         }
       },
-      "injury": null
+      "injury": {
+        "status": "Day-To-Day",
+        "bodyPart": "Rest",
+        "detail": null,
+        "side": null,
+        "returnDate": "2026-07-15",
+        "comment": "Penda (rest) won't play in Sunday's Summer League game against Portland.",
+        "updatedAt": "2026-07-12T22:38Z",
+        "source": "espn"
+      }
     },
     {
       "id": "1642849",
@@ -99201,8 +99093,8 @@
         "Deflections": 18,
         "PER": 87,
         "WinPct": 3,
-        "WS48": 68,
-        "VORP": 49,
+        "WS48": 67,
+        "VORP": 50,
         "PIE": 92,
         "USG": 81,
         "EFG": 76,
@@ -99871,7 +99763,7 @@
         "PER": 73,
         "WinPct": 24,
         "WS48": 65,
-        "VORP": 49,
+        "VORP": 50,
         "PIE": 59,
         "USG": 50,
         "EFG": 88,
@@ -100539,7 +100431,7 @@
         "Deflections": 67,
         "PER": 51,
         "WinPct": 47,
-        "WS48": 94,
+        "WS48": 93,
         "VORP": 28,
         "PIE": 21,
         "USG": 0,
@@ -100762,7 +100654,7 @@
         "Deflections": 41,
         "PER": 89,
         "WinPct": 1,
-        "WS48": 80,
+        "WS48": 79,
         "VORP": 28,
         "PIE": 83,
         "USG": 32,
@@ -102118,7 +102010,7 @@
         "Deflections": 5,
         "PER": 78,
         "WinPct": 52,
-        "WS48": 48,
+        "WS48": 47,
         "VORP": 87,
         "PIE": 88,
         "USG": 92,
@@ -102573,7 +102465,7 @@
         "Deflections": 22,
         "PER": 35,
         "WinPct": 71,
-        "WS48": 60,
+        "WS48": 59,
         "VORP": 38,
         "PIE": 76,
         "USG": 23,
@@ -104652,16 +104544,7 @@
           }
         }
       },
-      "injury": {
-        "status": "Day-To-Day",
-        "bodyPart": "Knee",
-        "detail": "Sprain",
-        "side": "Right",
-        "returnDate": "2026-10-01",
-        "comment": "Nance (knee) will suit up for Sunday's game against the Sixers but will not play, Ky Carlin of USA Today reports.",
-        "updatedAt": "2026-06-16T14:37Z",
-        "source": "espn"
-      }
+      "injury": null
     },
     {
       "id": "1631212",
@@ -105785,16 +105668,7 @@
           }
         }
       },
-      "injury": {
-        "status": "Day-To-Day",
-        "bodyPart": "Foot",
-        "detail": "Not Specified",
-        "side": "Right",
-        "returnDate": "2026-10-01",
-        "comment": "Post (foot) averaged 7.7 points, 4.0 rebounds, 1.4 assists, 0.5 blocks and 0.4 steals in 17.3 minutes per game across 67 regular-season appearances (35 starts) in 2025-26.",
-        "updatedAt": "2026-06-16T14:39Z",
-        "source": "espn"
-      }
+      "injury": null
     },
     {
       "id": "1629628",
@@ -105945,7 +105819,7 @@
         "Deflections": 36,
         "PER": 74,
         "WinPct": 71,
-        "WS48": 58,
+        "WS48": 57,
         "VORP": 67,
         "PIE": 70,
         "USG": 87,
@@ -106835,9 +106709,9 @@
         "NetRtg": 76,
         "Contested": 50,
         "Deflections": 96,
-        "PER": 61,
+        "PER": 62,
         "WinPct": 79,
-        "WS48": 74,
+        "WS48": 73,
         "VORP": 91,
         "PIE": 58,
         "USG": 67,
@@ -108407,7 +108281,7 @@
         "Deflections": 63,
         "PER": 23,
         "WinPct": 60,
-        "WS48": 51,
+        "WS48": 50,
         "VORP": 78,
         "PIE": 31,
         "USG": 16,
@@ -109308,7 +109182,7 @@
         "Deflections": 80,
         "PER": 25,
         "WinPct": 66,
-        "WS48": 46,
+        "WS48": 45,
         "VORP": 46,
         "PIE": 30,
         "USG": 14,
@@ -110432,7 +110306,7 @@
         "Deflections": 16,
         "PER": 27,
         "WinPct": 90,
-        "WS48": 68,
+        "WS48": 67,
         "VORP": 74,
         "PIE": 29,
         "USG": 17,
@@ -112455,7 +112329,7 @@
         "NetRtg": 45,
         "Contested": 5,
         "Deflections": 44,
-        "PER": 58,
+        "PER": 59,
         "WinPct": 44,
         "WS48": 17,
         "VORP": 38,
@@ -112468,8 +112342,8 @@
         "PerimeterD": 49,
         "InteriorD": 30,
         "Hustle": 49,
-        "OverallImpact": 50,
-        "SystemicImpact": 50,
+        "OverallImpact": 51,
+        "SystemicImpact": 51,
         "Finishing": 73,
         "MidRange": 88,
         "ShotCreation": 86,
@@ -114018,7 +113892,7 @@
         "Deflections": 77,
         "PER": 7,
         "WinPct": 80,
-        "WS48": 44,
+        "WS48": 43,
         "VORP": 23,
         "PIE": 1,
         "USG": 1,
@@ -114241,7 +114115,7 @@
         "Deflections": 100,
         "PER": 23,
         "WinPct": 100,
-        "WS48": 90,
+        "WS48": 89,
         "VORP": 28,
         "PIE": 0,
         "USG": 19,
@@ -114910,7 +114784,7 @@
         "Deflections": 10,
         "PER": 63,
         "WinPct": 83,
-        "WS48": 80,
+        "WS48": 79,
         "VORP": 43,
         "PIE": 56,
         "USG": 6,
@@ -116043,7 +115917,7 @@
         "Deflections": 78,
         "PER": 35,
         "WinPct": 79,
-        "WS48": 45,
+        "WS48": 44,
         "VORP": 38,
         "PIE": 33,
         "USG": 48,
@@ -116561,16 +116435,7 @@
           }
         }
       },
-      "injury": {
-        "status": "Day-To-Day",
-        "bodyPart": "Thumb",
-        "detail": "Sprain",
-        "side": "Right",
-        "returnDate": "2026-10-01",
-        "comment": "The Grizzlies' selection of Cameron Boozer creates additional frontcourt competition, but Hendricks (thumb) should still have an opportunity to carve out a significant role entering 2026-27.",
-        "updatedAt": "2026-06-24T17:42Z",
-        "source": "espn"
-      }
+      "injury": null
     },
     {
       "id": "1629611",
@@ -117845,7 +117710,7 @@
         "Deflections": 3,
         "PER": 42,
         "WinPct": 82,
-        "WS48": 51,
+        "WS48": 50,
         "VORP": 57,
         "PIE": 36,
         "USG": 43,
@@ -119407,7 +119272,7 @@
         "PER": 93,
         "WinPct": 2,
         "WS48": 91,
-        "VORP": 49,
+        "VORP": 50,
         "PIE": 84,
         "USG": 89,
         "EFG": 48,
@@ -119935,12 +119800,12 @@
       },
       "injury": {
         "status": "Day-To-Day",
-        "bodyPart": "Foot",
-        "detail": "Sprain",
-        "side": "Right",
-        "returnDate": "2026-10-01",
-        "comment": "The arrival of AJ Dybantsa creates additional competition on the wing, though Johnson (foot) should still maintain a decent role in Washington's young core.",
-        "updatedAt": "2026-06-24T14:44Z",
+        "bodyPart": "Undisclosed",
+        "detail": null,
+        "side": null,
+        "returnDate": "2026-07-14",
+        "comment": "Johnson (undisclosed) won't play in Sunday's Summer League game against the Kings, Joshua Valdez of ClutchPoints.com reports.",
+        "updatedAt": "2026-07-12T23:40Z",
         "source": "espn"
       }
     },
@@ -123902,7 +123767,7 @@
         "Deflections": 49,
         "PER": 32,
         "WinPct": 78,
-        "WS48": 46,
+        "WS48": 45,
         "VORP": 43,
         "PIE": 57,
         "USG": 39,
@@ -126578,7 +126443,7 @@
         "Deflections": 86,
         "PER": 92,
         "WinPct": 36,
-        "WS48": 83,
+        "WS48": 82,
         "VORP": 38,
         "PIE": 88,
         "USG": 36,
@@ -126875,12 +126740,12 @@
       },
       "injury": {
         "status": "Day-To-Day",
-        "bodyPart": "Hip",
-        "detail": "Pinched Nerve",
-        "side": "Left",
-        "returnDate": "2026-10-01",
-        "comment": "Clayton (hip) is out for Sunday's game against the Rockets.",
-        "updatedAt": "2026-06-16T14:29Z",
+        "bodyPart": "Knee",
+        "detail": "Sprain",
+        "side": "Right",
+        "returnDate": "2026-07-13",
+        "comment": "Clayton (knee) won't play in Friday's game against Chicago, Damichael Cole of The Memphis Commercial Appeal reports.",
+        "updatedAt": "2026-07-10T23:49Z",
         "source": "espn"
       }
     },
@@ -127033,7 +126898,7 @@
         "Deflections": 23,
         "PER": 47,
         "WinPct": 60,
-        "WS48": 74,
+        "WS48": 73,
         "VORP": 61,
         "PIE": 52,
         "USG": 28,
@@ -127479,7 +127344,7 @@
         "Deflections": 90,
         "PER": 18,
         "WinPct": 47,
-        "WS48": 44,
+        "WS48": 43,
         "VORP": 33,
         "PIE": 10,
         "USG": 9,
@@ -128220,7 +128085,16 @@
           }
         }
       },
-      "injury": null
+      "injury": {
+        "status": "Day-To-Day",
+        "bodyPart": "Illness",
+        "detail": null,
+        "side": null,
+        "returnDate": "2026-07-13",
+        "comment": "Hansen (illness) has been ruled out for Sunday's Summer League game against the Magic.",
+        "updatedAt": "2026-07-12T18:03Z",
+        "source": "espn"
+      }
     },
     {
       "id": "1642949",
