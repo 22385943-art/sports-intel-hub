@@ -4052,9 +4052,9 @@
       "bodyPart": "Knee",
       "detail": "Inflammation",
       "side": null,
-      "returnDate": "2026-07-13",
-      "comment": "Martin (knee) has been ruled out for Saturday's Summer League game against Houston, Zulfi Sheikh of Sportsnet reports.",
-      "updatedAt": "2026-07-12T01:21Z",
+      "returnDate": "2026-07-16",
+      "comment": "Martin (knee) is out for Monday's Summer League game against the Pacers, per Blake Murphy of Sportsnet.ca.",
+      "updatedAt": "2026-07-13T20:16Z",
       "source": "espn"
     }
   },
@@ -4725,7 +4725,16 @@
         }
       }
     },
-    "injury": null
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Undisclosed",
+      "detail": null,
+      "side": null,
+      "returnDate": "2026-07-15",
+      "comment": "Williams (undisclosed) is out for Monday's Summer League game against Atlanta, according to Jack Simone of BostonSportsJournal.com.",
+      "updatedAt": "2026-07-13T21:37Z",
+      "source": "espn"
+    }
   },
   {
     "id": "1641708",
@@ -8079,7 +8088,16 @@
         }
       }
     },
-    "injury": null
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Rest",
+      "detail": null,
+      "side": null,
+      "returnDate": "2026-07-16",
+      "comment": "Newell (rest) is out for Monday's Summer League game against Boston, Brad Rowland of the Locked On Podcast Network reports.",
+      "updatedAt": "2026-07-13T21:43Z",
+      "source": "espn"
+    }
   },
   {
     "id": "1641709",
@@ -13467,16 +13485,7 @@
         }
       }
     },
-    "injury": {
-      "status": "Day-To-Day",
-      "bodyPart": "Illness",
-      "detail": "Not Specified",
-      "side": "Not Specified",
-      "returnDate": "2026-10-01",
-      "comment": "Williams (illness) is unavailable for Sunday's game against Chicago.",
-      "updatedAt": "2026-06-16T14:43Z",
-      "source": "espn"
-    }
+    "injury": null
   },
   {
     "id": "1641729",
@@ -15706,7 +15715,16 @@
         }
       }
     },
-    "injury": null
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Hamstring",
+      "detail": null,
+      "side": null,
+      "returnDate": "2026-07-15",
+      "comment": "Huntley has been ruled out for Monday's Las Vegas Summer League game against the Bucks due to a hamstring injury, Duane Rankin of The Arizona Republic reports.",
+      "updatedAt": "2026-07-14T02:00Z",
+      "source": "espn"
+    }
   },
   {
     "id": "203468",
@@ -18632,16 +18650,7 @@
         }
       }
     },
-    "injury": {
-      "status": "Day-To-Day",
-      "bodyPart": "Rest",
-      "detail": null,
-      "side": null,
-      "returnDate": "2026-07-15",
-      "comment": "Bryant (rest) won't play in Sunday's Summer League game against the Bucks, Tom Orsborn of the San Antonio Express-News reports.",
-      "updatedAt": "2026-07-13T01:05Z",
-      "source": "espn"
-    }
+    "injury": null
   },
   {
     "id": "1641717",
@@ -21763,7 +21772,16 @@
         }
       }
     },
-    "injury": null
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Knee",
+      "detail": null,
+      "side": null,
+      "returnDate": "2026-07-16",
+      "comment": "Hepburn (knee) is out for Monday's Summer League game against the Pacers, per Blake Murphy of Sportsnet.ca.",
+      "updatedAt": "2026-07-13T20:14Z",
+      "source": "espn"
+    }
   },
   {
     "id": "203991",
@@ -23775,9 +23793,9 @@
       "bodyPart": "Finger",
       "detail": "Sprain",
       "side": null,
-      "returnDate": "2026-07-13",
-      "comment": "Murray-Boyles (finger) has been ruled out for Saturday's Summer League game against Houston, Zulfi Sheikh of Sportsnet reports.",
-      "updatedAt": "2026-07-12T01:19Z",
+      "returnDate": "2026-07-16",
+      "comment": "Murray-Boyles (finger) is out for Monday's Summer League game against the Pacers, Blake Murphy of Sportsnet.ca reports.",
+      "updatedAt": "2026-07-13T20:22Z",
       "source": "espn"
     }
   },
@@ -36098,16 +36116,7 @@
         }
       }
     },
-    "injury": {
-      "status": "Day-To-Day",
-      "bodyPart": "Thumb",
-      "detail": "Surgery",
-      "side": "Left",
-      "returnDate": "2026-10-01",
-      "comment": "Eubanks underwent successful surgery to repair a torn UCL in his left thumb Wednesday and he will miss the remainder of the season, Sean Cunningham of Fox 40 Sacramento reports.",
-      "updatedAt": "2026-06-16T14:31Z",
-      "source": "espn"
-    }
+    "injury": null
   },
   {
     "id": "1641809",
@@ -38569,16 +38578,7 @@
         }
       }
     },
-    "injury": {
-      "status": "Day-To-Day",
-      "bodyPart": "Rest",
-      "detail": null,
-      "side": null,
-      "returnDate": "2026-07-14",
-      "comment": "Demin (rest) won't play in Saturday's Summer League game against the Hawks, Erik Slater of ClutchPoints.com reports.",
-      "updatedAt": "2026-07-11T23:27Z",
-      "source": "espn"
-    }
+    "injury": null
   },
   {
     "id": "1641989",
@@ -44858,7 +44858,16 @@
         }
       }
     },
-    "injury": null
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Rest",
+      "detail": null,
+      "side": null,
+      "returnDate": "2026-07-15",
+      "comment": "Gonzalez (rest) is sitting out Monday's Summer League game against the Hawks, per Jack Simone of BostonSportsJournal.com.",
+      "updatedAt": "2026-07-13T21:36Z",
+      "source": "espn"
+    }
   },
   {
     "id": "1630621",
@@ -62142,9 +62151,9 @@
       "bodyPart": "Back",
       "detail": "Soreness",
       "side": null,
-      "returnDate": "2026-07-13",
-      "comment": "Beringer has been ruled out for Saturday's Summer League game against the Nuggets due to back tightness.",
-      "updatedAt": "2026-07-11T22:42Z",
+      "returnDate": "2026-07-15",
+      "comment": "Beringer (back) won't play in Monday's Summer League game against the Trail Blazers.",
+      "updatedAt": "2026-07-14T02:35Z",
       "source": "espn"
     }
   },
@@ -74697,7 +74706,16 @@
         }
       }
     },
-    "injury": null
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Hip",
+      "detail": null,
+      "side": null,
+      "returnDate": "2026-07-16",
+      "comment": "Gilbert (adductor) is out for Monday's Summer League game against Boston, per Brad Rowland of the Locked On Podcast Network.",
+      "updatedAt": "2026-07-13T21:38Z",
+      "source": "espn"
+    }
   },
   {
     "id": "201142",
@@ -91485,7 +91503,16 @@
         }
       }
     },
-    "injury": null
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Finger",
+      "detail": null,
+      "side": null,
+      "returnDate": "2026-07-16",
+      "comment": "Diawara (finger) is out for Monday's Summer League game against the Pistons, per James L. Edwards III of The Athletic.",
+      "updatedAt": "2026-07-13T20:11Z",
+      "source": "espn"
+    }
   },
   {
     "id": "1628420",
@@ -95321,16 +95348,7 @@
         }
       }
     },
-    "injury": {
-      "status": "Day-To-Day",
-      "bodyPart": "Elbow",
-      "detail": "Sprain",
-      "side": "Right",
-      "returnDate": "2026-10-01",
-      "comment": "Richards (elbow) will not play in Chicago's final two games of the regular season, per K.C. Johnson of Chicago Sports Network.",
-      "updatedAt": "2026-06-16T14:39Z",
-      "source": "espn"
-    }
+    "injury": null
   },
   {
     "id": "1641733",
@@ -98024,16 +98042,7 @@
         }
       }
     },
-    "injury": {
-      "status": "Day-To-Day",
-      "bodyPart": "Rest",
-      "detail": null,
-      "side": null,
-      "returnDate": "2026-07-15",
-      "comment": "Penda (rest) won't play in Sunday's Summer League game against Portland.",
-      "updatedAt": "2026-07-12T22:38Z",
-      "source": "espn"
-    }
+    "injury": null
   },
   {
     "id": "1642849",
@@ -101851,7 +101860,16 @@
         }
       }
     },
-    "injury": null
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Undisclosed",
+      "detail": null,
+      "side": null,
+      "returnDate": "2026-07-16",
+      "comment": "Dadiet (undisclosed) is out for Monday's Summer League game against the Pistons, James L. Edwards III of The Athletic reports.",
+      "updatedAt": "2026-07-13T20:20Z",
+      "source": "espn"
+    }
   },
   {
     "id": "1631094",
@@ -106329,7 +106347,16 @@
         }
       }
     },
-    "injury": null
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Achilles",
+      "detail": null,
+      "side": null,
+      "returnDate": "2026-07-16",
+      "comment": "Dennis (Achilles) is out for Monday's Summer League game against Boston, perBrad Rowland of the Locked On Podcast Network.",
+      "updatedAt": "2026-07-13T21:40Z",
+      "source": "espn"
+    }
   },
   {
     "id": "1641712",
@@ -109014,16 +109041,7 @@
         }
       }
     },
-    "injury": {
-      "status": "Day-To-Day",
-      "bodyPart": "Toe",
-      "detail": "Not Specified",
-      "side": "Right",
-      "returnDate": "2026-10-01",
-      "comment": "Westbrook (toe) is out for Sunday's season finale against the Trail Blazers.",
-      "updatedAt": "2026-06-16T14:43Z",
-      "source": "espn"
-    }
+    "injury": null
   },
   {
     "id": "1642346",
@@ -121137,7 +121155,16 @@
         }
       }
     },
-    "injury": null
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Knee",
+      "detail": "Soreness",
+      "side": "Right",
+      "returnDate": "2026-07-16",
+      "comment": "Keels (undisclosed) won't play in Monday's Summer League game against the Cavaliers, Ira Winderman of the South Florida Sun Sentinel reports.",
+      "updatedAt": "2026-07-13T23:43Z",
+      "source": "espn"
+    }
   },
   {
     "id": "1641725",
@@ -122029,7 +122056,16 @@
         }
       }
     },
-    "injury": null
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Illness",
+      "detail": null,
+      "side": null,
+      "returnDate": "2026-07-15",
+      "comment": "Enaruna (illness) didn't play in Sunday's 103-94 Summer League loss to the Pistons, per Chris Fedor of The Cleveland Plain Dealer.",
+      "updatedAt": "2026-07-13T18:33Z",
+      "source": "espn"
+    }
   },
   {
     "id": "1641774",
@@ -126735,9 +126771,9 @@
       "bodyPart": "Knee",
       "detail": "Sprain",
       "side": "Right",
-      "returnDate": "2026-07-13",
-      "comment": "Clayton (knee) won't play in Friday's game against Chicago, Damichael Cole of The Memphis Commercial Appeal reports.",
-      "updatedAt": "2026-07-10T23:49Z",
+      "returnDate": "2026-07-14",
+      "comment": "Clayton (knee) won't play in Monday's Summer League game against Dallas, Drew Hill of The Daily Memphian reports.",
+      "updatedAt": "2026-07-13T22:52Z",
       "source": "espn"
     }
   },
@@ -128077,16 +128113,7 @@
         }
       }
     },
-    "injury": {
-      "status": "Day-To-Day",
-      "bodyPart": "Illness",
-      "detail": null,
-      "side": null,
-      "returnDate": "2026-07-13",
-      "comment": "Hansen (illness) has been ruled out for Sunday's Summer League game against the Magic.",
-      "updatedAt": "2026-07-12T18:03Z",
-      "source": "espn"
-    }
+    "injury": null
   },
   {
     "id": "1642949",
@@ -130129,7 +130156,16 @@
         }
       }
     },
-    "injury": null
+    "injury": {
+      "status": "Day-To-Day",
+      "bodyPart": "Foot",
+      "detail": "Inflammation",
+      "side": "Left",
+      "returnDate": "2026-10-01",
+      "comment": "Williams (foot) and the Lakers agreed on a one-year contract Monday, per Dan Woike of The Athletic.",
+      "updatedAt": "2026-07-13T21:05Z",
+      "source": "espn"
+    }
   },
   {
     "id": "1629627",

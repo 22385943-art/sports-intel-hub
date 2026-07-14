@@ -2,7 +2,7 @@
   "metadata": {
     "targetSeason": "2026-27",
     "basedOnSeason": "2025-26",
-    "generatedAt": "2026-07-13T02:09:51.514Z",
+    "generatedAt": "2026-07-14T07:53:34.749Z",
     "playerCount": 587,
     "teamCount": 30,
     "monteCarloSims": 10000,
@@ -1487,20 +1487,20 @@
       ],
       "awardOdds": {
         "mvp": {
-          "prob": 2.03,
+          "prob": 2.04,
           "rank": 22,
           "eligible": true,
           "name": "Kevin Durant",
           "teamId": "HOU",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/201142.png",
-          "scoreRaw": 0.03918,
+          "scoreRaw": 0.03929,
           "factors": {
             "zBPM": 1.319,
             "zVORP": 1.351,
             "zPPG": 2.354,
             "statsCore": 1.071,
-            "teamQF": 0.665,
-            "coreWithTeam": 1.124,
+            "teamQF": 0.667,
+            "coreWithTeam": 1.125,
             "elig": 0.032,
             "fatigueMult": 1.1,
             "tenureMult": 1,
@@ -1517,8 +1517,8 @@
             "mpgP50": 32.4,
             "priorSeasons": 15,
             "avgSeed": 7.6,
-            "playoffPct": 57.9,
-            "championPct": 2
+            "playoffPct": 58.3,
+            "championPct": 2.1
           }
         },
         "dpoy": {
@@ -41582,13 +41582,13 @@
           "name": "Derrick White",
           "teamId": "BOS",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1628401.png",
-          "scoreRaw": 0.05305,
+          "scoreRaw": 0.053,
           "factors": {
             "zBPM": 1.571,
             "zVORP": 1.343,
             "zPPG": -1.277,
             "statsCore": 0.796,
-            "teamQF": 0.791,
+            "teamQF": 0.79,
             "coreWithTeam": 0.865,
             "elig": 0.054,
             "fatigueMult": 1.1,
@@ -41606,8 +41606,8 @@
             "mpgP50": 30.1,
             "priorSeasons": 9,
             "avgSeed": 5.5,
-            "playoffPct": 77.1,
-            "championPct": 6.2
+            "playoffPct": 76.5,
+            "championPct": 6.6
           }
         },
         "dpoy": {
@@ -68112,7 +68112,7 @@
           "name": "Neemias Queta",
           "teamId": "BOS",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1629674.png",
-          "scoreRaw": 0.0566,
+          "scoreRaw": 0.05659,
           "factors": {
             "position": "FORWARD",
             "zDBPM": 1.045,
@@ -68133,7 +68133,7 @@
             "rpgProj": 6.35,
             "position": "FORWARD",
             "gpP50": 45,
-            "playoffPct": 77.1,
+            "playoffPct": 76.5,
             "priorSeasons": 5
           }
         },
@@ -71235,20 +71235,20 @@
       ],
       "awardOdds": {
         "mvp": {
-          "prob": 2.15,
+          "prob": 2.16,
           "rank": 20,
           "eligible": true,
           "name": "LaMelo Ball",
           "teamId": "CHA",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1630163.png",
-          "scoreRaw": 0.04946,
+          "scoreRaw": 0.0494,
           "factors": {
             "zBPM": 2.777,
             "zVORP": 2.172,
             "zPPG": -0.694,
             "statsCore": 1.586,
-            "teamQF": 0.778,
-            "coreWithTeam": 1.718,
+            "teamQF": 0.776,
+            "coreWithTeam": 1.717,
             "elig": 0.027,
             "fatigueMult": 1.1,
             "tenureMult": 1,
@@ -71265,8 +71265,8 @@
             "mpgP50": 24,
             "priorSeasons": 6,
             "avgSeed": 5.8,
-            "playoffPct": 75,
-            "championPct": 5.5
+            "playoffPct": 74.4,
+            "championPct": 5.8
           }
         },
         "dpoy": {
@@ -75369,39 +75369,9 @@
       ],
       "awardOdds": {
         "mvp": {
-          "prob": 2.01,
-          "rank": 25,
-          "eligible": true,
-          "name": "Tyrese Maxey",
-          "teamId": "PHI",
-          "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1630178.png",
-          "scoreRaw": 0.03687,
-          "factors": {
-            "zBPM": 1.473,
-            "zVORP": 1.785,
-            "zPPG": -0.897,
-            "statsCore": 0.834,
-            "teamQF": 0.587,
-            "coreWithTeam": 0.856,
-            "elig": 0.035,
-            "fatigueMult": 1.1,
-            "tenureMult": 1,
-            "marketMult": 1.05,
-            "firstBonus": 1.12,
-            "gpRiskMult": 0.943,
-            "priorSeasons": 6
-          },
-          "keyStats": {
-            "bpmProj": 2.34,
-            "vorpProj": 3.55,
-            "ppgProj": 8.13,
-            "gpP50": 36,
-            "mpgP50": 34,
-            "priorSeasons": 6,
-            "avgSeed": 8.5,
-            "playoffPct": 49.4,
-            "championPct": 1.9
-          }
+          "prob": 0,
+          "rank": null,
+          "eligible": false
         },
         "dpoy": {
           "prob": 3.25,
@@ -75410,14 +75380,14 @@
           "name": "Tyrese Maxey",
           "teamId": "PHI",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1630178.png",
-          "scoreRaw": 0.04757,
+          "scoreRaw": 0.04756,
           "factors": {
             "position": "GUARD",
             "zDBPM": 1.225,
             "zBPG": 1.022,
             "zSPG": 3.083,
             "statsCore": 1.424,
-            "teamDefFct": 0.902,
+            "teamDefFct": 0.901,
             "posMultiplier": 0.78,
             "elig": 0.039,
             "histConf": 0.977,
@@ -75431,7 +75401,7 @@
             "rpgProj": 4.02,
             "position": "GUARD",
             "gpP50": 36,
-            "playoffPct": 49.4,
+            "playoffPct": 49.1,
             "priorSeasons": 6
           }
         },
@@ -91597,20 +91567,20 @@
       ],
       "awardOdds": {
         "mvp": {
-          "prob": 5.12,
+          "prob": 5.14,
           "rank": 6,
           "eligible": true,
           "name": "Scottie Barnes",
           "teamId": "TOR",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1630567.png",
-          "scoreRaw": 0.20547,
+          "scoreRaw": 0.20585,
           "factors": {
             "zBPM": 1.725,
             "zVORP": 2.322,
             "zPPG": 0.74,
             "statsCore": 1.364,
-            "teamQF": 0.622,
-            "coreWithTeam": 1.413,
+            "teamQF": 0.623,
+            "coreWithTeam": 1.414,
             "elig": 0.125,
             "fatigueMult": 1.1,
             "tenureMult": 1,
@@ -91627,8 +91597,8 @@
             "mpgP50": 30.5,
             "priorSeasons": 5,
             "avgSeed": 8.1,
-            "playoffPct": 52.9,
-            "championPct": 2
+            "playoffPct": 53.1,
+            "championPct": 2.2
           }
         },
         "dpoy": {
@@ -91638,14 +91608,14 @@
           "name": "Scottie Barnes",
           "teamId": "TOR",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1630567.png",
-          "scoreRaw": 0.22809,
+          "scoreRaw": 0.22813,
           "factors": {
             "position": "FORWARD",
             "zDBPM": 2.078,
             "zBPG": 1.966,
             "zSPG": 1.045,
             "statsCore": 1.555,
-            "teamDefFct": 0.913,
+            "teamDefFct": 0.914,
             "posMultiplier": 1.08,
             "elig": 0.133,
             "histConf": 0.949,
@@ -91659,7 +91629,7 @@
             "rpgProj": 6.56,
             "position": "FORWARD",
             "gpP50": 46,
-            "playoffPct": 52.9,
+            "playoffPct": 53.1,
             "priorSeasons": 5
           }
         },
@@ -93608,13 +93578,13 @@
       ],
       "awardOdds": {
         "mvp": {
-          "prob": 3.43,
+          "prob": 3.44,
           "rank": 9,
           "eligible": true,
           "name": "Julian Champagnie",
           "teamId": "SAS",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1630577.png",
-          "scoreRaw": 0.13336,
+          "scoreRaw": 0.13339,
           "factors": {
             "zBPM": 0.87,
             "zVORP": 1.177,
@@ -93638,7 +93608,7 @@
             "mpgP50": 23.6,
             "priorSeasons": 4,
             "avgSeed": 3.4,
-            "playoffPct": 92.5,
+            "playoffPct": 92.9,
             "championPct": 21
           }
         },
@@ -93996,13 +93966,13 @@
           "name": "Alperen Sengun",
           "teamId": "HOU",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1630578.png",
-          "scoreRaw": 0.04306,
+          "scoreRaw": 0.04318,
           "factors": {
             "zBPM": 0.815,
             "zVORP": 0.75,
             "zPPG": -0.538,
             "statsCore": 0.411,
-            "teamQF": 0.665,
+            "teamQF": 0.667,
             "coreWithTeam": 0.432,
             "elig": 0.084,
             "fatigueMult": 1.1,
@@ -94020,8 +93990,8 @@
             "mpgP50": 29.3,
             "priorSeasons": 5,
             "avgSeed": 7.6,
-            "playoffPct": 57.9,
-            "championPct": 2
+            "playoffPct": 58.3,
+            "championPct": 2.1
           }
         },
         "dpoy": {
@@ -94031,14 +94001,14 @@
           "name": "Alperen Sengun",
           "teamId": "HOU",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1630578.png",
-          "scoreRaw": 0.08832,
+          "scoreRaw": 0.08835,
           "factors": {
             "position": "FORWARD",
             "zDBPM": 0.747,
             "zBPG": 2.066,
             "zSPG": 0.375,
             "statsCore": 0.947,
-            "teamDefFct": 0.928,
+            "teamDefFct": 0.929,
             "posMultiplier": 1.08,
             "elig": 0.085,
             "histConf": 0.949,
@@ -94052,7 +94022,7 @@
             "rpgProj": 5.15,
             "position": "FORWARD",
             "gpP50": 43,
-            "playoffPct": 57.9,
+            "playoffPct": 58.3,
             "priorSeasons": 5
           }
         },
@@ -96669,13 +96639,13 @@
           "name": "Cade Cunningham",
           "teamId": "DET",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1630595.png",
-          "scoreRaw": 0.0556,
+          "scoreRaw": 0.05564,
           "factors": {
             "zBPM": 1.362,
             "zVORP": 1.872,
             "zPPG": 0.605,
             "statsCore": 0.989,
-            "teamQF": 0.775,
+            "teamQF": 0.776,
             "coreWithTeam": 1.07,
             "elig": 0.048,
             "fatigueMult": 1.1,
@@ -96693,8 +96663,8 @@
             "mpgP50": 30.7,
             "priorSeasons": 5,
             "avgSeed": 5.8,
-            "playoffPct": 74.1,
-            "championPct": 5.7
+            "playoffPct": 74.4,
+            "championPct": 6.1
           }
         },
         "dpoy": {
@@ -96704,7 +96674,7 @@
           "name": "Cade Cunningham",
           "teamId": "DET",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1630595.png",
-          "scoreRaw": 0.04608,
+          "scoreRaw": 0.04609,
           "factors": {
             "position": "GUARD",
             "zDBPM": 1.085,
@@ -96725,7 +96695,7 @@
             "rpgProj": 5.4,
             "position": "GUARD",
             "gpP50": 38,
-            "playoffPct": 74.1,
+            "playoffPct": 74.4,
             "priorSeasons": 5
           }
         },
@@ -97062,7 +97032,7 @@
           "name": "Evan Mobley",
           "teamId": "CLE",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1630596.png",
-          "scoreRaw": 0.05392,
+          "scoreRaw": 0.05393,
           "factors": {
             "position": "FORWARD",
             "zDBPM": 0.495,
@@ -97083,7 +97053,7 @@
             "rpgProj": 7.94,
             "position": "FORWARD",
             "gpP50": 37,
-            "playoffPct": 72.9,
+            "playoffPct": 73.1,
             "priorSeasons": 5
           }
         },
@@ -106013,14 +105983,14 @@
           "name": "Jabari Smith Jr.",
           "teamId": "HOU",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1631095.png",
-          "scoreRaw": 0.06035,
+          "scoreRaw": 0.06039,
           "factors": {
             "position": "FORWARD",
             "zDBPM": -0.501,
             "zBPG": 1.37,
             "zSPG": -0.156,
             "statsCore": 0.331,
-            "teamDefFct": 0.928,
+            "teamDefFct": 0.929,
             "posMultiplier": 1.08,
             "elig": 0.18,
             "histConf": 0.889,
@@ -106034,7 +106004,7 @@
             "rpgProj": 5.73,
             "position": "FORWARD",
             "gpP50": 50,
-            "playoffPct": 57.9,
+            "playoffPct": 58.3,
             "priorSeasons": 4
           }
         },
@@ -106344,20 +106314,20 @@
       ],
       "awardOdds": {
         "mvp": {
-          "prob": 7.96,
+          "prob": 7.95,
           "rank": 3,
           "eligible": true,
           "name": "Chet Holmgren",
           "teamId": "OKC",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1631096.png",
-          "scoreRaw": 0.2848,
+          "scoreRaw": 0.28444,
           "factors": {
             "zBPM": 3.645,
             "zVORP": 3.372,
             "zPPG": 3.157,
             "statsCore": 2.962,
-            "teamQF": 0.836,
-            "coreWithTeam": 3.261,
+            "teamQF": 0.832,
+            "coreWithTeam": 3.258,
             "elig": 0.081,
             "fatigueMult": 1.1,
             "tenureMult": 1,
@@ -106373,9 +106343,9 @@
             "gpP50": 42,
             "mpgP50": 30.1,
             "priorSeasons": 3,
-            "avgSeed": 4.5,
-            "playoffPct": 85.6,
-            "championPct": 12
+            "avgSeed": 4.6,
+            "playoffPct": 85.2,
+            "championPct": 11.6
           }
         },
         "dpoy": {
@@ -106392,7 +106362,7 @@
             "zBPG": 1.668,
             "zSPG": -1.691,
             "statsCore": 1.245,
-            "teamDefFct": 0.978,
+            "teamDefFct": 0.977,
             "posMultiplier": 1.08,
             "elig": 0.068,
             "histConf": 0.777,
@@ -106406,7 +106376,7 @@
             "rpgProj": 9.26,
             "position": "FORWARD",
             "gpP50": 42,
-            "playoffPct": 85.6,
+            "playoffPct": 85.2,
             "priorSeasons": 3
           }
         },
@@ -108689,13 +108659,13 @@
           "name": "Jalen Duren",
           "teamId": "DET",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1631105.png",
-          "scoreRaw": 0.10789,
+          "scoreRaw": 0.10796,
           "factors": {
             "zBPM": 1.442,
             "zVORP": 1.437,
             "zPPG": 0.173,
             "statsCore": 0.966,
-            "teamQF": 0.775,
+            "teamQF": 0.776,
             "coreWithTeam": 1.046,
             "elig": 0.087,
             "fatigueMult": 1.1,
@@ -108713,8 +108683,8 @@
             "mpgP50": 24.2,
             "priorSeasons": 4,
             "avgSeed": 5.8,
-            "playoffPct": 74.1,
-            "championPct": 5.7
+            "playoffPct": 74.4,
+            "championPct": 6.1
           }
         },
         "dpoy": {
@@ -117645,21 +117615,21 @@
       ],
       "awardOdds": {
         "mvp": {
-          "prob": 3.41,
+          "prob": 3.42,
           "rank": 10,
           "eligible": true,
           "name": "Jaime Jaquez Jr.",
           "teamId": "MIA",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1631170.png",
-          "scoreRaw": 0.13204,
+          "scoreRaw": 0.13243,
           "factors": {
             "zBPM": 0.365,
             "zVORP": 0.435,
             "zPPG": 0.816,
             "statsCore": 0.415,
-            "teamQF": 0.653,
-            "coreWithTeam": 0.434,
-            "elig": 0.244,
+            "teamQF": 0.656,
+            "coreWithTeam": 0.435,
+            "elig": 0.245,
             "fatigueMult": 1.1,
             "tenureMult": 1,
             "marketMult": 1.05,
@@ -117675,8 +117645,8 @@
             "mpgP50": 24.3,
             "priorSeasons": 3,
             "avgSeed": 7.7,
-            "playoffPct": 56.3,
-            "championPct": 2.2
+            "playoffPct": 56.7,
+            "championPct": 2.7
           }
         },
         "dpoy": {
@@ -117737,7 +117707,7 @@
             "ppgProj": 12.42,
             "mpgRankOnTeam": 7,
             "usageRankOnTeam": 2,
-            "playoffPct": 56.3
+            "playoffPct": 56.7
           }
         },
         "cpoy": {
@@ -122169,14 +122139,14 @@
           "name": "Moussa Diabaté",
           "teamId": "CHA",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1631217.png",
-          "scoreRaw": 0.05881,
+          "scoreRaw": 0.0588,
           "factors": {
             "position": "FORWARD",
             "zDBPM": 0.799,
             "zBPG": 2.19,
             "zSPG": -0.1,
             "statsCore": 1.054,
-            "teamDefFct": 0.964,
+            "teamDefFct": 0.963,
             "posMultiplier": 1.08,
             "elig": 0.053,
             "histConf": 0.889,
@@ -122190,7 +122160,7 @@
             "rpgProj": 5.92,
             "position": "FORWARD",
             "gpP50": 47,
-            "playoffPct": 75,
+            "playoffPct": 74.4,
             "priorSeasons": 4
           }
         },
@@ -129388,7 +129358,7 @@
           "name": "Victor Wembanyama",
           "teamId": "SAS",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1641705.png",
-          "scoreRaw": 0.19993,
+          "scoreRaw": 0.19997,
           "factors": {
             "zBPM": 4.064,
             "zVORP": 4.398,
@@ -129412,7 +129382,7 @@
             "mpgP50": 25.2,
             "priorSeasons": 3,
             "avgSeed": 3.4,
-            "playoffPct": 92.5,
+            "playoffPct": 92.9,
             "championPct": 21
           }
         },
@@ -129423,7 +129393,7 @@
           "name": "Victor Wembanyama",
           "teamId": "SAS",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1641705.png",
-          "scoreRaw": 0.08664,
+          "scoreRaw": 0.08665,
           "factors": {
             "position": "CENTER",
             "zDBPM": 4,
@@ -129444,7 +129414,7 @@
             "rpgProj": 10.6,
             "position": "CENTER",
             "gpP50": 41,
-            "playoffPct": 92.5,
+            "playoffPct": 92.9,
             "priorSeasons": 3
           }
         },
@@ -130717,20 +130687,20 @@
       ],
       "awardOdds": {
         "mvp": {
-          "prob": 2.18,
+          "prob": 2.19,
           "rank": 19,
           "eligible": true,
           "name": "Ausar Thompson",
           "teamId": "DET",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1641709.png",
-          "scoreRaw": 0.05202,
+          "scoreRaw": 0.05205,
           "factors": {
             "zBPM": 0.642,
             "zVORP": 0.806,
             "zPPG": -0.638,
             "statsCore": 0.259,
-            "teamQF": 0.775,
-            "coreWithTeam": 0.28,
+            "teamQF": 0.776,
+            "coreWithTeam": 0.281,
             "elig": 0.157,
             "fatigueMult": 1.1,
             "tenureMult": 1,
@@ -130747,8 +130717,8 @@
             "mpgP50": 26,
             "priorSeasons": 3,
             "avgSeed": 5.8,
-            "playoffPct": 74.1,
-            "championPct": 5.7
+            "playoffPct": 74.4,
+            "championPct": 6.1
           }
         },
         "dpoy": {
@@ -130758,7 +130728,7 @@
           "name": "Ausar Thompson",
           "teamId": "DET",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1641709.png",
-          "scoreRaw": 0.20505,
+          "scoreRaw": 0.20507,
           "factors": {
             "position": "FORWARD",
             "zDBPM": 2.003,
@@ -130779,7 +130749,7 @@
             "rpgProj": 7.09,
             "position": "FORWARD",
             "gpP50": 50,
-            "playoffPct": 74.1,
+            "playoffPct": 74.4,
             "priorSeasons": 3
           }
         },
@@ -139224,7 +139194,7 @@
             "ppgProj": 10.1,
             "mpgRankOnTeam": 7,
             "usageRankOnTeam": 7,
-            "playoffPct": 75
+            "playoffPct": 74.4
           }
         },
         "cpoy": {
@@ -144163,13 +144133,13 @@
       ],
       "awardOdds": {
         "mvp": {
-          "prob": 2.45,
+          "prob": 2.46,
           "rank": 14,
           "eligible": true,
           "name": "Tristan da Silva",
           "teamId": "ORL",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1641783.png",
-          "scoreRaw": 0.07294,
+          "scoreRaw": 0.0729,
           "factors": {
             "zBPM": 0.421,
             "zVORP": 0.048,
@@ -144193,8 +144163,8 @@
             "mpgP50": 24.7,
             "priorSeasons": 2,
             "avgSeed": 7.3,
-            "playoffPct": 60.7,
-            "championPct": 3.3
+            "playoffPct": 60.6,
+            "championPct": 3
           }
         },
         "dpoy": {
@@ -144255,7 +144225,7 @@
             "ppgProj": 10.78,
             "mpgRankOnTeam": 6,
             "usageRankOnTeam": 4,
-            "playoffPct": 60.7
+            "playoffPct": 60.6
           }
         },
         "cpoy": {
@@ -148259,20 +148229,20 @@
           "eligible": false
         },
         "dpoy": {
-          "prob": 11.99,
+          "prob": 11.98,
           "rank": 1,
           "eligible": true,
           "name": "Matas Buzelis",
           "teamId": "CHI",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1641824.png",
-          "scoreRaw": 0.33485,
+          "scoreRaw": 0.33472,
           "factors": {
             "position": "FORWARD",
             "zDBPM": -0.018,
             "zBPG": 2.513,
             "zSPG": -0.1,
             "statsCore": 0.872,
-            "teamDefFct": 0.834,
+            "teamDefFct": 0.832,
             "posMultiplier": 1.08,
             "elig": 0.54,
             "histConf": 0.603,
@@ -148286,7 +148256,7 @@
             "rpgProj": 5.99,
             "position": "FORWARD",
             "gpP50": 77,
-            "playoffPct": 30.6,
+            "playoffPct": 30.3,
             "priorSeasons": 2
           }
         },
@@ -148634,7 +148604,7 @@
             "ppgProj": 10,
             "mpgRankOnTeam": 7,
             "usageRankOnTeam": 4,
-            "playoffPct": 74.1
+            "playoffPct": 74.4
           }
         },
         "cpoy": {
@@ -151360,9 +151330,39 @@
       ],
       "awardOdds": {
         "mvp": {
-          "prob": 0,
-          "rank": null,
-          "eligible": false
+          "prob": 2.01,
+          "rank": 25,
+          "eligible": true,
+          "name": "Alex Sarr",
+          "teamId": "WAS",
+          "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1642259.png",
+          "scoreRaw": 0.03706,
+          "factors": {
+            "zBPM": 0.735,
+            "zVORP": 0.198,
+            "zPPG": 1.312,
+            "statsCore": 0.519,
+            "teamQF": 0.376,
+            "coreWithTeam": 0.5,
+            "elig": 0.11,
+            "fatigueMult": 1.1,
+            "tenureMult": 0.6,
+            "marketMult": 1,
+            "firstBonus": 1.12,
+            "gpRiskMult": 0.91,
+            "priorSeasons": 2
+          },
+          "keyStats": {
+            "bpmProj": 1.14,
+            "vorpProj": 1.54,
+            "ppgProj": 13.66,
+            "gpP50": 50,
+            "mpgP50": 27.2,
+            "priorSeasons": 2,
+            "avgSeed": 10.4,
+            "playoffPct": 30.5,
+            "championPct": 0.7
+          }
         },
         "dpoy": {
           "prob": 4.46,
@@ -151371,14 +151371,14 @@
           "name": "Alex Sarr",
           "teamId": "WAS",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1642259.png",
-          "scoreRaw": 0.11741,
+          "scoreRaw": 0.1175,
           "factors": {
             "position": "FORWARD",
             "zDBPM": 0.532,
             "zBPG": 3.209,
             "zSPG": -0.295,
             "statsCore": 1.36,
-            "teamDefFct": 0.83,
+            "teamDefFct": 0.833,
             "posMultiplier": 1.08,
             "elig": 0.126,
             "histConf": 0.603,
@@ -151392,7 +151392,7 @@
             "rpgProj": 6.97,
             "position": "FORWARD",
             "gpP50": 50,
-            "playoffPct": 29.7,
+            "playoffPct": 30.5,
             "priorSeasons": 2
           }
         },
@@ -152667,21 +152667,21 @@
       ],
       "awardOdds": {
         "mvp": {
-          "prob": 3.86,
+          "prob": 3.87,
           "rank": 8,
           "eligible": true,
           "name": "Reed Sheppard",
           "teamId": "HOU",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1642263.png",
-          "scoreRaw": 0.15454,
+          "scoreRaw": 0.15495,
           "factors": {
             "zBPM": 0.605,
             "zVORP": 1.122,
             "zPPG": -0.49,
             "statsCore": 0.352,
-            "teamQF": 0.665,
+            "teamQF": 0.667,
             "coreWithTeam": 0.369,
-            "elig": 0.605,
+            "elig": 0.606,
             "fatigueMult": 1.1,
             "tenureMult": 0.6,
             "marketMult": 1,
@@ -152697,25 +152697,25 @@
             "mpgP50": 26.2,
             "priorSeasons": 2,
             "avgSeed": 7.6,
-            "playoffPct": 57.9,
-            "championPct": 2
+            "playoffPct": 58.3,
+            "championPct": 2.1
           }
         },
         "dpoy": {
-          "prob": 6.88,
+          "prob": 6.89,
           "rank": 4,
           "eligible": true,
           "name": "Reed Sheppard",
           "teamId": "HOU",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1642263.png",
-          "scoreRaw": 0.21282,
+          "scoreRaw": 0.21291,
           "factors": {
             "position": "FORWARD",
             "zDBPM": 1.022,
             "zBPG": 0.823,
             "zSPG": 2.302,
             "statsCore": 0.667,
-            "teamDefFct": 0.928,
+            "teamDefFct": 0.929,
             "posMultiplier": 1.08,
             "elig": 0.458,
             "histConf": 0.603,
@@ -152729,7 +152729,7 @@
             "rpgProj": 4.14,
             "position": "FORWARD",
             "gpP50": 79,
-            "playoffPct": 57.9,
+            "playoffPct": 58.3,
             "priorSeasons": 2
           }
         },
@@ -153052,13 +153052,13 @@
       ],
       "awardOdds": {
         "mvp": {
-          "prob": 13.79,
+          "prob": 13.82,
           "rank": 1,
           "eligible": true,
           "name": "Stephon Castle",
           "teamId": "SAS",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1642264.png",
-          "scoreRaw": 0.38374,
+          "scoreRaw": 0.38382,
           "factors": {
             "zBPM": 0.495,
             "zVORP": 0.774,
@@ -153082,7 +153082,7 @@
             "mpgP50": 30,
             "priorSeasons": 2,
             "avgSeed": 3.4,
-            "playoffPct": 92.5,
+            "playoffPct": 92.9,
             "championPct": 21
           }
         },
@@ -153093,7 +153093,7 @@
           "name": "Stephon Castle",
           "teamId": "SAS",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1642264.png",
-          "scoreRaw": 0.14487,
+          "scoreRaw": 0.14489,
           "factors": {
             "position": "GUARD",
             "zDBPM": 1.103,
@@ -153114,7 +153114,7 @@
             "rpgProj": 5.72,
             "position": "GUARD",
             "gpP50": 69,
-            "playoffPct": 92.5,
+            "playoffPct": 92.9,
             "priorSeasons": 2
           }
         },
@@ -155011,21 +155011,21 @@
       ],
       "awardOdds": {
         "mvp": {
-          "prob": 11.21,
+          "prob": 11.05,
           "rank": 2,
           "eligible": true,
           "name": "Donovan Clingan",
           "teamId": "POR",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1642270.png",
-          "scoreRaw": 0.34643,
+          "scoreRaw": 0.34358,
           "factors": {
             "zBPM": 1.375,
             "zVORP": 1.224,
             "zPPG": -0.098,
             "statsCore": 0.926,
-            "teamQF": 0.497,
-            "coreWithTeam": 0.925,
-            "elig": 0.546,
+            "teamQF": 0.493,
+            "coreWithTeam": 0.924,
+            "elig": 0.542,
             "fatigueMult": 1.1,
             "tenureMult": 0.6,
             "marketMult": 1,
@@ -155041,8 +155041,8 @@
             "mpgP50": 27.2,
             "priorSeasons": 2,
             "avgSeed": 9.3,
-            "playoffPct": 40.9,
-            "championPct": 1.1
+            "playoffPct": 40.5,
+            "championPct": 0.8
           }
         },
         "dpoy": {
@@ -155052,14 +155052,14 @@
           "name": "Donovan Clingan",
           "teamId": "POR",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1642270.png",
-          "scoreRaw": 0.2989,
+          "scoreRaw": 0.29876,
           "factors": {
             "position": "FORWARD",
             "zDBPM": 0.049,
             "zBPG": 2.041,
             "zSPG": -0.686,
             "statsCore": 0.944,
-            "teamDefFct": 0.872,
+            "teamDefFct": 0.87,
             "posMultiplier": 1.08,
             "elig": 0.46,
             "histConf": 0.603,
@@ -155073,7 +155073,7 @@
             "rpgProj": 8.23,
             "position": "FORWARD",
             "gpP50": 76,
-            "playoffPct": 40.9,
+            "playoffPct": 40.5,
             "priorSeasons": 2
           }
         },
@@ -155437,7 +155437,7 @@
             "ppgProj": 11.98,
             "mpgRankOnTeam": 12,
             "usageRankOnTeam": 5,
-            "playoffPct": 34.1
+            "playoffPct": 34.5
           }
         },
         "cpoy": {
@@ -156951,21 +156951,21 @@
       ],
       "awardOdds": {
         "mvp": {
-          "prob": 5.15,
+          "prob": 5.18,
           "rank": 5,
           "eligible": true,
           "name": "Kel'el Ware",
           "teamId": "MIA",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1642276.png",
-          "scoreRaw": 0.20661,
+          "scoreRaw": 0.20722,
           "factors": {
             "zBPM": 1.295,
             "zVORP": 0.679,
             "zPPG": 0.569,
             "statsCore": 0.914,
-            "teamQF": 0.653,
-            "coreWithTeam": 0.956,
-            "elig": 0.3,
+            "teamQF": 0.656,
+            "coreWithTeam": 0.957,
+            "elig": 0.301,
             "fatigueMult": 1.1,
             "tenureMult": 0.6,
             "marketMult": 1.05,
@@ -156981,8 +156981,8 @@
             "mpgP50": 22.1,
             "priorSeasons": 2,
             "avgSeed": 7.7,
-            "playoffPct": 56.3,
-            "championPct": 2.2
+            "playoffPct": 56.7,
+            "championPct": 2.7
           }
         },
         "dpoy": {
@@ -156992,14 +156992,14 @@
           "name": "Kel'el Ware",
           "teamId": "MIA",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1642276.png",
-          "scoreRaw": 0.08391,
+          "scoreRaw": 0.08395,
           "factors": {
             "position": "FORWARD",
             "zDBPM": -0.063,
             "zBPG": 0.823,
             "zSPG": -0.1,
             "statsCore": 0.554,
-            "teamDefFct": 0.923,
+            "teamDefFct": 0.924,
             "posMultiplier": 1.08,
             "elig": 0.208,
             "histConf": 0.603,
@@ -157013,7 +157013,7 @@
             "rpgProj": 8.07,
             "position": "FORWARD",
             "gpP50": 76,
-            "playoffPct": 56.3,
+            "playoffPct": 56.7,
             "priorSeasons": 2
           }
         },
@@ -157070,7 +157070,7 @@
             "ppgProj": 11.8,
             "mpgRankOnTeam": 8,
             "usageRankOnTeam": 4,
-            "playoffPct": 56.3
+            "playoffPct": 56.7
           }
         },
         "cpoy": {
@@ -158277,21 +158277,21 @@
       ],
       "awardOdds": {
         "mvp": {
-          "prob": 2.71,
+          "prob": 2.72,
           "rank": 12,
           "eligible": true,
           "name": "Jaylon Tyson",
           "teamId": "CLE",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1642281.png",
-          "scoreRaw": 0.09103,
+          "scoreRaw": 0.09108,
           "factors": {
             "zBPM": 0.71,
             "zVORP": 0.158,
             "zPPG": -0.546,
             "statsCore": 0.251,
-            "teamQF": 0.769,
+            "teamQF": 0.77,
             "coreWithTeam": 0.271,
-            "elig": 0.499,
+            "elig": 0.5,
             "fatigueMult": 1.1,
             "tenureMult": 0.6,
             "marketMult": 1,
@@ -158307,8 +158307,8 @@
             "mpgP50": 26.9,
             "priorSeasons": 2,
             "avgSeed": 5.9,
-            "playoffPct": 72.9,
-            "championPct": 5.9
+            "playoffPct": 73.1,
+            "championPct": 5.6
           }
         },
         "dpoy": {
@@ -158983,7 +158983,7 @@
             "priorSeasons": 2,
             "avgSeed": 11.3,
             "playoffPct": 20.5,
-            "championPct": 0.2
+            "championPct": 0.3
           }
         },
         "dpoy": {
@@ -159310,21 +159310,21 @@
       ],
       "awardOdds": {
         "mvp": {
-          "prob": 2.24,
+          "prob": 2.25,
           "rank": 16,
           "eligible": true,
           "name": "Oso Ighodaro",
           "teamId": "PHX",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1642345.png",
-          "scoreRaw": 0.05697,
+          "scoreRaw": 0.05714,
           "factors": {
             "zBPM": 0.704,
             "zVORP": 0.19,
             "zPPG": -0.554,
             "statsCore": 0.265,
-            "teamQF": 0.609,
+            "teamQF": 0.612,
             "coreWithTeam": 0.274,
-            "elig": 0.299,
+            "elig": 0.3,
             "fatigueMult": 1.1,
             "tenureMult": 0.6,
             "marketMult": 1,
@@ -159340,8 +159340,8 @@
             "mpgP50": 22.1,
             "priorSeasons": 2,
             "avgSeed": 8.2,
-            "playoffPct": 51.5,
-            "championPct": 1.7
+            "playoffPct": 51.8,
+            "championPct": 1.6
           }
         },
         "dpoy": {
@@ -159351,14 +159351,14 @@
           "name": "Oso Ighodaro",
           "teamId": "PHX",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1642345.png",
-          "scoreRaw": 0.15072,
+          "scoreRaw": 0.15077,
           "factors": {
             "position": "FORWARD",
             "zDBPM": 1.877,
             "zBPG": 0.475,
             "zSPG": 0.459,
             "statsCore": 0.911,
-            "teamDefFct": 0.909,
+            "teamDefFct": 0.91,
             "posMultiplier": 1.08,
             "elig": 0.238,
             "histConf": 0.603,
@@ -159372,7 +159372,7 @@
             "rpgProj": 5.58,
             "position": "FORWARD",
             "gpP50": 80,
-            "playoffPct": 51.5,
+            "playoffPct": 51.8,
             "priorSeasons": 2
           }
         },
@@ -160622,13 +160622,13 @@
           "name": "Ajay Mitchell",
           "teamId": "OKC",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1642349.png",
-          "scoreRaw": 0.03785,
+          "scoreRaw": 0.03781,
           "factors": {
             "zBPM": 0.298,
             "zVORP": 0.522,
             "zPPG": -0.222,
             "statsCore": 0.202,
-            "teamQF": 0.836,
+            "teamQF": 0.832,
             "coreWithTeam": 0.222,
             "elig": 0.253,
             "fatigueMult": 1.1,
@@ -160645,9 +160645,9 @@
             "gpP50": 55,
             "mpgP50": 25.8,
             "priorSeasons": 2,
-            "avgSeed": 4.5,
-            "playoffPct": 85.6,
-            "championPct": 12
+            "avgSeed": 4.6,
+            "playoffPct": 85.2,
+            "championPct": 11.6
           }
         },
         "dpoy": {
@@ -160657,14 +160657,14 @@
           "name": "Ajay Mitchell",
           "teamId": "OKC",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1642349.png",
-          "scoreRaw": 0.05413,
+          "scoreRaw": 0.05412,
           "factors": {
             "position": "FORWARD",
             "zDBPM": 1.305,
             "zBPG": -0.22,
             "zSPG": 1.24,
             "statsCore": 0.426,
-            "teamDefFct": 0.978,
+            "teamDefFct": 0.977,
             "posMultiplier": 1.08,
             "elig": 0.18,
             "histConf": 0.603,
@@ -160678,7 +160678,7 @@
             "rpgProj": 4.4,
             "position": "FORWARD",
             "gpP50": 55,
-            "playoffPct": 85.6,
+            "playoffPct": 85.2,
             "priorSeasons": 2
           }
         },
@@ -163474,7 +163474,7 @@
             "ppgProj": 10.55,
             "mpgRankOnTeam": 7,
             "usageRankOnTeam": 2,
-            "playoffPct": 12.1
+            "playoffPct": 12.6
           }
         },
         "cpoy": {
@@ -172014,21 +172014,21 @@
       ],
       "awardOdds": {
         "mvp": {
-          "prob": 2.68,
+          "prob": 2.67,
           "rank": 13,
           "eligible": true,
           "name": "Cooper Flagg",
           "teamId": "DAL",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1642843.png",
-          "scoreRaw": 0.0886,
+          "scoreRaw": 0.08818,
           "factors": {
             "zBPM": 0.328,
             "zVORP": 0.056,
             "zPPG": 2.302,
             "statsCore": 0.616,
-            "teamQF": 0.333,
+            "teamQF": 0.33,
             "coreWithTeam": 0.585,
-            "elig": 0.429,
+            "elig": 0.427,
             "fatigueMult": 1.1,
             "tenureMult": 0.3,
             "marketMult": 1.05,
@@ -172043,8 +172043,8 @@
             "gpP50": 70,
             "mpgP50": 33.5,
             "priorSeasons": 1,
-            "avgSeed": 10.6,
-            "playoffPct": 26.3,
+            "avgSeed": 10.7,
+            "playoffPct": 26.2,
             "championPct": 0.3
           }
         },
@@ -172402,7 +172402,7 @@
             "ppgProj": 11.99,
             "mpgRankOnTeam": 6,
             "usageRankOnTeam": 3,
-            "playoffPct": 92.5
+            "playoffPct": 92.9
           }
         },
         "cpoy": {
@@ -172704,15 +172704,15 @@
           "name": "VJ Edgecombe",
           "teamId": "PHI",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1642845.png",
-          "scoreRaw": 0.03737,
+          "scoreRaw": 0.03723,
           "factors": {
             "zBPM": -0.195,
             "zVORP": -0.3,
             "zPPG": 1.404,
             "statsCore": 0.128,
-            "teamQF": 0.587,
+            "teamQF": 0.585,
             "coreWithTeam": 0.131,
-            "elig": 0.792,
+            "elig": 0.79,
             "fatigueMult": 1.1,
             "tenureMult": 0.3,
             "marketMult": 1.05,
@@ -172728,8 +172728,8 @@
             "mpgP50": 35,
             "priorSeasons": 1,
             "avgSeed": 8.5,
-            "playoffPct": 49.4,
-            "championPct": 1.9
+            "playoffPct": 49.1,
+            "championPct": 1.7
           }
         },
         "dpoy": {
@@ -173068,7 +173068,7 @@
             "ppgProj": 12.9,
             "mpgRankOnTeam": 6,
             "usageRankOnTeam": 3,
-            "playoffPct": 34.1
+            "playoffPct": 34.5
           }
         },
         "cpoy": {
@@ -173686,7 +173686,7 @@
             "ppgProj": 12.17,
             "mpgRankOnTeam": 7,
             "usageRankOnTeam": 5,
-            "playoffPct": 29.7
+            "playoffPct": 30.5
           }
         },
         "cpoy": {
@@ -174005,7 +174005,7 @@
             "ppgProj": 10.69,
             "mpgRankOnTeam": 7,
             "usageRankOnTeam": 1,
-            "playoffPct": 34.5
+            "playoffPct": 34.9
           }
         },
         "cpoy": {
@@ -174347,13 +174347,13 @@
           "name": "Kon Knueppel",
           "teamId": "CHA",
           "imageUrl": "https://cdn.nba.com/headshots/nba/latest/260x190/1642851.png",
-          "scoreRaw": 0.2538,
+          "scoreRaw": 0.25349,
           "factors": {
             "zBPM": 0.716,
             "zVORP": 0.443,
             "zPPG": 1.855,
             "statsCore": 0.766,
-            "teamQF": 0.778,
+            "teamQF": 0.776,
             "coreWithTeam": 0.83,
             "elig": 0.877,
             "fatigueMult": 1.1,
@@ -174371,8 +174371,8 @@
             "mpgP50": 31.5,
             "priorSeasons": 1,
             "avgSeed": 5.8,
-            "playoffPct": 75,
-            "championPct": 5.5
+            "playoffPct": 74.4,
+            "championPct": 5.8
           }
         },
         "dpoy": {
@@ -174729,7 +174729,7 @@
             "ppgProj": 11.95,
             "mpgRankOnTeam": 6,
             "usageRankOnTeam": 2,
-            "playoffPct": 51.5
+            "playoffPct": 52.3
           }
         },
         "cpoy": {
@@ -176834,7 +176834,7 @@
             "ppgProj": 11.32,
             "mpgRankOnTeam": 10,
             "usageRankOnTeam": 6,
-            "playoffPct": 29.7
+            "playoffPct": 30.5
           }
         },
         "cpoy": {
@@ -179545,7 +179545,7 @@
             "ppgProj": 10.69,
             "mpgRankOnTeam": 10,
             "usageRankOnTeam": 5,
-            "playoffPct": 34.5
+            "playoffPct": 34.9
           }
         },
         "cpoy": {
@@ -185266,7 +185266,7 @@
             "ppgProj": 9.96,
             "mpgRankOnTeam": 7,
             "usageRankOnTeam": 4,
-            "playoffPct": 55.2
+            "playoffPct": 54.6
           }
         },
         "cpoy": {
