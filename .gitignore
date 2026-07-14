@@ -27,3 +27,4 @@ dist-ssr
 
 
 data/historical/kaggle_raw/
+data/historical/*.parquet
