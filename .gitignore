@@ -30,3 +30,5 @@ data/historical/kaggle_raw/
 data/historical/*.parquet
 
 .cache/nuse/tracking/
+
+.cache/nuse/bundle_2025-26/
