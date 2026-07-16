@@ -19,6 +19,14 @@ el "reset" es interno al loop del engine. Una fila de este dataset = un ciclo
 completo de posesion, que termina en MADE_SHOT, DEF_REBOUND, TURNOVER,
 FOUL_SHOOTING, FOUL_NON_SHOOTING o SHOT_CLOCK_VIOLATION.
 
+Lista de partidos de la temporada: OnCourtIngestionAdapter.fetch_league_game_finder
+(nba_omniscient_simulator/data_ingestion_adapter.py L959), que envuelve el endpoint
+`leaguegamefinder` con PlayerOrTeam="T". Ese modo devuelve UNA FILA POR EQUIPO POR
+PARTIDO -- 2 filas por game_id (home y away, mismo GAME_DATE) -- por lo que
+build_dataset deduplica por game_id antes de procesar. Ya no hay bypass manual:
+la lista completa de la temporada sale dinamicamente de la API para el valor de
+--season recibido.
+
 Puntos verificados por firma/docstring pero no por payload real:
   - Vocabulario exacto de PlayByPlayEvent.event_type (_PBP_EVENT_TYPE_NAMES).
   - Forma exacta del dict que devuelve fetch_box_score().
@@ -335,21 +343,52 @@ def build_dataset(
     )
     replay_source = ProductionReplayDataSource(season=season, on_court_adapter=on_court)
 
-    # BYPASS TÁCTICO: Inyectamos directamente los Game IDs de prueba.
-    logger.info("Evadiendo leaguegamefinder... inyectando Game IDs manualmente.")
-    game_ids = [
-        ("0022500001", date(2025, 10, 21)),
-        ("0022500002", date(2025, 10, 21))
-    ]
-    
+    # Lista real de partidos via leaguegamefinder (OnCourtIngestionAdapter.fetch_league_game_finder,
+    # nba_omniscient_simulator/data_ingestion_adapter.py L959). PlayerOrTeam="T" devuelve UNA FILA
+    # POR EQUIPO POR PARTIDO -- 2 filas por game_id (home y away, mismo GAME_DATE) -- se deduplica
+    # por game_id quedandonos con la primera aparicion. GAME_DATE llega como string "YYYY-MM-DD" y
+    # se parsea a date() para mantener el mismo tipo que ya consume process_game().
+    logger.info("Consultando leaguegamefinder para season=%s (Regular Season)...", season)
+    raw_games = on_court.fetch_league_game_finder(season=season)
+    if not raw_games:
+        raise RuntimeError(
+            f"leaguegamefinder no devolvio ningun partido para season={season} -- verificar "
+            f"conectividad, el valor de --season, o que la sesion stealth siga superando el "
+            f"bot-detection de stats.nba.com."
+        )
+
+    unique_games: Dict[str, date] = {}
+    unparseable = 0
+    for row in raw_games:
+        g_id = row.get("game_id")
+        if not g_id or g_id in unique_games:
+            continue
+        raw_date = row.get("game_date", "")
+        try:
+            g_date = datetime.strptime(raw_date, "%Y-%m-%d").date()
+        except (ValueError, TypeError):
+            unparseable += 1
+            continue
+        unique_games[g_id] = g_date
+    if unparseable:
+        logger.warning("%d fila(s) de leaguegamefinder con GAME_DATE no parseable -- excluidas.", unparseable)
+
+    game_ids: List[Tuple[str, date]] = sorted(unique_games.items(), key=lambda pair: (pair[1], pair[0]))
+
     if game_limit:
         game_ids = game_ids[:game_limit]
-        
-    logger.info("Temporada %s: %d partidos a procesar.", season, len(game_ids))
+
+    logger.info(
+        "leaguegamefinder: %d filas -> %d partidos unicos tras deduplicar por game_id. "
+        "Temporada %s: %d partidos a procesar.",
+        len(raw_games), len(unique_games), season, len(game_ids),
+    )
 
     frames: List[pd.DataFrame] = []
     failures: List[str] = []
-    for game_id, g_date in game_ids:
+    total_games = len(game_ids)
+    for i, (game_id, g_date) in enumerate(game_ids, start=1):
+        logger.info("Procesando partido %d de %d... (game_id=%s, game_date=%s)", i, total_games, game_id, g_date)
         try:
             frames.append(process_game(game_id, g_date, on_court, replay_source))
         except Exception:
