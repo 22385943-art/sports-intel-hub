@@ -38,3 +38,12 @@ data/historical/*.parquet
 **/__pycache__/
 *.pyc
 *.pyo
+
+
+
+# Large local assets
+models/oracle_omega_xgb.json
+public/data/nba_projections_2026-27.json
+public/data/nba_players_current.json
+public/data/nba_players_current_raw.json
+ml/models/nuse_oracle_v1.json
