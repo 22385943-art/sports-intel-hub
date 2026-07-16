@@ -32,3 +32,9 @@ data/historical/*.parquet
 .cache/nuse/tracking/
 
 .cache/nuse/bundle_2025-26/
+.cache/nuse/bundle_2023-24/
+
+
+**/__pycache__/
+*.pyc
+*.pyo
