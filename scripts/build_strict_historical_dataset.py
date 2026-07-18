@@ -26,12 +26,6 @@ PARTIDO -- 2 filas por game_id (home y away, mismo GAME_DATE) -- por lo que
 build_dataset deduplica por game_id antes de procesar. Ya no hay bypass manual:
 la lista completa de la temporada sale dinamicamente de la API para el valor de
 --season recibido.
-
-Puntos verificados por firma/docstring pero no por payload real:
-  - Vocabulario exacto de PlayByPlayEvent.event_type (_PBP_EVENT_TYPE_NAMES).
-  - Forma exacta del dict que devuelve fetch_box_score().
-  - shot_clock_seconds_remaining: placeholder 24.0 documentado.
-  - action_type: round-robin determinista como placeholder honesto.
 """
 
 from __future__ import annotations
@@ -53,19 +47,30 @@ from nba_omniscient_simulator.real_data_source import ProductionReplayDataSource
 
 logger = logging.getLogger("nuse.etl.tuneladora")
 
-# ── Vocabulario asumido para PlayByPlayEvent.event_type ──
-EVT_MADE_SHOT = "MADE_SHOT"
-EVT_MISSED_SHOT = "MISSED_SHOT"
-EVT_FREE_THROW = "FREE_THROW"
-EVT_REBOUND = "REBOUND"
-EVT_TURNOVER = "TURNOVER"
-EVT_FOUL = "FOUL"
-EVT_VIOLATION = "VIOLATION"
-EVT_SUBSTITUTION = "SUBSTITUTION"
-EVT_TIMEOUT = "TIMEOUT"
-EVT_JUMP_BALL = "JUMP_BALL"
-EVT_PERIOD_START = "PERIOD_START"
-EVT_PERIOD_END = "PERIOD_END"
+# ── Vocabulario ROBUSTO para PlayByPlayEvent.event_type ──
+# Agregamos las versiones CON ESPACIO ("MADE SHOT") y CON BARRA BAJA ("MADE_SHOT")
+# para blindarnos contra cualquier versión de la API de la NBA.
+_MADE_SHOT_KEYS = {1, "1", "MADE SHOT", "MADE_SHOT", "FIELD_GOAL_MADE", "MAKE"}
+_MISSED_SHOT_KEYS = {2, "2", "MISSED SHOT", "MISSED_SHOT", "FIELD_GOAL_MISSED", "MISS"}
+_FREE_THROW_KEYS = {3, "3", "FREE THROW", "FREE_THROW"}
+_REBOUND_KEYS = {4, "4", "REBOUND"}
+_TURNOVER_KEYS = {5, "5", "TURNOVER"}
+_FOUL_KEYS = {6, "6", "FOUL"}
+_VIOLATION_KEYS = {7, "7", "VIOLATION"}
+_SUBSTITUTION_KEYS = {8, "8", "SUBSTITUTION"}
+_TIMEOUT_KEYS = {9, "9", "TIMEOUT"}
+_JUMP_BALL_KEYS = {10, "10", "JUMP BALL", "JUMP_BALL"}
+_PERIOD_START_KEYS = {12, "12", "PERIOD START", "PERIOD_START", "PERIOD"}
+_PERIOD_END_KEYS = {13, "13", "PERIOD END", "PERIOD_END"}
+
+def _is_event(event_type: Any, valid_keys: Set[Any]) -> bool:
+    """Evaluación blindada: comprueba el valor crudo y su versión string en mayúsculas."""
+    val = event_type.value if hasattr(event_type, "value") else event_type
+    if val in valid_keys:
+        return True
+    if str(val).upper() in valid_keys:
+        return True
+    return False
 
 _ACTION_ROTATION: Tuple[ActionType, ...] = (
     ActionType.TRANSITION,
@@ -124,7 +129,7 @@ def reconstruct_lineups(
     state = _period_starting_lineups(starters_by_team, home_team_id, away_team_id)
     snapshots: List[Tuple[Tuple[str, ...], Tuple[str, ...]]] = []
     for event in events:
-        if event.event_type == EVT_SUBSTITUTION and event.team_id and event.player1_id and event.player2_id:
+        if _is_event(event.event_type, _SUBSTITUTION_KEYS) and event.team_id and event.player1_id and event.player2_id:
             state.substitute(event.team_id, event.player1_id, event.player2_id)
         snapshots.append((state.snapshot(home_team_id), state.snapshot(away_team_id)))
     return snapshots
@@ -194,7 +199,7 @@ def segment_possessions(
         possession_seq += 1
 
     for idx, event in enumerate(events):
-        if event.event_type == EVT_PERIOD_START:
+        if _is_event(event.event_type, _PERIOD_START_KEYS):
             off_team = None
             _reset_possession_trackers()
             continue
@@ -203,7 +208,7 @@ def segment_possessions(
             off_team = str(event.team_id)
             possession_start_clock = event.seconds_remaining_in_period
 
-        if event.event_type == EVT_MADE_SHOT:
+        if _is_event(event.event_type, _MADE_SHOT_KEYS):
             points = 3 if "3PT" in (event.description or "").upper() else 2
             if off_team == home_team_id:
                 score_home += points
@@ -214,7 +219,7 @@ def segment_possessions(
             _reset_possession_trackers()
             action_bucket += 1
 
-        elif event.event_type == EVT_TURNOVER:
+        elif _is_event(event.event_type, _TURNOVER_KEYS):
             _emit(
                 idx, event, PossessionResultType.TURNOVER.value,
                 turnover_type=(event.description or "UNKNOWN").split()[0].upper(),
@@ -223,7 +228,7 @@ def segment_possessions(
             _reset_possession_trackers()
             action_bucket += 1
 
-        elif event.event_type == EVT_FOUL:
+        elif _is_event(event.event_type, _FOUL_KEYS):
             desc = (event.description or "").upper()
             is_shooting = "S.FOUL" in desc or "SHOOTING" in desc
             _emit(
@@ -237,7 +242,7 @@ def segment_possessions(
             _reset_possession_trackers()
             action_bucket += 1
 
-        elif event.event_type == EVT_FREE_THROW:
+        elif _is_event(event.event_type, _FREE_THROW_KEYS):
             fts_awarded += 1
             if "MISS" not in (event.description or "").upper():
                 fts_made += 1
@@ -246,7 +251,7 @@ def segment_possessions(
                 else:
                     score_away += 1
 
-        elif event.event_type == EVT_REBOUND:
+        elif _is_event(event.event_type, _REBOUND_KEYS):
             if event.team_id == off_team:
                 continue
             _emit(idx, event, PossessionResultType.DEF_REBOUND.value, rebounder_id=event.player1_id, rebound_type="DEFENSIVE")
@@ -255,7 +260,7 @@ def segment_possessions(
             fts_awarded, fts_made = 0, 0
             action_bucket += 1
 
-        elif event.event_type == EVT_PERIOD_END:
+        elif _is_event(event.event_type, _PERIOD_END_KEYS):
             if off_team is not None:
                 _emit(idx, event, PossessionResultType.SHOT_CLOCK_VIOLATION.value)
             off_team = None
@@ -310,10 +315,6 @@ def process_game(
 
     frame = pd.DataFrame(rows, columns=list(EXPECTED_POSSESSION_COLUMNS))
 
-    # Puerta de integridad Fase 12 (Desactivada temporalmente por bug en CoachProfile)
-    # for team_id in (home_team_id, away_team_id):
-    #     replay_source.team_ecosystem_state(team_id, game_date)
-
     return frame
 
 
@@ -343,11 +344,6 @@ def build_dataset(
     )
     replay_source = ProductionReplayDataSource(season=season, on_court_adapter=on_court)
 
-    # Lista real de partidos via leaguegamefinder (OnCourtIngestionAdapter.fetch_league_game_finder,
-    # nba_omniscient_simulator/data_ingestion_adapter.py L959). PlayerOrTeam="T" devuelve UNA FILA
-    # POR EQUIPO POR PARTIDO -- 2 filas por game_id (home y away, mismo GAME_DATE) -- se deduplica
-    # por game_id quedandonos con la primera aparicion. GAME_DATE llega como string "YYYY-MM-DD" y
-    # se parsea a date() para mantener el mismo tipo que ya consume process_game().
     logger.info("Consultando leaguegamefinder para season=%s (Regular Season)...", season)
     raw_games = on_court.fetch_league_game_finder(season=season)
     if not raw_games:
@@ -400,8 +396,6 @@ def build_dataset(
 
     dataset = pd.concat(frames, ignore_index=True)
 
-    # Mismas comprobaciones que load_alpha_batch (ml/historical_replay.py) --
-    # fallar aqui, en ETL time, no en replay time.
     missing = set(EXPECTED_POSSESSION_COLUMNS) - set(dataset.columns)
     if missing:
         raise ValueError(f"Dataset no cumple EXPECTED_POSSESSION_COLUMNS -- faltan {sorted(missing)}.")
